@@ -1,0 +1,263 @@
+/* ============================================
+   Flashcards Page
+   ============================================ */
+
+.flashcards-page {
+  padding-top: 32px;
+  max-width: 720px;
+}
+
+/* ---- Deck Selection ---- */
+.fc-decks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.fc-deck-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--white);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-ui);
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.fc-deck-card:hover {
+  border-left-color: var(--pastel-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.fc-deck-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.fc-deck-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fc-deck-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--regal-blue);
+  margin-bottom: 2px;
+}
+
+.fc-deck-arabic {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.fc-deck-count {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.fc-deck-arrow {
+  color: var(--pastel-blue);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.fc-deck-card:hover .fc-deck-arrow {
+  transform: translateX(4px);
+}
+
+/* ---- Active Deck Header ---- */
+.fc-header {
+  margin-bottom: 20px;
+}
+
+.fc-header-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.fc-deck-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--regal-blue);
+}
+
+/* ---- Flashcard ---- */
+.fc-card-wrapper {
+  perspective: 1200px;
+  height: 320px;
+  cursor: pointer;
+  margin-bottom: 28px;
+}
+
+.fc-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+  border-radius: var(--radius);
+}
+
+.fc-card-wrapper--flipped .fc-card {
+  transform: rotateY(180deg);
+}
+
+.fc-card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+/* Front face */
+.fc-card-front {
+  background: linear-gradient(135deg, var(--regal-blue) 0%, #1a6fa3 100%);
+  color: var(--white);
+}
+
+/* Back face */
+.fc-card-back {
+  background: var(--white);
+  border: 2px solid var(--pastel-blue);
+  color: var(--text-primary);
+  transform: rotateY(180deg);
+}
+
+.fc-card-hint {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.fc-card-front .fc-card-hint {
+  color: var(--pastel-blue);
+}
+
+.fc-card-back .fc-card-hint {
+  color: var(--text-muted);
+}
+
+.fc-card-arabic {
+  font-family: var(--font-arabic);
+  font-size: 3rem;
+  color: var(--pastel-blue);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.fc-card-arabic--sm {
+  font-size: 1.6rem;
+  color: var(--regal-blue);
+  margin-bottom: 12px;
+}
+
+.fc-card-translit {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.fc-card-tap {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: auto;
+}
+
+.fc-card-definition {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+  max-width: 480px;
+}
+
+/* ---- Controls ---- */
+.fc-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.fc-controls .btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---- Progress Dots ---- */
+.fc-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  padding-bottom: 32px;
+}
+
+.fc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.fc-dot--active {
+  background: var(--regal-blue);
+  transform: scale(1.3);
+}
+
+.fc-dot--done {
+  background: var(--pastel-blue);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .fc-decks-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fc-card-wrapper {
+    height: 280px;
+  }
+
+  .fc-card-arabic {
+    font-size: 2.2rem;
+  }
+
+  .fc-card-face {
+    padding: 24px 20px;
+  }
+
+  .fc-card-definition {
+    font-size: 0.85rem;
+  }
+
+  .fc-controls {
+    flex-wrap: wrap;
+  }
+}

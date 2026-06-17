@@ -6,6 +6,7 @@ import './Sidebar.css'
 const NAV_ITEMS = [
   { path: '/', label: 'Home', arabicLabel: 'الرَّئِيسِيَّة', icon: '🏠' },
   { path: '/quiz', label: 'Quiz', arabicLabel: 'الاِخْتِبَار', icon: '🎯' },
+  { path: '/flashcards', label: 'Flashcards', arabicLabel: 'بِطَاقَات', icon: '🃏' },
 ]
 
 export default function Sidebar() {
