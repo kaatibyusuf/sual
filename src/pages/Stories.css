@@ -301,21 +301,18 @@
   border-left: 4px solid #85CCFF;
 }
 
-/* Story body */
 .story-detail-body {
   padding: 28px;
-  background: #ffffff;
+  background: #ffffff !important;
   border: 1.5px solid #c8d8e8;
   border-radius: 12px;
 }
 
-.story-section-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #4a6080;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  margin-bottom: 18px;
+.story-para {
+  font-size: 0.93rem;
+  color: #0d1b2a !important;
+  line-height: 1.9;
+  margin-bottom: 16px;
 }
 
 .story-para {
@@ -421,3 +418,7 @@
     font-size: 0.88rem;
   }
 }
+.story-card { background: #ffffff !important; }
+.story-detail-header { background: #ffffff !important; }
+.story-detail-lessons { background: #ffffff !important; }
+.story-detail-sources { background: #ffffff !important; }
