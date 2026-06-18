@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { path: '/', label: 'Home', arabicLabel: 'الرَّئِيسِيَّة', icon: '🏠' },
   { path: '/quiz', label: 'Quiz', arabicLabel: 'الاِخْتِبَار', icon: '🎯' },
   { path: '/flashcards', label: 'Flashcards', arabicLabel: 'بِطَاقَات', icon: '🃏' },
+  { path: '/stories', label: 'Stories', arabicLabel: 'السِّيَر', icon: '📜' },
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'

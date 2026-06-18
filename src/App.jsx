@@ -7,6 +7,7 @@ import Home from './pages/Home.jsx'
 import Discipline from './pages/Discipline.jsx'
 import Quiz from './pages/Quiz.jsx'
 import Flashcards from './pages/Flashcards.jsx'
+import Stories from './pages/Stories.jsx'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -18,6 +19,11 @@ export default function App() {
   })
 
   useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
+    document.documentElement.setAttribute('data-fontsize', fontSize)
+  }, [])
+
+  useEffect(() => {
     localStorage.setItem('sual-darkmode', darkMode)
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
   }, [darkMode])
@@ -26,12 +32,6 @@ export default function App() {
     localStorage.setItem('sual-fontsize', fontSize)
     document.documentElement.setAttribute('data-fontsize', fontSize)
   }, [fontSize])
-
-// Apply on mount
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
-    document.documentElement.setAttribute('data-fontsize', fontSize)
-  }, [])
 
   if (showSplash) {
     return <SplashScreen onDone={() => setShowSplash(false)} />
@@ -53,6 +53,7 @@ export default function App() {
             <Route path="/discipline/:id" element={<Discipline />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/flashcards" element={<Flashcards />} />
+            <Route path="/stories" element={<Stories />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </main>
