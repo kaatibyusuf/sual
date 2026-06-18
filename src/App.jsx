@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Sidebar from './components/Sidebar.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
@@ -8,17 +8,10 @@ import Quiz from './pages/Quiz.jsx'
 import Flashcards from './pages/Flashcards.jsx'
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(() => {
-    return !localStorage.getItem('sual_visited')
-  })
-
-  const handleSplashDone = () => {
-    localStorage.setItem('sual_visited', 'true')
-    setShowSplash(false)
-  }
+  const [showSplash, setShowSplash] = useState(true)
 
   if (showSplash) {
-    return <SplashScreen onDone={handleSplashDone} />
+    return <SplashScreen onDone={() => setShowSplash(false)} />
   }
 
   return (
