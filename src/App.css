@@ -182,3 +182,19 @@
     border-right-color: var(--border);
   }
 }
+/* ============================================
+   Main Wrapper (for Toolbar + Content)
+   ============================================ */
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.main-wrapper .main-content {
+  flex: 1;
+  overflow-y: auto;
+}
