@@ -168,3 +168,21 @@
   .sidebar-link-latin { font-size: 0.7rem; }
   .sidebar-link-icon { font-size: 1.2rem; width: auto; }
 }
+.sidebar-wa-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--pastel-blue);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--regal-blue);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  transition: background 0.2s ease;
+}
+
+.sidebar-wa-btn:hover {
+  background: #6bbdf5;
+}

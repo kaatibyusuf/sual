@@ -9,6 +9,8 @@ const NAV_ITEMS = [
   { path: '/flashcards', label: 'Flashcards', arabicLabel: 'بِطَاقَات', icon: '🃏' },
 ]
 
+const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'
+
 export default function Sidebar() {
   return (
     <aside className="sidebar">
@@ -51,6 +53,15 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
+        <a
+          href={WA_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="sidebar-wa-btn"
+        >
+          <span>💬</span>
+          <span>Join Community</span>
+        </a>
         <p className="sidebar-footer-text">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</p>
         <p className="sidebar-footer-sub">In the name of Allah</p>
       </div>
