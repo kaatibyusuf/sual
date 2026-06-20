@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { path: '/stories', label: 'Stories', arabicLabel: 'السِّيَر', icon: '📜' },
   { path: '/duas', label: 'Duas', arabicLabel: 'الدُّعَاء', icon: '🙏' },
   { path: '/calendar', label: 'Calendar', arabicLabel: 'التَّقْوِيم', icon: '🗓️' },
+  { path: '/tajweed', label: 'Tajweed', arabicLabel: 'التَّجْوِيد', icon: '📖' }
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'

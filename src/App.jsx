@@ -10,6 +10,7 @@ import Flashcards from './pages/Flashcards.jsx'
 import Stories from './pages/Stories.jsx'
 import Duas from './pages/Duas.jsx'
 import Calendar from './pages/Calendar.jsx'
+import Tajweed from './pages/Tajweed.jsx'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -58,6 +59,7 @@ export default function App() {
             <Route path="/stories" element={<Stories />} />
             <Route path="/duas" element={<Duas />} />
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="/tajweed" element={<Tajweed />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </main>
