@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sual | سُؤَال — Islamic Knowledge App</title>
+  <meta name="description" content="Sual is your companion for the Islamic sciences — ask, learn, and test your knowledge in Fiqh, Seerah, Arabiyyah, Usul al-Fiqh, Sarf, Nahw, and Tafseer." />
+  <meta property="og:title" content="Sual | سُؤَال — Islamic Knowledge App" />
+  <meta property="og:description" content="Your companion for the Islamic sciences. Q&A, Quizzes, Flashcards, Stories, Duas, Tajweed and more." />
+  <meta property="og:image" content="https://thunderous-faun-a15d46.netlify.app/pwa-512x512.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --regal: #094570;
+      --pastel: #85CCFF;
+      --white: #ffffff;
+      --bg: #F0F8FF;
+      --text: #0d1b2a;
+      --text-secondary: #4a6080;
+      --border: #c8d8e8;
+      --radius: 14px;
+      --font-ui: 'Inter', sans-serif;
+      --font-arabic: 'Amiri', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-ui);
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SPLASH ── */
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: linear-gradient(160deg, #062f4a, #094570, #0d6fa8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: opacity 0.9s ease, visibility 0.9s ease;
+    }
+
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-inner {
+      text-align: center;
+      animation: splashIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes splashIn {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .splash-arabic {
+      font-family: var(--font-arabic);
+      font-size: clamp(4rem, 14vw, 9rem);
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      animation: splashGlow 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes splashGlow {
+      from {
+        text-shadow:
+          0 0 30px rgba(133,204,255,0.6),
+          0 0 60px rgba(133,204,255,0.3);
+      }
+      to {
+        text-shadow:
+          0 0 50px rgba(133,204,255,1),
+          0 0 100px rgba(133,204,255,0.6),
+          0 0 160px rgba(133,204,255,0.3);
+      }
+    }
+
+    .splash-latin {
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      font-weight: 800;
+      color: var(--pastel);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      animation: splashFadeIn 0.8s ease 0.3s both;
+    }
+
+    .splash-tagline {
+      font-family: var(--font-arabic);
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+      color: rgba(255,255,255,0.55);
+      animation: splashFadeIn 0.8s ease 0.6s both;
+    }
+
+    @keyframes splashFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-arabic {
+      font-family: var(--font-arabic);
+      font-size: 1.6rem;
+      color: var(--regal);
+      font-weight: 700;
+    }
+
+    .nav-logo-latin {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--regal);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--regal); }
+
+    .nav-cta {
+      padding: 9px 22px;
+      background: var(--regal);
+      color: var(--white) !important;
+      border-radius: 100px;
+      font-weight: 700 !important;
+      font-size: 0.85rem !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .nav-cta:hover {
+      background: #0d5a8a !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(9,69,112,0.3);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 48px 80px;
+      background: linear-gradient(160deg, #F0F8FF 0%, #ffffff 50%, #e8f4ff 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: 'سُؤَال';
+      font-family: var(--font-arabic);
+      position: absolute;
+      font-size: 32vw;
+      color: rgba(9,69,112,0.03);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .hero-inner {
+      max-width: 860px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(9,69,112,0.08);
+      border: 1px solid rgba(9,69,112,0.15);
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--regal);
+      margin-bottom: 28px;
+    }
+
+    .hero-arabic {
+      font-family: var(--font-arabic);
+      font-size: clamp(3rem, 8vw, 6rem);
+      color: var(--regal);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: var(--regal);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #094570, #1a8fd1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+
+    .btn-primary {
+      padding: 14px 32px;
+      background: var(--regal);
+      color: var(--white);
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(9,69,112,0.3);
+    }
+
+    .btn-primary:hover {
+      background: #0d5a8a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(9,69,112,0.4);
+    }
+
+    .btn-secondary {
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--regal);
+      border: 2px solid var(--regal);
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--regal);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .hero-mockup {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 24px 80px rgba(9,69,112,0.15), 0 4px 20px rgba(9,69,112,0.08);
+      border: 1.5px solid var(--border);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .mockup-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mockup-dot:nth-child(1) { background: #ff5f57; }
+    .mockup-dot:nth-child(2) { background: #febc2e; }
+    .mockup-dot:nth-child(3) { background: #28c840; }
+
+    .mockup-inner {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      height: 320px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .mockup-sidebar {
+      background: var(--regal);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mockup-logo {
+      font-family: var(--font-arabic);
+      color: var(--white);
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .mockup-nav-item {
+      padding: 8px 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .mockup-nav-item.active {
+      background: rgba(133,204,255,0.2);
+      color: var(--pastel);
+    }
+
+    .mockup-content {
+      background: var(--bg);
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .mockup-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--regal);
+      margin-bottom: 12px;
+    }
+
+    .mockup-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+
+    .mockup-card-q {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--regal);
+      margin-bottom: 6px;
+    }
+
+    .mockup-card-tags { display: flex; gap: 4px; }
+
+    .mockup-tag {
+      padding: 2px 8px;
+      background: #e8f4ff;
+      border-radius: 100px;
+      font-size: 0.62rem;
+      color: var(--regal);
+    }
+
+    /* ── STATS ── */
+    .stats { background: var(--regal); padding: 60px 48px; }
+
+    .stats-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--pastel);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.75);
+      font-weight: 500;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 48px; }
+
+    .section-inner { max-width: 1000px; margin: 0 auto; }
+
+    .section-tag {
+      display: inline-block;
+      padding: 4px 14px;
+      background: rgba(9,69,112,0.08);
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--regal);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800;
+      color: var(--regal);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    /* ── FEATURES ── */
+    .features { background: var(--white); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      padding: 28px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      transition: all 0.2s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--pastel);
+      box-shadow: 0 8px 24px rgba(9,69,112,0.1);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon { font-size: 2rem; margin-bottom: 14px; }
+    .feature-name { font-size: 1rem; font-weight: 700; color: var(--regal); margin-bottom: 8px; }
+    .feature-desc { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; }
+
+    /* ── DISCIPLINES ── */
+    .disciplines { background: var(--bg); }
+
+    .disciplines-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .discipline-card {
+      padding: 24px 20px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .discipline-card:hover {
+      border-color: var(--regal);
+      box-shadow: 0 6px 20px rgba(9,69,112,0.12);
+      transform: translateY(-3px);
+    }
+
+    .discipline-icon { font-size: 2rem; margin-bottom: 10px; }
+    .discipline-name { font-size: 0.95rem; font-weight: 700; color: var(--regal); margin-bottom: 4px; }
+    .discipline-arabic { font-family: var(--font-arabic); font-size: 1rem; color: var(--text-secondary); }
+
+    /* ── WHY ── */
+    .why { background: var(--white); }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .why-item { display: flex; gap: 16px; }
+
+    .why-num {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--pastel);
+      background: var(--regal);
+      padding: 4px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      height: fit-content;
+      margin-top: 2px;
+    }
+
+    .why-content-title { font-size: 0.95rem; font-weight: 700; color: var(--regal); margin-bottom: 6px; }
+    .why-content-desc { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; }
+
+    /* ── COMMUNITY ── */
+    .community {
+      background: linear-gradient(135deg, #094570, #1a6fa8);
+      text-align: center;
+    }
+
+    .community .section-title { color: var(--white); }
+    .community .section-sub { color: rgba(255,255,255,0.8); margin: 0 auto 36px; }
+
+    .community-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-white {
+      padding: 14px 32px;
+      background: var(--white);
+      color: var(--regal);
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.2); }
+
+    .btn-outline-white {
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.6);
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline-white:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ── */
+    footer { background: #06304d; padding: 48px; }
+
+    .footer-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .footer-brand-arabic { font-family: var(--font-arabic); font-size: 2rem; color: var(--pastel); margin-bottom: 6px; }
+
+    .footer-brand-tagline {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 20px;
+      max-width: 360px;
+      line-height: 1.6;
+    }
+
+    .footer-social { display: flex; gap: 12px; }
+
+    .footer-social-link {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 100px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .footer-social-link:hover {
+      background: rgba(133,204,255,0.15);
+      color: var(--pastel);
+      border-color: var(--pastel);
+    }
+
+    .footer-links { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+
+    .footer-link { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; transition: color 0.15s; }
+    .footer-link:hover { color: var(--pastel); }
+
+    .footer-copy {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 40px;
+      padding-top: 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 20px 60px; }
+      section { padding: 60px 20px; }
+      .stats { padding: 48px 20px; }
+      footer { padding: 40px 20px; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .footer-links { align-items: flex-start; }
+      .mockup-inner { grid-template-columns: 1fr; }
+      .mockup-sidebar { display: none; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .community-actions { flex-direction: column; align-items: center; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-inner > * { animation: fadeUp 0.6s ease both; }
+    .hero-inner > *:nth-child(1) { animation-delay: 0.1s; }
+    .hero-inner > *:nth-child(2) { animation-delay: 0.2s; }
+    .hero-inner > *:nth-child(3) { animation-delay: 0.3s; }
+    .hero-inner > *:nth-child(4) { animation-delay: 0.4s; }
+    .hero-inner > *:nth-child(5) { animation-delay: 0.5s; }
+    .hero-inner > *:nth-child(6) { animation-delay: 0.6s; }
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splash">
+    <div class="splash-inner">
+      <div class="splash-arabic">سُؤَال</div>
+      <div class="splash-latin">Sual</div>
+      <div class="splash-tagline">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-arabic">سُؤَال</span>
+      <span class="nav-logo-latin">Sual</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#disciplines">Disciplines</a></li>
+      <li><a href="#why">Why Sual</a></li>
+      <li><a href="#community">Community</a></li>
+      <li><a href="https://thunderous-faun-a15d46.netlify.app" target="_blank" class="nav-cta">Open App →</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">🌙 &nbsp; Free Islamic Knowledge App</div>
+      <div class="hero-arabic">سُؤَال</div>
+      <h1 class="hero-title">The Islamic <span>Knowledge</span> App</h1>
+      <p class="hero-subtitle">
+        Ask. Learn. Test. Your companion for the seven Islamic sciences — built on
+        classical scholarship and designed for the serious student.
+      </p>
+      <div class="hero-actions">
+        <a href="https://thunderous-faun-a15d46.netlify.app" target="_blank" class="btn-primary">Open Sual App →</a>
+        <a href="#features" class="btn-secondary">Explore Features</a>
+      </div>
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-inner">
+          <div class="mockup-sidebar">
+            <div class="mockup-logo">سُؤَال Sual</div>
+            <div class="mockup-nav-item active">🏠 Home</div>
+            <div class="mockup-nav-item">🎯 Quiz</div>
+            <div class="mockup-nav-item">🃏 Flashcards</div>
+            <div class="mockup-nav-item">📜 Stories</div>
+            <div class="mockup-nav-item">🤲 Duas</div>
+            <div class="mockup-nav-item">🗓️ Calendar</div>
+            <div class="mockup-nav-item">🎙️ Tajweed</div>
+          </div>
+          <div class="mockup-content">
+            <div class="mockup-title">Fiqh — Islamic Jurisprudence</div>
+            <div class="mockup-card">
+              <div class="mockup-card-q">What are the five essential objectives of Shariah (Maqasid al-Shariah)?</div>
+              <div class="mockup-card-tags">
+                <span class="mockup-tag">maqasid</span>
+                <span class="mockup-tag">advanced</span>
+              </div>
+            </div>
+            <div class="mockup-card">
+              <div class="mockup-card-q">What is the ruling on reciting al-Fatihah behind the imam?</div>
+              <div class="mockup-card-tags">
+                <span class="mockup-tag">salah</span>
+                <span class="mockup-tag">khilaf</span>
+              </div>
+            </div>
+            <div class="mockup-card">
+              <div class="mockup-card-q">What is Zakah and what is its nisab for gold and silver?</div>
+              <div class="mockup-card-tags">
+                <span class="mockup-tag">zakah</span>
+                <span class="mockup-tag">nisab</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stats-inner">
+      <div><div class="stat-number">350+</div><div class="stat-label">Scholarly Q&amp;A Entries</div></div>
+      <div><div class="stat-number">350+</div><div class="stat-label">Quiz Questions</div></div>
+      <div><div class="stat-number">7</div><div class="stat-label">Islamic Disciplines</div></div>
+      <div><div class="stat-number">30</div><div class="stat-label">Duas &amp; Adhkar</div></div>
+      <div><div class="stat-number">10</div><div class="stat-label">Stories of the Salaf</div></div>
+      <div><div class="stat-number">10</div><div class="stat-label">Tajweed Sections</div></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-inner">
+      <span class="section-tag">Features</span>
+      <h2 class="section-title">Everything you need to study Islam</h2>
+      <p class="section-sub">Built for the serious student who wants depth, not surface-level summaries.</p>
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon">📚</div><div class="feature-name">Scholarly Q&amp;A</div><div class="feature-desc">350+ curated questions and detailed answers across seven disciplines, sourced from classical texts and authenticated references.</div></div>
+        <div class="feature-card"><div class="feature-icon">🎯</div><div class="feature-name">Quiz Mode</div><div class="feature-desc">Test your knowledge with 350+ questions per discipline or in a mixed format. Track your score and review your answers.</div></div>
+        <div class="feature-card"><div class="feature-icon">🃏</div><div class="feature-name">Flashcards</div><div class="feature-desc">Six decks of Arabic and Islamic terminology flashcards with Arabic script and transliteration.</div></div>
+        <div class="feature-card"><div class="feature-icon">📜</div><div class="feature-name">Stories of the Salaf</div><div class="feature-desc">Detailed biographical narratives of the Companions and Successors — written with primary source citations.</div></div>
+        <div class="feature-card"><div class="feature-icon">🤲</div><div class="feature-name">Dua Collection</div><div class="feature-desc">30 authenticated duas from the Quran and Sunnah with Arabic text, transliteration, translation, context, and virtue.</div></div>
+        <div class="feature-card"><div class="feature-icon">🗓️</div><div class="feature-name">Islamic Calendar</div><div class="feature-desc">A full Hijri calendar with important Islamic dates circled and explained — Ayyam al-Bid, Ashura, Eid, and Laylat al-Qadr.</div></div>
+        <div class="feature-card"><div class="feature-icon">🎙️</div><div class="feature-name">Tajweed Science</div><div class="feature-desc">Ten comprehensive sections covering Noon Saakinah, Madd, Qalqalah, Tafkheem, Waqf, Ghunnah and more.</div></div>
+        <div class="feature-card"><div class="feature-icon">🌙</div><div class="feature-name">Dark Mode &amp; Accessibility</div><div class="feature-desc">Full dark mode, adjustable font size, and a clean interface designed for extended study sessions.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCIPLINES -->
+  <section class="disciplines" id="disciplines">
+    <div class="section-inner">
+      <span class="section-tag">Disciplines</span>
+      <h2 class="section-title">Seven Islamic Sciences</h2>
+      <p class="section-sub">Each discipline is treated with the depth it deserves — not as a summary but as a serious introduction to the classical tradition.</p>
+      <div class="disciplines-grid">
+        <a href="https://thunderous-faun-a15d46.netlify.app/discipline/fiqh" target="_blank" class="discipline-card"><div class="discipline-icon">⚖️</div><div class="discipline-name">Fiqh</div><div class="discipline-arabic">الفِقْه</div></a>
+        <a href="https://thunderous-faun-a15d46.netlify.app/discipline/seerah" target="_blank" class="discipline-card"><div class="discipline-icon">🌙</div><div class="discipline-name">Seerah</div><div class="discipline-arabic">السِّيرَة</div></a>
+        <a href="https://thunderous-faun-a15d46.netlify.app/discipline/arabiyyah" target="_blank" class="discipline-card"><div class="discipline-icon">✍️</div><div class="discipline-name">Arabiyyah</div><div class="discipline-arabic">العَرَبِيَّة</div></a>
+        <a href="https://thunderous-faun-a15d46.netlify.app/discipline/usul" target="_blank" class="discipline-card"><div class="discipline-icon">📐</div><div class="discipline-name">Usul al-Fiqh</div><div class="discipline-arabic">أُصُولُ الفِقْه</div></a>
+        <a href="https://thunderous-faun-a15d46.netlify.app/discipline/sarf" target="_blank" class="discipline-card"><div class="discipline-icon">🔤</div><div class="discipline-name">Sarf</div><div class="discipline-arabic">الصَّرْف</div></a>
+        <a href="https://thunderous-faun-a15d46.netlify.app/discipline/nahw" target="_blank" class="discipline-card"><div class="discipline-icon">📝</div><div class="discipline-name">Nahw</div><div class="discipline-arabic">النَّحْو</div></a>
+        <a href="https://thunderous-faun-a15d46.netlify.app/discipline/tafseer" target="_blank" class="discipline-card"><div class="discipline-icon">📖</div><div class="discipline-name">Tafseer</div><div class="discipline-arabic">التَّفْسِير</div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="why" id="why">
+    <div class="section-inner">
+      <span class="section-tag">Why Sual</span>
+      <h2 class="section-title">Built on classical scholarship</h2>
+      <p class="section-sub">Sual is not another generic Islamic app. Every piece of content is grounded in the classical tradition.</p>
+      <div class="why-grid">
+        <div class="why-item"><div class="why-num">01</div><div><div class="why-content-title">Primary Source Citations</div><div class="why-content-desc">Every answer cites its classical source — from Sahih al-Bukhari and Sahih Muslim to Ibn Hisham, al-Nawawi, Ibn Hajar, and al-Shatibi.</div></div></div>
+        <div class="why-item"><div class="why-num">02</div><div><div class="why-content-title">Scholarly Voice</div><div class="why-content-desc">Content is written at the level of a serious student of knowledge — not simplified to the point of distortion.</div></div></div>
+        <div class="why-item"><div class="why-num">03</div><div><div class="why-content-title">Arabic-First</div><div class="why-content-desc">Arabic terminology is preserved throughout — with full tashkeel, transliteration, and linguistic analysis.</div></div></div>
+        <div class="why-item"><div class="why-num">04</div><div><div class="why-content-title">Seven Sciences Together</div><div class="why-content-desc">No other free app covers Fiqh, Seerah, Arabiyyah, Usul al-Fiqh, Sarf, Nahw, and Tafseer at this level of depth.</div></div></div>
+        <div class="why-item"><div class="why-num">05</div><div><div class="why-content-title">Completely Free</div><div class="why-content-desc">No ads, no paywalls, no subscription. Knowledge of the Deen belongs to everyone.</div></div></div>
+        <div class="why-item"><div class="why-num">06</div><div><div class="why-content-title">Works Offline</div><div class="why-content-desc">Install it on your phone and study without an internet connection. Your progress is saved locally.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="community" id="community">
+    <div class="section-inner">
+      <span class="section-tag" style="background: rgba(255,255,255,0.15); color: var(--pastel);">Community</span>
+      <h2 class="section-title">Join the Sual Community</h2>
+      <p class="section-sub">Daily Islamic knowledge questions, discussions, and updates — delivered to your WhatsApp. Over 7,000 young adults learning together.</p>
+      <div class="community-actions">
+        <a href="https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46" target="_blank" class="btn-white">💬 Join WhatsApp Channel</a>
+        <a href="https://thunderous-faun-a15d46.netlify.app" target="_blank" class="btn-outline-white">Open the App →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-arabic">سُؤَال</div>
+        <p class="footer-brand-tagline">Your companion for the Islamic sciences — ask, learn, and test your knowledge in the classical tradition.</p>
+        <div class="footer-social">
+          <a href="https://x.com/use_sual" target="_blank" class="footer-social-link">𝕏 @use_sual</a>
+          <a href="https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46" target="_blank" class="footer-social-link">💬 WhatsApp</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="https://thunderous-faun-a15d46.netlify.app" target="_blank" class="footer-link">Open App</a>
+        <a href="#features" class="footer-link">Features</a>
+        <a href="#disciplines" class="footer-link">Disciplines</a>
+        <a href="#community" class="footer-link">Community</a>
+        <a href="https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46" target="_blank" class="footer-social-link">WhatsApp Channel</a>
+      </div>
+    </div>
+    <div class="footer-copy">© 2026 Sual | سُؤَال — Built for the students of Islamic knowledge. Free forever.</div>
+  </footer>
+
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        document.getElementById('splash').classList.add('hidden')
+      }, 2400)
+    })
+  </script>
+
+</body>
+</html>
