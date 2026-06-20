@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { supabase } from './lib/supabase.js'
 import Sidebar from './components/Sidebar.jsx'
 import Toolbar from './components/Toolbar.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
+import Auth from './pages/Auth.jsx'
 import Home from './pages/Home.jsx'
 import Discipline from './pages/Discipline.jsx'
 import Quiz from './pages/Quiz.jsx'
@@ -11,9 +13,12 @@ import Stories from './pages/Stories.jsx'
 import Duas from './pages/Duas.jsx'
 import Calendar from './pages/Calendar.jsx'
 import Tajweed from './pages/Tajweed.jsx'
+import Profile from './pages/Profile.jsx'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
+  const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('sual-darkmode') === 'true'
   })
@@ -36,13 +41,56 @@ export default function App() {
     document.documentElement.setAttribute('data-fontsize', fontSize)
   }, [fontSize])
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+      setAuthLoading(false)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    setUser(null)
+  }
+
   if (showSplash) {
     return <SplashScreen onDone={() => setShowSplash(false)} />
   }
 
+  if (authLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(160deg, #062f4a, #094570)',
+      }}>
+        <div style={{
+          fontFamily: 'Amiri, serif',
+          fontSize: '3rem',
+          color: '#ffffff',
+          animation: 'pulse 1.5s ease-in-out infinite',
+        }}>
+          سُؤَال
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return <Auth onAuth={setUser} />
+  }
+
   return (
     <div className="app-layout">
-      <Sidebar />
+      <Sidebar onSignOut={handleSignOut} user={user} />
       <div className="main-wrapper">
         <Toolbar
           darkMode={darkMode}
@@ -60,6 +108,7 @@ export default function App() {
             <Route path="/duas" element={<Duas />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/tajweed" element={<Tajweed />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </main>

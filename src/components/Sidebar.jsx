@@ -10,12 +10,13 @@ const NAV_ITEMS = [
   { path: '/stories', label: 'Stories', arabicLabel: 'السِّيَر', icon: '📜' },
   { path: '/duas', label: 'Duas', arabicLabel: 'الدُّعَاء', icon: '🙏' },
   { path: '/calendar', label: 'Calendar', arabicLabel: 'التَّقْوِيم', icon: '🗓️' },
-  { path: '/tajweed', label: 'Tajweed', arabicLabel: 'التَّجْوِيد', icon: '📖' }
+  { path: '/tajweed', label: 'Tajweed', arabicLabel: 'التَّجْوِيد', icon: '📖' },
+  { path: '/profile', label: 'Profile', arabicLabel: 'حِسَابِي', icon: '👤' },
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'
 
-export default function Sidebar() {
+export default function Sidebar({ onSignOut, user }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -66,6 +67,12 @@ export default function Sidebar() {
           <span>💬</span>
           <span>Join Community</span>
         </a>
+        {user && (
+          <div className="sidebar-user">
+            <p className="sidebar-user-name">{user.user_metadata?.full_name || user.email}</p>
+            <button className="sidebar-signout" onClick={onSignOut}>Sign Out</button>
+          </div>
+        )}
         <p className="sidebar-footer-text">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</p>
         <p className="sidebar-footer-sub">In the name of Allah</p>
       </div>
