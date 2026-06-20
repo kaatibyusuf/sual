@@ -8,6 +8,8 @@ const NAV_ITEMS = [
   { path: '/quiz', label: 'Quiz', arabicLabel: 'الاِخْتِبَار', icon: '🎯' },
   { path: '/flashcards', label: 'Flashcards', arabicLabel: 'بِطَاقَات', icon: '🃏' },
   { path: '/stories', label: 'Stories', arabicLabel: 'السِّيَر', icon: '📜' },
+  { path: '/duas', label: 'Duas', arabicLabel: 'الدُّعَاء', icon: '🙏' },
+  { path: '/calendar', label: 'Calendar', arabicLabel: 'التَّقْوِيم', icon: '🗓️' },
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'

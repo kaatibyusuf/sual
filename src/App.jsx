@@ -8,6 +8,8 @@ import Discipline from './pages/Discipline.jsx'
 import Quiz from './pages/Quiz.jsx'
 import Flashcards from './pages/Flashcards.jsx'
 import Stories from './pages/Stories.jsx'
+import Duas from './pages/Duas.jsx'
+import Calendar from './pages/Calendar.jsx'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -54,6 +56,8 @@ export default function App() {
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/stories" element={<Stories />} />
+            <Route path="/duas" element={<Duas />} />
+            <Route path="/calendar" element={<Calendar />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </main>
