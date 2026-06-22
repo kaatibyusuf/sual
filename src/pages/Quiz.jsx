@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DISCIPLINES, QUIZ_QUESTIONS } from '../data/knowledge.js'
+import { supabase } from '../lib/supabase.js'
 import './Quiz.css'
 
 function buildQuizPool(disciplineId) {
@@ -11,7 +12,7 @@ function buildQuizPool(disciplineId) {
   return [...all].sort(() => Math.random() - 0.5)
 }
 
-export default function Quiz() {
+export default function Quiz({ user }) {
   const [searchParams] = useSearchParams()
   const preselect = searchParams.get('discipline') || 'mixed'
 
@@ -36,6 +37,22 @@ export default function Quiz() {
     setPhase('active')
   }, [selectedDiscipline])
 
+  const saveScore = async (finalScore, total) => {
+    if (!user) return
+    const percentage = Math.round((finalScore / total) * 100)
+    try {
+      await supabase.from('quiz_history').insert({
+        user_id: user.id,
+        discipline: selectedDiscipline,
+        score: finalScore,
+        total,
+        percentage,
+      })
+    } catch (err) {
+      console.error('Failed to save score:', err)
+    }
+  }
+
   const selectAnswer = (idx) => {
     if (revealed) return
     setChosen(idx)
@@ -46,14 +63,19 @@ export default function Quiz() {
 
   const nextQuestion = () => {
     const q = questions[currentIdx]
-    setAnswers(prev => [...prev, {
+    const newAnswers = [...answers, {
       question: q.question,
       chosen,
       correct: q.correct,
       explanation: q.explanation,
       options: q.options,
-    }])
+    }]
+    setAnswers(newAnswers)
+
     if (currentIdx + 1 >= questions.length) {
+      const finalScore = chosen === q.correct ? score + 1 : score
+      saveScore(finalScore, questions.length)
+      setScore(finalScore)
       setPhase('result')
     } else {
       setCurrentIdx(i => i + 1)
@@ -209,7 +231,7 @@ export default function Quiz() {
         <div className="quiz-result-actions">
           <button className="btn btn-primary" onClick={startQuiz}>Retry Quiz</button>
           <button className="btn btn-ghost" onClick={() => setPhase('select')}>Change Discipline</button>
-          <Link to="/" className="btn btn-ghost">← Home</Link>
+          <Link to="/dashboard" className="btn btn-ghost">📊 View Dashboard</Link>
         </div>
       </div>
     </div>

@@ -1,0 +1,217 @@
+/* ============================================
+   Prayer Times Page
+   ============================================ */
+
+.pt-page {
+  padding-top: 32px;
+  max-width: 860px;
+}
+
+.pt-location-banner {
+  background: rgba(9,69,112,0.06);
+  border: 1px solid #c8d8e8;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.825rem;
+  color: #4a6080;
+  margin-bottom: 20px;
+}
+
+/* Wrapper */
+.pt-wrapper {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Clock */
+.pt-clock-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pt-clock-face {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #0d5a8a, #062f4a);
+  box-shadow:
+    0 0 0 6px rgba(133,204,255,0.15),
+    0 0 0 12px rgba(9,69,112,0.2),
+    0 24px 60px rgba(9,69,112,0.4),
+    inset 0 2px 4px rgba(255,255,255,0.1);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pt-clock-svg { width: 100%; height: 100%; }
+
+/* Panel */
+.pt-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Time display */
+.pt-time-display {
+  background: linear-gradient(135deg, #094570, #1a6fa8);
+  border-radius: 14px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 20px rgba(9,69,112,0.2);
+}
+
+.pt-time {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pt-date {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 4px;
+}
+
+.pt-hijri {
+  font-size: 1rem;
+  color: #85CCFF;
+}
+
+/* Next prayer */
+.pt-next {
+  background: rgba(9,69,112,0.06);
+  border: 1.5px solid #c8d8e8;
+  border-left: 4px solid #094570;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.pt-next-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6a8090;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+
+.pt-next-name {
+  font-size: 1.5rem;
+  color: #094570;
+  margin-bottom: 4px;
+}
+
+.pt-next-countdown {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0d1b2a;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Prayer list */
+.pt-prayer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pt-prayer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.pt-prayer-row--active {
+  background: linear-gradient(135deg, #094570, #1a6fa8) !important;
+  border-color: #094570 !important;
+  box-shadow: 0 4px 16px rgba(9,69,112,0.25);
+}
+
+.pt-prayer-row--next {
+  background: rgba(9,69,112,0.04) !important;
+  border-color: #094570 !important;
+}
+
+.pt-prayer-arabic {
+  font-size: 1.05rem;
+  color: #0d1b2a;
+  margin-bottom: 2px;
+}
+
+.pt-prayer-row--active .pt-prayer-arabic {
+  color: #ffffff;
+}
+
+.pt-prayer-en {
+  font-size: 0.72rem;
+  color: #8a9ab0;
+  font-weight: 500;
+}
+
+.pt-prayer-row--active .pt-prayer-en {
+  color: rgba(255,255,255,0.6);
+}
+
+.pt-prayer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pt-prayer-time {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #094570;
+  font-variant-numeric: tabular-nums;
+}
+
+.pt-prayer-row--active .pt-prayer-time {
+  color: #ffffff;
+}
+
+/* Badges */
+.pt-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.pt-badge--now {
+  background: rgba(255,255,255,0.25);
+  color: #ffffff;
+}
+
+.pt-badge--next {
+  background: rgba(9,69,112,0.1);
+  color: #094570;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .pt-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .pt-clock-face {
+    width: 240px;
+    height: 240px;
+  }
+
+  .pt-time {
+    font-size: 2rem;
+  }
+}

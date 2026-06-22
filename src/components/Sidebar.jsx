@@ -12,6 +12,9 @@ const NAV_ITEMS = [
   { path: '/calendar', label: 'Calendar', arabicLabel: 'التَّقْوِيم', icon: '🗓️' },
   { path: '/tajweed', label: 'Tajweed', arabicLabel: 'التَّجْوِيد', icon: '📖' },
   { path: '/profile', label: 'Profile', arabicLabel: 'حِسَابِي', icon: '👤' },
+  { path: '/dashboard', label: 'Dashboard', arabicLabel: 'لَوْحَتِي', icon: '📊' },
+  { path: '/spaces', label: 'Spaces', arabicLabel: 'فَضَاءَات', icon: '🕌' },
+  { path: '/prayer-times', label: 'Prayer Times', arabicLabel: 'مَوَاقِيت', icon: '🕌' },
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'

@@ -14,6 +14,9 @@ import Duas from './pages/Duas.jsx'
 import Calendar from './pages/Calendar.jsx'
 import Tajweed from './pages/Tajweed.jsx'
 import Profile from './pages/Profile.jsx'
+import Dashboard from './pages/Dashboard.jsx'
+import Spaces from './pages/Spaces.jsx'
+import PrayerTimes from './pages/PrayerTimes.jsx'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -102,13 +105,16 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/discipline/:id" element={<Discipline />} />
-            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/quiz" element={<Quiz user={user} />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/stories" element={<Stories />} />
             <Route path="/duas" element={<Duas />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/tajweed" element={<Tajweed />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/spaces" element={<Spaces user={user} />} />
+            <Route path="/prayer-times" element={<PrayerTimes />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </main>
