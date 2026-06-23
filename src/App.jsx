@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar.jsx'
 import Toolbar from './components/Toolbar.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 import Auth from './pages/Auth.jsx'
+import LevelSelect from './pages/LevelSelect.jsx'
 import Home from './pages/Home.jsx'
 import Discipline from './pages/Discipline.jsx'
 import Quiz from './pages/Quiz.jsx'
@@ -22,6 +23,9 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true)
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [userLevel, setUserLevel] = useState(null)
+  const [levelLoading, setLevelLoading] = useState(false)
+  const [levelSelected, setLevelSelected] = useState(false)
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('sual-darkmode') === 'true'
   })
@@ -45,8 +49,23 @@ export default function App() {
   }, [fontSize])
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      const u = session?.user ?? null
+      setUser(u)
+      if (u) {
+        setLevelLoading(true)
+        const { data } = await supabase
+          .from('user_levels')
+          .select('*')
+          .eq('user_id', u.id)
+          .single()
+          .catch(() => ({ data: null }))
+        if (data?.level_selected) {
+          setUserLevel(data.current_level)
+          setLevelSelected(true)
+        }
+        setLevelLoading(false)
+      }
       setAuthLoading(false)
     })
 
@@ -88,6 +107,34 @@ export default function App() {
 
   if (!user) {
     return <Auth onAuth={setUser} />
+  }
+
+  if (levelLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(160deg, #062f4a, #094570)',
+      }}>
+        <div style={{ fontFamily: 'Amiri, serif', fontSize: '3rem', color: '#ffffff' }}>
+          سُؤَال
+        </div>
+      </div>
+    )
+  }
+
+  if (!levelSelected) {
+    return (
+      <LevelSelect
+        user={user}
+        onLevelSelected={(level) => {
+          setUserLevel(level)
+          setLevelSelected(true)
+        }}
+      />
+    )
   }
 
   return (
