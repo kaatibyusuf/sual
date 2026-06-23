@@ -18,6 +18,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Spaces from './pages/Spaces.jsx'
 import PrayerTimes from './pages/PrayerTimes.jsx'
 
+
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
   const [user, setUser] = useState(null)
@@ -111,7 +112,7 @@ export default function App() {
             <Route path="/duas" element={<Duas />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/tajweed" element={<Tajweed />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<Profile user={user} />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/spaces" element={<Spaces user={user} />} />
             <Route path="/prayer-times" element={<PrayerTimes />} />
