@@ -47,25 +47,24 @@ export default function Spaces({ user }) {
   }, [user])
 
   useEffect(() => {
-    if (subscription?.status === 'active') fetchPosts()
-  }, [subscription, category])
-
-  const checkSubscription = async () => {
-    setSubLoading(true)
-    try {
-      const { data } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .single()
-      setSubscription(data)
-    } catch {
-      setSubscription(null)
-    } finally {
-      setSubLoading(false)
+    checkSubscription()
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('payment') === 'success') {
+      const ref = params.get('ref')
+      if (ref) {
+        supabase.from('subscriptions').upsert({
+          user_id: user.id,
+          status: 'active',
+          paystack_customer_code: ref,
+          started_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        }).then(() => {
+          checkSubscription()
+          window.history.replaceState({}, '', '/spaces')
+        })
+      }
     }
-  }
-
+  }, [user])
   const fetchPosts = async () => {
     setPostsLoading(true)
     try {
