@@ -54,17 +54,21 @@ export default function App() {
       setUser(u)
       if (u) {
         setLevelLoading(true)
-        const { data } = await supabase
-          .from('user_levels')
-          .select('*')
-          .eq('user_id', u.id)
-          .single()
-          .catch(() => ({ data: null }))
-        if (data?.level_selected) {
-          setUserLevel(data.current_level)
-          setLevelSelected(true)
+        try {
+          const { data } = await supabase
+            .from('user_levels')
+            .select('*')
+            .eq('user_id', u.id)
+            .single()
+          if (data?.level_selected) {
+            setUserLevel(data.current_level)
+            setLevelSelected(true)
+          }
+        } catch {
+          // No level selected yet — show level selection
+        } finally {
+          setLevelLoading(false)
         }
-        setLevelLoading(false)
       }
       setAuthLoading(false)
     })
