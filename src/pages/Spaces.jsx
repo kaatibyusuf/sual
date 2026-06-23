@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './Spaces.css'
 
@@ -26,46 +26,25 @@ export default function Spaces({ user }) {
   const [posting, setPosting] = useState(false)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    checkSubscription()
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('payment') === 'success') {
-      const ref = params.get('ref')
-      if (ref) {
-        supabase.from('subscriptions').upsert({
-          user_id: user.id,
-          status: 'active',
-          paystack_customer_code: ref,
-          started_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        }).then(() => {
-          checkSubscription()
-          window.history.replaceState({}, '', '/spaces')
-        })
-      }
+  const checkSubscription = useCallback(async () => {
+    if (!user) return
+    setSubLoading(true)
+    try {
+      const { data } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+      setSubscription(data)
+    } catch {
+      setSubscription(null)
+    } finally {
+      setSubLoading(false)
     }
   }, [user])
 
-  useEffect(() => {
-    checkSubscription()
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('payment') === 'success') {
-      const ref = params.get('ref')
-      if (ref) {
-        supabase.from('subscriptions').upsert({
-          user_id: user.id,
-          status: 'active',
-          paystack_customer_code: ref,
-          started_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        }).then(() => {
-          checkSubscription()
-          window.history.replaceState({}, '', '/spaces')
-        })
-      }
-    }
-  }, [user])
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
+    if (!user) return
     setPostsLoading(true)
     try {
       let query = supabase
@@ -80,7 +59,32 @@ export default function Spaces({ user }) {
     } finally {
       setPostsLoading(false)
     }
-  }
+  }, [user, category])
+
+  useEffect(() => {
+    if (!user) return
+    checkSubscription()
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('payment') === 'success') {
+      const ref = params.get('ref') || 'manual_' + Date.now()
+      supabase.from('subscriptions').upsert({
+        user_id: user.id,
+        status: 'active',
+        paystack_customer_code: ref,
+        started_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      }, { onConflict: 'user_id' }).then(() => {
+        window.history.replaceState({}, '', '/spaces')
+        checkSubscription()
+      })
+    }
+  }, [user, checkSubscription])
+
+  useEffect(() => {
+    if (subscription?.status === 'active') fetchPosts()
+  }, [subscription, fetchPosts])
+
+  if (!user) return null
 
   const fetchReplies = async (postId) => {
     const { data } = await supabase
@@ -266,7 +270,7 @@ export default function Spaces({ user }) {
           </div>
           <p className="spaces-paywall-hadith">
             "Whoever Allah wants good for, He gives him understanding of the religion."
-            <br /><span>Sahih al-Bukhari 71</span>
+            <br /><span>Sahih Bukhari 71</span>
           </p>
         </div>
       </div>
