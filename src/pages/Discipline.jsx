@@ -12,41 +12,45 @@ import {
 import './Discipline.css'
 
 const INTERMEDIATE_ALL = {
-  fiqh: INTERMEDIATE_QA.fiqh || [],
-  seerah: INTERMEDIATE_SEERAH_QA || [],
+  fiqh:      INTERMEDIATE_QA?.fiqh || [],
+  seerah:    INTERMEDIATE_SEERAH_QA || [],
   arabiyyah: INTERMEDIATE_ARABIYYAH_QA || [],
-  usul: INTERMEDIATE_USUL_QA || [],
-  sarf: INTERMEDIATE_SARF_QA || [],
-  nahw: INTERMEDIATE_NAHW_QA || [],
-  tafseer: [],
+  usul:      INTERMEDIATE_USUL_QA || [],
+  sarf:      INTERMEDIATE_SARF_QA || [],
+  nahw:      INTERMEDIATE_NAHW_QA || [],
+  tafseer:   [],
 }
+
+const LEVELS = [
+  { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
+  { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100' },
+  { key: 'advanced',     label: 'Advanced',     arabic: 'مُتَقَدِّم', color: '#6a1b9a' },
+]
 
 export default function Discipline({ userLevel = 'beginner' }) {
   const { id } = useParams()
-  const [expandedId, setExpandedId] = useState(null)
-  const [search, setSearch] = useState('')
+  const [expandedId,  setExpandedId]  = useState(null)
+  const [search,      setSearch]      = useState('')
   const [activeLevel, setActiveLevel] = useState(userLevel)
 
   const discipline = DISCIPLINES.find(d => d.id === id)
   if (!discipline) return <Navigate to="/" replace />
 
-  const beginnerQAs = (KNOWLEDGE_BASE[id] || []).map(qa => ({ ...qa, level: 'beginner' }))
+  const beginnerQAs     = (KNOWLEDGE_BASE[id] || []).map(qa => ({ ...qa, level: 'beginner' }))
   const intermediateQAs = INTERMEDIATE_ALL[id] || []
-  const advancedQAs = []
+  const advancedQAs     = []
 
   const levelMap = {
-    beginner: beginnerQAs,
+    beginner:     beginnerQAs,
     intermediate: intermediateQAs,
-    advanced: advancedQAs,
+    advanced:     advancedQAs,
   }
 
-  const levels = [
-    { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32', locked: false },
-    { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', locked: userLevel === 'beginner' },
-    { key: 'advanced',     label: 'Advanced',     arabic: 'مُتَقَدِّم', color: '#6a1b9a', locked: userLevel !== 'advanced' },
-  ]
-
-  const activeLevelMeta = levels.find(l => l.key === activeLevel)
+  const isLocked = (key) => {
+    if (key === 'intermediate') return userLevel === 'beginner'
+    if (key === 'advanced')     return userLevel !== 'advanced'
+    return false
+  }
 
   const allQAs = levelMap[activeLevel] || []
 
@@ -61,130 +65,130 @@ export default function Discipline({ userLevel = 'beginner' }) {
   return (
     <div className="page-content discipline-page">
 
+      {/* Back */}
+      <Link to="/" className="discipline-back">← Back to Home</Link>
+
       {/* Header */}
-      <div className="disc-header">
-        <Link to="/" className="disc-back">← Back</Link>
-        <div className="disc-header-meta">
-          <div className="disc-header-icon">{discipline.icon}</div>
+      <div className="discipline-header">
+        <div className="discipline-header-inner">
+          <div className="discipline-header-icon">{discipline.icon}</div>
           <div>
-            <p className="disc-header-arabic arabic">{discipline.arabicName}</p>
-            <h1 className="page-title">{discipline.name}</h1>
-            <p className="page-subtitle">{discipline.description}</p>
+            <p className="discipline-header-arabic arabic">{discipline.arabicName}</p>
+            <h1 className="page-title" style={{ marginBottom: 4 }}>{discipline.name}</h1>
+            <p className="page-subtitle" style={{ marginTop: 0 }}>{discipline.description}</p>
           </div>
         </div>
       </div>
 
       {/* Level tabs */}
       <div className="disc-level-tabs">
-        {levels.map(lv => (
-          <button
-            key={lv.key}
-            className={[
-              'disc-level-tab',
-              activeLevel === lv.key ? 'disc-level-tab--active' : '',
-              lv.locked ? 'disc-level-tab--locked' : '',
-            ].join(' ').trim()}
-            style={activeLevel === lv.key ? { borderColor: lv.color } : {}}
-            onClick={() => !lv.locked && setActiveLevel(lv.key)}
-            title={lv.locked ? 'Complete previous level to unlock' : ''}
-          >
-            <span className="disc-level-dot" style={{ background: lv.color }} />
-            <span
-              className="disc-level-label"
-              style={activeLevel === lv.key ? { color: lv.color } : {}}
+        {LEVELS.map(lv => {
+          const locked = isLocked(lv.key)
+          const active = activeLevel === lv.key
+          return (
+            <button
+              key={lv.key}
+              className={[
+                'disc-level-tab',
+                active  ? 'disc-level-tab--active' : '',
+                locked  ? 'disc-level-tab--locked' : '',
+              ].join(' ').trim()}
+              style={active ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
+              onClick={() => { if (!locked) { setActiveLevel(lv.key); setExpandedId(null) } }}
+              title={locked ? 'Complete previous level to unlock' : lv.label}
             >
-              {lv.locked ? '🔒 ' : ''}{lv.label}
-            </span>
-            <span className="disc-level-tab-arabic arabic">{lv.arabic}</span>
-          </button>
-        ))}
+              {locked ? '🔒 ' : ''}{lv.label}
+              <span className="disc-level-tab-arabic arabic">{lv.arabic}</span>
+            </button>
+          )
+        })}
       </div>
 
       {/* Search */}
-      <div className="disc-search-wrapper">
-        <div className="disc-search-inner">
-          <span className="disc-search-icon">🔍</span>
-          <input
-            type="text"
-            className="disc-search"
-            placeholder={`Search ${discipline.name}...`}
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-          {search && (
-            <button className="disc-search-clear" onClick={() => setSearch('')}>✕</button>
-          )}
-        </div>
-        <span className="disc-count">{filtered.length} Q&amp;As</span>
+      <div className="discipline-search">
+        <input
+          type="text"
+          className="discipline-search-input"
+          placeholder={`Search ${discipline.name}...`}
+          value={search}
+          onChange={e => { setSearch(e.target.value); setExpandedId(null) }}
+        />
+        {search && (
+          <button className="discipline-search-clear" onClick={() => setSearch('')}>✕</button>
+        )}
       </div>
 
+      <p className="discipline-count">
+        {filtered.length} Q&amp;A{filtered.length !== 1 ? 's' : ''} — {LEVELS.find(l => l.key === activeLevel)?.label}
+      </p>
+
       {/* Locked state */}
-      {activeLevelMeta?.locked ? (
+      {isLocked(activeLevel) ? (
         <div className="disc-locked-msg">
           <div className="disc-locked-icon">🔒</div>
           <h3>Level Locked</h3>
-          <p>Complete all Beginner content and achieve a 70% quiz average to unlock {activeLevelMeta.label}.</p>
+          <p>
+            Complete all Beginner content and achieve a 70% quiz average
+            to unlock {activeLevel.charAt(0).toUpperCase() + activeLevel.slice(1)}.
+          </p>
         </div>
 
       ) : filtered.length === 0 ? (
-        <div className="disc-empty">
-          <p>{search ? 'No results found.' : 'Content coming soon for this level.'}</p>
+        <div className="discipline-empty">
+          <p>{search ? 'No results found. Try a different search.' : 'Content coming soon for this level.'}</p>
         </div>
 
       ) : (
-        <div className="disc-list">
-          {filtered.map((qa, i) => {
-            const qid  = qa.id || i
-            const open = expandedId === qid
-            return (
-              <div
-                key={qid}
-                className={`disc-card${open ? ' disc-card--open' : ''}`}
-                style={open ? { borderLeftColor: activeLevelMeta.color } : {}}
-              >
-                <button className="disc-card-q" onClick={() => toggle(qid)} aria-expanded={open}>
-                  <span
-                    className="disc-card-num"
-                    style={{ background: activeLevelMeta.color }}
-                  >
-                    {i + 1}
-                  </span>
-                  <span className="disc-card-question">{qa.question}</span>
-                  <span className={`disc-card-chevron${open ? ' disc-card-chevron--open' : ''}`}>▼</span>
-                </button>
+        <>
+          <div className="qa-list">
+            {filtered.map((qa, i) => {
+              const qid  = qa.id || i
+              const open = expandedId === qid
+              return (
+                <div key={qid} className={`qa-item${open ? ' qa-item--open' : ''}`}>
 
-                {open && (
-                  <div className="disc-card-answer">
-                    <p className="disc-card-answer-text">{qa.answer}</p>
+                  <button className="qa-question-btn" onClick={() => toggle(qid)}>
+                    <span className="qa-num">{i + 1}</span>
+                    <span className="qa-question-text">{qa.question}</span>
+                    <span className="qa-chevron">{open ? '▲' : '▼'}</span>
+                  </button>
 
-                    {qa.source && (
-                      <div className="disc-card-source-block">
-                        <span className="disc-card-source-label">📚 Source</span>
-                        <span className="disc-card-source-text">{qa.source}</span>
+                  {open && (
+                    <div className="qa-answer">
+                      <div className="qa-answer-body">
+                        <p>{qa.answer}</p>
                       </div>
-                    )}
 
-                    {qa.tags?.length > 0 && (
-                      <div className="disc-card-tags">
-                        {qa.tags.map(t => (
-                          <span key={t} className="disc-card-tag">{t}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+                      {qa.source && (
+                        <p className="qa-source">
+                          <span className="qa-source-label">📚 Source:</span>
+                          {qa.source}
+                        </p>
+                      )}
+
+                      {qa.tags?.length > 0 && (
+                        <div className="qa-tags">
+                          {qa.tags.map(t => (
+                            <span key={t} className="qa-tag">{t}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Quiz CTA */}
+          <div className="discipline-quiz-link">
+            <Link to={`/quiz?discipline=${id}`} className="btn btn-primary">
+              Take {discipline.name} Quiz →
+            </Link>
+          </div>
+        </>
       )}
-
-      {/* Quiz CTA */}
-      <div className="disc-quiz-link">
-        <Link to={`/quiz?discipline=${id}`} className="btn btn-primary">
-          Take {discipline.name} Quiz →
-        </Link>
-      </div>
 
     </div>
   )
