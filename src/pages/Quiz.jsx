@@ -3,20 +3,47 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { DISCIPLINES, QUIZ_QUESTIONS } from '../data/knowledge.js'
 import { supabase } from '../lib/supabase.js'
 import './Quiz.css'
-
-function buildQuizPool(disciplineId) {
-  if (disciplineId && disciplineId !== 'mixed' && QUIZ_QUESTIONS[disciplineId]) {
-    return [...QUIZ_QUESTIONS[disciplineId]]
-  }
-  const all = Object.values(QUIZ_QUESTIONS).flat()
-  return [...all].sort(() => Math.random() - 0.5)
+import {
+  INTERMEDIATE_QUIZ,
+  INTERMEDIATE_SEERAH_QUIZ,
+  INTERMEDIATE_ARABIYYAH_QUIZ,
+  INTERMEDIATE_USUL_QUIZ,
+  INTERMEDIATE_SARF_QUIZ,
+  INTERMEDIATE_NAHW_QUIZ,
+} from '../data/knowledge_intermediate.js'
+const INTERMEDIATE_QUIZ_ALL = {
+  fiqh: INTERMEDIATE_QUIZ?.fiqh || [],
+  seerah: INTERMEDIATE_SEERAH_QUIZ || [],
+  arabiyyah: INTERMEDIATE_ARABIYYAH_QUIZ || [],
+  usul: INTERMEDIATE_USUL_QUIZ || [],
+  sarf: INTERMEDIATE_SARF_QUIZ || [],
+  nahw: INTERMEDIATE_NAHW_QUIZ || [],
+  tafseer: [],
 }
 
-export default function Quiz({ user }) {
+function buildQuizPool(disciplineId, level = 'beginner') {
+  const beginner = QUIZ_QUESTIONS
+  const intermediate = INTERMEDIATE_QUIZ_ALL
+
+  if (disciplineId && disciplineId !== 'mixed') {
+    if (level === 'intermediate') {
+      return [...(intermediate[disciplineId] || [])]
+    }
+    return [...(beginner[disciplineId] || [])]
+  }
+
+  if (level === 'intermediate') {
+    return Object.values(intermediate).flat().sort(() => Math.random() - 0.5)
+  }
+  return Object.values(beginner).flat().sort(() => Math.random() - 0.5)
+}
+
+export default function Quiz({ user, userLevel = 'beginner' }) {
   const [searchParams] = useSearchParams()
   const preselect = searchParams.get('discipline') || 'mixed'
 
   const [selectedDiscipline, setSelectedDiscipline] = useState(preselect)
+  const [selectedLevel, setSelectedLevel] = useState(userLevel)
   const [phase, setPhase] = useState('select')
   const [questions, setQuestions] = useState([])
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -26,7 +53,7 @@ export default function Quiz({ user }) {
   const [answers, setAnswers] = useState([])
 
   const startQuiz = useCallback(() => {
-    const pool = buildQuizPool(selectedDiscipline)
+    const pool = buildQuizPool(selectedDiscipline, selectedLevel)
     const shuffled = pool.sort(() => Math.random() - 0.5).slice(0, Math.min(10, pool.length))
     setQuestions(shuffled)
     setCurrentIdx(0)
@@ -128,8 +155,26 @@ export default function Quiz({ user }) {
             ))}
           </div>
 
+          <div className="quiz-level-row">
+            {[
+              { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32' },
+              { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', locked: userLevel === 'beginner' },
+              { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', locked: userLevel !== 'advanced' },
+            ].map(lv => (
+              <button
+                key={lv.key}
+                className={`quiz-level-btn ${selectedLevel === lv.key ? 'quiz-level-btn--active' : ''} ${lv.locked ? 'quiz-level-btn--locked' : ''}`}
+                style={selectedLevel === lv.key ? { borderColor: lv.color, color: lv.color } : {}}
+                onClick={() => !lv.locked && setSelectedLevel(lv.key)}
+                title={lv.locked ? 'Complete previous level to unlock' : ''}
+              >
+                {lv.locked ? '🔒 ' : ''}{lv.label}
+                <span className="quiz-level-arabic arabic">{lv.arabic}</span>
+              </button>
+            ))}
+          </div>
           <div className="quiz-start-row">
-            <p className="quiz-start-label">Selected: <strong>{discLabel(selectedDiscipline)}</strong></p>
+            <p className="quiz-start-label">Selected: <strong>{discLabel(selectedDiscipline)}</strong> · <strong>{selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1)}</strong></p>
             <button className="btn btn-primary" onClick={startQuiz}>Begin Quiz →</button>
           </div>
         </div>

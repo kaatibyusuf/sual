@@ -154,8 +154,8 @@ export default function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/discipline/:id" element={<Discipline />} />
-            <Route path="/quiz" element={<Quiz user={user} />} />
+            <Route path="/discipline/:id" element={<Discipline userLevel={userLevel} />} />
+            <Route path="/quiz" element={<Quiz user={user} userLevel={userLevel} />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/stories" element={<Stories />} />
             <Route path="/duas" element={<Duas />} />

@@ -239,3 +239,79 @@
     padding-left: 20px;
   }
 }
+
+/* Level tabs */
+.disc-level-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.disc-level-tab {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 12px;
+  border: 2px solid var(--border-color, #c8d8e8);
+  border-radius: 10px;
+  background: var(--bg-soft, #f5f8fb);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted, #6a8090);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.2s ease;
+}
+
+.disc-level-tab:hover:not(.disc-level-tab--locked) {
+  border-color: #094570;
+  color: #094570;
+}
+
+.disc-level-tab--active {
+  background: #ffffff;
+  font-weight: 700;
+}
+
+.disc-level-tab--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disc-level-tab-arabic {
+  font-size: 0.72rem;
+}
+
+.disc-locked-msg {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted, #6a8090);
+}
+
+.disc-locked-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.disc-locked-msg h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary, #0d1b2a);
+  margin-bottom: 8px;
+}
+
+.disc-locked-msg p {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.disc-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted, #6a8090);
+  font-size: 0.875rem;
+}
