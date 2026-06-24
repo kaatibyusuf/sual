@@ -12,19 +12,176 @@ const CATEGORIES = [
   { key: 'general',   label: 'General',   arabic: 'عَامّ',        icon: '💬' },
 ]
 
+const CLASSES = [
+  {
+    id: 'arabiyyah',
+    title: 'Arabiyyah Class',
+    arabicTitle: 'فَصْلُ العَرَبِيَّة',
+    icon: '✍️',
+    description: 'A structured Arabic language programme from absolute beginner to mastery of the classical sciences.',
+    color: '#094570',
+    levels: [
+      {
+        key: 'beginner',
+        label: 'Beginner',
+        arabic: 'مُبْتَدِئ',
+        color: '#2e7d32',
+        icon: '🌱',
+        title: 'Duruus Lughahtil-Arabiyyah',
+        arabicTitle: 'دُرُوسُ اللُّغَةِ العَرَبِيَّة',
+        description: 'Complete study of the three volumes of Duruus Al-Lughah Al-Arabiyyah by Dr V. Abdur Raheem — the gold standard for learning Arabic from scratch. Covers reading, writing, vocabulary, basic grammar, and simple conversation.',
+        curriculum: [
+          'Volume 1 — Arabic alphabet, vowels, basic nouns and verbs, simple sentences',
+          'Volume 2 — Expanded grammar, verb conjugation, common expressions',
+          'Volume 3 — Intermediate grammar, reading comprehension, composition',
+          'Weekly vocabulary memorization and dictation tests',
+          'Simple Arabic composition exercises from Week 8',
+        ],
+        outcome: 'Read Arabic text with vowels fluently, understand basic Quranic vocabulary, and write simple Arabic sentences.',
+        duration: '6 months',
+        commitment: '5 hours per week',
+      },
+      {
+        key: 'intermediate',
+        label: 'Intermediate',
+        arabic: 'مُتَوَسِّط',
+        color: '#e65100',
+        icon: '📖',
+        title: 'Nahw, Sarf and Insha',
+        arabicTitle: 'النَّحْو وَالصَّرْف وَالإِنْشَاء',
+        description: 'Systematic study of Arabic grammar (Nahw), morphology (Sarf), and Arabic composition (Insha). Students move from passive reading to active command of the language structures used in Islamic scholarship.',
+        curriculum: [
+          'Nahw — Al-Ajrumiyyah with full i\'rab practice on Quranic verses',
+          'Nahw — Qatr An-Nada by Ibn Hisham with commentary',
+          'Sarf — Shudha Al-Urf by Al-Hamlawi, all verb forms and patterns',
+          'Insha — Guided Arabic composition, letter writing, and paragraph construction',
+          'Weekly i\'rab exercises on selected Quranic passages',
+          'Monthly composition assignments reviewed and corrected',
+        ],
+        outcome: 'Perform full i\'rab of Quranic verses, understand the morphological structure of any Arabic word, and write correct Arabic prose.',
+        duration: '8 months',
+        commitment: '7 hours per week',
+      },
+      {
+        key: 'advanced',
+        label: 'Advanced',
+        arabic: 'مُتَقَدِّم',
+        color: '#6a1b9a',
+        icon: '🏛️',
+        title: 'Classical Sciences — Alfiyyah, Sarf, Balaghah',
+        arabicTitle: 'الأَلْفِيَّة وَالصَّرْف وَالبَلَاغَة',
+        description: 'Study of the classical Arabic sciences at the level of the traditional Madrasah curriculum. This level produces scholars capable of reading unvowelled classical texts independently.',
+        curriculum: [
+          'Alfiyyah Ibn Malik — the 1,000-line poem covering all of Arabic grammar with commentary of Ibn Aqil',
+          'Advanced Sarf — Maqsud fi Al-Sarf and Al-Kaylani with all derived forms',
+          'Balaghah — Al-Balaghatul-Wadihah',
+          'Reading of classical unvowelled texts',
+          'Weekly memorization of Alfiyyah verses with i\'rab',
+          'Independent reading and translation of classical Arabic texts',
+        ],
+        outcome: 'Read unvowelled classical Arabic texts independently, understand Alfiyyah Ibn Malik, and apply Balaghah principles to Quranic analysis.',
+        duration: '12 months',
+        commitment: '10 hours per week',
+      },
+    ],
+  },
+  {
+    id: 'hadeeth',
+    title: 'Hadeeth Class',
+    arabicTitle: 'فَصْلُ الحَدِيث',
+    icon: '📜',
+    description: 'A structured Hadeeth memorization and study programme — from the Forty of An-Nawawi to the great collections of the Sunnah.',
+    color: '#7b3f00',
+    levels: [
+      {
+        key: 'beginner',
+        label: 'Beginner',
+        arabic: 'مُبْتَدِئ',
+        color: '#2e7d32',
+        icon: '🌱',
+        title: 'Al-Arba\'oon An-Nawawiyyah',
+        arabicTitle: 'الأَرْبَعُونَ النَّوَوِيَّة',
+        description: 'Complete memorization and study of the Forty Hadith of Imam An-Nawawi — the foundational text of Islamic learning for over seven centuries. Every hadith is memorized in Arabic with its chain, studied for its meanings, and applied to daily life.',
+        curriculum: [
+          'Memorization of all 42 hadith with Arabic text and sanad',
+          'Study of Imam An-Nawawi\'s commentary on each hadith',
+          'Understanding the fiqh and aqeedah derived from each hadith',
+          'Weekly recitation test — 2 hadith per week minimum',
+          'Final examination — recite all 42 from memory',
+        ],
+        outcome: 'Memorize all 42 hadith of An-Nawawi with their Arabic text, understand their meanings and scholarly commentary, and extract basic Islamic rulings from them.',
+        duration: '6 months',
+        commitment: '3 hours per week',
+        hadiths: [
+          { num: 1,  text: 'إِنَّمَا الأَعْمَالُ بِالنِّيَّات', translation: 'Actions are by intentions' },
+          { num: 2,  text: 'الإِسْلَامُ أَنْ تَشْهَدَ أَنْ لَا إِلَهَ إِلَّا اللَّه', translation: 'Islam is that you testify there is no god but Allah' },
+          { num: 3,  text: 'بُنِيَ الإِسْلَامُ عَلَى خَمْس', translation: 'Islam was built on five' },
+          { num: 4,  text: 'إِنَّ أَحَدَكُمْ يُجْمَعُ خَلْقُهُ فِي بَطْنِ أُمِّه', translation: 'The creation of each of you is gathered in his mother\'s womb' },
+          { num: 5,  text: 'مَنْ أَحْدَثَ فِي أَمْرِنَا هَذَا مَا لَيْسَ مِنْه', translation: 'Whoever introduces into this affair of ours that which is not of it' },
+          { num: 6,  text: 'الحَلَالُ بَيِّنٌ وَالحَرَامُ بَيِّن', translation: 'The halal is clear and the haram is clear' },
+          { num: 7,  text: 'الدِّينُ النَّصِيحَة', translation: 'The religion is sincere advice' },
+          { num: 8,  text: 'أُمِرْتُ أَنْ أُقَاتِلَ النَّاسَ حَتَّى يَشْهَدُوا', translation: 'I was commanded to fight the people until they testify' },
+          { num: 9,  text: 'مَا نَهَيْتُكُمْ عَنْهُ فَاجْتَنِبُوه', translation: 'Whatever I have forbidden you, avoid it' },
+          { num: 10, text: 'إِنَّ اللَّهَ طَيِّبٌ لَا يَقْبَلُ إِلَّا طَيِّبًا', translation: 'Allah is pure and accepts only what is pure' },
+        ],
+      },
+      {
+        key: 'intermediate',
+        label: 'Intermediate',
+        arabic: 'مُتَوَسِّط',
+        color: '#e65100',
+        icon: '📖',
+        title: 'Bulugh Al-Maram and Umdat Al-Ahkam',
+        arabicTitle: 'بُلُوغُ المَرَام وَعُمْدَةُ الأَحْكَام',
+        description: 'Memorization and study of the two greatest collections of legal hadith — Bulugh Al-Maram by Ibn Hajar Al-Asqalani and Umdatul-Ahkam by Ibn Qudamah. These books form the backbone of fiqh al-hadith study in traditional Islamic scholarship.',
+        curriculum: [
+          'Umdatul-Ahkam — 414 hadith on acts of worship and transactions, memorization and study',
+          'Bulughul-Maram — systematic study of all chapters',
+          'Weekly memorization target — 5 hadith per week minimum',
+          'Monthly written examination on chapters covered',
+        ],
+        outcome: 'Memorize core legal hadith from both texts, understand how scholars derive fiqh rulings from hadith, and read Ibn Hajar\'s Arabic commentary.',
+        duration: '10 months',
+        commitment: '6 hours per week',
+      },
+      {
+        key: 'advanced',
+        label: 'Advanced',
+        arabic: 'مُتَقَدِّم',
+        color: '#6a1b9a',
+        icon: '🏛️',
+        title: 'Sahih Bukhari Memorization',
+        arabicTitle: 'حِفْظُ صَحِيح البُخَارِي',
+        description: 'The pinnacle of hadith study — systematic memorization and deep study of Sahih Al-Bukhari, the most authentic book after the Quran. Students study with Fath Al-Bari, the greatest commentary on Al-Bukhari by Ibn Hajar Al-Asqalani.',
+        curriculum: [
+          'Memorization of selected hadith from each chapter of Sahih Bukhari (Kitab Al-Iman through Kitab Al-Jami\')',
+          'Study of Fath Al-Bari by Ibn Hajar Al-Asqalani — chapter by chapter',
+          'Hadith sciences (Mustalahul-Hadith) — understanding chains, narrators, and authentication',
+          'Independent research assignments on specific hadith and their commentaries',
+        ],
+        outcome: 'Memorize 200+ hadith from Sahih Al-Bukhari, read and understand hadith sciences at an advanced level.',
+        duration: '18 months',
+        commitment: '12 hours per week',
+      },
+    ],
+  },
+]
+
 export default function Spaces({ user }) {
-  const [subscription, setSubscription] = useState(null)
-  const [subLoading, setSubLoading] = useState(true)
-  const [posts, setPosts] = useState([])
-  const [postsLoading, setPostsLoading] = useState(false)
-  const [category, setCategory] = useState('all')
-  const [activePost, setActivePost] = useState(null)
-  const [replies, setReplies] = useState([])
-  const [newPost, setNewPost] = useState({ title: '', body: '', category: 'general' })
-  const [newReply, setNewReply] = useState('')
-  const [showNewPost, setShowNewPost] = useState(false)
-  const [posting, setPosting] = useState(false)
-  const [error, setError] = useState(null)
+  const [subscription,   setSubscription]   = useState(null)
+  const [subLoading,     setSubLoading]     = useState(true)
+  const [posts,          setPosts]          = useState([])
+  const [postsLoading,   setPostsLoading]   = useState(false)
+  const [category,       setCategory]       = useState('all')
+  const [activePost,     setActivePost]     = useState(null)
+  const [replies,        setReplies]        = useState([])
+  const [newPost,        setNewPost]        = useState({ title: '', body: '', category: 'general' })
+  const [newReply,       setNewReply]       = useState('')
+  const [showNewPost,    setShowNewPost]    = useState(false)
+  const [posting,        setPosting]        = useState(false)
+  const [error,          setError]          = useState(null)
+  const [activeTab,      setActiveTab]      = useState('community') // 'community' | 'arabiyyah' | 'hadeeth'
+  const [classLevel,     setClassLevel]     = useState({ arabiyyah: 'beginner', hadeeth: 'beginner' })
 
   const checkSubscription = useCallback(async () => {
     if (!user) return
@@ -168,6 +325,7 @@ export default function Spaces({ user }) {
     )
   }
 
+  // ── Post detail view ──────────────────────────────────────────
   if (activePost) {
     return (
       <div className="page-content spaces-page">
@@ -184,6 +342,7 @@ export default function Spaces({ user }) {
           </div>
           <p className="spaces-post-detail-body">{activePost.body}</p>
         </div>
+
         <div className="spaces-replies">
           <h3 className="spaces-replies-title">
             {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
@@ -211,6 +370,7 @@ export default function Spaces({ user }) {
             </div>
           ))}
         </div>
+
         <div className="spaces-reply-input card">
           <h3 className="spaces-reply-input-title">Add a Reply</h3>
           {error && <div className="spaces-error">{error}</div>}
@@ -229,6 +389,7 @@ export default function Spaces({ user }) {
     )
   }
 
+  // ── Paywall ───────────────────────────────────────────────────
   if (!isPaid) {
     return (
       <div className="page-content spaces-page">
@@ -239,15 +400,15 @@ export default function Spaces({ user }) {
           <h2 className="spaces-paywall-title">Members Only</h2>
           <p className="spaces-paywall-desc">
             Spaces is an exclusive community for paid members. Ask questions, share knowledge,
-            and get direct answers from a scholar — all in one place.
+            get scholar answers, and join structured Arabic and Hadeeth classes.
           </p>
           <div className="spaces-features">
             {[
               { icon: '🎓', text: 'Direct answers from a qualified scholar' },
-              { icon: '💬', text: 'Threaded discussions across six categories' },
+              { icon: '✍️', text: 'Structured Arabiyyah class — Beginner to Advanced' },
+              { icon: '📜', text: 'Structured Hadeeth class — An-Nawawi to Sahih Al-Bukhari' },
+              { icon: '💬', text: 'Threaded community discussions' },
               { icon: '👥', text: 'Community of serious students' },
-              { icon: '📚', text: 'Searchable knowledge archive' },
-              { icon: '⭐', text: 'Scholar-verified answers highlighted' },
               { icon: '🔒', text: 'Private and moderated environment' },
             ].map((f, i) => (
               <div key={i} className="spaces-feature-item">
@@ -277,102 +438,261 @@ export default function Spaces({ user }) {
     )
   }
 
+  // ── Class view renderer ───────────────────────────────────────
+  const renderClass = (cls) => {
+    const currentLevelKey = classLevel[cls.id]
+    const currentLevel    = cls.levels.find(l => l.key === currentLevelKey)
+
+    return (
+      <div className="spaces-class-page">
+
+        {/* Class header */}
+        <div className="spaces-class-header" style={{ borderColor: cls.color }}>
+          <span className="spaces-class-icon">{cls.icon}</span>
+          <div>
+            <h2 className="spaces-class-title">{cls.title}</h2>
+            <p className="spaces-class-arabic arabic">{cls.arabicTitle}</p>
+            <p className="spaces-class-desc">{cls.description}</p>
+          </div>
+        </div>
+
+        {/* Level tabs */}
+        <div className="spaces-class-levels">
+          {cls.levels.map(lv => (
+            <button
+              key={lv.key}
+              className={`spaces-class-level-btn ${currentLevelKey === lv.key ? 'spaces-class-level-btn--active' : ''}`}
+              style={currentLevelKey === lv.key ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
+              onClick={() => setClassLevel(prev => ({ ...prev, [cls.id]: lv.key }))}
+            >
+              {lv.icon} {lv.label}
+              <span className="spaces-class-level-arabic arabic">{lv.arabic}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Level content */}
+        {currentLevel && (
+          <div className="spaces-class-content">
+
+            {/* Title card */}
+            <div className="spaces-class-content-header card" style={{ borderLeft: `4px solid ${currentLevel.color}` }}>
+              <div className="spaces-class-content-meta">
+                <span className="spaces-class-level-badge" style={{ background: currentLevel.color }}>
+                  {currentLevel.icon} {currentLevel.label}
+                </span>
+                <span className="spaces-class-duration">⏱ {currentLevel.duration}</span>
+                <span className="spaces-class-commitment">📅 {currentLevel.commitment}</span>
+              </div>
+              <h3 className="spaces-class-content-title">{currentLevel.title}</h3>
+              <p className="spaces-class-content-arabic arabic">{currentLevel.arabicTitle}</p>
+              <p className="spaces-class-content-desc">{currentLevel.description}</p>
+            </div>
+
+            {/* Curriculum */}
+            <div className="spaces-class-section card">
+              <h4 className="spaces-class-section-title">📋 Curriculum</h4>
+              <ul className="spaces-class-curriculum">
+                {currentLevel.curriculum.map((item, i) => (
+                  <li key={i} className="spaces-class-curriculum-item">
+                    <span className="spaces-class-curriculum-num">{i + 1}</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Outcome */}
+            <div className="spaces-class-section card spaces-class-outcome-card">
+              <h4 className="spaces-class-section-title">🎯 Learning Outcome</h4>
+              <p className="spaces-class-outcome-text">{currentLevel.outcome}</p>
+            </div>
+
+            {/* Sample hadith for beginner hadeeth */}
+            {currentLevel.hadiths && (
+              <div className="spaces-class-section card">
+                <h4 className="spaces-class-section-title">📜 Sample Hadith — First Ten</h4>
+                <p className="spaces-class-hadith-note">
+                  Below are the first ten hadith of the Arba'oon An-Nawawiyyah. All 42 will be memorized by end of programme.
+                </p>
+                <div className="spaces-hadith-list">
+                  {currentLevel.hadiths.map(h => (
+                    <div key={h.num} className="spaces-hadith-item">
+                      <span className="spaces-hadith-num">{h.num}</span>
+                      <div>
+                        <p className="spaces-hadith-arabic arabic">{h.text}</p>
+                        <p className="spaces-hadith-translation">{h.translation}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Join CTA */}
+            <div className="spaces-class-cta card">
+              <p className="spaces-class-cta-text">
+                Ready to join the {currentLevel.label} {cls.title}?
+                Post in the community with the tag <strong>#{cls.id}-class</strong> to register your interest
+                and get assigned to the next cohort.
+              </p>
+              <button
+                className="spaces-submit-btn"
+                onClick={() => {
+                  setNewPost({
+                    title: `Joining ${currentLevel.label} ${cls.title}`,
+                    body: `As-salamu alaykum. I would like to join the ${currentLevel.label} ${cls.title} (${currentLevel.title}). Please add me to the next cohort. JazakAllahu khayran.`,
+                    category: cls.id === 'arabiyyah' ? 'arabiyyah' : 'general',
+                  })
+                  setActiveTab('community')
+                  setShowNewPost(true)
+                }}
+              >
+                Register Interest →
+              </button>
+            </div>
+
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // ── Main paid view ────────────────────────────────────────────
   return (
     <div className="page-content spaces-page">
+
+      {/* Header */}
       <div className="spaces-header">
         <div>
           <h1 className="page-title">Spaces</h1>
           <p className="page-subtitle">فَضَاءَات — Community for serious students</p>
         </div>
-        <button className="spaces-new-btn" onClick={() => setShowNewPost(true)}>
-          + New Post
-        </button>
+        {activeTab === 'community' && (
+          <button className="spaces-new-btn" onClick={() => setShowNewPost(true)}>
+            + New Post
+          </button>
+        )}
       </div>
-      {showNewPost && (
-        <div className="spaces-modal-overlay" onClick={() => setShowNewPost(false)}>
-          <div className="spaces-modal card" onClick={e => e.stopPropagation()}>
-            <h3 className="spaces-modal-title">New Post</h3>
-            {error && <div className="spaces-error">{error}</div>}
-            <div className="spaces-field">
-              <label className="spaces-label">Category</label>
-              <select
-                className="spaces-select"
-                value={newPost.category}
-                onChange={e => setNewPost({ ...newPost, category: e.target.value })}
-              >
-                {CATEGORIES.filter(c => c.key !== 'all').map(c => (
-                  <option key={c.key} value={c.key}>{c.icon} {c.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="spaces-field">
-              <label className="spaces-label">Title</label>
-              <input
-                type="text"
-                className="spaces-input"
-                placeholder="Your question or topic..."
-                value={newPost.title}
-                onChange={e => setNewPost({ ...newPost, title: e.target.value })}
-              />
-            </div>
-            <div className="spaces-field">
-              <label className="spaces-label">Body</label>
-              <textarea
-                className="spaces-textarea"
-                placeholder="Explain in detail..."
-                value={newPost.body}
-                onChange={e => setNewPost({ ...newPost, body: e.target.value })}
-                rows={5}
-              />
-            </div>
-            <div className="spaces-modal-actions">
-              <button className="spaces-cancel-btn" onClick={() => setShowNewPost(false)}>Cancel</button>
-              <button className="spaces-submit-btn" onClick={submitPost} disabled={posting}>
-                {posting ? 'Posting...' : 'Post →'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      <div className="spaces-categories">
-        {CATEGORIES.map(c => (
+
+      {/* Main tabs */}
+      <div className="spaces-main-tabs">
+        {[
+          { key: 'community', label: 'Community',      icon: '💬' },
+          { key: 'arabiyyah', label: 'Arabiyyah Class', icon: '✍️' },
+          { key: 'hadeeth',   label: 'Hadeeth Class',   icon: '📜' },
+        ].map(t => (
           <button
-            key={c.key}
-            className={`spaces-cat-btn ${category === c.key ? 'spaces-cat-btn--active' : ''}`}
-            onClick={() => setCategory(c.key)}
+            key={t.key}
+            className={`spaces-main-tab ${activeTab === t.key ? 'spaces-main-tab--active' : ''}`}
+            onClick={() => setActiveTab(t.key)}
           >
-            {c.icon} {c.label}
+            {t.icon} {t.label}
           </button>
         ))}
       </div>
-      {postsLoading ? (
-        <div className="spaces-loading"><div className="spaces-spinner" /></div>
-      ) : posts.length === 0 ? (
-        <div className="spaces-empty card">
-          <p className="spaces-empty-icon">💬</p>
-          <p className="spaces-empty-text">No posts yet in this category.</p>
-          <p className="spaces-empty-sub">Be the first to start a discussion.</p>
-        </div>
-      ) : (
-        <div className="spaces-posts">
-          {posts.map(post => (
-            <button key={post.id} className="spaces-post-card card" onClick={() => openPost(post)}>
-              <div className="spaces-post-top">
-                <span className="spaces-cat-badge">
-                  {CATEGORIES.find(c => c.key === post.category)?.icon} {post.category}
-                </span>
-                <span className="spaces-post-date">{formatDate(post.created_at)}</span>
+
+      {/* ── Arabiyyah class ── */}
+      {activeTab === 'arabiyyah' && renderClass(CLASSES[0])}
+
+      {/* ── Hadeeth class ── */}
+      {activeTab === 'hadeeth' && renderClass(CLASSES[1])}
+
+      {/* ── Community tab ── */}
+      {activeTab === 'community' && (
+        <>
+          {/* New post modal */}
+          {showNewPost && (
+            <div className="spaces-modal-overlay" onClick={() => setShowNewPost(false)}>
+              <div className="spaces-modal card" onClick={e => e.stopPropagation()}>
+                <h3 className="spaces-modal-title">New Post</h3>
+                {error && <div className="spaces-error">{error}</div>}
+                <div className="spaces-field">
+                  <label className="spaces-label">Category</label>
+                  <select
+                    className="spaces-select"
+                    value={newPost.category}
+                    onChange={e => setNewPost({ ...newPost, category: e.target.value })}
+                  >
+                    {CATEGORIES.filter(c => c.key !== 'all').map(c => (
+                      <option key={c.key} value={c.key}>{c.icon} {c.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="spaces-field">
+                  <label className="spaces-label">Title</label>
+                  <input
+                    type="text"
+                    className="spaces-input"
+                    placeholder="Your question or topic..."
+                    value={newPost.title}
+                    onChange={e => setNewPost({ ...newPost, title: e.target.value })}
+                  />
+                </div>
+                <div className="spaces-field">
+                  <label className="spaces-label">Body</label>
+                  <textarea
+                    className="spaces-textarea"
+                    placeholder="Explain in detail..."
+                    value={newPost.body}
+                    onChange={e => setNewPost({ ...newPost, body: e.target.value })}
+                    rows={5}
+                  />
+                </div>
+                <div className="spaces-modal-actions">
+                  <button className="spaces-cancel-btn" onClick={() => setShowNewPost(false)}>Cancel</button>
+                  <button className="spaces-submit-btn" onClick={submitPost} disabled={posting}>
+                    {posting ? 'Posting...' : 'Post →'}
+                  </button>
+                </div>
               </div>
-              <h3 className="spaces-post-title">{post.title}</h3>
-              <p className="spaces-post-preview">
-                {post.body.length > 120 ? post.body.slice(0, 120) + '...' : post.body}
-              </p>
-              <div className="spaces-post-footer">
-                <span className="spaces-post-read">Read Discussion →</span>
-              </div>
-            </button>
-          ))}
-        </div>
+            </div>
+          )}
+
+          {/* Category filter */}
+          <div className="spaces-categories">
+            {CATEGORIES.map(c => (
+              <button
+                key={c.key}
+                className={`spaces-cat-btn ${category === c.key ? 'spaces-cat-btn--active' : ''}`}
+                onClick={() => setCategory(c.key)}
+              >
+                {c.icon} {c.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Posts */}
+          {postsLoading ? (
+            <div className="spaces-loading"><div className="spaces-spinner" /></div>
+          ) : posts.length === 0 ? (
+            <div className="spaces-empty card">
+              <p className="spaces-empty-icon">💬</p>
+              <p className="spaces-empty-text">No posts yet in this category.</p>
+              <p className="spaces-empty-sub">Be the first to start a discussion.</p>
+            </div>
+          ) : (
+            <div className="spaces-posts">
+              {posts.map(post => (
+                <button key={post.id} className="spaces-post-card card" onClick={() => openPost(post)}>
+                  <div className="spaces-post-top">
+                    <span className="spaces-cat-badge">
+                      {CATEGORIES.find(c => c.key === post.category)?.icon} {post.category}
+                    </span>
+                    <span className="spaces-post-date">{formatDate(post.created_at)}</span>
+                  </div>
+                  <h3 className="spaces-post-title">{post.title}</h3>
+                  <p className="spaces-post-preview">
+                    {post.body.length > 120 ? post.body.slice(0, 120) + '...' : post.body}
+                  </p>
+                  <div className="spaces-post-footer">
+                    <span className="spaces-post-read">Read Discussion →</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
