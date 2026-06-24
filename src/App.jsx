@@ -63,9 +63,13 @@ export default function App() {
           if (data?.level_selected) {
             setUserLevel(data.current_level)
             setLevelSelected(true)
+          } else {
+            setUserLevel('beginner')
+            setLevelSelected(false)
           }
         } catch {
-          // No level selected yet — show level selection
+          setUserLevel('beginner')
+          setLevelSelected(false)
         } finally {
           setLevelLoading(false)
         }
