@@ -529,29 +529,33 @@ export default function Spaces({ user }) {
               </div>
             )}
 
-            {/* Join CTA */}
+           {/* Join CTA */}
             <div className="spaces-class-cta card">
               <p className="spaces-class-cta-text">
                 Ready to join the {currentLevel.label} {cls.title}?
-                Post in the community with the tag <strong>#{cls.id}-class</strong> to register your interest
-                and get assigned to the next cohort.
+                Click the button below to join the dedicated Telegram group for your level.
+                All classes are conducted and coordinated through Telegram.
               </p>
-              <button
-                className="spaces-submit-btn"
-                onClick={() => {
-                  setNewPost({
-                    title: `Joining ${currentLevel.label} ${cls.title}`,
-                    body: `As-salamu alaykum. I would like to join the ${currentLevel.label} ${cls.title} (${currentLevel.title}). Please add me to the next cohort. JazakAllahu khayran.`,
-                    category: cls.id === 'arabiyyah' ? 'arabiyyah' : 'general',
-                  })
-                  setActiveTab('community')
-                  setShowNewPost(true)
-                }}
+              
+              <a
+                className="spaces-submit-btn spaces-telegram-btn"
+                href={
+                  currentLevel.key === 'beginner'
+                    ? 'https://t.me/+mCqRMQQ4qmA5ZjI0'
+                    : currentLevel.key === 'intermediate'
+                    ? 'https://t.me/+E_jr7Ojha9RiNzc0'
+                    : 'https://t.me/+IuJuOAz3FkUyNGQ8'
+                }
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Register Interest →
-              </button>
+                📲 Join {currentLevel.label} Telegram Group →
+              </a>
+              <p className="spaces-class-cta-note">
+                The same Telegram group serves both the Arabiyyah Class and the Hadeeth Class at each level.
+                Introduce yourself when you join and mention which class you are enrolling in.
+              </p>
             </div>
-
           </div>
         )}
       </div>

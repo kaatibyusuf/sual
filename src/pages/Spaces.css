@@ -929,3 +929,30 @@
 [data-theme="dark"] .spaces-class-cta-text {
   color: #8aaac8;
 }
+
+/* Telegram CTA */
+.spaces-telegram-btn {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  margin-bottom: 12px;
+  background: #0088cc;
+  border-color: #0088cc;
+}
+
+.spaces-telegram-btn:hover {
+  background: #006fa8;
+  border-color: #006fa8;
+}
+
+.spaces-class-cta-note {
+  font-size: 0.78rem;
+  color: #6a8090;
+  line-height: 1.6;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+[data-theme="dark"] .spaces-class-cta-note {
+  color: #4a6080;
+}
