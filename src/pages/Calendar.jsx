@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import './Calendar.css'
 
 const HIJRI_MONTHS = [
-  'Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani',
-  'Jumada al-Ula', 'Jumada al-Akhirah', 'Rajab', 'Shaban',
+  'Muharram', 'Safar', 'Rabiul-Awwal', 'Rabiu-Thani',
+  'Jumadal-Ula', 'Jumada al-Akhirah', 'Rajab', 'Shaban',
   'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah',
 ]
 
@@ -50,7 +50,7 @@ const ISLAMIC_EVENTS = {
     description: 'The fifteenth of each Hijri month is the third and last of the Ayyam al-Bid — the White Days. The wisdom of fasting these three days is that fasting one day is equivalent to ten days in reward (Quran 6:160), so fasting three days per month equals thirty days — equivalent to a full year of fasting. This is one of the most accessible yet most rewarding voluntary acts a Muslim can perform consistently throughout the year.',
   },
   '3-12': {
-    name: 'Mawlid al-Nabawi',
+    name: 'Mawlidul-Nabawi',
     arabic: 'المَوْلِدُ النَّبَوِيّ',
     color: '#0d6e4a',
     icon: '🌟',
@@ -62,7 +62,7 @@ const ISLAMIC_EVENTS = {
     description: 'The twenty-seventh of Rajab is the date most commonly associated with the Night Journey (al-Isra) and the Ascension (al-Miraj). In one miraculous night, Allah transported the Prophet from the Sacred Mosque in Makkah to the Farthest Mosque (al-Masjid al-Aqsa) in Jerusalem, and then ascended him through the seven heavens to receive the command of the five daily prayers. The Quran records: "Exalted is He who took His servant by night from the Sacred Mosque to the Farthest Mosque." (Quran 17:1) The scholars differ on the precise date, but the significance of the event — the command of Salah, the meeting with the prophets, and the vision of Paradise and Hell — is agreed upon.',
   },
   '8-15': {
-    name: 'Nisf Shaban',
+    name: 'Nisfu Shaban',
     arabic: 'نِصْفُ شَعْبَان',
     color: '#1a5276',
     icon: '🌕',
@@ -76,14 +76,14 @@ const ISLAMIC_EVENTS = {
     description: 'The first of Ramadan marks the beginning of the month of fasting — the ninth month of the Hijri calendar and the most blessed month of the year. Allah says: "The month of Ramadan is that in which the Quran was revealed, as guidance for the people." (Quran 2:185) Fasting in Ramadan is the fourth pillar of Islam. The Prophet said: "When Ramadan begins, the gates of Paradise are opened, the gates of Hell are closed, and the devils are chained." (Sahih al-Bukhari 1899) The month contains Laylat al-Qadr — the Night of Power — better than a thousand months.',
   },
   '9-27': {
-    name: 'Laylat al-Qadr',
+    name: 'Laylatul-Qadr',
     arabic: 'لَيْلَةُ القَدْر',
     color: '#7d3c98',
     icon: '⭐',
     description: 'Laylatul-Qadr — the Night of Power or Night of Decree — is the most blessed night in the Islamic year, better than a thousand months (over eighty-three years) of worship. Allah revealed an entire surah about it: "We sent it down on the Night of Power. And what can make you know what the Night of Power is? The Night of Power is better than a thousand months." (Quran 97:1-3) The Prophet said to seek it in the odd nights of the last ten days of Ramadan. The twenty-seventh is the most widely cited — though the Prophet did not specify it definitively, preferring that believers strive throughout the last ten nights.',
   },
   '10-1': {
-    name: 'Eid al-Fitr',
+    name: 'Eidul-Fitr',
     arabic: 'عِيدُ الفِطْر',
     color: '#0d6e4a',
     icon: '🎊',
@@ -127,9 +127,9 @@ const ISLAMIC_EVENTS = {
 }
 
 const ALWAYS_CIRCLED = {
-  13: { name: 'Ayyam al-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The thirteenth of each Hijri month is one of the Ayyam al-Bid — the White Days — named because the moon is full and the night is illuminated. The Prophet said: "Fasting three days of every month is like fasting the whole year." (Sahih al-Bukhari 1979) These are the thirteenth, fourteenth, and fifteenth of every lunar month. The Prophet regularly fasted these days and strongly encouraged the Companions to do so.' },
-  14: { name: 'Ayyam al-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The fourteenth of each Hijri month is the second of the Ayyam al-Bid — the White Days. At this point the moon is at or near its fullest, illuminating the night completely. The Prophet said to Abu Dharr: "O Abu Dharr, when you fast three days of the month, fast the thirteenth, fourteenth, and fifteenth." (Sunan al-Nasai 2424 — Sahih)' },
-  15: { name: 'Ayyam al-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The fifteenth of each Hijri month is the third and last of the Ayyam al-Bid — the White Days. The wisdom of fasting these three days is that fasting one day is equivalent to ten days in reward (Quran 6:160), so fasting three days per month equals thirty days — equivalent to a full year of fasting.' },
+  13: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The thirteenth of each Hijri month is one of the Ayyam al-Bid — the White Days — named because the moon is full and the night is illuminated. The Prophet said: "Fasting three days of every month is like fasting the whole year." (Sahih al-Bukhari 1979) These are the thirteenth, fourteenth, and fifteenth of every lunar month. The Prophet regularly fasted these days and strongly encouraged the Companions to do so.' },
+  14: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The fourteenth of each Hijri month is the second of the Ayyam al-Bid — the White Days. At this point the moon is at or near its fullest, illuminating the night completely. The Prophet said to Abu Dharr: "O Abu Dharr, when you fast three days of the month, fast the thirteenth, fourteenth, and fifteenth." (Sunan al-Nasai 2424 — Sahih)' },
+  15: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The fifteenth of each Hijri month is the third and last of the Ayyam al-Bid — the White Days. The wisdom of fasting these three days is that fasting one day is equivalent to ten days in reward (Quran 6:160), so fasting three days per month equals thirty days — equivalent to a full year of fasting.' },
 }
 
 const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
