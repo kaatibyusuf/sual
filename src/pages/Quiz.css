@@ -356,3 +356,25 @@
   font-size: 0.75rem;
   color: inherit;
 }
+
+/* ── Quiz.css additions ────────────────────────────────────── */
+ 
+/* Level unlock banner — shown in result phase */
+.quiz-unlock-banner {
+  background: linear-gradient(135deg, #094570, #0a6fa8);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 0 0 24px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 16px rgba(9, 69, 112, 0.3);
+  animation: slideDown 0.4s ease;
+}
+ 
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { DISCIPLINES, KNOWLEDGE_BASE } from '../data/knowledge.js'
+import { supabase } from '../lib/supabase.js'
 import {
   INTERMEDIATE_QA,
   INTERMEDIATE_SEERAH_QA,
@@ -9,6 +10,15 @@ import {
   INTERMEDIATE_SARF_QA,
   INTERMEDIATE_NAHW_QA,
 } from '../data/knowledge_intermediate.js'
+import {
+  ADVANCED_FIQH_QA,
+  ADVANCED_SEERAH_QA,
+  ADVANCED_ARABIYYAH_QA,
+  ADVANCED_USUL_QA,
+  ADVANCED_SARF_QA,
+  ADVANCED_NAHW_QA,
+  ADVANCED_TAFSEER_QA,
+} from '../data/knowledge_advanced.js'
 import './Discipline.css'
 
 const INTERMEDIATE_ALL = {
@@ -21,24 +31,88 @@ const INTERMEDIATE_ALL = {
   tafseer:   [],
 }
 
+const ADVANCED_ALL = {
+  fiqh:      ADVANCED_FIQH_QA || [],
+  seerah:    ADVANCED_SEERAH_QA || [],
+  arabiyyah: ADVANCED_ARABIYYAH_QA || [],
+  usul:      ADVANCED_USUL_QA || [],
+  sarf:      ADVANCED_SARF_QA || [],
+  nahw:      ADVANCED_NAHW_QA || [],
+  tafseer:   ADVANCED_TAFSEER_QA || [],
+}
+
 const LEVELS = [
   { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
   { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100' },
   { key: 'advanced',     label: 'Advanced',     arabic: 'مُتَقَدِّم', color: '#6a1b9a' },
 ]
 
-export default function Discipline({ userLevel = 'beginner' }) {
+export default function Discipline({ userLevel = 'beginner', user = null }) {
   const { id } = useParams()
-  const [expandedId,  setExpandedId]  = useState(null)
-  const [search,      setSearch]      = useState('')
-  const [activeLevel, setActiveLevel] = useState(userLevel)
+  const [expandedId,       setExpandedId]       = useState(null)
+  const [search,           setSearch]           = useState('')
+  const [activeLevel,      setActiveLevel]      = useState(userLevel)
+  const [bookmarks,        setBookmarks]        = useState(new Set())
+  const [bookmarkLoading,  setBookmarkLoading]  = useState(false)
 
   const discipline = DISCIPLINES.find(d => d.id === id)
   if (!discipline) return <Navigate to="/" replace />
 
+  useEffect(() => {
+    if (!user) return
+    const load = async () => {
+      try {
+        const { data } = await supabase
+          .from('bookmarks')
+          .select('qa_id')
+          .eq('user_id', user.id)
+          .eq('discipline', id)
+        if (data) setBookmarks(new Set(data.map(r => r.qa_id)))
+      } catch (err) {
+        console.error('Failed to load bookmarks:', err)
+      }
+    }
+    load()
+  }, [user, id])
+
+  const toggleBookmark = useCallback(async (qaId) => {
+    if (!user || bookmarkLoading) return
+    setBookmarkLoading(true)
+    const isBookmarked = bookmarks.has(qaId)
+
+    setBookmarks(prev => {
+      const next = new Set(prev)
+      isBookmarked ? next.delete(qaId) : next.add(qaId)
+      return next
+    })
+
+    try {
+      if (isBookmarked) {
+        await supabase
+          .from('bookmarks')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('qa_id', qaId)
+      } else {
+        await supabase
+          .from('bookmarks')
+          .insert({ user_id: user.id, discipline: id, qa_id: qaId })
+      }
+    } catch (err) {
+      console.error('Bookmark failed:', err)
+      setBookmarks(prev => {
+        const next = new Set(prev)
+        isBookmarked ? next.add(qaId) : next.delete(qaId)
+        return next
+      })
+    } finally {
+      setBookmarkLoading(false)
+    }
+  }, [user, id, bookmarks, bookmarkLoading])
+
   const beginnerQAs     = (KNOWLEDGE_BASE[id] || []).map(qa => ({ ...qa, level: 'beginner' }))
   const intermediateQAs = INTERMEDIATE_ALL[id] || []
-  const advancedQAs     = []
+  const advancedQAs     = ADVANCED_ALL[id] || []
 
   const levelMap = {
     beginner:     beginnerQAs,
@@ -65,10 +139,8 @@ export default function Discipline({ userLevel = 'beginner' }) {
   return (
     <div className="page-content discipline-page">
 
-      {/* Back */}
       <Link to="/" className="discipline-back">← Back to Home</Link>
 
-      {/* Header */}
       <div className="discipline-header">
         <div className="discipline-header-inner">
           <div className="discipline-header-icon">{discipline.icon}</div>
@@ -80,7 +152,6 @@ export default function Discipline({ userLevel = 'beginner' }) {
         </div>
       </div>
 
-      {/* Level tabs */}
       <div className="disc-level-tabs">
         {LEVELS.map(lv => {
           const locked = isLocked(lv.key)
@@ -90,8 +161,8 @@ export default function Discipline({ userLevel = 'beginner' }) {
               key={lv.key}
               className={[
                 'disc-level-tab',
-                active  ? 'disc-level-tab--active' : '',
-                locked  ? 'disc-level-tab--locked' : '',
+                active ? 'disc-level-tab--active' : '',
+                locked ? 'disc-level-tab--locked' : '',
               ].join(' ').trim()}
               style={active ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
               onClick={() => { if (!locked) { setActiveLevel(lv.key); setExpandedId(null) } }}
@@ -104,7 +175,6 @@ export default function Discipline({ userLevel = 'beginner' }) {
         })}
       </div>
 
-      {/* Search */}
       <div className="discipline-search">
         <input
           type="text"
@@ -120,9 +190,11 @@ export default function Discipline({ userLevel = 'beginner' }) {
 
       <p className="discipline-count">
         {filtered.length} Q&amp;A{filtered.length !== 1 ? 's' : ''} — {LEVELS.find(l => l.key === activeLevel)?.label}
+        {bookmarks.size > 0 && (
+          <span className="discipline-bookmark-count"> · {bookmarks.size} saved</span>
+        )}
       </p>
 
-      {/* Locked state */}
       {isLocked(activeLevel) ? (
         <div className="disc-locked-msg">
           <div className="disc-locked-icon">🔒</div>
@@ -142,8 +214,10 @@ export default function Discipline({ userLevel = 'beginner' }) {
         <>
           <div className="qa-list">
             {filtered.map((qa, i) => {
-              const qid  = qa.id || i
-              const open = expandedId === qid
+              const qid        = qa.id || i
+              const open       = expandedId === qid
+              const bookmarked = bookmarks.has(qid)
+
               return (
                 <div key={qid} className={`qa-item${open ? ' qa-item--open' : ''}`}>
 
@@ -173,6 +247,16 @@ export default function Discipline({ userLevel = 'beginner' }) {
                           ))}
                         </div>
                       )}
+
+                      {user && (
+                        <button
+                          className={`qa-bookmark-btn ${bookmarked ? 'qa-bookmark-btn--active' : ''}`}
+                          onClick={(e) => { e.stopPropagation(); toggleBookmark(qid) }}
+                          title={bookmarked ? 'Remove bookmark' : 'Save this Q&A'}
+                        >
+                          {bookmarked ? '🔖 Saved' : '🔖 Save'}
+                        </button>
+                      )}
                     </div>
                   )}
 
@@ -181,7 +265,6 @@ export default function Discipline({ userLevel = 'beginner' }) {
             })}
           </div>
 
-          {/* Quiz CTA */}
           <div className="discipline-quiz-link">
             <Link to={`/quiz?discipline=${id}`} className="btn btn-primary">
               Take {discipline.name} Quiz →

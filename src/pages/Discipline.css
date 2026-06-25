@@ -462,3 +462,42 @@
     font-size: 0.88rem;
   }
 }
+
+/* ── Discipline.css additions ──────────────────────────────── */
+ 
+/* Bookmark button inside expanded answer */
+.qa-bookmark-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #85CCFF;
+  background: transparent;
+  color: #094570;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+ 
+.qa-bookmark-btn:hover {
+  background: #e8f4ff;
+}
+ 
+.qa-bookmark-btn--active {
+  background: #094570;
+  color: #ffffff;
+  border-color: #094570;
+}
+ 
+.qa-bookmark-btn--active:hover {
+  background: #062f4a;
+}
+ 
+/* Bookmark count in discipline header */
+.discipline-bookmark-count {
+  color: #094570;
+  font-weight: 600;
+}

@@ -11,31 +11,47 @@ import {
   INTERMEDIATE_SARF_QUIZ,
   INTERMEDIATE_NAHW_QUIZ,
 } from '../data/knowledge_intermediate.js'
-const INTERMEDIATE_QUIZ_ALL = {
-  fiqh: INTERMEDIATE_QUIZ?.fiqh || [],
-  seerah: INTERMEDIATE_SEERAH_QUIZ || [],
-  arabiyyah: INTERMEDIATE_ARABIYYAH_QUIZ || [],
-  usul: INTERMEDIATE_USUL_QUIZ || [],
-  sarf: INTERMEDIATE_SARF_QUIZ || [],
-  nahw: INTERMEDIATE_NAHW_QUIZ || [],
-  tafseer: [],
+
+import {
+  ADVANCED_FIQH_QUIZ,
+  ADVANCED_SEERAH_QUIZ,
+  ADVANCED_ARABIYYAH_QUIZ,
+  ADVANCED_USUL_QUIZ,
+  ADVANCED_SARF_QUIZ,
+  ADVANCED_NAHW_QUIZ,
+  ADVANCED_TAFSEER_QUIZ,
+} from '../data/knowledge_advanced.js'
+
+const ADVANCED_QUIZ_ALL = {
+  fiqh:      ADVANCED_FIQH_QUIZ || [],
+  seerah:    ADVANCED_SEERAH_QUIZ || [],
+  arabiyyah: ADVANCED_ARABIYYAH_QUIZ || [],
+  usul:      ADVANCED_USUL_QUIZ || [],
+  sarf:      ADVANCED_SARF_QUIZ || [],
+  nahw:      ADVANCED_NAHW_QUIZ || [],
+  tafseer:   ADVANCED_TAFSEER_QUIZ || [],
 }
 
+const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced']
+
 function buildQuizPool(disciplineId, level = 'beginner') {
-  const beginner = QUIZ_QUESTIONS
+  const beginner     = QUIZ_QUESTIONS
   const intermediate = INTERMEDIATE_QUIZ_ALL
+  const advanced     = ADVANCED_QUIZ_ALL
 
-  if (disciplineId && disciplineId !== 'mixed') {
-    if (level === 'intermediate') {
-      return [...(intermediate[disciplineId] || [])]
-    }
-    return [...(beginner[disciplineId] || [])]
-  }
+  const pool = disciplineId && disciplineId !== 'mixed'
+    ? level === 'advanced'
+      ? (advanced[disciplineId] || [])
+      : level === 'intermediate'
+        ? (intermediate[disciplineId] || [])
+        : (beginner[disciplineId] || [])
+    : level === 'advanced'
+      ? Object.values(advanced).flat()
+      : level === 'intermediate'
+        ? Object.values(intermediate).flat()
+        : Object.values(beginner).flat()
 
-  if (level === 'intermediate') {
-    return Object.values(intermediate).flat().sort(() => Math.random() - 0.5)
-  }
-  return Object.values(beginner).flat().sort(() => Math.random() - 0.5)
+  return pool.sort(() => Math.random() - 0.5)
 }
 
 export default function Quiz({ user, userLevel = 'beginner' }) {
@@ -43,40 +59,83 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   const preselect = searchParams.get('discipline') || 'mixed'
 
   const [selectedDiscipline, setSelectedDiscipline] = useState(preselect)
-  const [selectedLevel, setSelectedLevel] = useState(userLevel)
-  const [phase, setPhase] = useState('select')
-  const [questions, setQuestions] = useState([])
-  const [currentIdx, setCurrentIdx] = useState(0)
-  const [chosen, setChosen] = useState(null)
-  const [revealed, setRevealed] = useState(false)
-  const [score, setScore] = useState(0)
-  const [answers, setAnswers] = useState([])
+  const [selectedLevel,      setSelectedLevel]      = useState(userLevel)
+  const [phase,              setPhase]              = useState('select')
+  const [questions,          setQuestions]          = useState([])
+  const [currentIdx,         setCurrentIdx]         = useState(0)
+  const [chosen,             setChosen]             = useState(null)
+  const [revealed,           setRevealed]           = useState(false)
+  const [score,              setScore]              = useState(0)
+  const [answers,            setAnswers]            = useState([])
+  const [unlockMsg,          setUnlockMsg]          = useState(null)
 
   const startQuiz = useCallback(() => {
-    const pool = buildQuizPool(selectedDiscipline, selectedLevel)
-    const shuffled = pool.sort(() => Math.random() - 0.5).slice(0, Math.min(10, pool.length))
+    const pool     = buildQuizPool(selectedDiscipline, selectedLevel)
+    const shuffled = pool.slice(0, Math.min(10, pool.length))
     setQuestions(shuffled)
     setCurrentIdx(0)
     setScore(0)
     setAnswers([])
     setChosen(null)
     setRevealed(false)
+    setUnlockMsg(null)
     setPhase('active')
-  }, [selectedDiscipline])
+  }, [selectedDiscipline, selectedLevel])
 
   const saveScore = async (finalScore, total) => {
     if (!user) return
     const percentage = Math.round((finalScore / total) * 100)
+
     try {
       await supabase.from('quiz_history').insert({
-        user_id: user.id,
+        user_id:    user.id,
         discipline: selectedDiscipline,
-        score: finalScore,
+        score:      finalScore,
         total,
         percentage,
       })
     } catch (err) {
       console.error('Failed to save score:', err)
+      return
+    }
+
+    try {
+      const { data: history } = await supabase
+        .from('quiz_history')
+        .select('percentage')
+        .eq('user_id', user.id)
+        .eq('discipline', selectedDiscipline)
+        .order('created_at', { ascending: false })
+        .limit(5)
+
+      if (!history || history.length < 1) return
+
+      const avg = history.reduce((sum, r) => sum + r.percentage, 0) / history.length
+      if (avg < 70) return
+
+      const { data: levelData } = await supabase
+        .from('user_levels')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      if (!levelData) return
+
+      const currentIdx = LEVEL_ORDER.indexOf(levelData.current_level)
+      if (currentIdx >= LEVEL_ORDER.length - 1) return
+
+      const nextLevel = LEVEL_ORDER[currentIdx + 1]
+
+      await supabase
+        .from('user_levels')
+        .update({ current_level: nextLevel, level_selected: true })
+        .eq('user_id', user.id)
+
+      setUnlockMsg(
+        `🎉 You've unlocked ${nextLevel.charAt(0).toUpperCase() + nextLevel.slice(1)} level!`
+      )
+    } catch (err) {
+      console.error('Level unlock check failed:', err)
     }
   }
 
@@ -91,11 +150,11 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   const nextQuestion = () => {
     const q = questions[currentIdx]
     const newAnswers = [...answers, {
-      question: q.question,
+      question:    q.question,
       chosen,
-      correct: q.correct,
+      correct:     q.correct,
       explanation: q.explanation,
-      options: q.options,
+      options:     q.options,
     }]
     setAnswers(newAnswers)
 
@@ -119,12 +178,13 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
   const scorePercent = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0
   const scoreMsg = () => {
-    if (scorePercent >= 90) return { msg: 'Excellent! ممتاز', color: '#0a7c4e' }
-    if (scorePercent >= 70) return { msg: 'Well done! أحسنتَ', color: '#2e7d9e' }
-    if (scorePercent >= 50) return { msg: 'Good effort! جيد', color: '#b06d00' }
-    return { msg: 'Keep studying! استمر في الدراسة', color: '#c0392b' }
+    if (scorePercent >= 90) return { msg: 'Excellent! ممتاز',               color: '#0a7c4e' }
+    if (scorePercent >= 70) return { msg: 'Well done! أحسنتَ',              color: '#2e7d9e' }
+    if (scorePercent >= 50) return { msg: 'Good effort! جيد',               color: '#b06d00' }
+    return                         { msg: 'Keep studying! استمر في الدراسة', color: '#c0392b' }
   }
 
+  // ── SELECT ───────────────────────────────────────────────────
   if (phase === 'select') {
     return (
       <div className="page-content quiz-page">
@@ -157,9 +217,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
           <div className="quiz-level-row">
             {[
-              { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32' },
+              { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
               { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', locked: userLevel === 'beginner' },
-              { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', locked: userLevel !== 'advanced' },
+              { key: 'advanced',     label: 'Advanced',     arabic: 'مُتَقَدِّم', color: '#6a1b9a', locked: userLevel !== 'advanced' },
             ].map(lv => (
               <button
                 key={lv.key}
@@ -173,8 +233,13 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
               </button>
             ))}
           </div>
+
           <div className="quiz-start-row">
-            <p className="quiz-start-label">Selected: <strong>{discLabel(selectedDiscipline)}</strong> · <strong>{selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1)}</strong></p>
+            <p className="quiz-start-label">
+              Selected: <strong>{discLabel(selectedDiscipline)}</strong> · <strong>
+                {selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1)}
+              </strong>
+            </p>
             <button className="btn btn-primary" onClick={startQuiz}>Begin Quiz →</button>
           </div>
         </div>
@@ -182,8 +247,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     )
   }
 
+  // ── ACTIVE ───────────────────────────────────────────────────
   if (phase === 'active') {
-    const q = questions[currentIdx]
+    const q        = questions[currentIdx]
     const progress = (currentIdx / questions.length) * 100
 
     return (
@@ -203,7 +269,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
             {q.options.map((opt, idx) => {
               let cls = 'quiz-option'
               if (revealed) {
-                if (idx === q.correct) cls += ' quiz-option--correct'
+                if (idx === q.correct)                        cls += ' quiz-option--correct'
                 else if (idx === chosen && idx !== q.correct) cls += ' quiz-option--wrong'
               } else if (chosen === idx) {
                 cls += ' quiz-option--selected'
@@ -241,6 +307,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     )
   }
 
+  // ── RESULT ───────────────────────────────────────────────────
   const { msg, color } = scoreMsg()
 
   return (
@@ -249,15 +316,24 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
         <div className="quiz-result-header">
           <span className="quiz-result-icon">🎯</span>
           <h2 className="quiz-result-title">Quiz Complete</h2>
-          <div className="quiz-result-score" style={{ color }}>{score} / {questions.length}</div>
+          <div className="quiz-result-score"  style={{ color }}>{score} / {questions.length}</div>
           <div className="quiz-result-percent" style={{ color }}>{scorePercent}%</div>
           <div className="quiz-result-msg">{msg}</div>
         </div>
 
+        {unlockMsg && (
+          <div className="quiz-unlock-banner">
+            {unlockMsg}
+          </div>
+        )}
+
         <div className="quiz-review">
           <h3 className="quiz-review-title">Review</h3>
           {answers.map((a, i) => (
-            <div key={i} className={`quiz-review-item ${a.chosen === a.correct ? 'quiz-review-item--correct' : 'quiz-review-item--wrong'}`}>
+            <div
+              key={i}
+              className={`quiz-review-item ${a.chosen === a.correct ? 'quiz-review-item--correct' : 'quiz-review-item--wrong'}`}
+            >
               <div className="quiz-review-q">
                 <span className="quiz-review-icon">{a.chosen === a.correct ? '✓' : '✗'}</span>
                 <strong>Q{i + 1}:</strong> {a.question}
@@ -275,8 +351,8 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
         <div className="quiz-result-actions">
           <button className="btn btn-primary" onClick={startQuiz}>Retry Quiz</button>
-          <button className="btn btn-ghost" onClick={() => setPhase('select')}>Change Discipline</button>
-          <Link to="/dashboard" className="btn btn-ghost">📊 View Dashboard</Link>
+          <button className="btn btn-ghost"   onClick={() => setPhase('select')}>Change Discipline</button>
+          <Link   to="/dashboard" className="btn btn-ghost">📊 View Dashboard</Link>
         </div>
       </div>
     </div>
