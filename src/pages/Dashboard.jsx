@@ -1,179 +1,259 @@
-import React, { useState } from 'react'
-import { useParams, Link, Navigate } from 'react-router-dom'
-import { DISCIPLINES, KNOWLEDGE_BASE } from '../data/knowledge.js'
-import {
-  INTERMEDIATE_QA,
-  INTERMEDIATE_SEERAH_QA,
-  INTERMEDIATE_ARABIYYAH_QA,
-  INTERMEDIATE_USUL_QA,
-  INTERMEDIATE_SARF_QA,
-  INTERMEDIATE_NAHW_QA,
-} from '../data/knowledge_intermediate.js'
-import './Discipline.css'
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase.js'
+import { DISCIPLINES } from '../data/knowledge.js'
+import './Dashboard.css'
 
-const INTERMEDIATE_ALL = {
-  fiqh: INTERMEDIATE_QA?.fiqh || [],
-  seerah: INTERMEDIATE_SEERAH_QA || [],
-  arabiyyah: INTERMEDIATE_ARABIYYAH_QA || [],
-  usul: INTERMEDIATE_USUL_QA || [],
-  sarf: INTERMEDIATE_SARF_QA || [],
-  nahw: INTERMEDIATE_NAHW_QA || [],
-  tafseer: [],
+const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced']
+
+const LEVEL_COLOR = {
+  beginner:     '#2e7d32',
+  intermediate: '#e65100',
+  advanced:     '#6a1b9a',
 }
 
-const LEVELS = [
-  { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
-  { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100' },
-  { key: 'advanced',     label: 'Advanced',     arabic: 'مُتَقَدِّم', color: '#6a1b9a' },
-]
+export default function Dashboard({ user }) {
+  const [history,   setHistory]   = useState([])
+  const [levelData, setLevelData] = useState(null)
+  const [loading,   setLoading]   = useState(true)
 
-export default function Discipline({ userLevel = 'beginner' }) {
-  const { id } = useParams()
-  const [expandedId, setExpandedId] = useState(null)
-  const [search, setSearch]         = useState('')
-  const [activeLevel, setActiveLevel] = useState(userLevel)
+  useEffect(() => {
+    if (!user) return
+    const load = async () => {
+      try {
+        const [{ data: hist }, { data: lvl }] = await Promise.all([
+          supabase
+            .from('quiz_history')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(50),
+          supabase
+            .from('user_levels')
+            .select('*')
+            .eq('user_id', user.id)
+            .single(),
+        ])
+        setHistory(hist || [])
+        setLevelData(lvl || null)
+      } catch (err) {
+        console.error('Dashboard load error:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [user])
 
-  const discipline = DISCIPLINES.find(d => d.id === id)
-  if (!discipline) return <Navigate to="/" replace />
+  const totalQuizzes = history.length
+  const avgScore     = totalQuizzes > 0
+    ? Math.round(history.reduce((s, r) => s + r.percentage, 0) / totalQuizzes)
+    : 0
+  const bestScore    = totalQuizzes > 0
+    ? Math.max(...history.map(r => r.percentage))
+    : 0
+  const currentLevel  = levelData?.current_level || 'beginner'
+  const levelIndex    = LEVEL_ORDER.indexOf(currentLevel)
+  const levelProgress = totalQuizzes > 0
+    ? Math.min(Math.round((avgScore / 70) * 100), 100)
+    : 0
 
-  const beginnerQAs     = (KNOWLEDGE_BASE[id] || []).map(qa => ({ ...qa, level: 'beginner' }))
-  const intermediateQAs = INTERMEDIATE_ALL[id] || []
-  const advancedQAs     = []
+  const byDiscipline = DISCIPLINES.map(d => {
+    const entries = history.filter(r => r.discipline === d.id)
+    const avg = entries.length > 0
+      ? Math.round(entries.reduce((s, r) => s + r.percentage, 0) / entries.length)
+      : null
+    return { ...d, quizzes: entries.length, avg }
+  })
 
-  const levelMap = {
-    beginner:     beginnerQAs,
-    intermediate: intermediateQAs,
-    advanced:     advancedQAs,
-  }
+  const recent = history.slice(0, 5)
 
-  const isLocked = (key) => {
-    if (key === 'intermediate') return userLevel === 'beginner'
-    if (key === 'advanced')     return userLevel !== 'advanced'
-    return false
-  }
-
-  const allQAs = levelMap[activeLevel] || []
-
-  const filtered = allQAs.filter(qa =>
-    search === '' ||
-    qa.question.toLowerCase().includes(search.toLowerCase()) ||
-    qa.answer.toLowerCase().includes(search.toLowerCase())
-  )
-
-  const toggle = (qid) => setExpandedId(prev => prev === qid ? null : qid)
-
-  return (
-    <div className="page-content discipline-page">
-
-      {/* Back */}
-      <Link to="/" className="discipline-back">← Back</Link>
-
-      {/* Header */}
-      <div className="discipline-header">
-        <div className="discipline-header-inner">
-          <div className="discipline-header-icon">{discipline.icon}</div>
-          <div>
-            <p className="discipline-header-arabic arabic">{discipline.arabicName}</p>
-            <h1 className="page-title" style={{ marginBottom: 4 }}>{discipline.name}</h1>
-            <p className="page-subtitle" style={{ marginTop: 0 }}>{discipline.description}</p>
-          </div>
+  if (loading) {
+    return (
+      <div className="page-content">
+        <div style={{
+          textAlign: 'center',
+          padding: '60px 0',
+          color: '#094570',
+          fontFamily: 'Amiri, serif',
+          fontSize: '1.5rem',
+        }}>
+          سُؤَال
         </div>
       </div>
+    )
+  }
 
-      {/* Level tabs */}
-      <div className="disc-level-tabs">
-        {LEVELS.map(lv => {
-          const locked = isLocked(lv.key)
-          const active = activeLevel === lv.key
-          return (
-            <button
-              key={lv.key}
-              className={`disc-level-tab${active ? ' disc-level-tab--active' : ''}${locked ? ' disc-level-tab--locked' : ''}`}
-              style={active ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
-              onClick={() => { if (!locked) setActiveLevel(lv.key) }}
-              title={locked ? 'Complete previous level to unlock' : ''}
-            >
-              {locked ? '🔒 ' : ''}{lv.label}
-              <span className="disc-level-tab-arabic arabic">{lv.arabic}</span>
-            </button>
-          )
-        })}
-      </div>
+  return (
+    <div className="page-content dashboard-page">
+      <h1 className="page-title">Dashboard</h1>
+      <p className="page-subtitle">لَوْحَةُ المُتَابَعَة — Your learning progress</p>
 
-      {/* Search */}
-      <div className="discipline-search">
-        <input
-          type="text"
-          className="discipline-search-input"
-          placeholder={`Search ${discipline.name}...`}
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        {search && (
-          <button className="discipline-search-clear" onClick={() => setSearch('')}>✕</button>
+      {/* ── Level card ─────────────────────────────────────── */}
+      <div className="dash-level-card card">
+        <div className="dash-level-header">
+          <div>
+            <p className="dash-label">Current Level</p>
+            <p className="dash-level-name" style={{ color: LEVEL_COLOR[currentLevel] }}>
+              {currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1)}
+            </p>
+          </div>
+          <div className="dash-level-dots">
+            {LEVEL_ORDER.map((lv, i) => (
+              <div
+                key={lv}
+                className={`dash-level-dot${i <= levelIndex ? ' dash-level-dot--active' : ''}`}
+                style={i <= levelIndex ? { background: LEVEL_COLOR[lv] } : {}}
+                title={lv}
+              />
+            ))}
+          </div>
+        </div>
+
+        {levelIndex < LEVEL_ORDER.length - 1 && (
+          <>
+            <p className="dash-unlock-hint">
+              Keep your quiz average above 70% to unlock{' '}
+              <strong>
+                {LEVEL_ORDER[levelIndex + 1].charAt(0).toUpperCase() + LEVEL_ORDER[levelIndex + 1].slice(1)}
+              </strong>
+            </p>
+            <div className="dash-progress-bar">
+              <div
+                className="dash-progress-fill"
+                style={{
+                  width: `${levelProgress}%`,
+                  background: LEVEL_COLOR[currentLevel],
+                }}
+              />
+            </div>
+            <p className="dash-progress-label">
+              Average: <strong>{avgScore}%</strong> / 70% needed
+            </p>
+          </>
+        )}
+
+        {levelIndex === LEVEL_ORDER.length - 1 && (
+          <p className="dash-unlock-hint" style={{ color: '#6a1b9a' }}>
+            🎓 Advanced level unlocked — all content available
+          </p>
         )}
       </div>
 
-      <p className="discipline-count">{filtered.length} Q&amp;As</p>
-
-      {/* Locked */}
-      {isLocked(activeLevel) ? (
-        <div className="disc-locked-msg">
-          <div className="disc-locked-icon">🔒</div>
-          <h3>Level Locked</h3>
-          <p>Complete all Beginner content and achieve 70% quiz average to unlock {activeLevel.charAt(0).toUpperCase() + activeLevel.slice(1)}.</p>
+      {/* ── Stats row ──────────────────────────────────────── */}
+      <div className="dash-stats-row">
+        <div className="dash-stat-card card">
+          <p className="dash-stat-value">{totalQuizzes}</p>
+          <p className="dash-stat-label">Quizzes Taken</p>
         </div>
-
-      ) : filtered.length === 0 ? (
-        <div className="discipline-empty">
-          <p>{search ? 'No results found.' : 'Content coming soon for this level.'}</p>
+        <div className="dash-stat-card card">
+          <p
+            className="dash-stat-value"
+            style={{ color: avgScore >= 70 ? '#2e7d32' : '#c0392b' }}
+          >
+            {totalQuizzes > 0 ? `${avgScore}%` : '—'}
+          </p>
+          <p className="dash-stat-label">Average Score</p>
         </div>
-
-      ) : (
-        <div className="qa-list">
-          {filtered.map((qa, i) => {
-            const qid = qa.id || i
-            const open = expandedId === qid
-            return (
-              <div key={qid} className={`qa-item${open ? ' qa-item--open' : ''}`}>
-                <button className="qa-question-btn" onClick={() => toggle(qid)}>
-                  <span className="qa-num">{i + 1}</span>
-                  <span className="qa-question-text">{qa.question}</span>
-                  <span className="qa-chevron">{open ? '▲' : '▼'}</span>
-                </button>
-                {open && (
-                  <div className="qa-answer">
-                    <div className="qa-answer-body">
-                      <p>{qa.answer}</p>
-                    </div>
-                    {qa.source && (
-                      <p className="qa-source">
-                        <span className="qa-source-label">📚 Source:</span>
-                        {qa.source}
-                      </p>
-                    )}
-                    {qa.tags?.length > 0 && (
-                      <div className="qa-tags">
-                        {qa.tags.map(t => (
-                          <span key={t} className="qa-tag">{t}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          })}
+        <div className="dash-stat-card card">
+          <p className="dash-stat-value" style={{ color: '#094570' }}>
+            {totalQuizzes > 0 ? `${bestScore}%` : '—'}
+          </p>
+          <p className="dash-stat-label">Best Score</p>
         </div>
-      )}
-
-      {/* Quiz link */}
-      <div className="discipline-quiz-link">
-        <Link to={`/quiz?discipline=${id}`} className="btn btn-primary">
-          Take {discipline.name} Quiz →
-        </Link>
       </div>
 
+      {/* ── Discipline breakdown ────────────────────────────── */}
+      <div className="dash-section">
+        <h2 className="dash-section-title">By Discipline</h2>
+        <div className="dash-discipline-list">
+          {byDiscipline.map(d => (
+            <Link
+              key={d.id}
+              to={`/discipline/${d.id}`}
+              className="dash-disc-row card"
+            >
+              <span className="dash-disc-icon">{d.icon}</span>
+              <div className="dash-disc-info">
+                <span className="dash-disc-name">{d.name}</span>
+                <span className="dash-disc-arabic arabic">{d.arabicName}</span>
+              </div>
+              <div className="dash-disc-stats">
+                {d.avg !== null ? (
+                  <>
+                    <span
+                      className="dash-disc-avg"
+                      style={{ color: d.avg >= 70 ? '#2e7d32' : '#c0392b' }}
+                    >
+                      {d.avg}%
+                    </span>
+                    <span className="dash-disc-count">
+                      {d.quizzes} quiz{d.quizzes !== 1 ? 'zes' : ''}
+                    </span>
+                  </>
+                ) : (
+                  <span className="dash-disc-none">Not started</span>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Recent activity ─────────────────────────────────── */}
+      <div className="dash-section">
+        <h2 className="dash-section-title">Recent Quizzes</h2>
+        {recent.length === 0 ? (
+          <div className="card" style={{ padding: '24px', textAlign: 'center', color: '#666' }}>
+            <p style={{ margin: 0 }}>No quizzes yet.</p>
+            <Link
+              to="/quiz"
+              className="btn btn-primary"
+              style={{ marginTop: 14, display: 'inline-block' }}
+            >
+              Take your first quiz →
+            </Link>
+          </div>
+        ) : (
+          <div className="dash-recent-list">
+            {recent.map((r, i) => {
+              const disc = DISCIPLINES.find(d => d.id === r.discipline)
+              const date = new Date(r.created_at).toLocaleDateString('en-GB', {
+                day: 'numeric', month: 'short',
+              })
+              return (
+                <div key={i} className="dash-recent-row card">
+                  <span className="dash-recent-icon">{disc?.icon || '🎲'}</span>
+                  <div className="dash-recent-info">
+                    <span className="dash-recent-name">{disc?.name || 'Mixed'}</span>
+                    <span className="dash-recent-date">{date}</span>
+                  </div>
+                  <div className="dash-recent-score-wrap">
+                    <span
+                      className="dash-recent-score"
+                      style={{ color: r.percentage >= 70 ? '#2e7d32' : '#c0392b' }}
+                    >
+                      {r.score}/{r.total}
+                    </span>
+                    <span
+                      className="dash-recent-pct"
+                      style={{ color: r.percentage >= 70 ? '#2e7d32' : '#c0392b' }}
+                    >
+                      {r.percentage}%
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ── CTA ─────────────────────────────────────────────── */}
+      <div className="dash-cta">
+        <Link to="/quiz" className="btn btn-primary">Take a Quiz →</Link>
+        <Link to="/"     className="btn btn-ghost">Browse Disciplines</Link>
+      </div>
     </div>
   )
 }

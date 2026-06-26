@@ -1,453 +1,279 @@
-/* ============================================
-   Dashboard Page
-   ============================================ */
+/* ============================================================
+   DASHBOARD PAGE STYLES
+   src/pages/Dashboard.css
+   ============================================================ */
 
 .dashboard-page {
-  padding-top: 32px;
-  max-width: 720px;
+  max-width: 680px;
 }
 
-/* Loading */
-.dashboard-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px;
-  gap: 16px;
-  color: #6a8090;
-  font-size: 0.875rem;
+/* ── Level card ───────────────────────────────────────────── */
+
+.dash-level-card {
+  padding: 20px;
+  margin-bottom: 16px;
 }
 
-.dashboard-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid #e8f0f8;
-  border-top-color: #094570;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Banner */
-.dashboard-banner {
-  background: linear-gradient(135deg, #094570, #1a6fa8);
-  border-radius: 16px;
-  padding: 28px;
-  margin-bottom: 20px;
+.dash-level-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-  box-shadow: 0 8px 24px rgba(9,69,112,0.25);
+  margin-bottom: 12px;
 }
 
-.dashboard-banner-left { flex: 1; }
-
-.dashboard-welcome {
-  font-family: var(--font-arabic);
-  font-size: 1rem;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 4px;
+.dash-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #666;
+  margin: 0 0 4px;
 }
 
-.dashboard-name {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 10px;
+.dash-level-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
 }
 
-.dashboard-hadith {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.6);
-  font-style: italic;
-  line-height: 1.6;
-  max-width: 380px;
+.dash-level-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
-.dashboard-level-badge {
+.dash-level-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e0eaf2;
+  transition: background 0.2s;
+}
+
+.dash-level-dot--active {
+  background: #094570;
+}
+
+.dash-unlock-hint {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0 0 10px;
+}
+
+.dash-progress-bar {
+  height: 8px;
+  background: #e0eaf2;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.dash-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s ease;
+}
+
+.dash-progress-label {
+  font-size: 0.8rem;
+  color: #555;
+  margin: 0;
+}
+
+/* ── Stats row ────────────────────────────────────────────── */
+
+.dash-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.dash-stat-card {
+  padding: 16px 12px;
   text-align: center;
-  padding: 16px 20px;
-  background: rgba(255,255,255,0.1);
-  border: 2px solid;
-  border-radius: 14px;
-  min-width: 110px;
+}
+
+.dash-stat-value {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #0d1b2a;
+  margin: 0 0 4px;
+  line-height: 1;
+}
+
+.dash-stat-label {
+  font-size: 0.72rem;
+  color: #666;
+  font-weight: 500;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Section ──────────────────────────────────────────────── */
+
+.dash-section {
+  margin-bottom: 28px;
+}
+
+.dash-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #094570;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Discipline list ──────────────────────────────────────── */
+
+.dash-discipline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-disc-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.dash-disc-row:hover {
+  border-color: #85CCFF;
+  box-shadow: 0 2px 10px rgba(9, 69, 112, 0.08);
+}
+
+.dash-disc-icon {
+  font-size: 1.3rem;
   flex-shrink: 0;
 }
 
-.dashboard-level-arabic {
-  font-size: 1.3rem;
-  margin-bottom: 2px;
-}
-
-.dashboard-level-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 6px;
-}
-
-.dashboard-level-score {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.6);
-}
-
-/* Tabs */
-.dashboard-tabs {
-  display: flex;
-  background: #f0f7ff;
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 20px;
-  gap: 4px;
-}
-
-.dashboard-tab {
+.dash-disc-info {
   flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 9px;
-  background: transparent;
-  color: #6a8090;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: var(--font-ui);
-}
-
-.dashboard-tab--active {
-  background: #094570;
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(9,69,112,0.3);
-}
-
-/* Stats grid */
-.dashboard-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.dashboard-stat {
-  padding: 20px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 12px;
-  text-align: center;
-}
-
-.dashboard-stat-num {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #094570;
-  line-height: 1;
-  margin-bottom: 6px;
-}
-
-.dashboard-stat-label {
-  font-size: 0.75rem;
-  color: #6a8090;
-  font-weight: 600;
-}
-
-/* Section title */
-.dashboard-section-title {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #4a6080;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  margin-bottom: 16px;
-}
-
-/* Level progress */
-.dashboard-progress-card {
-  padding: 24px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 14px;
-  margin-bottom: 16px;
-}
-
-.dashboard-level-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  position: relative;
-}
-
-.dashboard-level-row::before {
-  content: '';
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  right: 8px;
-  height: 2px;
-  background: #e8f0f8;
-  z-index: 0;
-}
-
-.dashboard-level-step {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  position: relative;
-  z-index: 1;
+  gap: 2px;
 }
 
-.dashboard-level-step-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid #e8f0f8;
-  transition: all 0.3s ease;
-}
-
-.dashboard-level-step--active .dashboard-level-step-dot {
-  border-color: var(--level-color);
-  box-shadow: 0 0 8px rgba(0,0,0,0.15);
-}
-
-.dashboard-level-step-label {
-  font-size: 0.7rem;
-}
-
-.dashboard-progress-bar-wrapper {
-  height: 6px;
-  background: #e8f0f8;
-  border-radius: 100px;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-
-.dashboard-progress-bar {
-  height: 100%;
-  border-radius: 100px;
-  transition: width 1s ease;
-}
-
-.dashboard-progress-note {
-  font-size: 0.78rem;
-  color: #6a8090;
-  text-align: center;
-}
-
-/* Recent quizzes */
-.dashboard-recent {
-  padding: 24px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 14px;
-  margin-bottom: 16px;
-}
-
-.dashboard-recent-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.dashboard-recent-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #f0f4f8;
-}
-
-.dashboard-recent-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.dashboard-recent-discipline {
-  font-size: 0.875rem;
+.dash-disc-name {
+  font-size: 0.9rem;
   font-weight: 600;
   color: #0d1b2a;
-  margin-bottom: 3px;
 }
 
-.dashboard-recent-date {
-  font-size: 0.75rem;
-  color: #8a9ab0;
-}
-
-.dashboard-recent-score {
-  padding: 4px 12px;
-  border-radius: 100px;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-/* Empty state */
-.dashboard-empty {
-  padding: 48px 24px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 14px;
-  text-align: center;
-}
-
-.dashboard-empty-icon {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
-}
-
-.dashboard-empty-text {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #094570;
-  margin-bottom: 6px;
-}
-
-.dashboard-empty-sub {
-  font-size: 0.825rem;
-  color: #8a9ab0;
-}
-
-/* Disciplines tab */
-.dashboard-disciplines {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.dashboard-disc-card {
-  padding: 20px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 12px;
-}
-
-.dashboard-disc-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.dashboard-disc-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.dashboard-disc-name {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #094570;
-  margin-bottom: 2px;
-}
-
-.dashboard-disc-arabic {
+.dash-disc-arabic {
   font-size: 0.85rem;
-  color: #6a8090;
+  color: #094570;
 }
 
-.dashboard-disc-stats {
-  margin-left: auto;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.dashboard-disc-quizzes {
-  display: block;
-  font-size: 0.72rem;
-  color: #8a9ab0;
-  margin-bottom: 2px;
-}
-
-.dashboard-disc-avg {
-  font-size: 1rem;
-  font-weight: 800;
-}
-
-.dashboard-disc-bar-wrapper {
-  height: 6px;
-  background: #e8f0f8;
-  border-radius: 100px;
-  overflow: hidden;
-}
-
-.dashboard-disc-bar {
-  height: 100%;
-  border-radius: 100px;
-  transition: width 0.8s ease;
-  min-width: 4px;
-}
-
-/* History tab */
-.dashboard-history-list {
+.dash-disc-stats {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.dashboard-history-item {
-  padding: 16px 20px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.dashboard-history-discipline {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #094570;
-  margin-bottom: 4px;
-}
-
-.dashboard-history-date {
-  font-size: 0.75rem;
-  color: #8a9ab0;
-}
-
-.dashboard-history-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-end;
+  gap: 2px;
   flex-shrink: 0;
 }
 
-.dashboard-history-score {
-  padding: 4px 12px;
-  border-radius: 100px;
-  font-size: 0.8rem;
+.dash-disc-avg {
+  font-size: 1rem;
   font-weight: 700;
 }
 
-.dashboard-history-pct {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #094570;
-  min-width: 44px;
-  text-align: right;
+.dash-disc-count {
+  font-size: 0.72rem;
+  color: #888;
 }
 
-/* Mobile */
-@media (max-width: 600px) {
-  .dashboard-stats {
-    grid-template-columns: repeat(2, 1fr);
+.dash-disc-none {
+  font-size: 0.78rem;
+  color: #aaa;
+}
+
+/* ── Recent list ──────────────────────────────────────────── */
+
+.dash-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-recent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.dash-recent-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.dash-recent-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dash-recent-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #0d1b2a;
+}
+
+.dash-recent-date {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.dash-recent-score-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.dash-recent-score {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.dash-recent-pct {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ── CTA ──────────────────────────────────────────────────── */
+
+.dash-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding-bottom: 32px;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+
+@media (max-width: 420px) {
+  .dash-stats-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
   }
 
-  .dashboard-banner {
-    flex-direction: column;
+  .dash-stat-value {
+    font-size: 1.3rem;
   }
 
-  .dashboard-level-badge {
-    width: 100%;
+  .dash-stat-label {
+    font-size: 0.65rem;
   }
 }
