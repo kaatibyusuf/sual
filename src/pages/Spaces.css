@@ -956,3 +956,29 @@
 [data-theme="dark"] .spaces-class-cta-note {
   color: #4a6080;
 }
+.spaces-post-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.spaces-post-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e8f0f8;
+  color: #094570;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.spaces-post-author-name {
+  font-size: 0.78rem;
+  color: #666;
+  font-weight: 500;
+}

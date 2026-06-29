@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './Profile.css'
+import { BadgesSection } from '../components/Badges.jsx'
+
 
 export default function Profile({ user }) {
   if (!user) return null
@@ -45,9 +47,10 @@ export default function Profile({ user }) {
       setSubscription(null)
     } finally {
       setSubLoading(false)
+
     }
   }
-
+<BadgesSection user={user} />
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0]
     if (!file) return

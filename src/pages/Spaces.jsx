@@ -1,3 +1,4 @@
+import { BadgeStrip } from '../components/Badges.jsx'
 import React, { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './Spaces.css'
@@ -201,22 +202,28 @@ export default function Spaces({ user }) {
   }, [user])
 
   const fetchPosts = useCallback(async () => {
-    if (!user) return
-    setPostsLoading(true)
-    try {
-      let query = supabase
-        .from('spaces_posts')
-        .select('*')
-        .order('created_at', { ascending: false })
-      if (category !== 'all') query = query.eq('category', category)
-      const { data } = await query
-      setPosts(data || [])
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setPostsLoading(false)
-    }
-  }, [user, category])
+  if (!user) return
+  setPostsLoading(true)
+  try {
+    let query = supabase
+      .from('spaces_posts')
+      .select('*, profiles(badge_ids)')
+      .order('created_at', { ascending: false })
+    if (category !== 'all') query = query.eq('category', category)
+    const { data } = await query
+    
+    // Flatten badge_ids onto each post
+    const enriched = (data || []).map(post => ({
+      ...post,
+      author_badge_ids: post.profiles?.badge_ids || [],
+    }))
+    setPosts(enriched)
+  } catch (err) {
+    console.error(err)
+  } finally {
+    setPostsLoading(false)
+  }
+}, [user, category])
 
   useEffect(() => {
     if (!user) return
@@ -244,13 +251,18 @@ export default function Spaces({ user }) {
   if (!user) return null
 
   const fetchReplies = async (postId) => {
-    const { data } = await supabase
-      .from('spaces_replies')
-      .select('*')
-      .eq('post_id', postId)
-      .order('created_at', { ascending: true })
-    setReplies(data || [])
-  }
+  const { data } = await supabase
+    .from('spaces_replies')
+    .select('*, profiles(badge_ids)')
+    .eq('post_id', postId)
+    .order('created_at', { ascending: true })
+  
+  const enriched = (data || []).map(r => ({
+    ...r,
+    author_badge_ids: r.profiles?.badge_ids || [],
+  }))
+  setReplies(enriched)
+}
 
   const openPost = async (post) => {
     setActivePost(post)
@@ -332,16 +344,19 @@ export default function Spaces({ user }) {
         <button className="spaces-back" onClick={() => { setActivePost(null); setReplies([]) }}>
           ← Back to Spaces
         </button>
-        <div className="spaces-post-detail card">
-          <div className="spaces-post-detail-header">
-            <span className="spaces-cat-badge">
-              {CATEGORIES.find(c => c.key === activePost.category)?.icon} {activePost.category}
-            </span>
-            <h2 className="spaces-post-detail-title">{activePost.title}</h2>
-            <p className="spaces-post-detail-date">{formatDate(activePost.created_at)}</p>
-          </div>
-          <p className="spaces-post-detail-body">{activePost.body}</p>
-        </div>
+        <div className="spaces-post-top">
+  <span className="spaces-cat-badge">
+    {CATEGORIES.find(c => c.key === post.category)?.icon} {post.category}
+  </span>
+  <span className="spaces-post-date">{formatDate(post.created_at)}</span>
+</div>
+<div className="spaces-post-author">
+  <div className="spaces-post-avatar">
+    {getInitials(post.user_id)}
+  </div>
+  <span className="spaces-post-author-name">Member</span>
+  <BadgeStrip earnedIds={post.author_badge_ids || []} />
+</div>
 
         <div className="spaces-replies">
           <h3 className="spaces-replies-title">
@@ -352,6 +367,7 @@ export default function Spaces({ user }) {
           )}
           {replies.map((r, i) => (
             <div key={i} className={`spaces-reply card ${r.is_scholar_answer ? 'spaces-reply--scholar' : ''}`}>
+              {!r.is_scholar_answer && <BadgeStrip earnedIds={r.author_badge_ids || []} />}
               <div className="spaces-reply-header">
                 <div className="spaces-reply-avatar" style={{ background: r.is_scholar_answer ? '#094570' : '#e8f0f8' }}>
                   <span style={{ color: r.is_scholar_answer ? '#ffffff' : '#094570' }}>
