@@ -1,17 +1,3 @@
-// ============================================================
-// SUAL — ADVANCED LEVEL CONTENT
-// All seven disciplines | 50 Q&As + 30 quiz questions each
-// Sources: primary classical texts across all disciplines
-// Scholars cited: Ibn Taymiyyah, Ibn Al-Qayyim, Al-Ghazali,
-// Ash-Shatibi, Ibn Hajar, An-Nawawi, As-Suyuti, Ibn Hisham,
-// Sibawayhi, Al-Khalil, Ibn Jinni, Ibn Malik, Al-Jurjani,
-// Ibn Kathir, At-Tabari, Al-Qurtubi, and others
-// ============================================================
-
-// ============================================================
-// ADVANCED FIQH
-// ============================================================
-
 export const ADVANCED_FIQH_QA = [
   {
     id: 'fiqh_adv_1',
@@ -414,7 +400,6 @@ export const ADVANCED_FIQH_QA = [
     source: 'Ar-Risalah, Ash-Shafi\'i; Usul As-Sarakhsi; Rawdat An-Nazir, Ibn Qudamah; Al-Muwatta (Introduction), Imam Malik; Tarikh Al-Fiqh Al-Islami, Khudhri Bik; Al-Madhahib Al-Fiqhiyyah Al-Arba\'ah, Mahmud Al-Qabbani',
   },
 ]
-
 export const ADVANCED_FIQH_QUIZ = [
   {
     id: 'fiqh_adv_q1',
