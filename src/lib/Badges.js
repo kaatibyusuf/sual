@@ -1,5 +1,3 @@
-// src/lib/badges.js
-// Badge definitions and earned calculation logic
 
 export const BADGES = [
   {

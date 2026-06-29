@@ -1,8 +1,7 @@
 // src/components/Badges.jsx
-
+import { BADGES, calculateEarnedBadges, getNewlyEarned } from '../lib/badges.js'
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { BADGES, calculateEarnedBadges, getNewlyEarned } from '../lib/badges.js'
 import './Badges.css'
 
 // ── Badge Notification Toast ─────────────────────────────────
