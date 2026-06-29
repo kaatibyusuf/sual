@@ -9,6 +9,7 @@ import {
   INTERMEDIATE_USUL_QA,
   INTERMEDIATE_SARF_QA,
   INTERMEDIATE_NAHW_QA,
+  INTERMEDIATE_TAFSEER_QA,
 } from '../data/knowledge_intermediate.js'
 import {
   ADVANCED_FIQH_QA,
@@ -28,7 +29,7 @@ const INTERMEDIATE_ALL = {
   usul:      INTERMEDIATE_USUL_QA || [],
   sarf:      INTERMEDIATE_SARF_QA || [],
   nahw:      INTERMEDIATE_NAHW_QA || [],
-  tafseer:   [],
+  tafseer:   INTERMEDIATE_TAFSEER_QA || [],
 }
 
 const ADVANCED_ALL = {
