@@ -277,3 +277,72 @@
     font-size: 0.65rem;
   }
 }
+
+/* ============================================
+   Dark mode
+   ============================================ */
+
+[data-theme="dark"] .dash-label {
+  color: #8aaac8;
+}
+
+[data-theme="dark"] .dash-unlock-hint {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .dash-level-dot {
+  background: #1e3448;
+}
+
+[data-theme="dark"] .dash-progress-bar {
+  background: #1e3448;
+}
+
+[data-theme="dark"] .dash-progress-label {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .dash-stat-value {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .dash-stat-label {
+  color: #8aaac8;
+}
+
+[data-theme="dark"] .dash-section-title {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .dash-disc-row:hover {
+  border-color: #85CCFF;
+  box-shadow: 0 2px 10px rgba(133, 204, 255, 0.10);
+}
+
+[data-theme="dark"] .dash-disc-name {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .dash-disc-arabic {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .dash-disc-count {
+  color: #7a92ac;
+}
+
+[data-theme="dark"] .dash-disc-none {
+  color: #5a7290;
+}
+
+[data-theme="dark"] .dash-recent-name {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .dash-recent-date {
+  color: #7a92ac;
+}
+
+[data-theme="dark"] .dash-empty-quizzes {
+  color: #a8c0d8;
+}

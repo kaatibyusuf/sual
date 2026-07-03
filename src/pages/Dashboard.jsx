@@ -204,7 +204,7 @@ export default function Dashboard({ user }) {
       <div className="dash-section">
         <h2 className="dash-section-title">Recent Quizzes</h2>
         {recent.length === 0 ? (
-          <div className="card" style={{ padding: '24px', textAlign: 'center', color: '#666' }}>
+          <div className="card dash-empty-quizzes" style={{ padding: '24px', textAlign: 'center' }}>
             <p style={{ margin: 0 }}>No quizzes yet.</p>
             <Link
               to="/quiz"
