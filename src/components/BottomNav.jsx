@@ -5,6 +5,7 @@ import './BottomNav.css'
 const NAV_ITEMS = [
   { to: '/dashboard',     icon: '📊', label: 'Dashboard',   arabic: 'لَوْحَتِي' },
   { to: '/',               icon: '📚', label: 'Disciplines', arabic: 'المَوَادّ',   end: true },
+  { to: '/flashcards',     icon: '🗂️', label: 'Flashcards',  arabic: 'البِطَاقَات' },
   { to: '/quiz',           icon: '🎯', label: 'Quiz',        arabic: 'الإِخْتِبَار' },
   { to: '/duas',           icon: '🤲', label: 'Duas',        arabic: 'الدُعَاء' },
   { to: '/prayer-times',   icon: '🕌', label: 'Prayer',      arabic: 'مَوَاقِيت' },

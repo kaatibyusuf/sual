@@ -45,6 +45,12 @@ const ICONS = {
       <line x1="16" y1="3" x2="16" y2="7" />
     </svg>
   ),
+  flashcards: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="7" width="14" height="10" rx="2" transform="rotate(-6 12 12)" />
+      <rect x="6" y="8" width="14" height="10" rx="2" />
+    </svg>
+  ),
 }
 
 const ACTIONS = [
@@ -63,6 +69,14 @@ const ACTIONS = [
     iconColor: '#26215C',
     title: 'Disciplines',
     desc: 'Explore all Islamic subjects',
+  },
+  {
+    to: '/flashcards',
+    icon: 'flashcards',
+    color: '#7EC8E3',
+    iconColor: '#062B3D',
+    title: 'Flashcards',
+    desc: 'Review key terms and concepts',
   },
   {
     to: '/quiz',
