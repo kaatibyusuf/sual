@@ -22,6 +22,15 @@ import {
   ADVANCED_TAFSEER_QUIZ,
 } from '../data/knowledge_advanced.js'
 
+const INTERMEDIATE_QUIZ_ALL = {
+  fiqh:      INTERMEDIATE_QUIZ || [],
+  seerah:    INTERMEDIATE_SEERAH_QUIZ || [],
+  arabiyyah: INTERMEDIATE_ARABIYYAH_QUIZ || [],
+  usul:      INTERMEDIATE_USUL_QUIZ || [],
+  sarf:      INTERMEDIATE_SARF_QUIZ || [],
+  nahw:      INTERMEDIATE_NAHW_QUIZ || [],
+}
+
 const ADVANCED_QUIZ_ALL = {
   fiqh:      ADVANCED_FIQH_QUIZ || [],
   seerah:    ADVANCED_SEERAH_QUIZ || [],
@@ -31,6 +40,7 @@ const ADVANCED_QUIZ_ALL = {
   nahw:      ADVANCED_NAHW_QUIZ || [],
   tafseer:   ADVANCED_TAFSEER_QUIZ || [],
 }
+
 
 const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced']
 
