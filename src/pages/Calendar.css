@@ -1,17 +1,17 @@
 /* ============================================
-   Islamic Calendar — warm parchment & gold theme
+   Islamic Calendar — blue & white
    ============================================ */
 
 :root {
-  --cal-navy:        #0f3d52;
-  --cal-navy-light:  #1e6b82;
-  --cal-gold:        #c8952f;
-  --cal-gold-light:  #e2b768;
-  --cal-cream:       #fbf6ec;
-  --cal-cream-dark:  #f2e8d3;
-  --cal-sand-border: #e6d7b8;
-  --cal-ink:         #2b2419;
-  --cal-muted:       #8a7a5c;
+  --cal-navy:        #094570;
+  --cal-navy-light:  #1a6fa8;
+  --cal-blue-pale:   #e8f4ff;
+  --cal-border:      #d0e8f8;
+  --cal-border-soft: #e8f0f8;
+  --cal-ink:         #0d1b2a;
+  --cal-text-body:   #2c3e50;
+  --cal-muted:       #6a8090;
+  --cal-muted-light: #8a9ab0;
 }
 
 .cal-page {
@@ -19,48 +19,21 @@
   max-width: 720px;
 }
 
-/* Subtle 8-point star lattice texture, used as a quiet signature touch */
-.cal-star-texture {
-  background-image:
-    radial-gradient(circle at 12.5% 12.5%, rgba(255,255,255,0.35) 0 1.5px, transparent 1.6px),
-    radial-gradient(circle at 62.5% 37.5%, rgba(255,255,255,0.35) 0 1.5px, transparent 1.6px),
-    radial-gradient(circle at 37.5% 62.5%, rgba(255,255,255,0.35) 0 1.5px, transparent 1.6px),
-    radial-gradient(circle at 87.5% 87.5%, rgba(255,255,255,0.35) 0 1.5px, transparent 1.6px);
-  background-size: 48px 48px;
-}
-
 /* Today Banner */
 .cal-today-banner {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #0a2e40, var(--cal-navy) 55%, var(--cal-navy-light));
-  border-radius: 18px;
-  padding: 22px 26px;
+  background: linear-gradient(135deg, var(--cal-navy), var(--cal-navy-light));
+  border-radius: 16px;
+  padding: 20px 24px;
   margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  box-shadow: 0 10px 28px rgba(15, 61, 82, 0.35);
-  border: 1px solid rgba(200, 149, 47, 0.35);
-}
-
-.cal-today-banner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 12.5% 12.5%, rgba(226,183,104,0.25) 0 1.5px, transparent 1.6px),
-    radial-gradient(circle at 62.5% 37.5%, rgba(226,183,104,0.25) 0 1.5px, transparent 1.6px),
-    radial-gradient(circle at 37.5% 62.5%, rgba(226,183,104,0.25) 0 1.5px, transparent 1.6px),
-    radial-gradient(circle at 87.5% 87.5%, rgba(226,183,104,0.25) 0 1.5px, transparent 1.6px);
-  background-size: 48px 48px;
-  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(9, 69, 112, 0.3);
 }
 
 .cal-today-hijri {
-  position: relative;
   display: flex;
   align-items: baseline;
   gap: 10px;
@@ -69,36 +42,36 @@
 .cal-today-day {
   font-size: 3rem;
   font-weight: 800;
-  color: var(--cal-gold-light);
+  color: #ffffff;
   line-height: 1;
-  text-shadow: 0 2px 12px rgba(200, 149, 47, 0.4);
 }
 
 .cal-today-month {
   font-size: 1.4rem;
-  color: #f4e8cc;
+  color: #85CCFF;
 }
 
 .cal-today-year {
   font-size: 1rem;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.7);
 }
 
 .cal-today-greg {
-  position: relative;
   font-size: 0.9rem;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.8);
   text-align: right;
 }
 
-/* Calendar Card */
+/* Calendar Card — forced light card regardless of app-wide theme,
+   so all text inside it needs its own explicit colors (see below) */
 .cal-card {
-  background: var(--cal-cream);
+  background: #ffffff;
   border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 4px 24px rgba(120, 90, 40, 0.1);
-  border: 1.5px solid var(--cal-sand-border);
+  box-shadow: 0 4px 24px rgba(9, 69, 112, 0.1);
+  border: 1.5px solid var(--cal-border);
   margin-bottom: 20px;
+  color-scheme: light;
 }
 
 /* Month Navigation */
@@ -113,8 +86,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1.5px solid var(--cal-sand-border);
-  background: var(--cal-cream-dark);
+  border: 1.5px solid #c8d8e8;
+  background: #f5f8fb;
   color: var(--cal-navy);
   font-size: 1.4rem;
   cursor: pointer;
@@ -126,10 +99,10 @@
 }
 
 .cal-nav-btn:hover {
-  background: var(--cal-gold);
+  background: var(--cal-navy);
   color: #ffffff;
-  border-color: var(--cal-gold);
-  box-shadow: 0 4px 12px rgba(200, 149, 47, 0.35);
+  border-color: var(--cal-navy);
+  box-shadow: 0 4px 12px rgba(9, 69, 112, 0.3);
 }
 
 .cal-nav-center {
@@ -160,28 +133,28 @@
   text-align: center;
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--cal-muted);
+  color: var(--cal-muted-light);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 6px 0;
 }
 
 .cal-weekday--friday {
-  color: var(--cal-gold);
+  color: var(--cal-navy);
 }
 
 /* Days Grid */
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 4px;
   margin-bottom: 20px;
 }
 
 .cal-cell {
   aspect-ratio: 1;
-  border-radius: 14px;
-  border: 1.5px solid transparent;
+  border-radius: 50%;
+  border: none;
   background: transparent;
   cursor: pointer;
   display: flex;
@@ -189,7 +162,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: all 0.18s ease;
+  transition: all 0.2s ease;
   font-family: var(--font-ui);
   padding: 0;
 }
@@ -199,13 +172,12 @@
 }
 
 .cal-cell:not(.cal-cell--empty):hover {
-  background: var(--cal-cream-dark);
-  border-color: var(--cal-sand-border);
-  transform: translateY(-2px);
+  background: #f0f7ff;
+  transform: scale(1.1);
 }
 
 .cal-cell-day {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--cal-ink);
   line-height: 1;
@@ -214,12 +186,12 @@
 .cal-cell-icon {
   font-size: 0.55rem;
   line-height: 1;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .cal-cell-dot {
   position: absolute;
-  bottom: 4px;
+  bottom: 3px;
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
@@ -227,26 +199,25 @@
   border-radius: 50%;
 }
 
-/* Today — solid gold fill, unmistakable */
+/* Today — solid fill, unmistakable */
 .cal-cell--today {
-  background: linear-gradient(150deg, var(--cal-gold-light), var(--cal-gold)) !important;
-  border-color: var(--cal-gold);
-  box-shadow: 0 4px 16px rgba(200, 149, 47, 0.45);
+  background: linear-gradient(135deg, var(--cal-navy), var(--cal-navy-light)) !important;
+  box-shadow: 0 4px 12px rgba(9, 69, 112, 0.4);
 }
 
 .cal-cell--today .cal-cell-day {
-  color: #3a2a06 !important;
+  color: #ffffff !important;
   font-weight: 800;
 }
 
 .cal-cell--today:hover {
-  transform: translateY(-2px) scale(1.04);
+  transform: scale(1.1);
 }
 
-/* Event day — warm tinted fill */
+/* Event day */
 .cal-cell--event {
-  background: color-mix(in srgb, var(--event-color) 12%, var(--cal-cream));
-  border: 1.5px solid color-mix(in srgb, var(--event-color) 35%, transparent);
+  background: color-mix(in srgb, var(--event-color) 10%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--event-color) 30%, transparent);
 }
 
 .cal-cell--event .cal-cell-day {
@@ -260,33 +231,28 @@
   font-weight: 700;
 }
 
-.cal-cell--friday {
-  background: rgba(15, 61, 82, 0.05);
-}
-
-/* Selected — outlined ring, deliberately different from "today" */
+/* Selected — outlined ring, deliberately different from "today" so the
+   two states can never be confused with each other */
 .cal-cell--selected {
-  border: 2px solid var(--cal-navy) !important;
-  background: var(--cal-cream-dark) !important;
-  box-shadow: 0 0 0 3px rgba(15, 61, 82, 0.12);
+  border: 2.5px solid var(--cal-navy);
+  background: var(--cal-blue-pale) !important;
 }
 
 .cal-cell--selected .cal-cell-day {
   color: var(--cal-navy) !important;
 }
 
-/* When a day is both today AND selected, layer a navy ring over the gold fill */
 .cal-cell--today.cal-cell--selected {
-  box-shadow: 0 0 0 3px rgba(15, 61, 82, 0.25), 0 4px 16px rgba(200, 149, 47, 0.45);
+  box-shadow: 0 0 0 3px var(--cal-blue-pale), 0 4px 12px rgba(9, 69, 112, 0.4);
 }
 
 /* Legend */
 .cal-legend {
   display: flex;
-  gap: 18px;
+  gap: 16px;
   flex-wrap: wrap;
   padding-top: 16px;
-  border-top: 1px solid var(--cal-sand-border);
+  border-top: 1px solid var(--cal-border-soft);
 }
 
 .cal-legend-item {
@@ -304,27 +270,28 @@
 }
 
 .cal-legend-dot--today {
-  background: linear-gradient(150deg, var(--cal-gold-light), var(--cal-gold));
+  background: linear-gradient(135deg, var(--cal-navy), var(--cal-navy-light));
 }
 
 .cal-legend-dot--event {
-  background: #a63a2e;
+  background: #c0392b;
 }
 
 .cal-legend-dot--friday {
   background: var(--cal-navy);
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 /* Selected Day Detail */
 .cal-detail-card {
-  background: var(--cal-cream);
+  background: #ffffff;
   border-radius: 16px;
   padding: 20px 24px;
-  border: 1.5px solid var(--cal-sand-border);
+  border: 1.5px solid var(--cal-border);
   margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(120, 90, 40, 0.08);
+  box-shadow: 0 2px 12px rgba(9, 69, 112, 0.08);
   animation: slideDown 0.2s ease;
+  color-scheme: light;
 }
 
 @keyframes slideDown {
@@ -355,12 +322,12 @@
 
 .cal-detail-month {
   font-size: 1.1rem;
-  color: #4a3f2c;
+  color: var(--cal-text-body);
 }
 
 .cal-detail-year {
   font-size: 0.85rem;
-  color: var(--cal-muted);
+  color: var(--cal-muted-light);
 }
 
 .cal-detail-greg {
@@ -373,7 +340,7 @@
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  background: var(--cal-cream-dark);
+  background: #f5f8fb;
   border-radius: 10px;
 }
 
@@ -391,12 +358,22 @@
 
 .cal-detail-event-arabic {
   font-size: 0.95rem;
-  color: #4a3f2c;
+  color: var(--cal-text-body);
+  margin-bottom: 6px;
+}
+
+/* Previously undefined — this was the actual cause of the illegible text.
+   With no rule at all, it silently inherited the app's global (theme-dependent)
+   body text color instead of something guaranteed readable on a white card. */
+.cal-detail-event-desc {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--cal-text-body);
 }
 
 .cal-detail-no-event {
   font-size: 0.875rem;
-  color: var(--cal-muted);
+  color: var(--cal-muted-light);
   font-style: italic;
   text-align: center;
   padding: 12px;
@@ -410,7 +387,7 @@
 .cal-events-title {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #4a3f2c;
+  color: var(--cal-text-body);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   margin-bottom: 12px;
@@ -427,18 +404,18 @@
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  background: var(--cal-cream);
+  background: #ffffff;
   border-radius: 12px;
-  border: 1.5px solid var(--cal-sand-border);
+  border: 1.5px solid var(--cal-border);
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 2px 8px rgba(120, 90, 40, 0.06);
+  box-shadow: 0 2px 8px rgba(9, 69, 112, 0.06);
+  color-scheme: light;
 }
 
 .cal-event-item:hover {
-  box-shadow: 0 4px 16px rgba(120, 90, 40, 0.12);
+  box-shadow: 0 4px 16px rgba(9, 69, 112, 0.12);
   transform: translateX(4px);
-  border-color: var(--cal-gold);
 }
 
 .cal-event-item-icon {
@@ -455,13 +432,20 @@
 
 .cal-event-item-arabic {
   font-size: 0.88rem;
-  color: #4a3f2c;
+  color: var(--cal-text-body);
   margin-bottom: 4px;
 }
 
 .cal-event-item-date {
   font-size: 0.75rem;
-  color: var(--cal-muted);
+  color: var(--cal-muted-light);
+}
+
+/* Same missing-rule bug as above, same fix */
+.cal-event-item-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--cal-text-body);
 }
 
 /* Mobile */
