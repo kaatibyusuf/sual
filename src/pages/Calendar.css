@@ -19,9 +19,11 @@
   max-width: 720px;
 }
 
-/* Today Banner */
+/* Today Banner — solid navy, not a gradient. Flat fills read
+   as more deliberate and keep the banner from competing with the
+   event colors used throughout the rest of the calendar. */
 .cal-today-banner {
-  background: linear-gradient(135deg, var(--cal-navy), var(--cal-navy-light));
+  background: var(--cal-navy);
   border-radius: 16px;
   padding: 20px 24px;
   margin-bottom: 24px;
@@ -30,7 +32,6 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  box-shadow: 0 8px 24px rgba(9, 69, 112, 0.3);
 }
 
 .cal-today-hijri {
@@ -40,25 +41,25 @@
 }
 
 .cal-today-day {
-  font-size: 3rem;
-  font-weight: 800;
+  font-size: 2.6rem;
+  font-weight: 700;
   color: #ffffff;
   line-height: 1;
 }
 
 .cal-today-month {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   color: #85CCFF;
 }
 
 .cal-today-year {
-  font-size: 1rem;
-  color: rgba(255,255,255,0.7);
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.65);
 }
 
 .cal-today-greg {
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.8);
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.75);
   text-align: right;
 }
 
@@ -126,7 +127,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   margin-bottom: 8px;
-  gap: 4px;
+  gap: 3px;
 }
 
 .cal-weekday {
@@ -143,11 +144,12 @@
   color: var(--cal-navy);
 }
 
-/* Days Grid */
+/* Days Grid — tighter gap than before so the grid reads as one
+   cohesive block instead of a loose scatter of circles */
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 3px;
   margin-bottom: 20px;
 }
 
@@ -201,23 +203,24 @@
 
 /* Today — solid fill, unmistakable */
 .cal-cell--today {
-  background: linear-gradient(135deg, var(--cal-navy), var(--cal-navy-light)) !important;
-  box-shadow: 0 4px 12px rgba(9, 69, 112, 0.4);
+  background: var(--cal-navy) !important;
 }
 
 .cal-cell--today .cal-cell-day {
   color: #ffffff !important;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .cal-cell--today:hover {
   transform: scale(1.1);
 }
 
-/* Event day */
+/* Event day — softer tint + a light ring in the event color,
+   tuned down from the previous 10%/30% mix so the fill reads as a
+   quiet highlight rather than competing with the "today" fill */
 .cal-cell--event {
-  background: color-mix(in srgb, var(--event-color) 10%, transparent);
-  border: 1.5px solid color-mix(in srgb, var(--event-color) 30%, transparent);
+  background: color-mix(in srgb, var(--event-color) 12%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--event-color) 45%, transparent);
 }
 
 .cal-cell--event .cal-cell-day {
@@ -243,7 +246,7 @@
 }
 
 .cal-cell--today.cal-cell--selected {
-  box-shadow: 0 0 0 3px var(--cal-blue-pale), 0 4px 12px rgba(9, 69, 112, 0.4);
+  box-shadow: 0 0 0 3px var(--cal-blue-pale);
 }
 
 /* Legend */
@@ -270,7 +273,7 @@
 }
 
 .cal-legend-dot--today {
-  background: linear-gradient(135deg, var(--cal-navy), var(--cal-navy-light));
+  background: var(--cal-navy);
 }
 
 .cal-legend-dot--event {
@@ -362,13 +365,18 @@
   margin-bottom: 6px;
 }
 
-/* Previously undefined — this was the actual cause of the illegible text.
-   With no rule at all, it silently inherited the app's global (theme-dependent)
-   body text color instead of something guaranteed readable on a white card. */
+/* Description text — was previously missing a color rule entirely
+   (silently inherited the app's global theme color). Also now clamped
+   to 4 lines so a long entry can't blow out the card's height; the
+   full text is still in the DOM/accessible to screen readers. */
 .cal-detail-event-desc {
   font-size: 0.9rem;
   line-height: 1.55;
   color: var(--cal-text-body);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cal-detail-no-event {

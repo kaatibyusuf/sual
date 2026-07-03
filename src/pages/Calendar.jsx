@@ -178,7 +178,14 @@ function gregorianToHijri(gYear, gMonth, gDay) {
 
 function hijriToGregorian(hYear, hMonth, hDay) {
   const jd = hijriToJD(hYear, hMonth, hDay)
-  const l = Math.floor(jd) + 68569
+  // Round the half-integer Julian Date to the correct Julian Day Number
+  // before running the Fliegel-Van Flandern conversion below. Without the
+  // "+ 0.5", Math.floor() on a value like 2461234.5 truncates down to
+  // 2461234 instead of rounding to 2461235 — making every date returned
+  // by this function one day earlier than it should be (this only
+  // affected this forward Hijri -> Gregorian direction, not
+  // gregorianToHijri above).
+  const l = Math.floor(jd + 0.5) + 68569
   const n = Math.floor((4 * l) / 146097)
   const l2 = l - Math.floor((146097 * n + 3) / 4)
   const i = Math.floor((4000 * (l2 + 1)) / 1461001)
