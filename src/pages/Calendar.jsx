@@ -134,7 +134,10 @@ const ALWAYS_CIRCLED = {
 
 const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-const HIJRI_EPOCH = 1948439.5
+// Calibrated -1 day from the standard tabular epoch (1948439.5) so the
+// calculated date matches the locally-announced Hijri date — kept in sync
+// with the same constant in PrayerTimes.jsx.
+const HIJRI_EPOCH = 1948438.5
 const GREGORIAN_EPOCH = 1721425.5
 
 function leapGregorian(year) {

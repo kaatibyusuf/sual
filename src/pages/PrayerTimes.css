@@ -84,9 +84,11 @@
   color: #85CCFF;
 }
 
-/* Next prayer */
+/* Next prayer — was rgba(9,69,112,0.06), a near-transparent background that
+   let the dark page show through, making the navy text on top unreadable.
+   Now a solid light tint so the box (and its text) is always legible. */
 .pt-next {
-  background: rgba(9,69,112,0.06);
+  background: #eaf3fb;
   border: 1.5px solid #c8d8e8;
   border-left: 4px solid #094570;
   border-radius: 12px;
@@ -139,8 +141,12 @@
   box-shadow: 0 4px 16px rgba(9,69,112,0.25);
 }
 
+/* Was rgba(9,69,112,0.04) !important — nearly fully transparent, so on a
+   dark page this row went almost black while its text stayed dark navy,
+   making the row (and its prayer time, e.g. Dhuhr) look blank/missing.
+   Now a solid light tint, consistent with the default white row. */
 .pt-prayer-row--next {
-  background: rgba(9,69,112,0.04) !important;
+  background: #eaf3fb !important;
   border-color: #094570 !important;
 }
 
@@ -195,8 +201,10 @@
   color: #ffffff;
 }
 
+/* Was rgba(9,69,112,0.1) — low-contrast text on a near-transparent chip,
+   easy to misread ("Next" looking like "New") at this font size. Now solid. */
 .pt-badge--next {
-  background: rgba(9,69,112,0.1);
+  background: #dbe9f6;
   color: #094570;
 }
 

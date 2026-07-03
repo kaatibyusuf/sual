@@ -17,7 +17,11 @@ const HIJRI_MONTHS = [
 ]
 
 function toHijri(date) {
-  const HIJRI_EPOCH = 1948439.5
+  // Calibrated -1 day from the standard tabular epoch (1948439.5) so the
+  // calculated date matches the locally-announced Hijri date. If your local
+  // moon-sighting authority ever shifts by a day, adjust this constant to
+  // match — and keep it in sync with the same constant in Calendar.jsx.
+  const HIJRI_EPOCH = 1948438.5
   const GREG_EPOCH  = 1721425.5
   function leapGreg(y) { return (y%4===0)&&(!(y%100===0)||(y%400===0)) }
   function gregToJD(y,m,d) {
