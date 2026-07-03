@@ -1,4 +1,4 @@
-/* ============================================================
+//* ============================================================
    QUICK ACTIONS (home screen card grid)
    src/components/QuickActions.css
    ============================================================ */
@@ -80,6 +80,10 @@
   pointer-events: none;
 }
 
+/* Icon badge — background/color now come from an inline style per
+   action (see ACTIONS array in QuickActions.jsx) so each card gets
+   a distinct, legible color instead of a uniform translucent circle.
+   These rules just handle shape, position and the SVG inside it. */
 .quick-action-icon {
   position: absolute;
   top: 14px;
@@ -91,8 +95,13 @@
   justify-content: center;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
-  font-size: 1.05rem;
   z-index: 1;
+}
+
+.quick-action-icon svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .quick-action-title {
