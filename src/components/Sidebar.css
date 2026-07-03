@@ -127,47 +127,15 @@
   font-style: italic;
 }
 
+/* Below 768px, BottomNav.jsx takes over navigation entirely —
+   the sidebar is hidden rather than converted into its own bar,
+   so there's only one nav bar fixed to the bottom on mobile. */
 @media (max-width: 768px) {
   .sidebar {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: auto;
-    flex-direction: row;
-    border-top: 1px solid rgba(133, 204, 255, 0.3);
-    border-radius: 16px 16px 0 0;
+    display: none;
   }
-
-  .sidebar-logo,
-  .sidebar-footer,
-  .sidebar-section-label { display: none; }
-
-  .sidebar-nav {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 8px;
-    gap: 4px;
-    align-items: center;
-  }
-
-  .sidebar-link {
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px 10px;
-    min-width: 64px;
-    align-items: center;
-    margin-bottom: 0;
-    flex-shrink: 0;
-  }
-
-  .sidebar-link-arabic { display: none; }
-  .sidebar-link-latin { font-size: 0.7rem; }
-  .sidebar-link-icon { font-size: 1.2rem; width: auto; }
 }
+
 .sidebar-wa-btn {
   display: flex;
   align-items: center;

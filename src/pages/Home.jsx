@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { DISCIPLINES } from '../data/knowledge.js'
+import QuickActions from '../components/QuickActions.jsx'
 import './Home.css'
 
 export default function Home() {
@@ -24,6 +25,8 @@ export default function Home() {
       <div className="home-divider">
         <span className="home-divider-arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</span>
       </div>
+
+      <QuickActions />
 
       <section>
         <h2 className="home-section-title">Choose a Discipline</h2>

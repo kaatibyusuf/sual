@@ -1,0 +1,88 @@
+/* ============================================================
+   BOTTOM NAVIGATION (mobile only)
+   src/components/BottomNav.css
+   ============================================================ */
+
+.bottom-nav {
+  display: none; /* hidden on desktop by default */
+}
+
+@media (max-width: 768px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-top: 1.5px solid #c8d8e8;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -2px 12px rgba(9, 69, 112, 0.08);
+  }
+
+  .bottom-nav-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 2px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #6a8090;
+    transition: background 0.15s, color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav-card:active {
+    background: #eef5fb;
+  }
+
+  .bottom-nav-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  .bottom-nav-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    font-family: var(--font-ui);
+  }
+
+  .bottom-nav-card--active {
+    color: #094570;
+  }
+
+  .bottom-nav-card--active .bottom-nav-icon {
+    transform: scale(1.08);
+  }
+
+  /* leave room at the bottom of the page so content isn't hidden behind the bar */
+  .page-content {
+    padding-bottom: 84px;
+  }
+}
+
+/* ============================================
+   Dark mode
+   ============================================ */
+
+[data-theme="dark"] .bottom-nav {
+  background: #0a1825;
+  border-top-color: #1e3448;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .bottom-nav-card {
+  color: #6a8090;
+}
+
+[data-theme="dark"] .bottom-nav-card:active {
+  background: #132030;
+}
+
+[data-theme="dark"] .bottom-nav-card--active {
+  color: #85CCFF;
+}

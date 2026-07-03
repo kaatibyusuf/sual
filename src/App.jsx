@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import { supabase } from './lib/supabase.js'
 import Sidebar from './components/Sidebar.jsx'
 import Toolbar from './components/Toolbar.jsx'
+import BottomNav from './components/BottomNav.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 import Auth from './pages/Auth.jsx'
 import LevelSelect from './pages/LevelSelect.jsx'
@@ -173,6 +174,7 @@ export default function App() {
           </Routes>
         </main>
       </div>
+      <BottomNav />
     </div>
   )
 }
