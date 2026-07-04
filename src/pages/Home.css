@@ -52,38 +52,70 @@
   max-width: 480px;
 }
 
-/* ── Today strip ────────────────────────────────────────────────
-   Both cards now share one card treatment (background, radius,
-   shadow) and differ only in their accent color, which is chosen
-   to match what's actually inside the card instead of being
-   picked at random:
-   - Today   -> cool blue, echoes the hero's blue
-   - Prayer  -> gold, matches the amber countdown text inside it
-   Light and dark mode get their own explicit card background
-   instead of the dark-navy-everywhere default this used to have.
-   ────────────────────────────────────────────────────────────── */
-.home-today-strip {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
+/* Compact hero for logged-in users: a slim brand header rather than
+   a pitch. The subtitle is removed in JSX; here we shrink the card
+   so the today panel becomes the first substantial element. */
+.home-hero--compact {
+  padding: 18px 24px;
+  gap: 18px;
+  margin-bottom: 16px;
 }
 
-.home-today-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 14px 16px;
+.home-hero--compact .home-hero-mark {
+  font-size: 2.2rem;
+}
+
+.home-hero--compact .home-hero-title {
+  font-size: 1.3rem;
+  margin-bottom: 0;
+}
+
+.home-hero--compact::after {
+  width: 120px;
+  height: 120px;
+}
+
+/* ── Today panel ────────────────────────────────────────────────
+   One card, two rows, one hairline divider between them. The strip
+   reads as a single "your day" unit instead of two banners. Accent
+   color lives only on the countdown pill (gold = time-sensitive),
+   never on decorative side borders, which clash with the 12px
+   radius anyway. */
+.home-today-panel {
   background: #eef6fc;
   border: 1px solid #d0e8f8;
-  border-left: 3px solid #1a6fa8;
   border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.home-today-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
   text-decoration: none;
 }
 
-.home-today-item--prayer {
-  border-left-color: #c8952f;
+.home-today-row + .home-today-row {
+  border-top: 1px solid #d0e8f8;
+}
+
+.home-today-row--link {
   cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.home-today-row--link:hover {
+  background: #e3f0fa;
+}
+
+.home-today-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
 .home-today-label {
@@ -100,20 +132,29 @@
   color: #0d1b2a;
 }
 
-.home-today-countdown {
+.home-today-pill {
+  flex-shrink: 0;
   font-size: 0.78rem;
-  font-weight: 400;
-  color: #a97a1f;
+  font-weight: 600;
+  color: #7a5a13;
+  background: #fdf3dd;
+  border: 1px solid #ecd9a8;
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
-[data-theme="dark"] .home-today-item {
+[data-theme="dark"] .home-today-panel {
   background: #0f2c40;
   border-color: rgba(255, 255, 255, 0.06);
-  border-left-color: #1a6fa8;
 }
 
-[data-theme="dark"] .home-today-item--prayer {
-  border-left-color: #c8952f;
+[data-theme="dark"] .home-today-row + .home-today-row {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .home-today-row--link:hover {
+  background: #143650;
 }
 
 [data-theme="dark"] .home-today-label {
@@ -124,14 +165,18 @@
   color: #f2e8d3;
 }
 
-[data-theme="dark"] .home-today-countdown {
-  color: #c8952f;
+[data-theme="dark"] .home-today-pill {
+  color: #f0d089;
+  background: rgba(200, 149, 47, 0.14);
+  border-color: rgba(200, 149, 47, 0.35);
 }
 
 /* ── Stats row ──────────────────────────────────────────────────
-   Same light/dark card treatment as the Today strip (no separate
-   accent color needed here — these are neutral figures, not tied
-   to a specific meaning the way Today/Prayer are). */
+   Same card treatment as the today panel. Two layouts:
+   - default: three neutral figure cards (quizzes, average, level)
+   - empty:   two cards; the dead "0 / —" cells collapse into a
+              single call to action so a new user sees an
+              invitation rather than a broken-looking zero state */
 .home-stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -139,10 +184,15 @@
   margin-bottom: 28px;
 }
 
+.home-stats-row--empty {
+  grid-template-columns: 1fr 1.6fr;
+}
+
 .home-stat-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 3px;
   padding: 14px 8px;
   background: #eef6fc;
@@ -168,6 +218,17 @@
   color: #5c7186;
 }
 
+.home-stat-card--cta {
+  background: #e6f2fb;
+  border-color: #b9dcf5;
+}
+
+.home-stat-cta {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1a6fa8;
+}
+
 [data-theme="dark"] .home-stat-card {
   background: #0f2c40;
   border-color: rgba(255, 255, 255, 0.06);
@@ -179,6 +240,15 @@
 
 [data-theme="dark"] .home-stat-label {
   color: #7d93a6;
+}
+
+[data-theme="dark"] .home-stat-card--cta {
+  background: #123a55;
+  border-color: rgba(133, 204, 255, 0.25);
+}
+
+[data-theme="dark"] .home-stat-cta {
+  color: #85ccff;
 }
 
 .home-divider {
@@ -199,10 +269,23 @@
     padding: 28px 24px;
   }
 
-  .home-hero-mark { font-size: 3.5rem; }
-  .home-hero-title { font-size: 1.7rem; }
+  .home-hero--compact {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+  }
 
-  .home-today-strip {
-    grid-template-columns: 1fr;
+  .home-hero-mark { font-size: 3.5rem; }
+  .home-hero--compact .home-hero-mark { font-size: 1.8rem; }
+  .home-hero-title { font-size: 1.7rem; }
+  .home-hero--compact .home-hero-title { font-size: 1.15rem; }
+
+  .home-stats-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .home-stats-row--empty {
+    grid-template-columns: 1fr 1.5fr;
   }
 }

@@ -74,59 +74,87 @@ export default function Home({ user }) {
     ? Math.round(history.reduce((s, r) => s + r.percentage, 0) / totalQuizzes)
     : 0
   const currentLevel = levelData?.current_level || 'beginner'
+  const levelLabel = currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1)
 
   const { nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
 
   return (
     <div className="page-content home-page">
-      <div className="home-hero">
+      {/* Full hero sells the app to visitors; returning users get a slim
+          header so the today panel is the first substantial element */}
+      <div className={`home-hero ${user ? 'home-hero--compact' : ''}`}>
         <div className="home-hero-mark">سُؤَال</div>
         <div className="home-hero-content">
           <h1 className="home-hero-title">Sual</h1>
-          <p className="home-hero-subtitle">
-            Your companion for the Islamic sciences — ask, learn, and test your knowledge
-            in Fiqh, Seerah, Arabic, and more.
-          </p>
+          {!user && (
+            <p className="home-hero-subtitle">
+              Your companion for the Islamic sciences — ask, learn, and test your knowledge
+              in Fiqh, Seerah, Arabic, and more.
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Today strip — Hijri date + next prayer, using the shared lib so it
-          always agrees with the Calendar and Prayer Times pages */}
-      <div className="home-today-strip">
-        <div className="home-today-item">
-          <span className="home-today-label">Today</span>
-          <span className="home-today-value arabic">{toHijriString(time)}</span>
+      {/* Today panel — one card, two rows. Hijri date + next prayer share a
+          hairline divider; the countdown lives in a gold pill so the accent
+          color sits on the urgent element instead of a decorative border.
+          Uses the shared libs so it always agrees with Calendar and
+          Prayer Times pages */}
+      <div className="home-today-panel">
+        <div className="home-today-row">
+          <div className="home-today-text">
+            <span className="home-today-label">Today</span>
+            <span className="home-today-value arabic">{toHijriString(time)}</span>
+          </div>
         </div>
+
         {nextPrayer && (
-          <Link to="/prayer-times" className="home-today-item home-today-item--prayer">
-            <span className="home-today-label">Next prayer</span>
-            <span className="home-today-value">
-              <span className="arabic">{nextPrayer.arabic}</span>
-              <span className="home-today-countdown"> in {countdown}</span>
-            </span>
+          <Link to="/prayer-times" className="home-today-row home-today-row--link">
+            <div className="home-today-text">
+              <span className="home-today-label">Next prayer</span>
+              <span className="home-today-value arabic">{nextPrayer.arabic}</span>
+            </div>
+            <span className="home-today-pill">in {countdown}</span>
           </Link>
         )}
       </div>
 
       {/* Stats row — mirrors the exact fields Dashboard computes, so this
-          never shows a number that disagrees with the Dashboard page */}
+          never shows a number that disagrees with the Dashboard page.
+          Zero-quiz state swaps the dead "0 / —" cells for an invitation
+          to act, so the row never looks broken for a new user */}
       {user && !statsLoading && (
-        <div className="home-stats-row">
-          <Link to="/dashboard" className="home-stat-card">
-            <span className="home-stat-value">{totalQuizzes}</span>
-            <span className="home-stat-label">Quizzes taken</span>
-          </Link>
-          <Link to="/dashboard" className="home-stat-card">
-            <span className="home-stat-value">{totalQuizzes > 0 ? `${avgScore}%` : '—'}</span>
-            <span className="home-stat-label">Average score</span>
-          </Link>
-          <Link to="/dashboard" className="home-stat-card">
-            <span className="home-stat-value" style={{ color: LEVEL_COLOR[currentLevel] }}>
-              {currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1)}
-            </span>
-            <span className="home-stat-label">Level</span>
-          </Link>
-        </div>
+        totalQuizzes > 0 ? (
+          <div className="home-stats-row">
+            <Link to="/dashboard" className="home-stat-card">
+              <span className="home-stat-value">{totalQuizzes}</span>
+              <span className="home-stat-label">Quizzes taken</span>
+            </Link>
+            <Link to="/dashboard" className="home-stat-card">
+              <span className="home-stat-value">{avgScore}%</span>
+              <span className="home-stat-label">Average score</span>
+            </Link>
+            <Link to="/dashboard" className="home-stat-card">
+              <span className="home-stat-value" style={{ color: LEVEL_COLOR[currentLevel] }}>
+                {levelLabel}
+              </span>
+              <span className="home-stat-label">Level</span>
+            </Link>
+          </div>
+        ) : (
+          <div className="home-stats-row home-stats-row--empty">
+            <Link to="/dashboard" className="home-stat-card">
+              <span className="home-stat-value" style={{ color: LEVEL_COLOR[currentLevel] }}>
+                {levelLabel}
+              </span>
+              <span className="home-stat-label">Level</span>
+            </Link>
+            <Link to="/quiz" className="home-stat-card home-stat-card--cta">
+              <span className="home-stat-cta">Take your first quiz →</span>
+              <span className="home-stat-label">Start building your record</span>
+            </Link>
+          </div>
+        )
       )}
 
       <div className="home-divider">
