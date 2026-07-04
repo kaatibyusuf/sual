@@ -2,6 +2,24 @@ import React, { useState } from 'react'
 import { STORIES } from '../data/stories.js'
 import './Stories.css'
 
+// Filter buttons correspond directly to a story's `era` field.
+const FILTERS = [
+  { key: 'all', label: 'All' },
+  { key: 'sahabah', label: 'Sahabah' },
+  { key: 'tabieen', label: "Tabii'een" },
+  { key: 'tabi-tabieen', label: "Tabi' Tabi'een" },
+  { key: 'ulul-azm', label: "Ulul 'Azm" },
+  { key: 'battles', label: 'Battles' },
+]
+
+const ERA_BADGE_LABEL = {
+  sahabah: 'Sahabah',
+  tabieen: "Tabii'een",
+  'tabi-tabieen': "Tabi' Tabi'een",
+  'ulul-azm': "Ulul 'Azm",
+  battles: 'Battle',
+}
+
 export default function Stories() {
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
@@ -30,8 +48,8 @@ export default function Stories() {
           <div className="story-detail-header card">
             <div className="story-detail-icon">{s.image}</div>
             <div className="story-detail-meta">
-              <span className={`stories-badge ${s.era === 'sahabah' ? 'badge-sahabah' : 'badge-tabieen'}`}>
-                {s.era === 'sahabah' ? 'Sahabah' : "Tabii'een"}
+              <span className={`stories-badge badge-${s.era}`}>
+                {ERA_BADGE_LABEL[s.era] || s.era}
               </span>
               <span className="stories-badge badge-category">{s.category}</span>
             </div>
@@ -85,11 +103,7 @@ export default function Stories() {
       {/* Filters */}
       <div className="stories-filters">
         <div className="stories-filter-group">
-          {[
-            { key: 'all', label: 'All' },
-            { key: 'sahabah', label: 'Sahabah' },
-            { key: 'tabieen', label: "Tabii'een" },
-          ].map(f => (
+          {FILTERS.map(f => (
             <button
               key={f.key}
               className={`stories-filter-btn ${filter === f.key ? 'stories-filter-btn--active' : ''}`}
@@ -132,8 +146,8 @@ export default function Stories() {
               <div className="story-card-top">
                 <div className="story-card-icon">{s.image}</div>
                 <div className="story-card-badges">
-                  <span className={`stories-badge ${s.era === 'sahabah' ? 'badge-sahabah' : 'badge-tabieen'}`}>
-                    {s.era === 'sahabah' ? 'Sahabah' : "Tabii'een"}
+                  <span className={`stories-badge badge-${s.era}`}>
+                    {ERA_BADGE_LABEL[s.era] || s.era}
                   </span>
                 </div>
               </div>

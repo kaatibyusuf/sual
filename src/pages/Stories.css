@@ -35,6 +35,7 @@
 .stories-filter-group {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .stories-filter-btn {
@@ -126,6 +127,21 @@
 .badge-tabieen {
   background: #1a5276;
   color: #aed6f1;
+}
+
+.badge-tabi-tabieen {
+  background: #2e6da4;
+  color: #d4ecfc;
+}
+
+.badge-ulul-azm {
+  background: #8a6d1f;
+  color: #f8e7b0;
+}
+
+.badge-battles {
+  background: #7a2b28;
+  color: #f5cac8;
 }
 
 .badge-category {
