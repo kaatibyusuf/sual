@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: '/',               icon: '📚', label: 'Disciplines', arabic: 'المَوَادّ',   end: true },
   { to: '/flashcards',     icon: '🗂️', label: 'Flashcards',  arabic: 'البِطَاقَات' },
   { to: '/quiz',           icon: '🎯', label: 'Quiz',        arabic: 'الإِخْتِبَار' },
+  { to: '/stories',        icon: '📖', label: 'Stories',     arabic: 'قِصَص' },
   { to: '/duas',           icon: '🤲', label: 'Duas',        arabic: 'الدُعَاء' },
   { to: '/prayer-times',   icon: '🕌', label: 'Prayer',      arabic: 'مَوَاقِيت' },
 ]
