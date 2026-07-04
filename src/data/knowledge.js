@@ -7406,5 +7406,6 @@ export const QUIZ_QUESTIONS = {
       ],
       correct: 1,
       explanation: 'This hadith, reported in Sahih al-Bukhari, identifies the combination of learning and teaching the Qur\'an — not memorization alone, recitation speed, or ownership of physical copies — as the measure of excellence it describes.\n\nIt reflects a broader theme running through the Qur\'anic sciences: that engagement with the Qur\'an is meant to be a living, transmitted tradition, carried from one generation to the next through both study and instruction.',
-    },
-  ],
+    }
+  ]
+};
