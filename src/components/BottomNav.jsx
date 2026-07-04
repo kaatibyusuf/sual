@@ -10,6 +10,8 @@ const NAV_ITEMS = [
   { to: '/stories',        icon: '📖', label: 'Stories',     arabic: 'قِصَص' },
   { to: '/duas',           icon: '🤲', label: 'Duas',        arabic: 'الدُعَاء' },
   { to: '/prayer-times',   icon: '🕌', label: 'Prayer',      arabic: 'مَوَاقِيت' },
+  { to: '/profile',        icon: '👤', label: 'Profile',     arabic: 'حِسَابِي' },
+
 ]
 
 export default function BottomNav() {
