@@ -160,6 +160,7 @@ export default function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home user={user} />} />
+            <Route path="/disciplines" element={<Disciplines />} />
             <Route path="/discipline/:id" element={<Discipline userLevel={userLevel} />} />
             <Route path="/quiz" element={<Quiz user={user} userLevel={userLevel} />} />
             <Route path="/flashcards" element={<Flashcards />} />
@@ -171,10 +172,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard user={user} />} />
             <Route path="/spaces" element={<Spaces user={user} />} />
             <Route path="/prayer-times" element={<PrayerTimes />} />
-            <Route path="/disciplines" element={<Discipline />} />
             <Route path="*" element={<Home user={user} />} />
-            <Route path="/disciplines" element={<Disciplines />} />
-<Route path="/discipline/:id" element={<Discipline userLevel={userLevel} />} />
           </Routes>
         </main>
       </div>
