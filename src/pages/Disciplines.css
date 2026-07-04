@@ -1,0 +1,101 @@
+.disciplines-header {
+  margin-bottom: 28px;
+}
+
+.disciplines-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.disciplines-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background: #eef6fc;
+  border: 1px solid #d0e8f8;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.disciplines-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(13, 74, 115, 0.12);
+}
+
+.disciplines-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.disciplines-card-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.disciplines-card-arabic {
+  font-size: 1.15rem;
+  color: #1a6fa8;
+}
+
+.disciplines-card-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0d1b2a;
+  margin: 0;
+}
+
+.disciplines-card-desc {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #5c7186;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.disciplines-card-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #1a6fa8;
+  background: #dcedf9;
+  padding: 3px 10px;
+  border-radius: 999px;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+[data-theme="dark"] .disciplines-card {
+  background: #0f2c40;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .disciplines-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .disciplines-card-arabic {
+  color: #85ccff;
+}
+
+[data-theme="dark"] .disciplines-card-name {
+  color: #f2e8d3;
+}
+
+[data-theme="dark"] .disciplines-card-desc {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .disciplines-card-count {
+  color: #85ccff;
+  background: rgba(133, 204, 255, 0.12);
+}
+
+@media (max-width: 600px) {
+  .disciplines-grid {
+    grid-template-columns: 1fr;
+  }
+}

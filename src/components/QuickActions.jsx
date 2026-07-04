@@ -69,7 +69,7 @@ const ACTIONS = [
     desc: 'Your progress',
   },
   {
-    to: '/',
+    to: '/disciplines',
     icon: 'disciplines',
     color: '#AFA9EC',
     iconColor: '#26215C',

@@ -19,6 +19,7 @@ import Profile from './pages/Profile.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Spaces from './pages/Spaces.jsx'
 import PrayerTimes from './pages/PrayerTimes.jsx'
+import Disciplines from './pages/Disciplines.jsx'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -172,6 +173,8 @@ export default function App() {
             <Route path="/prayer-times" element={<PrayerTimes />} />
             <Route path="/disciplines" element={<Discipline />} />
             <Route path="*" element={<Home user={user} />} />
+            <Route path="/disciplines" element={<Disciplines />} />
+<Route path="/discipline/:id" element={<Discipline userLevel={userLevel} />} />
           </Routes>
         </main>
       </div>
