@@ -51,6 +51,12 @@ const ICONS = {
       <rect x="6" y="8" width="14" height="10" rx="2" />
     </svg>
   ),
+  spaces: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="9" r="5" />
+      <circle cx="15" cy="15" r="5" />
+    </svg>
+  ),
 }
 
 const ACTIONS = [
@@ -110,6 +116,14 @@ const ACTIONS = [
     iconColor: '#4B1528',
     title: 'Calendar',
     desc: 'Plan your Islamic activities',
+  },
+  {
+    to: '/spaces',
+    icon: 'spaces',
+    color: '#8FD9C4',
+    iconColor: '#0B3D30',
+    title: 'Spaces',
+    desc: 'Join community discussions',
   },
 ]
 
