@@ -888,6 +888,217 @@ This is one of the rarest and most distinctive features unique to a single verse
       },
     ],
   },
+  {
+    id: 'tj15',
+    title: 'The Waqf Styles: Sukoon, Rawm, and Ishmam',
+    arabicTitle: 'الوَقْفُ بِالسُّكُونِ وَالرَّوْمِ وَالإِشْمَام',
+    icon: '🤫',
+    overview: 'When a reciter comes to a stop at the end of a word, the letter that carried a vowel in continuous recitation must be handled in one of several permitted ways. Three styles are recognized, differing in how much of the original vowel, if any, remains audible or visible.',
+    rules: [
+      {
+        id: 'tj15r1',
+        name: 'Al-Waqf bis-Sukoon (الوَقْفُ بِالسُّكُون)',
+        arabic: 'الوَقْفُ بِالسُّكُون',
+        level: 'beginner',
+        explanation: `Waqf bis-Sukoon is the default and most common way of stopping: the final letter, whatever vowel it carried in continuous recitation (fathah, dammah, or kasrah), is pronounced with a full sukun, its vowel dropped entirely.
+
+This applies universally regardless of the letter's original vowel, and is valid at the end of every word without exception, making it the safest and most widely used stopping method for reciters at every level.`,
+        examples: [
+          { arabic: 'يَعْلَمُونَ ۝', transliteration: 'Yalamuun (waqf)', note: 'Dammah dropped to a full sukun at the stop' },
+          { arabic: 'الْكِتَابَ ۝', transliteration: 'Al-Kitab (waqf)', note: 'Fathah dropped to a full sukun at the stop' },
+        ],
+        source: 'Al-Muqaddimah al-Jazariyyah; Hidayat al-Qari',
+      },
+      {
+        id: 'tj15r2',
+        name: 'Al-Waqf bir-Rawm (الوَقْفُ بِالرَّوْم)',
+        arabic: 'الوَقْفُ بِالرَّوْم',
+        level: 'intermediate',
+        explanation: `Al-Rawm means pronouncing a small, quiet portion of the original vowel — roughly a third of its full sound — audible only to someone listening closely, rather than dropping it completely as in Sukoon.
+
+Rawm applies only to letters ending in dammah or kasrah; it does not apply to fathah, since a fathah carries no vowel quality that can be partially retained in this subtle way, nor to letters carrying tanween, since the nunation is dropped at a stop regardless.
+
+Because the vowel remnant is so faint, Rawm is typically taught and verified through direct oral transmission (talaqqi) from a qualified teacher rather than mastered from a written description alone.`,
+        examples: [
+          { arabic: 'نَسْتَعِينُ ۝', transliteration: 'Nastaiin (rawm)', note: 'A faint trace of the dammah is retained rather than a full sukun' },
+        ],
+        source: 'Al-Muqaddimah al-Jazariyyah; Hidayat al-Qari',
+      },
+      {
+        id: 'tj15r3',
+        name: 'Al-Waqf bil-Ishmam (الوَقْفُ بِالإِشْمَام)',
+        arabic: 'الوَقْفُ بِالإِشْمَام',
+        level: 'advanced',
+        explanation: `Al-Ishmam, in the context of general waqf, involves rounding the lips into the shape of a dammah immediately after pronouncing the letter with full sukun, without producing any sound at all — a purely visual gesture perceptible only to someone watching the reciter's mouth, not to someone merely listening.
+
+Ishmam applies only to letters that carried a dammah in continuous recitation; it cannot be applied to fathah or kasrah, since the lip-rounding gesture specifically signals a dammah.
+
+Since Ishmam produces no audible difference whatsoever, it exists purely as a visual indicator of the underlying vowel and, like Rawm, can only be reliably learned through direct transmission from a teacher.`,
+        examples: [
+          { arabic: 'نَسْتَعِينُ ۝', transliteration: 'Nastaiin (ishmam)', note: 'Lips round into a dammah shape silently after the sukun' },
+        ],
+        source: 'Al-Muqaddimah al-Jazariyyah; Hidayat al-Qari',
+      },
+    ],
+  },
+  {
+    id: 'tj16',
+    title: 'Waqf on Ta Marbutah',
+    arabicTitle: 'الوَقْفُ عَلَى التَّاءِ المَرْبُوطَة',
+    icon: '⭕',
+    overview: 'The feminine ending ة (ta marbutah) behaves differently depending on whether recitation continues past it or stops on it — a rule every beginner must internalize early, since it appears on a large portion of Arabic nouns and adjectives.',
+    rules: [
+      {
+        id: 'tj16r1',
+        name: 'The Ta Marbutah in Wasl and Waqf',
+        arabic: 'التَّاءُ المَرْبُوطَة فِي الوَصْلِ وَالوَقْف',
+        level: 'beginner',
+        explanation: `In continuous recitation (wasl), a word ending in ة is pronounced with its full ta sound (ت), carrying whatever vowel the grammar of the sentence requires — often with tanween.
+
+When the reciter stops (waqf) on such a word, however, the ة is always pronounced as a plain ha (هـ) with a sukun, regardless of what vowel or tanween it carried a moment before in continuous recitation. This is a fixed convention agreed upon by all reciters and represents one of the few points where the written form (ة) and its two spoken realizations — ت in wasl, هـ in waqf — diverge visibly.
+
+This shift is purely phonetic and carries no change in meaning; it exists simply because Arabic speech avoids ending an utterance on the sharper "t" sound of ta marbutah, preferring the softer "h" sound at a pause.`,
+        examples: [
+          { arabic: 'رَحْمَةٌ', transliteration: 'Rahmatun (wasl) / Rahmah (waqf)', note: 'Full ta sound in continuous recitation, plain ha at a stop' },
+          { arabic: 'الْجَنَّةَ', transliteration: 'Al-Jannata (wasl) / Al-Jannah (waqf)', note: 'Same shift: ta in wasl, ha in waqf' },
+        ],
+        source: 'Tuhfat al-Atfal; Al-Muqaddimah al-Jazariyyah',
+      },
+    ],
+  },
+  {
+    id: 'tj17',
+    title: 'Madd al-Farq (The Madd of Distinction)',
+    arabicTitle: 'مَدُّ الفَرْق',
+    icon: '❓',
+    overview: 'A rare but important madd category exists specifically to prevent ambiguity between a question and a statement, arising from the meeting of an interrogative hamzah and a hamzat al-wasl.',
+    rules: [
+      {
+        id: 'tj17r1',
+        name: 'Madd al-Farq',
+        arabic: 'مَدُّ الفَرْق',
+        level: 'advanced',
+        explanation: `Madd al-Farq occurs when a hamzat al-istifham (the interrogative "is/are," used to ask a question) is immediately followed by a word beginning with a hamzat al-wasl attached to the definite article ال.
+
+Normally, a hamzat al-wasl is dropped in continuous speech and its vowel is absorbed into the preceding sound. But if it were dropped here, the resulting phrase would become phonetically identical to a plain declarative statement, erasing the fact that a question was being asked. To prevent this ambiguity, the alif of the hamzat al-wasl is instead pronounced as a full madd of six counts, clearly signaling to the listener that a question is intended.
+
+This occurs in only a handful of places in the Quran, most notably in Surah al-Anam (6:143-144), where Allah repeatedly asks the disbelievers whether it is the two males or the two females that they have forbidden — the interrogative form must be unmistakable given the weight of the rhetorical challenge being posed.`,
+        examples: [
+          { arabic: 'آلذَّكَرَيْنِ حَرَّمَ', transliteration: 'Aadh-dhakarayni harrama', note: 'The alif is extended 6 counts to preserve the interrogative sense (Quran 6:143)' },
+          { arabic: 'آلْآنَ وَقَدْ كُنتُم', transliteration: 'Al-aana wa qad kuntum', note: 'Marks a rhetorical question, "Now?! When you had..." (Quran 10:51, 91)' },
+        ],
+        source: 'Al-Muqaddimah al-Jazariyyah; Al-Nashr fi al-Qiraat al-Ashr, Ibn al-Jazari',
+      },
+    ],
+  },
+  {
+    id: 'tj18',
+    title: 'Idgham Kamil and Idgham Naqis',
+    arabicTitle: 'الإِدْغَامُ الكَامِل وَالإِدْغَامُ النَّاقِص',
+    icon: '🔀',
+    overview: 'Beyond classifying Idgham by which letters are involved — as in the Noon Saakinah rules or the Mutamathilayn/Mutajanisayn/Mutaqaribayn categories — Tajweed also classifies every instance of Idgham by how completely the first letter disappears into the second, a lens that cuts across all the earlier categories.',
+    rules: [
+      {
+        id: 'tj18r1',
+        name: 'Idgham Kamil (Complete Merging)',
+        arabic: 'الإِدْغَامُ الكَامِل',
+        level: 'advanced',
+        explanation: `Idgham Kamil occurs when the first letter merges so completely into the second that none of its own original characteristics (sifat) remain detectable — the two letters become fully indistinguishable from a single doubled letter of the second type.
+
+This is the case in most instances of Idgham bila Ghunnah (noon merging into lam or ra) and in Idgham Mutamathilayn, where identical letters merge with nothing left over to distinguish the first from the second.`,
+        examples: [
+          { arabic: 'مِنْ رَبِّهِمْ', transliteration: 'Mir rabbihim', note: 'The noon disappears entirely into the ra — nothing of it remains' },
+        ],
+        source: 'Al-Wafi fi Sharh al-Shatibiyyah; Hidayat al-Qari',
+      },
+      {
+        id: 'tj18r2',
+        name: 'Idgham Naqis (Incomplete Merging)',
+        arabic: 'الإِدْغَامُ النَّاقِص',
+        level: 'advanced',
+        explanation: `Idgham Naqis occurs when the first letter merges into the second but one of its original characteristics is deliberately retained rather than fully disappearing, meaning the merge is not total.
+
+The clearest example is Idgham bi-Ghunnah: when noon saakinah merges into ya, waw, mim, or nun, the ghunnah (nasalization) associated with the noon is retained and held for two counts even as the noon's own identity disappears — a partial rather than total merge.
+
+Another example occurs when a light (non-emphatic) letter merges into a heavy (emphatic) one in certain Mutajanisayn cases: the resulting doubled letter retains the heaviness (tafkheem) of the second letter throughout, showing that the merge did not erase every trace of the phonetic environment.
+
+Recognizing this distinction explains why Idgham bi-Ghunnah is never described as producing a fully "silent" noon the way Idgham bila Ghunnah does — the noon's nasal quality survives the merge even though the letter itself does not.`,
+        examples: [
+          { arabic: 'مَنْ يَقُولُ', transliteration: 'May yaqulu', note: 'The noon merges into ya, but its ghunnah survives for 2 counts — an incomplete merge' },
+        ],
+        source: 'Al-Wafi fi Sharh al-Shatibiyyah; Hidayat al-Qari',
+      },
+    ],
+  },
+  {
+    id: 'tj19',
+    title: 'Al-Isti\'adhah wal-Basmalah',
+    arabicTitle: 'الاِسْتِعَاذَةُ وَالبَسْمَلَة وَطُرُقُ الوَصْلِ بَيْنَهُمَا',
+    icon: '🕋',
+    overview: 'Before beginning recitation, the reciter observes two preliminary acts — seeking refuge in Allah (isti\'adhah) and, at the start of nearly every surah, reciting the basmalah. Scholars have detailed exactly how these may be joined to the recitation that follows.',
+    rules: [
+      {
+        id: 'tj19r1',
+        name: 'The Four Ways of Joining Isti\'adhah, Basmalah, and the Surah',
+        arabic: 'أَوْجُهُ الوَصْلِ بَيْنَ الاِسْتِعَاذَةِ وَالبَسْمَلَةِ وَالسُّورَة',
+        level: 'intermediate',
+        explanation: `Ibn al-Jazari and other scholars of Tajweed identify four permitted ways to move from the isti'adhah into the basmalah and then into the opening of the surah, each involving a different pattern of pausing or connecting:
+
+1. Qat al-Jami (cutting all three): pausing after the isti'adhah, pausing again after the basmalah, then beginning the surah — each of the three treated as a separate, self-contained utterance.
+
+2. Wasl al-Jami (connecting all three): reciting the isti'adhah, the basmalah, and the opening of the surah all in one continuous breath with no pause at all.
+
+3. Qat al-Awwal wa Wasl al-Akhirayn (cutting the first, connecting the last two): pausing after the isti'adhah, then reciting the basmalah connected directly into the start of the surah without a pause.
+
+4. Wasl al-Awwal wa Qat al-Akhir (connecting the first two, cutting the last): reciting the isti'adhah connected directly into the basmalah with no pause, then pausing before beginning the surah itself.
+
+All four ways are valid and were transmitted from the practice of the reciters; the choice between them is a matter of style rather than a difference in correctness.`,
+        examples: [],
+        source: 'Al-Muqaddimah al-Jazariyyah; Al-Nashr fi al-Qiraat al-Ashr, Ibn al-Jazari',
+      },
+      {
+        id: 'tj19r2',
+        name: 'The Basmalah and Surah al-Tawbah',
+        arabic: 'البَسْمَلَة وَسُورَةُ التَّوْبَة',
+        level: 'beginner',
+        explanation: `The basmalah is recited at the beginning of every surah of the Quran with one sole exception: Surah al-Tawbah (the ninth surah), which is not preceded by the basmalah when reciting through the mushaf in order.
+
+The most widely cited reason among the scholars is that Surah al-Tawbah opens with a declaration severing ties with treaty-breaking idolaters, a tone of severity considered incompatible with the basmalah's message of mercy and compassion — though other explanations exist, including a narration that the Companions were uncertain whether al-Tawbah was truly a separate surah from the one preceding it (al-Anfal) or a continuation of it, and left out the basmalah out of caution.
+
+If a reciter begins reciting from the middle of Surah al-Tawbah rather than reading straight through from al-Anfal, no basmalah is required at that starting point either, since the exclusion applies to the surah as a whole.`,
+        examples: [],
+        source: 'Al-Muqaddimah al-Jazariyyah; Al-Itqan fi Ulum al-Quran, al-Suyuti',
+      },
+    ],
+  },
+  {
+    id: 'tj20',
+    title: 'Sujud at-Tilawah',
+    arabicTitle: 'سُجُودُ التِّلَاوَة',
+    icon: '🕌',
+    overview: 'Certain verses of the Quran, upon their recitation or hearing, call for a physical prostration — a practice rooted in the immediate, embodied response the Quran calls for when describing the submission of all creation to Allah.',
+    rules: [
+      {
+        id: 'tj20r1',
+        name: 'The Verses of Sajdah and Their Ruling',
+        arabic: 'آيَاتُ السَّجْدَةِ وَحُكْمُهَا',
+        level: 'intermediate',
+        explanation: `There are fourteen verses of sajdah recognized by the majority of scholars (some count fifteen, differing over a verse in Surah al-Hajj), spread across the Quran from Surah al-Araf to Surah al-Alaq.
+
+The ruling on performing the prostration upon reciting or hearing one of these verses is sunnah muakkadah according to the majority of scholars (Shafii, Maliki, Hanbali), and wajib (obligatory) according to the Hanafi school for both the reciter and an attentive listener.
+
+The method: if outside of formal prayer, the person says the takbir (Allahu Akbar), prostrates once saying a supplication such as "Subhana Rabbiyal-Ala" or the specific dua reported from the Prophet, then rises without a tashahhud or taslim, since this single prostration is not itself a prayer. If the verse is recited within formal Salah, the prostration is performed as part of that prayer, and the reciter then rises and continues the prayer as normal.
+
+A person merely reading a verse of sajdah silently to themselves without vocalizing it, according to some scholars, is not obligated to prostrate, since the ruling is tied to actual recitation or hearing rather than silent reading — though prostrating in this case remains permissible and rewarded.`,
+        examples: [
+          { arabic: 'وَلِلَّهِ يَسْجُدُ ۝', transliteration: 'Surah al-Araf 7:206', note: 'The closing sajdah verse of Surah al-Araf' },
+          { arabic: 'وَخَرَّ رَاكِعًا ۝', transliteration: 'Surah as-Sajdah 32:15', note: 'The sajdah verse that gives the surah its name' },
+          { arabic: 'وَاسْجُدْ وَاقْتَرِب ۝', transliteration: 'Surah al-Alaq 96:19', note: 'The final sajdah verse in mushaf order' },
+        ],
+        source: 'Sahih al-Bukhari 1075-1079; Al-Mughni, Ibn Qudamah',
+      },
+    ],
+  },
 ]
 
 export const TAJWEED_SCHOLARS = [
@@ -926,5 +1137,11 @@ export const TAJWEED_SCHOLARS = [
     arabicName: 'الإِمَامُ الدَّانِيّ',
     lifespan: '371-444 AH',
     contribution: 'A foundational scholar of Quranic sciences and Qiraat, author of Al-Taysir fi al-Qiraat al-Sab (later versified by al-Shatibi in Al-Shatibiyyah) and a major contributor to the study of the Uthmanic script (rasm) and Quranic orthography.',
+  },
+  {
+    name: 'Ibn Mujahid',
+    arabicName: 'ابْنُ مُجَاهِد',
+    lifespan: '245-324 AH',
+    contribution: 'The first scholar to formally restrict and canonize the recitations of the Quran into seven authoritative Qiraat in his work Kitab al-Sabah, establishing the framework within which later scholars such as Ibn al-Jazari would expand to ten. His work ended a period of considerable variation in accepted recitations and set the precedent still followed today.',
   },
 ]
