@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
-import { DISCIPLINES } from '../data/knowledge.js'
 import { toHijriString } from '../lib/hijri.js'
 import { getPrayerStatus } from '../lib/prayerTimes.js'
 import QuickActions from '../components/QuickActions.jsx'
@@ -88,10 +87,6 @@ export default function Home({ user }) {
             Your companion for the Islamic sciences — ask, learn, and test your knowledge
             in Fiqh, Seerah, Arabic, and more.
           </p>
-          <div className="home-hero-actions">
-            <Link to="/discipline/fiqh" className="btn btn-primary">Begin Learning</Link>
-            <Link to="/quiz" className="btn btn-secondary">Take a Quiz</Link>
-          </div>
         </div>
       </div>
 
@@ -139,24 +134,6 @@ export default function Home({ user }) {
       </div>
 
       <QuickActions />
-
-      <section>
-        <h2 className="home-section-title">Choose a Discipline</h2>
-        <p className="home-section-sub">Select a science to explore curated Q&A and deepen your understanding.</p>
-        <div className="disciplines-grid">
-          {DISCIPLINES.map(d => (
-            <Link key={d.id} to={`/discipline/${d.id}`} className="discipline-card card">
-              <div className="discipline-card-icon">{d.icon}</div>
-              <div className="discipline-card-body">
-                <h3 className="discipline-card-name">{d.name}</h3>
-                <p className="discipline-card-arabic arabic">{d.arabicName}</p>
-                <p className="discipline-card-desc">{d.description}</p>
-              </div>
-              <div className="discipline-card-arrow">→</div>
-            </Link>
-          ))}
-        </div>
-      </section>
     </div>
   )
 }

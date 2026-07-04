@@ -50,16 +50,18 @@
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.7;
   max-width: 480px;
-  margin-bottom: 24px;
 }
 
-.home-hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-/* ── Today strip ────────────────────────────────────────────── */
+/* ── Today strip ────────────────────────────────────────────────
+   Both cards now share one card treatment (background, radius,
+   shadow) and differ only in their accent color, which is chosen
+   to match what's actually inside the card instead of being
+   picked at random:
+   - Today   -> cool blue, echoes the hero's blue
+   - Prayer  -> gold, matches the amber countdown text inside it
+   Light and dark mode get their own explicit card background
+   instead of the dark-navy-everywhere default this used to have.
+   ────────────────────────────────────────────────────────────── */
 .home-today-strip {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -72,14 +74,15 @@
   flex-direction: column;
   gap: 4px;
   padding: 14px 16px;
-  background: #0f2c40;
+  background: #eef6fc;
+  border: 1px solid #d0e8f8;
+  border-left: 3px solid #1a6fa8;
   border-radius: 12px;
-  border-left: 3px solid #c8952f;
   text-decoration: none;
 }
 
 .home-today-item--prayer {
-  border-left-color: #85B7EB;
+  border-left-color: #c8952f;
   cursor: pointer;
 }
 
@@ -88,22 +91,47 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #7d93a6;
+  color: #5c7186;
 }
 
 .home-today-value {
   font-size: 0.92rem;
   font-weight: 600;
-  color: #f2e8d3;
+  color: #0d1b2a;
 }
 
 .home-today-countdown {
   font-size: 0.78rem;
   font-weight: 400;
+  color: #a97a1f;
+}
+
+[data-theme="dark"] .home-today-item {
+  background: #0f2c40;
+  border-color: rgba(255, 255, 255, 0.06);
+  border-left-color: #1a6fa8;
+}
+
+[data-theme="dark"] .home-today-item--prayer {
+  border-left-color: #c8952f;
+}
+
+[data-theme="dark"] .home-today-label {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .home-today-value {
+  color: #f2e8d3;
+}
+
+[data-theme="dark"] .home-today-countdown {
   color: #c8952f;
 }
 
-/* ── Stats row ──────────────────────────────────────────────── */
+/* ── Stats row ──────────────────────────────────────────────────
+   Same light/dark card treatment as the Today strip (no separate
+   accent color needed here — these are neutral figures, not tied
+   to a specific meaning the way Today/Prayer are). */
 .home-stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -117,7 +145,8 @@
   align-items: center;
   gap: 3px;
   padding: 14px 8px;
-  background: #0f2c40;
+  background: #eef6fc;
+  border: 1px solid #d0e8f8;
   border-radius: 12px;
   text-decoration: none;
   text-align: center;
@@ -131,11 +160,24 @@
 .home-stat-value {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #f2e8d3;
+  color: #0d1b2a;
 }
 
 .home-stat-label {
   font-size: 0.68rem;
+  color: #5c7186;
+}
+
+[data-theme="dark"] .home-stat-card {
+  background: #0f2c40;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .home-stat-value {
+  color: #f2e8d3;
+}
+
+[data-theme="dark"] .home-stat-label {
   color: #7d93a6;
 }
 
@@ -150,85 +192,6 @@
   color: var(--text-secondary);
 }
 
-.home-section-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--regal-blue);
-  margin-bottom: 4px;
-}
-
-.home-section-sub {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-bottom: 20px;
-}
-
-.disciplines-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.discipline-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 20px;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  border-left: 4px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.discipline-card:hover {
-  border-left-color: var(--pastel-blue);
-  transform: translateY(-2px);
-}
-
-.discipline-card-icon {
-  font-size: 1.8rem;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.discipline-card-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.discipline-card-name {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--regal-blue);
-  margin-bottom: 2px;
-}
-
-.discipline-card-arabic {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
-}
-
-.discipline-card-desc {
-  font-size: 0.825rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-.discipline-card-arrow {
-  color: var(--pastel-blue);
-  font-size: 1.2rem;
-  flex-shrink: 0;
-  margin-top: 2px;
-  transition: transform 0.2s ease;
-}
-
-.discipline-card:hover .discipline-card-arrow {
-  transform: translateX(4px);
-}
-
 @media (max-width: 768px) {
   .home-hero {
     flex-direction: column;
@@ -238,7 +201,6 @@
 
   .home-hero-mark { font-size: 3.5rem; }
   .home-hero-title { font-size: 1.7rem; }
-  .disciplines-grid { grid-template-columns: 1fr; }
 
   .home-today-strip {
     grid-template-columns: 1fr;
