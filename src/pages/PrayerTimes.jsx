@@ -1,101 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { toHijriString } from '../lib/hijri.js'
+import { getPrayerStatus } from '../lib/prayerTimes.js'
 import './PrayerTimes.css'
-
-const PRAYERS = [
-  { key: 'fajr',    arabic: 'الفَجْر',   en: 'Fajr'    },
-  { key: 'sunrise', arabic: 'الشُّرُوق', en: 'Sunrise'  },
-  { key: 'dhuhr',   arabic: 'الظُّهْر',  en: 'Dhuhr'   },
-  { key: 'asr',     arabic: 'العَصْر',   en: 'Asr'     },
-  { key: 'maghrib', arabic: 'المَغْرِب', en: 'Maghrib'  },
-  { key: 'isha',    arabic: 'العِشَاء',  en: 'Isha'    },
-]
-
-const HIJRI_MONTHS = [
-  'مُحَرَّم','صَفَر','رَبِيعُ الأَوَّل','رَبِيعُ الآخِر',
-  'جُمَادَى الأُولَى','جُمَادَى الآخِرَة','رَجَب','شَعْبَان',
-  'رَمَضَان','شَوَّال','ذُو القَعْدَة','ذُو الحِجَّة',
-]
-
-function toHijri(date) {
-  // Calibrated -1 day from the standard tabular epoch (1948439.5) so the
-  // calculated date matches the locally-announced Hijri date. If your local
-  // moon-sighting authority ever shifts by a day, adjust this constant to
-  // match — and keep it in sync with the same constant in Calendar.jsx.
-  const HIJRI_EPOCH = 1948438.5
-  const GREG_EPOCH  = 1721425.5
-  function leapGreg(y) { return (y%4===0)&&(!(y%100===0)||(y%400===0)) }
-  function gregToJD(y,m,d) {
-    return GREG_EPOCH-1+365*(y-1)+Math.floor((y-1)/4)-Math.floor((y-1)/100)+Math.floor((y-1)/400)+
-      Math.floor((367*m-362)/12+(m<=2?0:leapGreg(y)?-1:-2)+d)
-  }
-  function hijriToJD(hy,hm,hd) {
-    return hd+Math.ceil(29.5*(hm-1))+(hy-1)*354+Math.floor((3+11*hy)/30)+HIJRI_EPOCH-1
-  }
-  function jdToHijri(jd) {
-    jd=Math.floor(jd)+0.5
-    const year=Math.floor((30*(jd-HIJRI_EPOCH)+10646)/10631)
-    const month=Math.min(12,Math.ceil((jd-(29+hijriToJD(year,1,1)))/29.5)+1)
-    const day=jd-hijriToJD(year,month,1)+1
-    return {year,month,day:Math.floor(day)}
-  }
-  const jd=gregToJD(date.getFullYear(),date.getMonth()+1,date.getDate())
-  const h=jdToHijri(jd)
-  return `${h.day} ${HIJRI_MONTHS[h.month-1]} ${h.year} هـ`
-}
-
-function calcPrayerTimes(date, lat, lng, tzOffset) {
-  const D2R = Math.PI/180
-  const R2D = 180/Math.PI
-  const year=date.getFullYear(), month=date.getMonth()+1, day=date.getDate()
-  const JD=Math.floor(365.25*(year+4716))+Math.floor(30.6001*(month+1))+day-1524.5
-  const T=(JD-2451545)/36525
-  const L0=280.46646+36000.76983*T
-  const M=(357.52911+35999.05029*T)*D2R
-  const C=(1.914602-0.004817*T)*Math.sin(M)+0.019993*Math.sin(2*M)
-  const sunLon=(L0+C)*D2R
-  const obliq=(23.439291-0.013004*T)*D2R
-  const RA=Math.atan2(Math.cos(obliq)*Math.sin(sunLon),Math.cos(sunLon))*R2D
-  const decl=Math.asin(Math.sin(obliq)*Math.sin(sunLon))
-  const eqTime=(L0-0.0057183-RA)*4
-  const noon=12-eqTime/60-lng/15+tzOffset
-
-  function hourAngle(angle) {
-    const cosH=(Math.sin(angle*D2R)-Math.sin(lat*D2R)*Math.sin(decl))/(Math.cos(lat*D2R)*Math.cos(decl))
-    if(Math.abs(cosH)>1) return null
-    return Math.acos(cosH)*R2D/15
-  }
-
-  const fajrH=hourAngle(-18)
-  const sunriseH=hourAngle(-0.833)
-  const maghribH=hourAngle(-0.833)
-  const ishaH=hourAngle(-17)
-  const asrElevation=Math.atan(1/(1+Math.tan(Math.abs(lat*D2R-decl))))*R2D
-  const cosAsrH=(Math.sin(asrElevation*D2R)-Math.sin(lat*D2R)*Math.sin(decl))/(Math.cos(lat*D2R)*Math.cos(decl))
-  const asrH=Math.abs(cosAsrH)<=1?Math.acos(cosAsrH)*R2D/15:null
-
-  return {
-    fajr:    fajrH    ? noon-fajrH    : null,
-    sunrise: sunriseH ? noon-sunriseH : null,
-    dhuhr:   noon+0.033,
-    asr:     asrH     ? noon+asrH     : null,
-    maghrib: maghribH ? noon+maghribH : null,
-    isha:    ishaH    ? noon+ishaH    : null,
-  }
-}
-
-function decimalToTime(dec) {
-  if(dec===null) return '--:--'
-  let totalMins=Math.round(dec*60)
-  totalMins=((totalMins%(24*60))+24*60)%(24*60)
-  const h=Math.floor(totalMins/60), m=totalMins%60
-  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')
-}
-
-function decimalToMinutes(dec) {
-  if(dec===null) return null
-  let mins=Math.round(dec*60)
-  return ((mins%(24*60))+24*60)%(24*60)
-}
 
 export default function PrayerTimes() {
   const [time, setTime] = useState(new Date())
@@ -136,38 +42,7 @@ export default function PrayerTimes() {
     return () => clearInterval(intervalRef.current)
   }, [])
 
-  const pTimes = calcPrayerTimes(time, lat, lng, tzOffset)
-  const nowMin = time.getHours() * 60 + time.getMinutes()
-
-  const prayerMins = PRAYERS.map(p => ({
-    ...p,
-    minutes: decimalToMinutes(pTimes[p.key]),
-    timeStr: decimalToTime(pTimes[p.key]),
-  }))
-
-  let currentPrayer = null
-  let nextPrayer = null
-  let nextMin = Infinity
-
-  prayerMins.forEach(p => {
-    if (p.minutes === null) return
-    if (p.minutes <= nowMin) currentPrayer = p
-    if (p.minutes > nowMin && p.minutes < nextMin) {
-      nextMin = p.minutes
-      nextPrayer = p
-    }
-  })
-
-  if (!nextPrayer) nextPrayer = prayerMins[0]
-
-  let countdown = ''
-  if (nextPrayer?.minutes !== null) {
-    let diff = nextPrayer.minutes - nowMin
-    if (diff < 0) diff += 24 * 60
-    const ch = Math.floor(diff / 60)
-    const cm = diff % 60
-    countdown = `${ch}h ${String(cm).padStart(2, '0')}m`
-  }
+  const { prayerMins, currentPrayer, nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
 
   const h = time.getHours()
   const m = time.getMinutes()
@@ -262,7 +137,7 @@ export default function PrayerTimes() {
             <div className="pt-date">
               {time.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
             </div>
-            <div className="pt-hijri arabic">{toHijri(time)}</div>
+            <div className="pt-hijri arabic">{toHijriString(time)}</div>
           </div>
 
           {/* Next prayer */}

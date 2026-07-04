@@ -1,19 +1,12 @@
-/* ============================================================
-   QUICK ACTIONS (home screen card grid)
-   src/components/QuickActions.css
-   ============================================================ */
-
 .quick-actions {
-  margin: 24px 0 32px;
+  margin-bottom: 40px;
 }
 
 .quick-actions-title {
-  font-size: 0.95rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  color: #094570;
-  margin: 0 0 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: var(--regal-blue, #094570);
+  margin-bottom: 16px;
 }
 
 .quick-actions-grid {
@@ -23,137 +16,56 @@
 }
 
 .quick-action-card {
-  position: relative;
-  overflow: hidden;
-  min-height: 150px;
-  padding: 18px;
-  border-radius: 20px;
-  text-decoration: none;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  gap: 4px;
-
-  background: linear-gradient(135deg, #0d5a92 0%, #094570 55%, #062f4a 100%);
-  box-shadow: 0 8px 20px rgba(9, 69, 112, 0.25);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.quick-action-card--wide {
-  grid-column: 1 / -1;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #0f2c40;
+  border: 1px solid rgba(133, 204, 255, 0.12);
+  text-decoration: none;
+  transition: all 0.18s ease;
 }
 
 .quick-action-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(9, 69, 112, 0.32);
+  border-color: rgba(133, 204, 255, 0.3);
 }
 
-.quick-action-card:active {
-  transform: translateY(0);
-}
-
-/* subtle diagonal stripe decoration, like the reference */
-.quick-action-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.06) 0px,
-    rgba(255, 255, 255, 0.06) 2px,
-    transparent 2px,
-    transparent 18px
-  );
-  pointer-events: none;
-}
-
-/* soft glow blob, like the reference top card */
-.quick-action-card::after {
-  content: '';
-  position: absolute;
-  top: -30px;
-  right: -30px;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-}
-
-/* Icon badge — background/color now come from an inline style per
-   action (see ACTIONS array in QuickActions.jsx) so each card gets
-   a distinct, legible color instead of a uniform translucent circle.
-   These rules just handle shape, position and the SVG inside it. */
 .quick-action-icon {
-  position: absolute;
-  top: 14px;
-  right: 14px;
   width: 36px;
   height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  z-index: 1;
+  margin-bottom: 10px;
 }
 
 .quick-action-icon svg {
   width: 18px;
   height: 18px;
-  flex-shrink: 0;
 }
 
 .quick-action-title {
-  position: relative;
-  z-index: 1;
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #f2e8d3;
 }
 
 .quick-action-desc {
-  position: relative;
-  z-index: 1;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.4;
+  font-size: 0.78rem;
+  color: #7d93a6;
 }
 
-/* ============================================
-   Dark mode
-   ============================================ */
+@media (max-width: 480px) {
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
 
-[data-theme="dark"] .quick-actions-title {
-  color: #85CCFF;
-}
-
-[data-theme="dark"] .quick-action-card {
-  background: linear-gradient(135deg, #124b78 0%, #0a1825 60%, #051220 100%);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="dark"] .quick-action-card:hover {
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.5);
-}
-
-/* ============================================
-   Mobile
-   ============================================ */
-
-@media (max-width: 420px) {
   .quick-action-card {
-    min-height: 130px;
     padding: 14px;
-    border-radius: 16px;
-  }
-
-  .quick-action-title {
-    font-size: 1rem;
-  }
-
-  .quick-action-desc {
-    font-size: 0.78rem;
   }
 }

@@ -66,7 +66,7 @@ const ACTIONS = [
     color: '#5DCAA5',
     iconColor: '#04342C',
     title: 'Dashboard',
-    desc: 'Track your learning progress',
+    desc: 'Your progress',
   },
   {
     to: '/',
@@ -74,7 +74,7 @@ const ACTIONS = [
     color: '#AFA9EC',
     iconColor: '#26215C',
     title: 'Disciplines',
-    desc: 'Explore all Islamic subjects',
+    desc: 'All subjects',
   },
   {
     to: '/flashcards',
@@ -82,7 +82,7 @@ const ACTIONS = [
     color: '#7EC8E3',
     iconColor: '#062B3D',
     title: 'Flashcards',
-    desc: 'Review key terms and concepts',
+    desc: 'Key terms',
   },
   {
     to: '/quiz',
@@ -90,7 +90,7 @@ const ACTIONS = [
     color: '#F0997B',
     iconColor: '#4A1B0C',
     title: 'Quiz',
-    desc: 'Test your knowledge',
+    desc: 'Test yourself',
   },
   {
     to: '/duas',
@@ -98,16 +98,15 @@ const ACTIONS = [
     color: '#FAC775',
     iconColor: '#412402',
     title: 'Duas',
-    desc: 'Learn essential supplications',
+    desc: 'Supplications',
   },
   {
-    // No longer "wide" — sits beside Calendar in the same row
     to: '/prayer-times',
     icon: 'prayerTimes',
     color: '#85B7EB',
     iconColor: '#042C53',
     title: 'Prayer Times',
-    desc: 'Never miss a prayer',
+    desc: 'Never miss one',
   },
   {
     to: '/calendar',
@@ -115,7 +114,7 @@ const ACTIONS = [
     color: '#ED93B1',
     iconColor: '#4B1528',
     title: 'Calendar',
-    desc: 'Plan your Islamic activities',
+    desc: 'Hijri dates',
   },
   {
     to: '/spaces',
@@ -123,7 +122,7 @@ const ACTIONS = [
     color: '#8FD9C4',
     iconColor: '#0B3D30',
     title: 'Spaces',
-    desc: 'Join community discussions',
+    desc: 'Discussions',
   },
 ]
 
@@ -133,11 +132,7 @@ export default function QuickActions() {
       <h2 className="quick-actions-title">Quick Actions</h2>
       <div className="quick-actions-grid">
         {ACTIONS.map(a => (
-          <Link
-            key={a.to}
-            to={a.to}
-            className={`quick-action-card${a.wide ? ' quick-action-card--wide' : ''}`}
-          >
+          <Link key={a.to} to={a.to} className="quick-action-card">
             <span
               className="quick-action-icon"
               style={{ background: a.color, color: a.iconColor }}
