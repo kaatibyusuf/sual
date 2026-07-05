@@ -1214,3 +1214,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+.spaces-schedule-live {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: #c62828;
+  padding: 4px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+  animation: newPulse 1.5s ease-in-out infinite;
+}
+
+[data-theme="dark"] .spaces-schedule-live {
+  background: #b71c1c;
+}

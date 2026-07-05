@@ -16,8 +16,8 @@ const CATEGORIES = [
 // Weekly class sessions. day: 0 = Sunday ... 6 = Saturday, in the user's local time.
 // Edit these to match the real Telegram class times.
 const CLASS_SCHEDULE = [
-  { classId: 'arabiyyah', title: 'Arabiyyah Class', arabic: 'فَصْلُ العَرَبِيَّة', icon: '✍️', day: 0, hour: 20, minute: 0 },
-  { classId: 'hadeeth',   title: 'Hadeeth Class',   arabic: 'فَصْلُ الحَدِيث',    icon: '📜', day: 6, hour: 20, minute: 0 },
+  { classId: 'arabiyyah', title: 'Arabiyyah Class', arabic: 'فَصْلُ العَرَبِيَّة', icon: '✍️', day: 0, hour: 21, minute: 0 },
+  { classId: 'hadeeth',   title: 'Hadeeth Class',   arabic: 'فَصْلُ الحَدِيث',    icon: '📜', day: 6, hour: 21, minute: 0 },
 ]
 
 const CLASSES = [
@@ -208,6 +208,15 @@ function countdownTo(date) {
   if (days > 0) return `in ${days}d ${hours}h`
   if (hours > 0) return `in ${hours}h ${minutes}m`
   return `in ${minutes}m`
+}
+
+function liveStatus(schedule, durationMinutes = 60) {
+  const now = new Date()
+  if (now.getDay() !== schedule.day) return false
+  const start = new Date(now)
+  start.setHours(schedule.hour, schedule.minute, 0, 0)
+  const end = new Date(start.getTime() + durationMinutes * 60000)
+  return now >= start && now < end
 }
 
 export default function Spaces({ user }) {
@@ -419,6 +428,7 @@ export default function Spaces({ user }) {
     <div className="spaces-schedule">
       {CLASS_SCHEDULE.map(s => {
         const next = nextSession(s)
+        const live = liveStatus(s)
         return (
           <button
             key={s.classId}
@@ -433,7 +443,11 @@ export default function Spaces({ user }) {
                 {next.toLocaleDateString('en-GB', { weekday: 'long' })} · {next.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
               </span>
             </span>
-            <span className="spaces-schedule-countdown">{countdownTo(next)}</span>
+            {live ? (
+              <span className="spaces-schedule-live">● Live now</span>
+            ) : (
+              <span className="spaces-schedule-countdown">{countdownTo(next)}</span>
+            )}
           </button>
         )
       })}
