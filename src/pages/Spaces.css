@@ -982,3 +982,235 @@
   color: #666;
   font-weight: 500;
 }
+
+/* ═══════════════════════════════════════════════
+   PASTE EVERYTHING BELOW AT THE BOTTOM OF Spaces.css
+   New styles for: class schedule strip, featured
+   scholar card, category color dots, new-post
+   indicator, and reply counts.
+   ═══════════════════════════════════════════════ */
+
+/* ── Class schedule strip ── */
+.spaces-schedule-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4a6080;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 16px 0 10px;
+}
+
+.spaces-schedule {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.spaces-schedule-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+  text-align: left;
+  font-family: var(--font-ui);
+  transition: all 0.2s ease;
+}
+
+.spaces-schedule-card:hover {
+  border-color: #85CCFF;
+  box-shadow: 0 4px 16px rgba(9,69,112,0.1);
+}
+
+.spaces-schedule-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.spaces-schedule-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.spaces-schedule-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #094570;
+}
+
+.spaces-schedule-when {
+  font-size: 0.72rem;
+  color: #8a9ab0;
+}
+
+.spaces-schedule-countdown {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #7a5a13;
+  background: #fdf3dd;
+  border: 1px solid #ecd9a8;
+  padding: 4px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+/* ── Featured scholar answer ── */
+.spaces-featured {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, rgba(9,69,112,0.04), #ffffff) !important;
+  border: 1.5px solid #094570;
+  border-radius: 14px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: all 0.2s ease;
+}
+
+.spaces-featured:hover {
+  box-shadow: 0 6px 20px rgba(9,69,112,0.15);
+  transform: translateY(-2px);
+}
+
+.spaces-featured-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spaces-featured-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #094570;
+  color: #ffffff;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.spaces-featured-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #094570;
+  line-height: 1.4;
+}
+
+.spaces-featured-answer {
+  font-size: 0.85rem;
+  color: #4a6080;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+/* ── Category color dots ── */
+.spaces-cat-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.spaces-cat-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.spaces-cat-badge {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ── New-post indicator ── */
+.spaces-new-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e65100;
+  margin-right: 6px;
+  vertical-align: middle;
+  animation: newPulse 2s ease-in-out infinite;
+}
+
+@keyframes newPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Post footer with reply count ── */
+.spaces-post-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spaces-post-replies {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4a6080;
+}
+
+/* ── Dark mode for new elements ── */
+[data-theme="dark"] .spaces-schedule-card {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-schedule-card:hover {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-schedule-title {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-schedule-when {
+  color: #6a8090;
+}
+
+[data-theme="dark"] .spaces-schedule-countdown {
+  color: #f0d089;
+  background: rgba(200,149,47,0.14);
+  border-color: rgba(200,149,47,0.35);
+}
+
+[data-theme="dark"] .spaces-schedule-label {
+  color: #6a8090;
+}
+
+[data-theme="dark"] .spaces-featured {
+  background: linear-gradient(135deg, #0a1825, #0f1f2e) !important;
+  border-color: #1e4a70;
+}
+
+[data-theme="dark"] .spaces-featured-title {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-featured-answer {
+  color: #8aaac8;
+}
+
+[data-theme="dark"] .spaces-post-replies {
+  color: #6a8090;
+}
+
+@media (max-width: 600px) {
+  .spaces-schedule {
+    grid-template-columns: 1fr;
+  }
+}

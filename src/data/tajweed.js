@@ -1368,7 +1368,7 @@ export const TAJWEED_SCHOLARS = [
     contribution: 'One of the seven canonical reciters, renowned for his mastery of Arabic grammar and language alongside Quranic recitation. His riwayah, transmitted primarily through al-Duri and al-Susi, remains in use in parts of Africa and Sudan today.',
   },
   {
-    name: 'Imam al-Dani',
+    name: 'Imam ad-Daani',
     arabicName: 'الإِمَامُ الدَّانِيّ',
     lifespan: '371-444 AH',
     contribution: 'A foundational scholar of Quranic sciences and Qiraat, author of Al-Taysir fi al-Qiraat al-Sab (later versified by al-Shatibi in Al-Shatibiyyah) and a major contributor to the study of the Uthmanic script (rasm) and Quranic orthography.',

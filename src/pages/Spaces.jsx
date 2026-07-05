@@ -4,13 +4,20 @@ import { supabase } from '../lib/supabase.js'
 import './Spaces.css'
 
 const CATEGORIES = [
-  { key: 'all',        label: 'All',       arabic: 'الكُلّ',      icon: '🌐' },
-  { key: 'fiqh',      label: 'Fiqh',      arabic: 'الفِقْه',     icon: '⚖️' },
-  { key: 'seerah',    label: 'Seerah',    arabic: 'السِّيرَة',    icon: '🌙' },
-  { key: 'arabiyyah', label: 'Arabiyyah', arabic: 'العَرَبِيَّة', icon: '✍️' },
-  { key: 'tajweed',   label: 'Tajweed',   arabic: 'التَّجْوِيد',  icon: '🎙️' },
-  { key: 'aqeedah',   label: 'Aqeedah',   arabic: 'العَقِيدَة',   icon: '☪️' },
-  { key: 'general',   label: 'General',   arabic: 'عَامّ',        icon: '💬' },
+  { key: 'all',       label: 'All',       arabic: 'الكُلّ',      icon: '🌐', color: '#094570' },
+  { key: 'fiqh',      label: 'Fiqh',      arabic: 'الفِقْه',     icon: '⚖️', color: '#5DCAA5' },
+  { key: 'seerah',    label: 'Seerah',    arabic: 'السِّيرَة',    icon: '🌙', color: '#AFA9EC' },
+  { key: 'arabiyyah', label: 'Arabiyyah', arabic: 'العَرَبِيَّة', icon: '✍️', color: '#85B7EB' },
+  { key: 'tajweed',   label: 'Tajweed',   arabic: 'التَّجْوِيد',  icon: '🎙️', color: '#F0997B' },
+  { key: 'aqeedah',   label: 'Aqeedah',   arabic: 'العَقِيدَة',   icon: '☪️', color: '#FAC775' },
+  { key: 'general',   label: 'General',   arabic: 'عَامّ',        icon: '💬', color: '#8FD9C4' },
+]
+
+// Weekly class sessions. day: 0 = Sunday ... 6 = Saturday, in the user's local time.
+// Edit these to match the real Telegram class times.
+const CLASS_SCHEDULE = [
+  { classId: 'arabiyyah', title: 'Arabiyyah Class', arabic: 'فَصْلُ العَرَبِيَّة', icon: '✍️', day: 0, hour: 20, minute: 0 },
+  { classId: 'hadeeth',   title: 'Hadeeth Class',   arabic: 'فَصْلُ الحَدِيث',    icon: '📜', day: 6, hour: 20, minute: 0 },
 ]
 
 const CLASSES = [
@@ -168,6 +175,41 @@ const CLASSES = [
   },
 ]
 
+// ── Time helpers ────────────────────────────────────────────────
+
+function timeAgo(dateStr) {
+  const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
+  if (seconds < 60) return 'just now'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days}d ago`
+  return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+}
+
+function nextSession(schedule) {
+  const now = new Date()
+  const next = new Date(now)
+  next.setHours(schedule.hour, schedule.minute, 0, 0)
+  let daysAhead = (schedule.day - now.getDay() + 7) % 7
+  if (daysAhead === 0 && next <= now) daysAhead = 7
+  next.setDate(next.getDate() + daysAhead)
+  return next
+}
+
+function countdownTo(date) {
+  const ms = date.getTime() - Date.now()
+  const totalMinutes = Math.max(0, Math.floor(ms / 60000))
+  const days = Math.floor(totalMinutes / 1440)
+  const hours = Math.floor((totalMinutes % 1440) / 60)
+  const minutes = totalMinutes % 60
+  if (days > 0) return `in ${days}d ${hours}h`
+  if (hours > 0) return `in ${hours}h ${minutes}m`
+  return `in ${minutes}m`
+}
+
 export default function Spaces({ user }) {
   const [subscription,   setSubscription]   = useState(null)
   const [subLoading,     setSubLoading]     = useState(true)
@@ -181,8 +223,21 @@ export default function Spaces({ user }) {
   const [showNewPost,    setShowNewPost]    = useState(false)
   const [posting,        setPosting]        = useState(false)
   const [error,          setError]          = useState(null)
-  const [activeTab,      setActiveTab]      = useState('community') // 'community' | 'arabiyyah' | 'hadeeth'
+  const [activeTab,      setActiveTab]      = useState('community')
   const [classLevel,     setClassLevel]     = useState({ arabiyyah: 'beginner', hadeeth: 'beginner' })
+  const [featured,       setFeatured]       = useState(null)
+  const [lastVisit]                          = useState(() => {
+    const prev = localStorage.getItem('sual-spaces-last-visit')
+    localStorage.setItem('sual-spaces-last-visit', new Date().toISOString())
+    return prev ? new Date(prev) : null
+  })
+
+  // Keep class countdowns live without a visible clock
+  const [, setClock] = useState(new Date())
+  useEffect(() => {
+    const interval = setInterval(() => setClock(new Date()), 60000)
+    return () => clearInterval(interval)
+  }, [])
 
   const checkSubscription = useCallback(async () => {
     if (!user) return
@@ -202,28 +257,50 @@ export default function Spaces({ user }) {
   }, [user])
 
   const fetchPosts = useCallback(async () => {
-  if (!user) return
-  setPostsLoading(true)
-  try {
-    let query = supabase
-      .from('spaces_posts')
-      .select('*, profiles(badge_ids)')
-      .order('created_at', { ascending: false })
-    if (category !== 'all') query = query.eq('category', category)
-    const { data } = await query
-    
-    // Flatten badge_ids onto each post
-    const enriched = (data || []).map(post => ({
-      ...post,
-      author_badge_ids: post.profiles?.badge_ids || [],
-    }))
-    setPosts(enriched)
-  } catch (err) {
-    console.error(err)
-  } finally {
-    setPostsLoading(false)
-  }
-}, [user, category])
+    if (!user) return
+    setPostsLoading(true)
+    try {
+      let query = supabase
+        .from('spaces_posts')
+        .select('*, profiles(badge_ids), spaces_replies(count)')
+        .order('created_at', { ascending: false })
+      if (category !== 'all') query = query.eq('category', category)
+      const { data } = await query
+
+      const enriched = (data || []).map(post => ({
+        ...post,
+        author_badge_ids: post.profiles?.badge_ids || [],
+        reply_count: post.spaces_replies?.[0]?.count ?? 0,
+      }))
+      setPosts(enriched)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setPostsLoading(false)
+    }
+  }, [user, category])
+
+  // Question of the Week: the post behind the most recent scholar answer
+  const fetchFeatured = useCallback(async () => {
+    try {
+      const { data: reply } = await supabase
+        .from('spaces_replies')
+        .select('post_id, body, created_at')
+        .eq('is_scholar_answer', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+      if (!reply) { setFeatured(null); return }
+      const { data: post } = await supabase
+        .from('spaces_posts')
+        .select('*')
+        .eq('id', reply.post_id)
+        .single()
+      if (post) setFeatured({ post, reply })
+    } catch {
+      setFeatured(null)
+    }
+  }, [])
 
   useEffect(() => {
     if (!user) return
@@ -245,28 +322,38 @@ export default function Spaces({ user }) {
   }, [user, checkSubscription])
 
   useEffect(() => {
-    if (subscription?.status === 'active') fetchPosts()
-  }, [subscription, fetchPosts])
+    if (subscription?.status === 'active') {
+      fetchPosts()
+      fetchFeatured()
+    }
+  }, [subscription, fetchPosts, fetchFeatured])
 
   if (!user) return null
 
   const fetchReplies = async (postId) => {
-  const { data } = await supabase
-    .from('spaces_replies')
-    .select('*, profiles(badge_ids)')
-    .eq('post_id', postId)
-    .order('created_at', { ascending: true })
-  
-  const enriched = (data || []).map(r => ({
-    ...r,
-    author_badge_ids: r.profiles?.badge_ids || [],
-  }))
-  setReplies(enriched)
-}
+    const { data } = await supabase
+      .from('spaces_replies')
+      .select('*, profiles(badge_ids)')
+      .eq('post_id', postId)
+      .order('created_at', { ascending: true })
+
+    const enriched = (data || []).map(r => ({
+      ...r,
+      author_badge_ids: r.profiles?.badge_ids || [],
+    }))
+    setReplies(enriched)
+  }
 
   const openPost = async (post) => {
     setActivePost(post)
     await fetchReplies(post.id)
+  }
+
+  const openPostById = async (postId) => {
+    const existing = posts.find(p => p.id === postId)
+    if (existing) { openPost(existing); return }
+    const { data } = await supabase.from('spaces_posts').select('*').eq('id', postId).single()
+    if (data) openPost(data)
   }
 
   const submitPost = async () => {
@@ -325,6 +412,33 @@ export default function Spaces({ user }) {
 
   const getInitials = (str) => str ? str[0].toUpperCase() : 'U'
   const isPaid = subscription?.status === 'active'
+  const catOf = (key) => CATEGORIES.find(c => c.key === key)
+
+  // Shared schedule strip, used on both the member view and the paywall
+  const renderSchedule = () => (
+    <div className="spaces-schedule">
+      {CLASS_SCHEDULE.map(s => {
+        const next = nextSession(s)
+        return (
+          <button
+            key={s.classId}
+            className="spaces-schedule-card"
+            onClick={() => { if (isPaid) setActiveTab(s.classId) }}
+            style={{ cursor: isPaid ? 'pointer' : 'default' }}
+          >
+            <span className="spaces-schedule-icon">{s.icon}</span>
+            <span className="spaces-schedule-text">
+              <span className="spaces-schedule-title">{s.title}</span>
+              <span className="spaces-schedule-when">
+                {next.toLocaleDateString('en-GB', { weekday: 'long' })} · {next.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </span>
+            <span className="spaces-schedule-countdown">{countdownTo(next)}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
 
   if (subLoading) {
     return (
@@ -339,24 +453,29 @@ export default function Spaces({ user }) {
 
   // ── Post detail view ──────────────────────────────────────────
   if (activePost) {
+    const cat = catOf(activePost.category)
     return (
       <div className="page-content spaces-page">
         <button className="spaces-back" onClick={() => { setActivePost(null); setReplies([]) }}>
           ← Back to Spaces
         </button>
-        <div className="spaces-post-top">
-  <span className="spaces-cat-badge">
-    {CATEGORIES.find(c => c.key === post.category)?.icon} {post.category}
-  </span>
-  <span className="spaces-post-date">{formatDate(post.created_at)}</span>
-</div>
-<div className="spaces-post-author">
-  <div className="spaces-post-avatar">
-    {getInitials(post.user_id)}
-  </div>
-  <span className="spaces-post-author-name">Member</span>
-  <BadgeStrip earnedIds={post.author_badge_ids || []} />
-</div>
+
+        <div className="spaces-post-detail card">
+          <div className="spaces-post-top">
+            <span className="spaces-cat-badge">
+              <span className="spaces-cat-dot" style={{ background: cat?.color }} />
+              {cat?.icon} {activePost.category}
+            </span>
+            <span className="spaces-post-date">{formatDate(activePost.created_at)}</span>
+          </div>
+          <h2 className="spaces-post-detail-title">{activePost.title}</h2>
+          <div className="spaces-post-author">
+            <div className="spaces-post-avatar">{getInitials(activePost.user_id)}</div>
+            <span className="spaces-post-author-name">Member</span>
+            <BadgeStrip earnedIds={activePost.author_badge_ids || []} />
+          </div>
+          <p className="spaces-post-detail-body">{activePost.body}</p>
+        </div>
 
         <div className="spaces-replies">
           <h3 className="spaces-replies-title">
@@ -411,6 +530,11 @@ export default function Spaces({ user }) {
       <div className="page-content spaces-page">
         <h1 className="page-title">Spaces</h1>
         <p className="page-subtitle">فَضَاءَات — A community for serious students of Islamic knowledge</p>
+
+        {/* Live class schedule shown even to non-members: this is what the money buys */}
+        <p className="spaces-schedule-label">This week in Spaces</p>
+        {renderSchedule()}
+
         <div className="spaces-paywall">
           <div className="spaces-paywall-icon">🕌</div>
           <h2 className="spaces-paywall-title">Members Only</h2>
@@ -462,7 +586,6 @@ export default function Spaces({ user }) {
     return (
       <div className="spaces-class-page">
 
-        {/* Class header */}
         <div className="spaces-class-header" style={{ borderColor: cls.color }}>
           <span className="spaces-class-icon">{cls.icon}</span>
           <div>
@@ -472,7 +595,6 @@ export default function Spaces({ user }) {
           </div>
         </div>
 
-        {/* Level tabs */}
         <div className="spaces-class-levels">
           {cls.levels.map(lv => (
             <button
@@ -487,11 +609,9 @@ export default function Spaces({ user }) {
           ))}
         </div>
 
-        {/* Level content */}
         {currentLevel && (
           <div className="spaces-class-content">
 
-            {/* Title card */}
             <div className="spaces-class-content-header card" style={{ borderLeft: `4px solid ${currentLevel.color}` }}>
               <div className="spaces-class-content-meta">
                 <span className="spaces-class-level-badge" style={{ background: currentLevel.color }}>
@@ -505,7 +625,6 @@ export default function Spaces({ user }) {
               <p className="spaces-class-content-desc">{currentLevel.description}</p>
             </div>
 
-            {/* Curriculum */}
             <div className="spaces-class-section card">
               <h4 className="spaces-class-section-title">📋 Curriculum</h4>
               <ul className="spaces-class-curriculum">
@@ -518,13 +637,11 @@ export default function Spaces({ user }) {
               </ul>
             </div>
 
-            {/* Outcome */}
             <div className="spaces-class-section card spaces-class-outcome-card">
               <h4 className="spaces-class-section-title">🎯 Learning Outcome</h4>
               <p className="spaces-class-outcome-text">{currentLevel.outcome}</p>
             </div>
 
-            {/* Sample hadith for beginner hadeeth */}
             {currentLevel.hadiths && (
               <div className="spaces-class-section card">
                 <h4 className="spaces-class-section-title">📜 Sample Hadith — First Ten</h4>
@@ -545,14 +662,13 @@ export default function Spaces({ user }) {
               </div>
             )}
 
-           {/* Join CTA */}
             <div className="spaces-class-cta card">
               <p className="spaces-class-cta-text">
                 Ready to join the {currentLevel.label} {cls.title}?
                 Click the button below to join the dedicated Telegram group for your level.
                 All classes are conducted and coordinated through Telegram.
               </p>
-              
+
               <a
                 className="spaces-submit-btn spaces-telegram-btn"
                 href={
@@ -582,7 +698,6 @@ export default function Spaces({ user }) {
   return (
     <div className="page-content spaces-page">
 
-      {/* Header */}
       <div className="spaces-header">
         <div>
           <h1 className="page-title">Spaces</h1>
@@ -595,7 +710,6 @@ export default function Spaces({ user }) {
         )}
       </div>
 
-      {/* Main tabs */}
       <div className="spaces-main-tabs">
         {[
           { key: 'community', label: 'Community',      icon: '💬' },
@@ -612,16 +726,29 @@ export default function Spaces({ user }) {
         ))}
       </div>
 
-      {/* ── Arabiyyah class ── */}
       {activeTab === 'arabiyyah' && renderClass(CLASSES[0])}
-
-      {/* ── Hadeeth class ── */}
       {activeTab === 'hadeeth' && renderClass(CLASSES[1])}
 
-      {/* ── Community tab ── */}
       {activeTab === 'community' && (
         <>
-          {/* New post modal */}
+          {/* Next class sessions */}
+          {renderSchedule()}
+
+          {/* Question of the Week: latest scholar-answered thread */}
+          {featured && (
+            <button className="spaces-featured card" onClick={() => openPostById(featured.post.id)}>
+              <div className="spaces-featured-head">
+                <span className="spaces-featured-tag">🎓 Scholar Answered</span>
+                <span className="spaces-post-date">{timeAgo(featured.reply.created_at)}</span>
+              </div>
+              <h3 className="spaces-featured-title">{featured.post.title}</h3>
+              <p className="spaces-featured-answer">
+                {featured.reply.body.length > 150 ? featured.reply.body.slice(0, 150) + '...' : featured.reply.body}
+              </p>
+              <span className="spaces-post-read">Read the full answer →</span>
+            </button>
+          )}
+
           {showNewPost && (
             <div className="spaces-modal-overlay" onClick={() => setShowNewPost(false)}>
               <div className="spaces-modal card" onClick={e => e.stopPropagation()}>
@@ -669,7 +796,6 @@ export default function Spaces({ user }) {
             </div>
           )}
 
-          {/* Category filter */}
           <div className="spaces-categories">
             {CATEGORIES.map(c => (
               <button
@@ -677,12 +803,12 @@ export default function Spaces({ user }) {
                 className={`spaces-cat-btn ${category === c.key ? 'spaces-cat-btn--active' : ''}`}
                 onClick={() => setCategory(c.key)}
               >
+                <span className="spaces-cat-dot" style={{ background: c.color }} />
                 {c.icon} {c.label}
               </button>
             ))}
           </div>
 
-          {/* Posts */}
           {postsLoading ? (
             <div className="spaces-loading"><div className="spaces-spinner" /></div>
           ) : posts.length === 0 ? (
@@ -693,23 +819,34 @@ export default function Spaces({ user }) {
             </div>
           ) : (
             <div className="spaces-posts">
-              {posts.map(post => (
-                <button key={post.id} className="spaces-post-card card" onClick={() => openPost(post)}>
-                  <div className="spaces-post-top">
-                    <span className="spaces-cat-badge">
-                      {CATEGORIES.find(c => c.key === post.category)?.icon} {post.category}
-                    </span>
-                    <span className="spaces-post-date">{formatDate(post.created_at)}</span>
-                  </div>
-                  <h3 className="spaces-post-title">{post.title}</h3>
-                  <p className="spaces-post-preview">
-                    {post.body.length > 120 ? post.body.slice(0, 120) + '...' : post.body}
-                  </p>
-                  <div className="spaces-post-footer">
-                    <span className="spaces-post-read">Read Discussion →</span>
-                  </div>
-                </button>
-              ))}
+              {posts.map(post => {
+                const cat = catOf(post.category)
+                const isNew = lastVisit && new Date(post.created_at) > lastVisit
+                return (
+                  <button key={post.id} className="spaces-post-card card" onClick={() => openPost(post)}>
+                    <div className="spaces-post-top">
+                      <span className="spaces-cat-badge">
+                        <span className="spaces-cat-dot" style={{ background: cat?.color }} />
+                        {cat?.icon} {post.category}
+                      </span>
+                      <span className="spaces-post-date">
+                        {isNew && <span className="spaces-new-dot" title="New since your last visit" />}
+                        {timeAgo(post.created_at)}
+                      </span>
+                    </div>
+                    <h3 className="spaces-post-title">{post.title}</h3>
+                    <p className="spaces-post-preview">
+                      {post.body.length > 120 ? post.body.slice(0, 120) + '...' : post.body}
+                    </p>
+                    <div className="spaces-post-footer">
+                      <span className="spaces-post-replies">
+                        💬 {post.reply_count} {post.reply_count === 1 ? 'reply' : 'replies'}
+                      </span>
+                      <span className="spaces-post-read">Read Discussion →</span>
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           )}
         </>
