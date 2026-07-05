@@ -96,6 +96,7 @@ Qalqalah, Safir, Tafashi, Istitalah, Inhiraf, Takrir, and Lin — each named for
       },
     ],
   },
+
   {
     id: 'tj2',
     title: 'Noon Saakinah and Tanween',
@@ -193,6 +194,7 @@ The key feature of Ikhfa is that the point of articulation shifts toward the fol
       },
     ],
   },
+
   {
     id: 'tj3',
     title: 'Meem Saakinah',
@@ -245,6 +247,7 @@ Special attention is required before waw (و) and fa (ف), since these are close
       },
     ],
   },
+
   {
     id: 'tj4',
     title: 'Al-Madd (Prolongation)',
@@ -375,6 +378,7 @@ The term "lin" (softness) describes the easy, effortless quality of these two le
       },
     ],
   },
+
   {
     id: 'tj5',
     title: 'Al-Qalqalah (Echoing)',
@@ -412,6 +416,7 @@ There are three degrees of Qalqalah:
       },
     ],
   },
+
   {
     id: 'tj6',
     title: 'Tafkheem and Tarqeeq',
@@ -489,6 +494,7 @@ Cases when the Ra is LIGHT (tarqeeq):
       },
     ],
   },
+
   {
     id: 'tj7',
     title: 'Al-Waqf and Al-Ibtida',
@@ -554,6 +560,7 @@ These four saktahs are among the most precisely preserved features of the Hafs r
       },
     ],
   },
+
   {
     id: 'tj8',
     title: 'Al-Ghunnah (Nasalization)',
@@ -587,6 +594,7 @@ As a general rule: wherever نّ or مّ appears in the Quran, two full counts o
       },
     ],
   },
+
   {
     id: 'tj9',
     title: 'The Opening Letters (Al-Huruf al-Muqattaat)',
@@ -619,6 +627,7 @@ As a general rule: wherever نّ or مّ appears in the Quran, two full counts o
       },
     ],
   },
+
   {
     id: 'tj10',
     title: 'The Hamzah (الهَمْزَة)',
@@ -654,6 +663,7 @@ When beginning recitation with a word that opens in Hamzat al-Wasl, the starting
       },
     ],
   },
+
   {
     id: 'tj11',
     title: 'General Idgham (Beyond Noon Saakinah)',
@@ -718,6 +728,7 @@ A rarer and celebrated case is the qaf sakinah merging into kaf in a single word
       },
     ],
   },
+
   {
     id: 'tj12',
     title: 'Al-Lam Shamsiyyah wal-Qamariyyah (Sun and Moon Letters)',
@@ -775,6 +786,7 @@ Unlike the Sun Lam, which disappears entirely from pronunciation, the Moon Lam a
       },
     ],
   },
+
   {
     id: 'tj13',
     title: 'Further Types of Madd',
@@ -834,6 +846,7 @@ If the ha is followed by a sakin letter, or falls at the end of a word where rec
       },
     ],
   },
+
   {
     id: 'tj14',
     title: 'Special Recitation Features',
@@ -888,6 +901,7 @@ This is one of the rarest and most distinctive features unique to a single verse
       },
     ],
   },
+
   {
     id: 'tj15',
     title: 'The Waqf Styles: Sukoon, Rawm, and Ishmam',
@@ -941,6 +955,7 @@ Since Ishmam produces no audible difference whatsoever, it exists purely as a vi
       },
     ],
   },
+
   {
     id: 'tj16',
     title: 'Waqf on Ta Marbutah',
@@ -966,6 +981,7 @@ This shift is purely phonetic and carries no change in meaning; it exists simply
       },
     ],
   },
+
   {
     id: 'tj17',
     title: 'Madd al-Farq (The Madd of Distinction)',
@@ -991,6 +1007,7 @@ This occurs in only a handful of places in the Quran, most notably in Surah al-A
       },
     ],
   },
+
   {
     id: 'tj18',
     title: 'Idgham Kamil and Idgham Naqis',
@@ -1030,6 +1047,7 @@ Recognizing this distinction explains why Idgham bi-Ghunnah is never described a
       },
     ],
   },
+
   {
     id: 'tj19',
     title: 'Al-Isti\'adhah wal-Basmalah',
@@ -1071,6 +1089,7 @@ If a reciter begins reciting from the middle of Surah al-Tawbah rather than read
       },
     ],
   },
+
   {
     id: 'tj20',
     title: 'Sujud at-Tilawah',
@@ -1099,6 +1118,222 @@ A person merely reading a verse of sajdah silently to themselves without vocaliz
       },
     ],
   },
+
+  {
+    id: 'tj21',
+    title: 'The Remaining Sifat Without Opposites',
+    arabicTitle: 'الصِّفَاتُ الَّتِي لَا ضِدَّ لَهَا',
+    icon: '🎼',
+    overview: 'Alongside the paired characteristics introduced earlier (Jahr/Hams, Shiddah/Rakhawah, Istila/Istifal, Itbaq/Infitah, Idhlaq/Ismat), a second group of sifat belongs only to specific letters with no opposing counterpart anywhere in the alphabet. Qalqalah was treated separately due to its importance; the remaining six are gathered here.',
+    rules: [
+      {
+        id: 'tj21r1',
+        name: 'Safir, Tafashi, and Istitalah',
+        arabic: 'الصَّفِير وَالتَّفَشِّي وَالاِسْتِطَالَة',
+        level: 'advanced',
+        explanation: `1. Al-Safir (الصَّفِير — whistling): a sharp, whistling quality produced when air is forced through a narrow channel between the tongue and the teeth. Three letters carry it: sad (ص), zay (ز), and seen (س), memorized together as the "whistling letters." Sad produces the strongest whistle, followed by zay, then seen.
+
+2. Al-Tafashi (التَّفَشِّي — dispersion): the sound of the letter spreads widely across the mouth rather than remaining focused at one point. Only the letter shin (ش) carries this sifah, recognizable by its broad, airy hiss.
+
+3. Al-Istitalah (الاِسْتِطَالَة — elongation): the sound stretches from the very edge of the tongue along its side all the way to the point of contact with the gums. Only the letter dad (ض) carries this sifah, which is why dad is often singled out as the most difficult letter in Arabic for non-native speakers to master — its production requires the entire side of the tongue to press along the upper molars in sequence.`,
+        examples: [
+          { arabic: 'ص ز س', transliteration: 'Sad, Zay, Seen', note: 'The three Safir (whistling) letters, sad being the strongest' },
+          { arabic: 'ش', transliteration: 'Shin', note: 'The sole Tafashi letter — sound disperses across the mouth' },
+          { arabic: 'ض', transliteration: 'Dad', note: 'The sole Istitalah letter — sound elongates along the side of the tongue' },
+        ],
+        source: 'Al-Muqaddimah al-Jazariyyah; Hidayat al-Qari',
+      },
+      {
+        id: 'tj21r2',
+        name: 'Inhiraf, Takrir, and Lin',
+        arabic: 'الاِنْحِرَاف وَالتَّكْرِير وَاللِّين',
+        level: 'advanced',
+        explanation: `1. Al-Inhiraf (الاِنْحِرَاف — deviation): the sound of the letter is deflected away from its primary makhraj toward the makhraj of a neighboring letter. Two letters carry this sifah: lam (ل), whose sound deflects toward the tip of the tongue, and ra (ر), whose sound deflects toward the back of the tongue slightly.
+
+2. Al-Takrir (التَّكْرِير — repetition/trilling): the tip of the tongue vibrates rapidly when producing the letter. Only ra (ر) carries this sifah. Importantly, Takrir is a sifah to be aware of in order to CONTROL and minimize — a reciter should produce only a single, clean ra rather than allowing the natural trill to multiply into what sounds like a doubled or tripled letter.
+
+3. Al-Lin (اللِّين — softness): already introduced under Madd al-Lin, this sifah belongs to waw (و) and ya (ي) specifically when they are sakin and preceded by a fathah, producing an easy, effortless glide with no muscular strain in the throat or tongue.`,
+        examples: [
+          { arabic: 'ل ر', transliteration: 'Lam, Ra', note: 'The two Inhiraf letters — sound deflects toward a neighboring makhraj' },
+          { arabic: 'ر', transliteration: 'Ra', note: 'The sole Takrir letter — must be controlled to avoid an audible multiple trill' },
+          { arabic: 'و ي', transliteration: 'Waw, Ya (sakin after fathah)', note: 'The Lin letters — soft, effortless glide, e.g. in خَوْف and بَيْت' },
+        ],
+        source: 'Al-Muqaddimah al-Jazariyyah; Al-Wafi fi Sharh al-Shatibiyyah',
+      },
+    ],
+  },
+
+  {
+    id: 'tj22',
+    title: 'The Seven Ahruf and the Ten Qiraat',
+    arabicTitle: 'الأَحْرُفُ السَّبْعَة وَالقِرَاءَاتُ العَشْر',
+    icon: '📜',
+    overview: 'The rules covered throughout this course follow the riwayah of Hafs an Asim, the most widely recited transmission of the Quran today. But Hafs an Asim is only one strand within a much larger, fully authenticated tradition of transmission that traces back to the Prophet himself — a tradition that Tajweed students benefit from understanding, even if they only ever recite according to Hafs.',
+    rules: [
+      {
+        id: 'tj22r1',
+        name: 'The Seven Ahruf (Modes of Revelation)',
+        arabic: 'الأَحْرُفُ السَّبْعَة',
+        level: 'intermediate',
+        explanation: `The Prophet Muhammad, upon him be peace, reported that the Quran was revealed upon seven ahruf (أَحْرُف — modes or dialectal variants), a concession granted to ease recitation across the diverse Arab tribes of the time, each with slightly different dialects and speech patterns.
+
+Scholars differ on the precise nature of these seven ahruf — proposed explanations include variations in vocabulary, in grammatical inflection, or in dialectal pronunciation — but the two points of consensus are:
+
+1. All seven ahruf carry the same meaning and were revealed by Allah, none contradicting another.
+2. During the caliphate of Uthman ibn Affan, the Companions standardized the Quran onto a single script (the Uthmanic mushaf) reflecting one harf, chosen because it was comprehensive enough to accommodate the core of the various readings, in order to preserve unity and prevent disputes as Islam spread beyond the Arabian Peninsula.
+
+The seven Qiraat (recitations) later canonized by Ibn Mujahid are related to, but distinct from, the seven ahruf — the Qiraat are chains of transmission of the single standardized text, while the ahruf refer to the broader pre-Uthmanic revelation.`,
+        examples: [],
+        source: 'Sahih al-Bukhari 4991-4992; Al-Itqan fi Ulum al-Quran, al-Suyuti',
+      },
+      {
+        id: 'tj22r2',
+        name: 'The Ten Canonical Qiraat and Their Transmitters',
+        arabic: 'القِرَاءَاتُ العَشْرُ وَرُوَاتُهَا',
+        level: 'advanced',
+        explanation: `Ibn Mujahid first canonized seven Qiraat (recitations), each traced through an unbroken chain (isnad) back to the Prophet through a specific Companion and a specific city of transmission. Ibn al-Jazari later added three more, bringing the total to ten Mutawatir (mass-transmitted, unquestionably authentic) Qiraat:
+
+1. Nafi al-Madani (Madinah) — transmitted through Qalun and Warsh
+2. Ibn Kathir al-Makki (Makkah) — transmitted through al-Bazzi and Qunbul
+3. Abu Amr al-Basri (Basrah) — transmitted through al-Duri and al-Susi
+4. Ibn Amir al-Dimashqi (Damascus) — transmitted through Hisham and Ibn Dhakwan
+5. Asim al-Kufi (Kufah) — transmitted through Shubah and Hafs
+6. Hamzah al-Kufi (Kufah) — transmitted through Khalaf and Khallad
+7. Al-Kisai al-Kufi (Kufah) — transmitted through al-Duri and Abu al-Harith
+8. Abu Jafar al-Madani — transmitted through Ibn Wardan and Ibn Jammaz
+9. Yaqub al-Hadrami (Basrah) — transmitted through Ruways and Rawh
+10. Khalaf al-Ashir (Kufah) — an independent transmission distinct from his role as a narrator of Hamzah
+
+Each Qiraat differs from the others only in minor points — vowelling, occasional word choice, or specific Tajweed applications like Imalah — never in overall meaning. Hafs an Asim, one of the two transmissions of Asim al-Kufi, is by far the most widely recited today, especially across the Middle East, South Asia, and beyond; Warsh an Nafi is dominant across most of North and West Africa.`,
+        examples: [],
+        source: 'Al-Nashr fi al-Qiraat al-Ashr, Ibn al-Jazari; Kitab al-Sabah, Ibn Mujahid',
+      },
+    ],
+  },
+
+  {
+    id: 'tj23',
+    title: 'Adab al-Tilawah (Etiquettes of Recitation)',
+    arabicTitle: 'آدَابُ تِلَاوَةِ القُرْآن',
+    icon: '🤲',
+    overview: 'Beyond the technical rules of Tajweed, the scholars — most notably Imam al-Nawawi in his dedicated treatise Al-Tibyan — set out the inward and outward etiquettes (adab) that should accompany the recitation of the Quran, since Tajweed without sincerity and reverence falls short of the full purpose of recitation.',
+    rules: [
+      {
+        id: 'tj23r1',
+        name: 'Etiquettes Before and During Recitation',
+        arabic: 'آدَابُ مَا قَبْلَ التِّلَاوَةِ وَأَثْنَاءَهَا',
+        level: 'foundation',
+        explanation: `Scholars of Quranic etiquette outline a number of recommended practices surrounding recitation, among them:
+
+1. Purity: it is recommended to be in a state of wudu (ritual ablution) when handling and reciting the Mushaf, out of respect for the words of Allah, though reciting from memory without wudu is permitted by the majority of scholars (touching the physical Mushaf without wudu is a separate, more restricted matter across the schools of fiqh).
+
+2. Seeking refuge and the basmalah: beginning with the isti'adhah (أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيم) as commanded in Quran 16:98, followed by the basmalah at the start of each surah (except al-Tawbah).
+
+3. Tartil: reciting slowly and reflectively rather than rushing, in line with the command وَرَتِّلِ القُرْآنَ تَرْتِيلًا (Quran 73:4), allowing the meaning to be contemplated rather than merely the words produced.
+
+4. Tadabbur: reflecting on the meaning as one recites — pausing at verses of mercy to ask for mercy, at verses of warning to seek refuge, and at verses describing Allah's attributes to affirm and glorify Him.
+
+5. A suitable state and setting: facing the qiblah where possible, sitting in a dignified manner, and reciting in a clean, appropriate place, avoiding places of impurity or heedlessness.
+
+6. Beautifying the voice: the Prophet encouraged reciters to beautify their voices with the Quran, as reported in the hadith "Beautify the Quran with your voices" — though this must never come at the expense of correct Tajweed or cross into the exaggerated musical styles that distort the meaning.`,
+        examples: [],
+        source: 'Al-Tibyan fi Adab Hamalat al-Quran, al-Nawawi; Sunan Abi Dawud 1468',
+      },
+      {
+        id: 'tj23r2',
+        name: 'The Etiquette of Listening and of the Community of Reciters',
+        arabic: 'آدَابُ الاِسْتِمَاعِ وَآدَابُ جَمَاعَةِ القُرَّاء',
+        level: 'foundation',
+        explanation: `Just as the reciter has etiquettes, so does the listener, based on the Quranic instruction: وَإِذَا قُرِئَ القُرْآنُ فَاسْتَمِعُوا لَهُ وَأَنصِتُوا لَعَلَّكُمْ تُرْحَمُونَ — "And when the Quran is recited, listen to it and remain silent, that you may receive mercy" (Quran 7:204). This includes:
+
+1. Attentive silence: refraining from speaking, eating, or distracting activity while the Quran is being recited nearby with the intention of being heard.
+
+2. Correcting gently: if a listener notices an error in a reciter's Tajweed or memorization, correcting them with gentleness and good manners rather than public embarrassment, ideally after the recitation rather than interrupting mid-verse unless the error changes the meaning.
+
+3. Group recitation etiquette: in a study circle (halaqah), each student waits their turn, listens attentively to others, and refrains from correcting out of turn or competing to be heard, preserving the calm, reverential atmosphere appropriate to studying the Quran.
+
+4. Gratitude to teachers: showing respect and gratitude toward the teacher (shaykh or shaykhah) through whom the Quran is transmitted, recognizing that the chain of oral transmission (talaqqi and musafahah) is itself part of what preserves the authenticity of the recitation across generations.`,
+        examples: [],
+        source: 'Al-Tibyan fi Adab Hamalat al-Quran, al-Nawawi',
+      },
+    ],
+  },
+
+  {
+    id: 'tj24',
+    title: 'Types of Waqf by Cause',
+    arabicTitle: 'أَنْوَاعُ الوَقْفِ بِاعْتِبَارِ السَّبَب',
+    icon: '🛑',
+    overview: 'Section 7 classified Waqf by its effect on MEANING (Tam, Kafi, Hasan, Qabih). A separate and equally important classification looks instead at the CAUSE that prompts a reciter to stop — whether by choice, necessity, or for teaching purposes — since the cause determines whether resuming requires repeating any preceding words.',
+    rules: [
+      {
+        id: 'tj24r1',
+        name: 'Al-Waqf al-Ikhtiyari and Al-Waqf al-Idtirari',
+        arabic: 'الوَقْفُ الاِخْتِيَارِيّ وَالوَقْفُ الاِضْطِرَارِيّ',
+        level: 'intermediate',
+        explanation: `1. Al-Waqf al-Ikhtiyari (الوَقْفُ الاِخْتِيَارِيّ — voluntary stop): the reciter deliberately chooses to stop at a particular point while having the ability to continue, typically at one of the recommended waqf signs (Tam, Kafi, Hasan) discussed earlier. This is the ideal and ordinary form of stopping, planned in advance by a reciter who understands the meaning of the passage.
+
+2. Al-Waqf al-Idtirari (الوَقْفُ الاِضْطِرَارِيّ — necessary/forced stop): the reciter is compelled to stop due to a genuine need — running out of breath, coughing, sneezing, forgetting the next word, or being interrupted — regardless of whether the stopping point is grammatically or semantically ideal.
+
+When a forced stop occurs at an otherwise poor location (a Waqf Qabih point, for instance), the reciter is not held accountable for any momentary distortion of meaning, since the interruption was unintentional; upon resuming, however, it is generally recommended to back up slightly and restart from a point that restores the correct connected meaning, rather than resuming from the exact word where the interruption occurred.`,
+        examples: [],
+        source: 'Manar al-Huda fi al-Waqf wal-Ibtida; Al-Muqaddimah al-Jazariyyah',
+      },
+      {
+        id: 'tj24r2',
+        name: 'Al-Waqf al-Ikhtibari and Al-Waqf al-Intizari',
+        arabic: 'الوَقْفُ الاِخْتِبَارِيّ وَالوَقْفُ الاِنْتِظَارِيّ',
+        level: 'advanced',
+        explanation: `1. Al-Waqf al-Ikhtibari (الوَقْفُ الاِخْتِبَارِيّ — testing/examination stop): a stop made specifically for the purpose of teaching or being examined — for instance, a teacher asking a student to stop mid-verse in order to demonstrate a particular Tajweed rule (such as showing how a word behaves in waqf versus wasl) or to test the student's memorization at an arbitrary point. This type of stop is not chosen for its meaning at all, and is permitted purely for pedagogical necessity, even at a location that would otherwise be a Waqf Qabih.
+
+2. Al-Waqf al-Intizari (الوَقْفُ الاِنْتِظَارِيّ — anticipatory stop): a stop made when a reciter is reading according to multiple riwayat or qiraat in a single sitting (a practice called al-jam, common in advanced ijazah study) and pauses at a word in order to then repeat it according to each of the different recitations before continuing on to the next shared portion of text.
+
+Both of these categories exist primarily in advanced pedagogical settings rather than in ordinary recitation or prayer, distinguishing them clearly from the voluntary and forced stops that occur in everyday Tilawah.`,
+        examples: [],
+        source: 'Manar al-Huda fil Waqf wal-Ibtida; Al-Nashr fil Qiraat al-Ashr, Ibn al-Jazari',
+      },
+    ],
+  },
+
+  {
+    id: 'tj25',
+    title: 'Al-Isnad and Al-Ijazah',
+    arabicTitle: 'الإِسْنَادُ وَالإِجَازَة فِي عِلْمِ القِرَاءَات',
+    icon: '🔖',
+    overview: 'Unlike most sciences that can be learned purely from books, Tajweed and Qiraat are fundamentally oral sciences: correct recitation must ultimately be verified and certified through direct, person-to-person transmission tracing back to the Prophet himself. This section explains how that chain of transmission works.',
+    rules: [
+      {
+        id: 'tj25r1',
+        name: 'Talaqqi, Musafahah, and the Chain of Transmission',
+        arabic: 'التَّلَقِّي وَالمُشَافَهَة وَسِلْسِلَةُ الإِسْنَاد',
+        level: 'intermediate',
+        explanation: `Al-Talaqqi (التَّلَقِّي — direct reception) refers to learning recitation face-to-face from a qualified teacher, rather than solely from written descriptions of Tajweed rules. Since subtleties such as Ishmam, Rawm, and the precise degree of Ghunnah cannot be fully captured in writing, every serious student of Tajweed eventually requires a live teacher to correct their recitation by ear.
+
+Al-Musafahah (المُشَافَهَة — mouth-to-mouth transmission) describes this process more specifically: the teacher recites and the student repeats back, or the student recites and the teacher listens and corrects, verse by verse, until the entire portion (or the entire Quran) has been verified.
+
+This creates an Isnad (إِسْنَاد — chain of transmission): a documented sequence of teachers, each having received their own recitation from their own teacher, tracing back through the great scholars of Qiraat (such as Ibn al-Jazari, al-Shatibi, or Hafs himself) all the way to the Prophet Muhammad, upon him be peace, via the angel Jibril from Allah. This unbroken oral chain is considered one of the strongest forms of textual preservation in any religious tradition.`,
+        examples: [],
+        source: 'Al-Nashr fil Qiraat al-Ashr, Ibn al-Jazari; Manzumat al-Muqaddimah, various commentaries',
+      },
+      {
+        id: 'tj25r2',
+        name: 'Al-Ijazah (الإِجَازَة — Certification)',
+        arabic: 'الإِجَازَةُ فِي القِرَاءَة',
+        level: 'intermediate',
+        explanation: `An Ijazah (إِجَازَة — license or certification) is a formal authorization granted by a qualified teacher to a student, certifying that the student has completed a recitation of the Quran (in whole or in part) directly to the teacher with correct Tajweed, according to a specific riwayah (such as Hafs an Asim), and is therefore authorized to transmit that same recitation to others.
+
+An Ijazah typically documents:
+
+1. The specific riwayah and, in more advanced cases, the specific Qiraat being certified.
+2. The scope of what was recited — commonly the whole Quran (an Ijazah Ammah, "complete Ijazah") or a portion of it.
+3. The full chain of narrators (sanad) connecting the teacher back through history to the Prophet.
+
+Holding an Ijazah is distinct from simply having memorized the Quran (being a Hafiz): memorization concerns retaining the text, while an Ijazah certifies that the certified reciter's Tajweed and pronunciation have been personally verified, letter by letter, against a living, authenticated chain — the very mechanism that has preserved the precise oral character of Quranic recitation across more than fourteen centuries.`,
+        examples: [],
+        source: 'Al-Nashr fil Qiraat al-Ashr, Ibn al-Jazari',
+      },
+    ],
+  },
 ]
 
 export const TAJWEED_SCHOLARS = [
@@ -1106,7 +1341,7 @@ export const TAJWEED_SCHOLARS = [
     name: 'Ibn al-Jazari',
     arabicName: 'ابْنُ الجَزَرِيّ',
     lifespan: '751-833 AH / 1350-1429 CE',
-    contribution: 'The greatest scholar of Qiraat and Tajweed in Islamic history. Author of Al-Nashr fi al-Qiraat al-Ashr (the most comprehensive work on the ten Qiraat), Al-Muqaddimah al-Jazariyyah (the most studied Tajweed poem), and Tayyibat al-Nashr. He authenticated and transmitted more qiraat chains than any scholar before or after him.',
+    contribution: 'The greatest scholar of Qiraat and Tajweed in Islamic history. Author of Al-Nashr fil Qiraat al-Ashr (the most comprehensive work on the ten Qiraat), Al-Muqaddimah al-Jazariyyah (the most studied Tajweed poem), and Tayyibat al-Nashr. He authenticated and transmitted more qiraat chains than any scholar before or after him.',
   },
   {
     name: 'Imam Hafs an Asim',
@@ -1115,16 +1350,16 @@ export const TAJWEED_SCHOLARS = [
     contribution: 'Hafs ibn Sulayman transmitted the riwayah of Asim al-Kufi — the recitation used by over 95% of Muslims worldwide today. His transmission is distinguished by its melodic clarity and the preservation of specific features like the four saktahs.',
   },
   {
-    name: 'Imam al-Shatibi',
+    name: 'Imam ash-Shatibi',
     arabicName: 'الإِمَامُ الشَّاطِبِيّ',
     lifespan: '538-590 AH',
-    contribution: 'Author of Hirz al-Amani wa Wajh al-Tahani (known as Al-Shatibiyyah) — the most celebrated poem on the seven Qiraat, which became the foundational curriculum for Qiraat studies across the Islamic world.',
+    contribution: 'Author of Hirz al-Amani wa Wajh al-Tahani (known as Ash-Shaatibiyyah) — the most celebrated poem on the seven Qiraat, which became the foundational curriculum for Qiraat studies across the Islamic world.',
   },
   {
     name: 'Imam Nafi al-Madani',
     arabicName: 'الإِمَامُ نَافِعٌ المَدَنِيّ',
     lifespan: '70-169 AH',
-    contribution: 'One of the seven canonical reciters (al-qurra al-sabah), whose recitation was transmitted through two primary students, Qalun and Warsh. His riwayah of Warsh remains the standard recitation across most of North and West Africa today.',
+    contribution: 'One of the seven canonical reciters (al-qurra as-sabah), whose recitation was transmitted through two primary students, Qalun and Warsh. His riwayah of Warsh remains the standard recitation across most of North and West Africa today.',
   },
   {
     name: 'Imam Abu Amr al-Basri',

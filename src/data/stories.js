@@ -3255,4 +3255,1275 @@ She lived to see her husband's eventual public declaration of Islam and the full
     ],
     sources: ['Sahih al-Bukhari', 'Al-Istiab by Ibn Abd al-Barr', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
   },
+
+  {
+    id: 's92',
+    name: 'Abu Bakrah ath-Thaqafi',
+    arabicName: 'أَبُو بَكْرَةَ الثَّقَفِي',
+    era: 'sahabah',
+    title: "The Slave Who Descended to Freedom",
+    lifespan: 'd. 671 CE',
+    category: 'Companions of the Prophet',
+    image: '🪢',
+    summary: 'A slave in the besieged city of Ta\'if who lowered himself down the fortress wall by rope to reach the Prophet and accept Islam, earning both his freedom and the kunyah by which he was known for the rest of his life.',
+    story: `Nufay ibn al-Harith, known by his kunyah Abu Bakrah — literally, father of the pulley, from the rope and pulley device by which he made his escape — was a slave in the city of Ta'if at the time the Prophet laid siege to it following the Battle of Hunayn in 8 AH. As the siege dragged on without success, the Prophet had announced that any slave who came down from the fortress and joined the Muslims would be granted his freedom, an offer intended to weaken the resolve of the defenders from within.
+
+Abu Bakrah, hearing of this offer, used a rope and pulley mechanism to lower himself down the wall of the besieged city under cover of the ongoing conflict, making his way to the Muslim camp and accepting Islam, whereupon the Prophet granted him his freedom precisely as promised, along with several other slaves who took the same opportunity. (Sahih al-Bukhari 2612, and the extended account of the siege of Ta'if) The name by which he became known ever afterward preserved the exact manner of his escape as a permanent marker of the day his freedom and his faith arrived together.
+
+He settled in Basra following the conquests and became known for a rigorous standard of honesty in testimony, an episode from his later life illustrating this trait directly: he had once given testimony against a man accused of unlawful conduct alongside three other witnesses, but when one of the four later expressed some uncertainty about a detail of what he had witnessed, Abu Bakrah, unwilling to see punishment carried out on testimony he could no longer regard as fully certain, retracted his own portion of the testimony despite the legal and personal complications this caused him, a decision that led to his own flogging for what was judged a retraction amounting to false witness, a punishment he accepted without protest rather than allow uncertain testimony to stand. (Sunan Abu Dawud, and related discussions of this episode in the legal literature concerning testimony)
+
+He remained a respected transmitter of hadith in Basra for the rest of his life, valued for the same scrupulous honesty that had led him to accept punishment rather than let a doubtful testimony stand, and he died there around 51 or 52 AH.`,
+    lessons: [
+      'Abu Bakrah\'s escape down the fortress wall shows that the promise of freedom through faith reached even those with the least power to act on their own circumstances.',
+      'His retraction of testimony he had come to doubt, even at personal cost, reflects a standard of honesty that placed truthful certainty above self-protection.',
+      'A name preserving the exact means of a life-changing decision became a permanent daily reminder, for Abu Bakrah and all who addressed him, of the day his freedom and his faith arrived together.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Sunan Abu Dawud', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's93',
+    name: 'Abu Umamah al-Bahili',
+    arabicName: 'أَبُو أُمَامَةَ البَاهِلِي',
+    era: 'sahabah',
+    title: "The Long-Lived Transmitter of Sham",
+    lifespan: 'd. 705 CE',
+    category: 'Companions of the Prophet',
+    image: '🌅',
+    summary: 'One of the last Companions to die, settling in Syria and living so long that he became the primary living link to the Prophet for an entire generation of scholars in the region who had never known any other Companion.',
+    story: `Sudayy ibn Ajlan, known by his kunyah Abu Umamah al-Bahili, accepted Islam and became a Companion of the Prophet, though the specific details of his early life before this period remain less thoroughly documented in the biographical sources than some of the more prominent figures of the Madinan community. What distinguishes his place in Islamic history most clearly is the sheer length of his life and his eventual settlement in Syria (Sham), where he became, in his final decades, one of the very last living Companions anywhere in the Muslim world.
+
+His transmissions of hadith are extensive and cover a wide range of subjects, including matters of worship, the virtues of specific practices, and guidance on daily conduct, and he became a central figure of religious authority for the growing population of Syria, many of whom had never had the opportunity to meet any other Companion of the Prophet directly. Students traveled considerable distances specifically to sit with him, aware that his death would mark the effective end of direct living access to anyone who had personally known the Prophet in that region.
+
+He is reported to have transmitted hadith concerning the virtues of the Quran, the importance of maintaining family ties, and matters of moderation in worldly conduct, his teaching reflecting the broad and practical concerns of a scholar addressing a rapidly growing and diversifying Muslim population far from the original heartland of the faith in the Hijaz.
+
+He died in Syria in 86 AH, reported by several historians to have been the last Companion of the Prophet to die in that region, an event marked with particular solemnity by the scholars and students who had depended on his living memory as their final direct connection to the era of revelation itself.`,
+    lessons: [
+      'Abu Umamah\'s long life in Syria made him an irreplaceable bridge of knowledge for an entire regional population separated by distance from the Hijaz where the Prophet\'s own companions were concentrated.',
+      'Being the last living Companion in an entire region carried a particular weight of responsibility, since his teaching represented the final direct thread to the Prophet\'s own era for that community.',
+      'A life whose early details remain sparse in the sources can still carry immense historical significance through its later, well-documented decades of teaching.',
+    ],
+    sources: ['Sunan at-Tirmidhi', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's94',
+    name: 'An-Nu\'man ibn Muqarrin',
+    arabicName: 'النُّعْمَانُ بْنُ مُقَرِّن',
+    era: 'sahabah',
+    title: "The Commander Who Fell at Nahavand",
+    lifespan: 'd. 642 CE',
+    category: 'The Commanders of Islam',
+    image: '🏔️',
+    summary: 'A commander entrusted by Umar with leading the decisive campaign against the remaining Persian imperial forces at Nahavand, who delivered a rousing address before the battle and was killed leading the final charge that broke Persian resistance for good.',
+    story: `An-Nu'man ibn Muqarrin al-Muzani accepted Islam early and participated in a number of the significant campaigns of the Prophet's own lifetime before going on, in the years following the Prophet's death, to serve as a trusted commander during the conquests under both Abu Bakr and Umar. He and several of his brothers were counted among the sincere and capable early Muslims of the Muzaynah tribe, a family whose collective service to the early Islamic state earned considerable respect among their contemporaries.
+
+His most significant role came in 21 AH, when Umar entrusted him with command of the Muslim forces sent to confront a massive Persian army gathered at Nahavand in an attempt to reverse the losses the Sasanian Empire had already suffered at Qadisiyyah and in the subsequent conquest of Iraq. This engagement, which later historians came to call Fath al-Futuh — the Conquest of Conquests — represented the Persian Empire's final major attempt to mount a unified and decisive counteroffensive against the advancing Muslim forces.
+
+Before the battle, an-Nu'man delivered an address to his assembled troops reminding them that victory came from Allah alone and not from mere numbers or equipment, and he is reported to have prayed specifically that Allah grant the Muslims victory that day even if it meant he himself would not live to see its conclusion. As the battle unfolded and reached its critical stage, an-Nu'man led a decisive charge against the Persian lines and was struck by an arrow, dying from the wound but not before the charge he had led broke the Persian formation decisively. Command passed immediately to Hudhayfah ibn al-Yaman, who completed the victory in his place, concealing an-Nu'man's death from the troops until the battle's outcome was fully secured, so as not to affect morale at the critical moment. (Tarikh al-Umam wal-Muluk by at-Tabari, and the extended account of Nahavand)
+
+The victory at Nahavand effectively ended organized Persian imperial resistance to the Muslim conquests, and an-Nu'man's death leading the decisive charge became remembered as a defining sacrifice at the very battle that secured the outcome he had prayed for even at the cost of his own life.`,
+    lessons: [
+      'An-Nu\'man\'s prayer for victory even at the cost of his own life reflects a priority placed entirely on the outcome for the community rather than on his own survival.',
+      'Concealing his death until the battle\'s conclusion, so as not to disrupt morale, shows a discipline among his fellow commanders in managing the psychological dimensions of warfare with care.',
+      'The battle he died securing effectively ended Persia\'s capacity for organized imperial resistance, meaning his sacrifice carried consequences extending across the entire subsequent history of the region.',
+    ],
+    sources: ['Tarikh al-Umam wal-Muluk by at-Tabari', 'Al-Bidayah wan-Nihayah by Ibn Kathir', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's95',
+    name: 'Shurahbil ibn Hasanah',
+    arabicName: 'شُرَحْبِيلُ بْنُ حَسَنَة',
+    era: 'sahabah',
+    title: "The Commander of the Syrian Conquests",
+    lifespan: 'c. 583 CE - 639 CE',
+    category: 'The Commanders of Islam',
+    image: '⚔️',
+    summary: 'An early convert entrusted with independent command during the conquest of Syria alongside Khalid ibn al-Walid and Abu Ubaydah, who died in the same plague that claimed so many of the senior Companions in that region.',
+    story: `Shurahbil ibn Hasanah al-Kindi accepted Islam early in Makkah, among the group of Companions who endured the difficulties of the earliest period of persecution, and he later emigrated to Abyssinia before eventually settling among the Muslim community in Madinah. His early and sustained sincerity placed him among the trusted commanders the Prophet's successors turned to when the great conquests of Syria and Iraq began in earnest.
+
+Under Abu Bakr's caliphate, he was given independent command of one of the four main columns sent to conquer Syria, serving alongside Amr ibn al-As, Yazid ibn Abi Sufyan, and Abu Ubaydah ibn al-Jarrah, each leading a separate force converging on the region from different directions. He played a significant role in the sieges and negotiated surrenders of several Syrian cities, and he fought at the decisive Battle of Yarmouk against the Byzantine army, one of the largest engagements of the entire early conquest period.
+
+His command style was noted by contemporaries for combining firmness in battle with a willingness to negotiate generous terms of surrender for cities that yielded without prolonged resistance, an approach that helped ease the transition of governance in several Syrian towns from Byzantine to Muslim rule with comparatively little continued unrest.
+
+He died in the Plague of Amwas in 18 AH, the same catastrophic outbreak that claimed Abu Ubaydah ibn al-Jarrah, Mu'adh ibn Jabal, and Suhayl ibn Amr among many others, a single event that stripped the young Islamic state of an extraordinary concentration of its most experienced commanders and scholars in the space of a single season.`,
+    lessons: [
+      'Being entrusted with independent command alongside commanders as accomplished as Khalid and Abu Ubaydah reflects the trust Shurahbil\'s early sincerity and demonstrated capability had earned.',
+      'His willingness to negotiate generous terms for surrendering cities shows that the conquests were not pursued through combat alone but through a considered balance of firmness and diplomacy.',
+      'His death in the Plague of Amwas, alongside so many other senior figures, illustrates how a single natural catastrophe could inflict losses on the early Muslim leadership comparable to a major military defeat.',
+    ],
+    sources: ['Tarikh al-Umam wal-Muluk by at-Tabari', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Al-Bidayah wan-Nihayah by Ibn Kathir'],
+  },
+
+  {
+    id: 's96',
+    name: 'Sahl ibn Sa\'d',
+    arabicName: 'سَهْلُ بْنُ سَعْد',
+    era: 'sahabah',
+    title: "The Last Companion to Die in Madinah",
+    lifespan: 'c. 594 CE - 707 CE',
+    category: 'Companions of the Prophet',
+    image: '🕌',
+    summary: 'A young boy during the Prophet\'s own lifetime who lived to such an extraordinary age that he became, by the testimony of later historians, the very last surviving Companion in the city of Madinah itself.',
+    story: `Sahl ibn Sa'd as-Sa'idi al-Ansari was still young during the years of the Prophet's own presence in Madinah, old enough to retain clear personal memories of specific episodes he witnessed directly but young enough that his recorded transmissions concern matters he observed as a boy and young man rather than positions of major independent responsibility during the Prophet's own lifetime.
+
+Among the episodes he transmitted with particular vividness was his own presence at the mixing of mortar during the construction of the mosque's pulpit (minbar), recalling the specific carpenter who built it and the exact wood used, details that later scholars valued precisely because they came from someone who had watched the process unfold as a boy standing nearby rather than relying on secondhand report. He also transmitted accounts concerning the Prophet's household conduct and various legal rulings that arose during his own lifetime in Madinah.
+
+What secured Sahl's particular place in the historical record was not any singular dramatic episode but the sheer length of his life; he lived past the age of one hundred, continuing to reside in Madinah through the entirety of the Umayyad period's early decades, and he became, according to the testimony of several historians of the following generation, the last living Companion of the Prophet remaining in the city of Madinah itself, a distinction of considerable significance for a city that had been the very center of the Prophet's own mission and burial.
+
+Students in Madinah sought him out specifically for this reason during his final years, aware that his death would sever the last living connection the city held to anyone who had personally known the Prophet. He died in Madinah in 88 AH, and his passing was recorded with particular attention by the historians of the period as marking the end of an era in the very city where that era had begun.`,
+    lessons: [
+      'Sahl\'s vivid boyhood memory of the construction of the mosque\'s pulpit shows how details witnessed even by the young can become historically invaluable decades later.',
+      'Being the last Companion in the very city of the Prophet\'s own mission and burial gave Sahl\'s final years a significance recognized clearly by his own contemporaries.',
+      'A long life, even one without major independent achievements recorded during the Prophet\'s own lifetime, can still carry immense historical weight as a living link preserved into a later era.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's97',
+    name: 'Zahir al-Aslami',
+    arabicName: 'زَاهِرٌ الأَسْلَمِي',
+    era: 'sahabah',
+    title: "The Desert Man the Prophet Called Beloved",
+    lifespan: 'd. 632 CE',
+    category: 'Companions of the Prophet',
+    image: '🌵',
+    summary: 'A rough, unpolished desert dweller whom the Prophet loved for his plain sincerity, remembered for a single playful episode in the marketplace in which the Prophet embraced him from behind and jokingly offered to \'sell\' him, only to declare him precious rather than worthless.',
+    story: `Zahir ibn Haram al-Aslami was a Bedouin of simple and rustic manner who would periodically bring produce from the desert into Madinah to sell, and though he lacked the refined bearing of some of the more prominent urban Companions, the Prophet held a particular personal affection for him, reportedly remarking that Zahir was to him as the countryside was to a city dweller — a source of plain, honest comfort — and that he, the Prophet, loved him for the genuineness of his character. (Musnad Ahmad, and related narrations concerning this relationship)
+
+The episode for which he is most remembered occurred in the marketplace, where the Prophet, coming upon Zahir while he was engaged in selling his goods, approached him playfully from behind and embraced him around the body without Zahir immediately realizing who held him. Zahir, feeling himself restrained and initially unable to see his captor, called out for whoever held him to let him go, until upon turning and recognizing the Prophet, he settled contentedly against him rather than continuing to struggle. The Prophet then called out to the gathered crowd in a tone of playful marketplace bartering: "Who will buy this slave?" Zahir, entering into the spirit of the joke, replied that anyone who bought him would find him worthless goods indeed. The Prophet responded directly and warmly: "But with Allah, you are not without value; with Allah, you are precious." (Related in Musnad Ahmad and various collections concerning the Prophet's playful and affectionate interactions with the Companions)
+
+This brief, warm episode has been preserved and retold across generations of Islamic devotional literature as one of the clearest illustrations of the Prophet's genuine playfulness and personal affection toward even the least socially prominent of his Companions, someone whose only distinction was the plain sincerity of his character rather than any position of leadership or scholarly achievement.
+
+Zahir is reported to have died in the Prophet's own lifetime, and though the surviving details of his life remain sparse beyond this single beloved episode, it has ensured his name remains known specifically as an example of how the Prophet's affection extended freely to the humblest members of his community.`,
+    lessons: [
+      'The Prophet\'s playful embrace of Zahir in the marketplace reflects a warmth and lightheartedness in his character that coexisted easily alongside his weightier responsibilities.',
+      'Zahir\'s value being affirmed not through wealth, status, or achievement but through the plain sincerity of his character shows a measure of worth entirely reoriented from ordinary social calculation.',
+      'A single brief and affectionate episode, rather than any grand accomplishment, secured Zahir a lasting place in the collective memory of the early Muslim community.',
+    ],
+    sources: ['Musnad Ahmad', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Usd al-Ghabah by Ibn al-Athir'],
+  },
+
+  {
+    id: 's98',
+    name: 'Al-Ala ibn al-Hadrami',
+    arabicName: 'العَلَاءُ بْنُ الحَضْرَمِي',
+    era: 'sahabah',
+    title: "The Governor Whose Army Crossed the Sea Without Ships",
+    lifespan: 'd. 638 CE',
+    category: 'The Commanders of Islam',
+    image: '🌊',
+    summary: 'A governor of Bahrain sent by the Prophet to invite its people to Islam, remembered in the biographical literature for leading a besieged army across a stretch of sea by supplication alone when no boats were available to complete their return.',
+    story: `Al-Ala ibn al-Hadrami accepted Islam early and was appointed by the Prophet as his envoy and later governor to the region of Bahrain, tasked with inviting its ruling and general population to Islam and, upon their acceptance, administering the collection of zakah and the general governance of the province on the Prophet's behalf. He held this position through much of the Prophet's later years and continued in a similar administrative and military role during the caliphates of Abu Bakr and Umar.
+
+The episode most widely preserved concerning him describes a military campaign in the region during which his forces found themselves needing to cross a body of water with an enemy force closing in and no boats available to ferry them across. Al-Ala, according to the account transmitted through several Companions who were present, called upon his troops to have complete trust in Allah and to invoke His name as they proceeded, and the army is reported to have crossed the water on their mounts as though crossing dry land, an event several of those present described afterward as one of the more remarkable signs they personally witnessed during the campaigns of the period. (Al-Bidayah wan-Nihayah by Ibn Kathir, and the account as transmitted by several of the soldiers present, with scholars noting this narration's chain has received varying degrees of scrutiny across the hadith literature)
+
+Al-Ala also earned recognition for the general soundness of his governance in Bahrain, a region with a considerable population that required careful and consistent administration to integrate successfully into the emerging structure of the Islamic state, and he maintained the trust of three successive caliphs in this capacity across a period of considerable political transition following the Prophet's death.
+
+He died in 21 AH while still serving in a military and administrative capacity in the region, having spent nearly the entirety of his service to Islam devoted to a single province whose successful integration into the early Islamic state owed considerably to his sustained and careful governance.`,
+    lessons: [
+      'Al-Ala\'s account of the crossing, however scholars have assessed its precise transmission, reflects the deep trust in Allah\'s power that circulated among the Companions facing situations of genuine desperation.',
+      'Sustained and careful governance over decades, rather than any single dramatic achievement, secured the successful integration of an entire province into the early Islamic state.',
+      'Serving under three successive caliphs in the same role reflects a consistency of trust extended to Al-Ala across a period of considerable political transition.',
+    ],
+    sources: ['Al-Bidayah wan-Nihayah by Ibn Kathir', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Tarikh al-Umam wal-Muluk by at-Tabari'],
+  },
+
+  {
+    id: 's99',
+    name: 'Al-Bara ibn Malik',
+    arabicName: 'البَرَاءُ بْنُ مَالِك',
+    era: 'sahabah',
+    title: "The Fierce Fighter of Yamama Who Asked to Be Thrown Among the Enemy",
+    lifespan: 'd. c. 642 CE',
+    category: 'Companions of the Prophet',
+    image: '🔥',
+    summary: 'The brother of Anas ibn Malik, a fighter of such fearsome reputation in single combat that the Prophet cautioned commanders not to let him lead prayers in charge of an army, who asked to be catapulted over the wall of a besieged garden at Yamama to break the deadlock from within.',
+    story: `Al-Bara ibn Malik al-Ansari was the brother of Anas ibn Malik, and he developed a reputation among the Companions as one of the most ferociously effective individual fighters of his generation, credited across various campaigns with a considerable number of enemy combatants defeated in direct single combat, a specific type of individual valor highly regarded in the military culture of the period. His reputation was such that the Prophet is reported to have cautioned that a man like al-Bara should not be given overall command of an army, out of concern that his personal zeal for combat and for seeking martyrdom directly might lead him to expose the greater force to unnecessary risk in pursuit of his own individual engagement with the enemy. (Sahih al-Bukhari, in the context of narrations concerning Anas ibn Malik's family; related discussions in the biographical literature)
+
+His most celebrated moment came at the Battle of Yamama during the wars of apostasy, one of the fiercest engagements the young caliphate faced, where the forces of Musaylimah the false prophet had taken a strong defensive position within a walled garden that came to be known afterward as Hadiqat al-Mawt, the Garden of Death, given the intensity of the fighting that occurred there. As the Muslim forces struggled to breach the garden's defenses from outside, al-Bara proposed a bold and extremely dangerous solution: that he be lifted upon a shield and thrown bodily over the wall into the garden itself, where he would fight alone among the enemy until he could open the gate from within for the rest of the army to enter.
+
+His companions, recognizing the near-certain risk to his life involved in such an action, hesitated to carry it out, but al-Bara insisted, and he was ultimately thrown over the wall as he had requested. He fought alone within the garden against Musaylimah's forces, sustaining numerous wounds in the process, until he succeeded in reaching and opening the gate, allowing the rest of the Muslim army to pour into the garden and turn the tide of the battle decisively in their favor, an act credited by several accounts with breaking the deadlock at precisely the engagement that determined the outcome of the entire campaign against Musaylimah. (Al-Bidayah wan-Nihayah by Ibn Kathir; Tarikh al-Umam wal-Muluk by at-Tabari)
+
+He survived the battle despite his considerable wounds, though he suffered from the effects of his injuries for the remainder of his life, and he continued to serve in subsequent campaigns during the caliphates of Umar, remembered among his contemporaries as one of the most singularly courageous individual fighters of the entire early conquest period, a reputation earned specifically at the moment he asked to be thrown alone among an enemy force rather than wait for a slower and more uncertain resolution to the siege.`,
+    lessons: [
+      'The Prophet\'s caution against giving al-Bara overall military command, out of concern for his individual zeal, shows a wise recognition that personal courage and strategic command require different, sometimes conflicting, temperaments.',
+      'His insistence on being thrown alone into the fortified garden at Yamama, despite his companions\' hesitation, reflects a willingness to accept extraordinary personal risk to break a deadlock threatening the entire campaign.',
+      'The decisive action that turned the Battle of Yamama came not from overwhelming numbers but from a single act of extraordinary individual courage at precisely the right moment.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Al-Bidayah wan-Nihayah by Ibn Kathir', 'Tarikh al-Umam wal-Muluk by at-Tabari', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's100',
+    name: "Umm Aiman",
+    arabicName: 'أُمُّ أَيْمَن',
+    era: 'sahabah',
+    title: "The Woman Who Raised the Prophet From Infancy",
+    lifespan: 'd. 634 CE',
+    category: 'Companions of the Prophet',
+    image: '🌾',
+    summary: 'An Abyssinian woman inherited into the Prophet\'s household who cared for him from his own mother\'s death through his adulthood, whom he called \'my mother after my mother,\' and who wept at his death not for his sake but for the ending of revelation itself.',
+    story: `Barakah bint Tha'labah, known widely as Umm Aiman, was an Abyssinian woman who had served in the household of the Prophet's father Abdullah, and following his death, she remained attached to the household caring for the infant Muhammad, continuing this role after the death of his mother Aminah as well, effectively serving as one of the primary caregivers of his earliest childhood at a period of his life marked by the successive loss of both parents.
+
+The Prophet retained a depth of affection and gratitude toward her that persisted throughout his entire life, describing her on more than one occasion in terms reserved for almost no one else outside his immediate family, reportedly saying: "Umm Aiman is my mother after my mother," and instructing his own family and Companions to visit and honor her specifically because of this history of care she had extended to him during the most vulnerable years of his childhood. (Sahih Muslim, and related narrations concerning her status in the Prophet's household)
+
+She accepted Islam early and emigrated to Madinah, and the Prophet arranged her marriage first to Ubayd ibn Zayd and, following his death, to Zayd ibn Harithah, through whom she became the mother of Usamah ibn Zayd, a young Companion the Prophet held in particular affection and eventually entrusted with military command while still quite young, a trust that reflected in part the household connection between Usamah's mother and the Prophet's own upbringing.
+
+She was present at several of the major military engagements of the Prophet's lifetime, tending to the wounded and providing water in a manner similar to several of the other women recorded as active participants in the logistics of these campaigns, and she was wounded at the Battle of Uhud in the course of this service.
+
+Upon the Prophet's death, Abu Bakr and Umar together visited her, and finding her weeping, asked her whether she wept for something the Prophet himself had described as better for him — his passing to what awaited him with Allah. She clarified that she did not weep out of any doubt regarding what awaited the Prophet, understanding fully that his passing was to something far better for him personally, but rather because she wept for the ending of revelation from the heavens, a source of ongoing guidance for the community that had now ceased with his death — a distinction in her grief that both senior Companions are reported to have found themselves moved to tears alongside her upon hearing it. (Sahih Muslim 2454, and the extended account of this episode)
+
+She died a few years after the Prophet, during the caliphate of Uthman, having spent her entire adult life in a role of care extending from the Prophet's own infancy through to the years following his death.`,
+    lessons: [
+      'The Prophet\'s description of Umm Aiman as his mother after his own reflects the depth of gratitude he carried for those who cared for him during the earliest and most vulnerable years of his life.',
+      'Her precise and carefully articulated grief upon the Prophet\'s death, distinguishing her sorrow for the loss of revelation from any doubt about his own eternal reward, offered Abu Bakr and Umar themselves a clarifying model of grief rightly directed.',
+      'A woman with no prominent public role in governance or scholarship secured a lasting place in the seerah through decades of consistent, personal devotion to the Prophet\'s own wellbeing from his earliest infancy onward.',
+    ],
+    sources: ['Sahih Muslim', 'As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's101',
+    name: 'Usamah ibn Zayd',
+    arabicName: 'أُسَامَةُ بْنُ زَيْد',
+    era: 'sahabah',
+    title: "The Beloved of the Two Beloveds",
+    lifespan: 'c. 611 CE - 673 CE',
+    category: 'Companions of the Prophet',
+    image: '👦',
+    summary: 'The son of Zayd ibn Harithah, raised almost as the Prophet\'s own grandson, given command of an entire army at eighteen despite senior Companions twice his age serving beneath him, a decision the Prophet insisted be honored even in his own final illness.',
+    story: `Usamah ibn Zayd was the son of Zayd ibn Harithah and Umm Aiman, and given his father's uniquely close status within the Prophet's own household, Usamah grew up practically as a member of the Prophet's immediate family, held and played with as a small child in a manner the Companions observed with evident tenderness. The Prophet is reported to have described him and his father together as "the most beloved of people to me," a description that placed the young Usamah, despite his youth, within a circle of affection few others outside the Prophet's direct blood relations were granted. (Sahih al-Bukhari 3730, and related narrations)
+
+As Usamah grew into young manhood, the depth of this affection expressed itself in an extraordinary decision near the very end of the Prophet's life: in his final weeks, the Prophet appointed Usamah, then only around eighteen years old, to command a substantial military expedition toward the Byzantine frontier, placing him in authority over a force that included senior and considerably more experienced Companions, some of them among the very earliest Muhajirun. This appointment caused some quiet murmuring among certain sections of the army regarding the young age of their commander relative to his troops, word of which reached the Prophet during his final illness. Though gravely ill, he had himself carried out to address the matter directly, telling the assembled Muslims that if they questioned Usamah's fitness for command on account of his youth, they had once made the same objection regarding his father Zayd's own earlier commands, and that Usamah was as worthy of the position as his father had been before him. (Sahih al-Bukhari 4250, and the extended account of this episode) The expedition was delayed by the Prophet's subsequent death and the immediate crisis of succession, but Abu Bakr, upon assuming the caliphate, insisted on carrying out the campaign exactly as the Prophet had ordered it, with Usamah still in command, over the initial hesitation of some who felt the newly formed caliphate could not spare its forces at such a fragile moment — a decision Abu Bakr held firm on, understanding it as an obligation to honor the Prophet's final explicit instruction regardless of the circumstances that had intervened.
+
+Usamah went on to lead the expedition successfully into Byzantine territory and returned having fulfilled the mission the Prophet had entrusted to him, cementing in the collective memory of the early community the wisdom of the Prophet's original confidence in him despite his youth.
+
+In his later years, Usamah became known for a particular caution regarding involvement in the political and military conflicts that divided the Muslim community during the civil wars following Uthman's death, choosing deliberately to remain outside the fighting between Ali and Muawiyah's factions despite pressure from various sides to commit his considerable personal standing to one side or the other, a choice he explained by his unwillingness to raise his sword against any Muslim regardless of the circumstances dividing them. He died in Madinah or in a nearby property around 54 AH, remembered as a Companion whose earliest years had been spent almost as a member of the Prophet's own household and whose adult life continued to reflect the same careful, principled judgment that had first earned him the Prophet's singular trust and affection at so young an age.`,
+    lessons: [
+      'The Prophet\'s insistence on defending Usamah\'s appointment despite his youth, even while gravely ill, reflects a conviction that demonstrated capability, not age alone, should determine leadership.',
+      'Abu Bakr\'s decision to carry out the expedition exactly as ordered, despite the fragility of the moment following the Prophet\'s death, shows the seriousness with which the earliest caliphate treated the Prophet\'s final explicit instructions.',
+      'Usamah\'s deliberate withdrawal from the later civil wars, refusing to raise his sword against any Muslim regardless of the pressure to choose a side, reflects a principled caution that placed unity above factional loyalty.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Sahih Muslim', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Tarikh al-Umam wal-Muluk by at-Tabari'],
+  },
+
+  {
+    id: 's102',
+    name: 'Sawdah bint Zam\'ah',
+    arabicName: 'سَوْدَةُ بِنْتُ زَمْعَة',
+    era: 'sahabah',
+    title: "The Wife Who Gave Her Turn to Aisha",
+    lifespan: 'd. 674 CE',
+    category: 'Mothers of the Believers',
+    image: '🕊️',
+    summary: 'A widow of an early Muslim martyr who became the Prophet\'s second wife after Khadijah\'s death, and who, in her later years, voluntarily gave up her allotted day and night with the Prophet to Aisha, preferring to secure her place among his wives in the Hereafter over any claim to equal time.',
+    story: `Sawdah bint Zam'ah al-Amiriyyah accepted Islam in the early Makkan period alongside her first husband, as-Sakran ibn Amr, and the couple emigrated together to Abyssinia to escape the persecution facing early converts in Makkah. As-Sakran died, whether in Abyssinia or shortly after their return to Makkah, leaving Sawdah a widow at a time when the ongoing hostility of her own family toward her faith left her in a particularly vulnerable position, since her continued presence among unconverted relatives placed considerable pressure on her to abandon Islam and return to the religion of her household.
+
+The Prophet, following the death of Khadijah, married Sawdah, becoming in the process his second wife and, for a period afterward, his only wife until his subsequent marriage to Aisha, a union that provided Sawdah both the personal honor of her new status and practical protection from the vulnerable position her widowhood and her family's continued hostility to Islam had placed her in. (Ibn Sa'd, at-Tabaqat al-Kubra; Sahih al-Bukhari, in the context of narrations concerning the order of the Prophet's marriages)
+
+As she grew older, and as the Prophet's household came to include several younger wives whose company he perhaps found the arrangement of rotating nights among them somewhat more physically demanding for her to maintain as she aged, Sawdah made an unusual and voluntarily generous decision: she offered her own designated night with the Prophet to Aisha, whom she knew he held in particular affection, asking only that she herself retain her formal status and standing among his wives without insisting on the customary equal division of his time. The Prophet accepted this arrangement, and it is in connection with this specific episode that commentators have understood the relevant portion of the Quranic verse addressing the wives' situation: "And if a woman fears from her husband contempt or evasion, there is no sin upon them if they make terms of settlement between them - and settlement is best." (Quran 4:128, with the classical exegetical literature connecting this verse to Sawdah's specific circumstance) Aisha herself later remarked with evident appreciation of Sawdah's generosity in this matter, describing her as a woman whose company and character she held in high regard.
+
+Sawdah remained an active and respected member of the Prophet's household for the remainder of his life, known for her practical wisdom and, according to several narrations, a good-natured sense of humor that the Prophet himself is recorded as having appreciated on more than one occasion in the ordinary course of household life.
+
+She continued to live in Madinah well after the Prophet's death, choosing, unlike some of the other wives, to remain there in relative retirement from public affairs rather than take an active role in the political developments of the following decades, and she died there during the early years of Muawiyah's caliphate, around 54 AH, remembered specifically for the singular generosity of a decision that placed the contentment of another above her own claim to equal time with the husband she nonetheless remained devoted to until his death.`,
+    lessons: [
+      'Sawdah\'s voluntary transfer of her night to Aisha reflects a generosity that prioritized household harmony and another\'s happiness over her own strict entitlement.',
+      'Her marriage to the Prophet, coming at a moment of considerable personal vulnerability following her widowhood, illustrates how such unions within his household often served a protective as well as a personal purpose.',
+      'Choosing quiet retirement in Madinah over involvement in the political currents of the following decades reflects a temperament content with the personal devotion she had already secured rather than seeking any further public role.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Surah an-Nisa (4:128)', 'At-Tabaqat al-Kubra by Ibn Sa\'d', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's103',
+    name: 'Zaynab bint Khuzaymah',
+    arabicName: 'زَيْنَبُ بِنْتُ خُزَيْمَة',
+    era: 'sahabah',
+    title: "Umm al-Masakin, Mother of the Poor",
+    lifespan: 'd. 625 CE',
+    category: 'Mothers of the Believers',
+    image: '🤲',
+    summary: 'A widow of two men killed in the earliest battles of Islam, known even before her marriage to the Prophet for a generosity toward the poor so consistent that it had already earned her the title Mother of the Poor.',
+    story: `Zaynab bint Khuzaymah al-Hilaliyyah was known, even before her connection to the Prophet's own household, for a reputation of remarkable generosity toward the destitute and vulnerable members of her community, a consistency of charitable habit that had already earned her the title Umm al-Masakin — the Mother of the Poor — among those who observed her conduct in the years before Islam and in its earliest period. This title, unusually, preceded rather than followed her marriage to the Prophet, reflecting a character already firmly established rather than one shaped by her subsequent status.
+
+She had previously been married to Abdullah ibn Jahsh, who was killed at the Battle of Uhud, having also been previously married and widowed by an earlier husband killed in an even earlier engagement, leaving her twice widowed by the wars that had already claimed a considerable toll among the early Muslim community. The Prophet married her following this second widowhood, extending to her the same kind of protective and honoring union he had offered to several other widows of the early martyrs whose circumstances left them vulnerable.
+
+Her time as a wife of the Prophet was notably brief; she died only a few months into the marriage, becoming, by most accounts, either the second or among the earliest of the Prophet's wives to pass away during his own lifetime, a loss that came so soon after the marriage that the surviving details of her time within his household remain considerably sparser than those preserved of the other Mothers of the Believers who lived for decades afterward.
+
+Despite the brevity of her marriage, her reputation for consistent and generous charity toward the poor, established well before her connection to the Prophet, ensured her a lasting and specific place in the historical memory of the early community, remembered less for the length of her marriage than for a character of habitual generosity that had already defined her long before that marriage began.`,
+    lessons: [
+      'Zaynab\'s title, earned before rather than after her marriage to the Prophet, shows a character of generosity already fully formed and independently recognized rather than a reputation acquired through proximity to him.',
+      'Having survived the loss of two husbands to the early wars of Islam before her own marriage to the Prophet reflects the considerable toll those conflicts took on the women of the earliest Muslim community.',
+      'A brief marriage, cut short within only a few months, did not prevent Zaynab from securing a lasting place in the historical record through the consistency of a character established well before that union began.',
+    ],
+    sources: ['At-Tabaqat al-Kubra by Ibn Sa\'d', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's104',
+    name: 'Al-Harith ibn Hisham',
+    arabicName: 'الحَارِثُ بْنُ هِشَام',
+    era: 'sahabah',
+    title: "The Brother of Abu Jahl Who Fell at Yarmouk",
+    lifespan: 'd. 636 CE',
+    category: 'Companions of the Prophet',
+    image: '🛡️',
+    summary: 'The brother of Abu Jahl who accepted Islam at the conquest of Makkah after years of opposition, and who, decades later at the Battle of Yarmouk, gave his own last portion of water to a dying comrade in a chain of selflessness among the wounded that became one of the most retold episodes of the entire Syrian campaign.',
+    story: `Al-Harith ibn Hisham was the brother of Amr ibn Hisham, known to the Muslims as Abu Jahl, and he had, like his brother, stood among the more prominent opponents of the Prophet's mission through much of the Makkan period. He accepted Islam at the conquest of Makkah in 8 AH, joining the broader wave of conversions that occurred as the city fell to the Muslims after years of resistance, a conversion that, like that of Ikrimah ibn Abi Jahl, brought a member of one of Islam's most hostile early opposing families into its fold.
+
+Once a Muslim, he applied himself with evident sincerity to the service of the faith he had once opposed, and he became an active participant in the campaigns of the early Islamic conquests, fighting in Syria during the reigns of Abu Bakr and Umar. He is most remembered for his role in the widely told account of the wounded soldiers at the Battle of Yarmouk in 15 AH, an episode in which he is named, in several versions of the story, alongside Ikrimah ibn Abi Jahl and Ayyash ibn Abi Rabi'ah as one of three severely wounded men who, when water was brought to the first of them, each in turn directed it toward a companion he believed to be in greater need, passing the water from one dying man to the next until all three had perished without any of them having taken a drink. (Al-Bidayah wan-Nihayah by Ibn Kathir, and the account as transmitted across several historical sources, with scholars noting some variation across different versions regarding the exact identity of the three men involved)
+
+Whether or not al-Harith was among this precise trio in every version of the account, the broader historical record confirms his death at Yarmouk fighting against the Byzantine forces, one of a considerable number of senior former Meccan converts who died in that single decisive engagement securing the Levant for the emerging Islamic state.
+
+His life, moving from active opposition to the Prophet's mission through his brother's household to a death in the very battle that secured Syria for the faith he had once resisted, stands alongside Ikrimah's own story as a further illustration of how completely conversion could redirect even those from the most hostile of the early Meccan families toward devoted and ultimately self-sacrificing service.`,
+    lessons: [
+      'Al-Harith\'s conversion at the conquest of Makkah, following years of opposition tied to his brother Abu Jahl\'s notorious hostility, shows that family legacy did not permanently determine an individual\'s own eventual choice.',
+      'His presence in the widely told account of selfless water-sharing among the wounded at Yarmouk, regardless of the precise details across different versions, reflects the broader spirit of sacrifice that characterized so many converts from formerly hostile households.',
+      'A death at Yarmouk, fighting to secure the very region for Islam that his family had once fought hardest against in Makkah, completes an arc of transformation as striking as that of his more famously documented cousin Ikrimah.',
+    ],
+    sources: ['Al-Bidayah wan-Nihayah by Ibn Kathir', 'Tarikh al-Umam wal-Muluk by at-Tabari', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's105',
+    name: 'Umm Kulthum bint Uqbah',
+    arabicName: 'أُمُّ كُلْثُوم بِنْتُ عُقْبَة',
+    era: 'sahabah',
+    title: "The Woman Whose Flight Prompted a Ruling on Marriage",
+    lifespan: 'd. c. 650 CE',
+    category: 'Companions of the Prophet',
+    image: '🏃',
+    summary: 'A young Meccan woman who fled to Madinah alone as a new believer after the Treaty of Hudaybiyyah\'s terms technically required her return, prompting a direct exception in her case and a broader Quranic ruling distinguishing believing women from the treaty\'s provisions concerning male fugitives.',
+    story: `Umm Kulthum bint Uqbah ibn Abi Mu'ayt was a young woman of Quraysh, sister of Uthman ibn Affan through their shared mother, who accepted Islam secretly in Makkah during the period surrounding the Treaty of Hudaybiyyah, at a time when the treaty's negotiated terms included a specific provision that any person fleeing from Makkah to join the Muslims without their guardian's permission would be returned to Makkah upon Quraysh request, while no equivalent obligation existed in reverse for anyone who left the Muslims to rejoin the Quraysh.
+
+Umm Kulthum, having embraced Islam against the wishes of her own family, fled alone to Madinah specifically to join the Prophet and the believers there, arriving shortly after the treaty had been concluded. Her brothers came after her to Madinah, invoking the terms of the newly signed treaty and demanding her return to Makkah in accordance with its provisions regarding fugitives.
+
+This situation prompted direct revelation clarifying that the treaty's terms concerning the return of fugitives, negotiated in the context of male combatants and political considerations, did not extend to believing women fleeing solely for the sake of their faith, since testing and confirming the sincerity of such women's religious conviction, and the very real danger of compelling them back into a household that might pressure or harm them for their new faith, fell outside what the treaty's original negotiators had intended or could reasonably be understood to cover: "O you who have believed, when the believing women come to you as emigrants, examine them... then if you know them to be believers, do not return them to the disbelievers." (Quran 60:10) On this basis, the Prophet refused to return Umm Kulthum to her brothers despite their insistence, while compensating them, according to some accounts, with a return of whatever dowry they claimed to have paid for her in some other capacity, resolving the matter in a manner that satisfied the treaty's underlying spirit of fairness while protecting her from a return the revelation itself had now clarified was inappropriate. (Ibn Hisham, As-Sirah an-Nabawiyyah; the extended exegetical discussion of Surah al-Mumtahinah in connection with this episode)
+
+She remained in Madinah, and her later marriages there, including at different points to Zayd ibn Harithah, az-Zubayr ibn al-Awwam, and Amr ibn al-As, placed her within the same close web of the earliest and most prominent Muhajirun families, her own life continuing to intersect with several of the most significant Companions of the founding generation.
+
+Her flight and the revelation it prompted secured her a specific and lasting place in the exegetical literature surrounding the Treaty of Hudaybiyyah, since the clarification her case required helped establish a principle distinguishing the treatment owed to believing women fleeing persecution from the more narrowly political terms the treaty had negotiated concerning male fugitives.`,
+    lessons: [
+      'Umm Kulthum\'s solitary flight to Madinah, against her own family\'s wishes, reflects a conviction pursued at considerable personal risk and against the immediate pressure of her closest relatives.',
+      'The revelation prompted by her specific situation shows how individual circumstances among the early believers directly shaped broader principles of Quranic law still studied by scholars today.',
+      'The Prophet\'s refusal to return her, paired with fair compensation to her brothers, reflects a careful balance between honoring the underlying spirit of a negotiated treaty and protecting a vulnerable new believer from genuine harm.',
+    ],
+    sources: ['Surah al-Mumtahinah (60:10)', 'As-Sirah an-Nabawiyyah by Ibn Hisham', 'Sahih al-Bukhari', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's106',
+    name: 'Abu Sufyan ibn al-Harith',
+    arabicName: 'أَبُو سُفْيَانَ بْنُ الحَارِث',
+    era: 'sahabah',
+    title: "The Foster-Brother Who Composed Verses of Apology",
+    lifespan: 'd. 637 CE',
+    category: 'Companions of the Prophet',
+    image: '📝',
+    summary: 'The Prophet\'s first cousin and foster-brother through shared nursing, once among his sharpest poetic critics in Makkah, who accepted Islam only at the conquest and approached the Prophet reciting verses of heartfelt apology for the years he had spent mocking him.',
+    story: `Abu Sufyan ibn al-Harith ibn Abd al-Muttalib was the Prophet's first cousin through his father's brother, and the two had also been nursed by the same wet-nurse in infancy, making him a foster-brother of the Prophet in addition to his blood relation — a closeness of family connection that made his years of open hostility toward the Prophet's mission particularly painful, since he had composed satirical verses mocking the Prophet during the Makkan period, using the very skill of poetic composition that Arab culture prized so highly to wound rather than support his own close relative.
+
+He remained among the opponents of Islam through nearly the entire Makkan and early Madinan period, only finally coming to accept the faith at the point of the conquest of Makkah in 8 AH, when the overwhelming and peaceful success of the Muslim return to the city he had spent years opposing made his continued resistance untenable. He approached the Prophet at this point not merely to declare his acceptance of Islam in ordinary terms, but composing and reciting verses of heartfelt apology and praise, acknowledging the years he had spent using his poetic gift against his own cousin and expressing his sincere regret for having done so, verses preserved in the biographical literature as a striking reversal of the very skill he had once turned toward mockery. (Ibn Hisham, As-Sirah an-Nabawiyyah, and the preserved verses of his apology as recorded in the seerah literature)
+
+The Prophet received him with evident warmth and forgiveness, extending to him the same broad mercy shown to so many other former opponents at the conquest, an act of reconciliation that carried particular emotional weight given the closeness of their blood and foster relationship, a bond that had been strained for years by hostility but was restored fully upon Abu Sufyan's sincere return to the family faith.
+
+Once reconciled, Abu Sufyan applied himself with evident devotion to the service of Islam for the remainder of his life, participating in the Battle of Hunayn shortly after his conversion, where he is recorded among those who stood firm around the Prophet during the initial chaos of the ambush rather than joining the ranks that broke and fled, a detail that later biographers noted as reflecting the genuine sincerity of a conversion that came so late yet proved so immediately steadfast under pressure.
+
+He died during the caliphate of Umar, around 15 or 20 AH, remembered for the striking image of a once-hostile poet turning the very same gift that had once wounded his cousin into verses of genuine and heartfelt reconciliation.`,
+    lessons: [
+      'Abu Sufyan\'s years of poetic mockery against his own cousin illustrate how personal closeness offers no automatic protection against deep and sustained opposition when conviction is genuinely at stake.',
+      'His verses of apology, using the very skill he had once turned against the Prophet, show that a talent misused for years can still be redirected sincerely once genuine repentance takes hold.',
+      'His steadfastness at Hunayn, standing firm during the initial chaos rather than fleeing with the broken ranks, offered immediate proof that his late conversion carried the same sincerity as those who had believed for decades.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Al-Bidayah wan-Nihayah by Ibn Kathir'],
+  },
+
+  {
+    id: 's107',
+    name: 'Kab ibn Malik',
+    arabicName: 'كَعْبُ بْنُ مَالِك',
+    era: 'sahabah',
+    title: "The Honest Man Whose Confession Was Accepted",
+    lifespan: 'c. 601 CE - 670 CE',
+    category: 'Companions of the Prophet',
+    image: '📖',
+    summary: 'A poet of the Ansar who stayed behind from the Expedition of Tabuk without valid excuse, and whose plain refusal to fabricate a justification, unlike others who lied, became the very reason his fifty-day social boycott ended in one of the Quran\'s most detailed accounts of accepted repentance.',
+    story: `Ka'b ibn Malik al-Ansari was among the poets of the Ansar who, like Hassan ibn Thabit and Abdullah ibn Rawahah, used his skill in verse in service of Islam, composing poetry in defense of the faith and in answer to the poets who mocked the Muslims on behalf of the Quraysh. He fought at several of the Prophet's engagements, though he had been absent from Badr along with a number of other Companions who joined the faith slightly later.
+
+His most extensively documented episode concerns his failure to join the Expedition of Tabuk in 9 AH, the Prophet's largest and most demanding military undertaking, called during the peak of summer heat and at the height of the harvest season. Ka'b, by his own later and remarkably candid account, found himself repeatedly delaying his preparations day after day out of simple procrastination rather than any deliberate intention to avoid the expedition, telling himself each day that he could still catch up with the army, until the Prophet had already departed and it was too late for him to join at all.
+
+When the Prophet returned from the campaign, those who had stayed behind without valid excuse came forward to offer justifications, and a great many, including known hypocrites, offered false oaths and fabricated reasons that the Prophet outwardly accepted while leaving the truth of the matter to Allah. Ka'b, along with two other sincere Companions in the same situation, chose instead to tell the Prophet the plain truth: that he had no valid excuse whatsoever, that he had simply been capable of joining and had failed to do so out of nothing more than delay and distraction. The Prophet, upon hearing this uniquely honest admission, told him that he had at least spoken the truth and that the matter would now be left for Allah to decide. (Sahih al-Bukhari 4418, and the extended and detailed account of this episode, largely preserved through Ka'b's own subsequent narration of his experience)
+
+What followed was a period of social boycott the Prophet imposed on Ka'b and the two other honest Companions, lasting fifty days, during which the entire community was instructed to cease speaking to them entirely, a hardship Ka'b described afterward as more painful and disorienting than anything else in his life, including a period in which even his own wife was instructed to maintain distance from him under the same general directive, and during which the very earth, in his own words, seemed to have become too narrow for him despite its evident vastness, and his own soul felt constricted beyond what he had ever previously known.
+
+The boycott ended only when revelation arrived confirming that Allah had accepted the repentance of Ka'b and the two other sincere Companions who had told the truth despite the difficulty it caused them, in one of the most detailed and personally narrated accounts of repentance found anywhere in the Quran: "And [He also forgave] the three who stayed behind, until, when the earth closed in on them in spite of its vastness and their souls confined them and they were certain that there was no refuge from Allah except in Him. Then He turned to them so they could repent." (Quran 9:118) Ka'b himself recounted that upon hearing the news of this acceptance, he immediately gave away a portion of his wealth in charity as an expression of his gratitude, and he treated this moment as the single greatest turning point of his entire life. (Sahih al-Bukhari, extended narration 4418)
+
+He lived for several decades afterward, continuing to compose poetry and remaining a respected figure among the Ansar, and this single episode of honest confession followed by public, Quranic-confirmed repentance secured him a place in Islamic history and devotional literature disproportionate to any other single achievement of his life, precisely because of what it demonstrated about the value Allah places on sincere honesty even when a convenient lie might have spared considerable personal hardship.`,
+    lessons: [
+      'Ka\'b\'s plain admission that he had no valid excuse at all, rather than any fabricated justification, is presented in the Quran as precisely the reason his eventual repentance was accepted.',
+      'The fifty-day social boycott, though severe, demonstrates that even a sincere and honest believer may face real and painful consequences for genuine lapses, consequences that do not themselves indicate a lack of eventual mercy.',
+      'His description of the earth feeling too narrow despite its vastness offers one of the most vivid depictions in the entire hadith literature of genuine spiritual anguish preceding accepted repentance.',
+      'His immediate charity upon hearing of Allah\'s acceptance reflects a gratitude expressed concretely rather than merely felt privately.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Surah at-Tawbah (9:118)', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's108',
+    name: 'Hassan ibn Thabit',
+    arabicName: 'حَسَّانُ بْنُ ثَابِت',
+    era: 'sahabah',
+    title: "The Poet of the Prophet",
+    lifespan: 'c. 563 CE - 674 CE',
+    category: 'Companions of the Prophet',
+    image: '🖋️',
+    summary: 'A celebrated pre-Islamic poet of Madinah whom the Prophet specifically commissioned to compose verses defending Islam and answering the Quraysh\'s own poets, praying that the Holy Spirit itself assist him, since his tongue, the Prophet said, struck harder than an arrow in the dark of night.',
+    story: `Hassan ibn Thabit al-Ansari was already, before Islam reached Madinah, among the most celebrated poets of the Arabian Peninsula, a reputation established over decades of composition that gave him a standing few other individuals in the city could claim, since poetry in that era carried the weight of both entertainment and serious political and social commentary. When Islam arrived in Madinah and he accepted the faith, this considerable existing talent was redirected entirely toward its service, a transition the Prophet actively encouraged and supported rather than treating poetic skill as somehow incompatible with the new faith.
+
+The Quraysh employed their own skilled poets to compose verses mocking the Prophet and the Muslims, a serious matter in a culture where such verses could shape public opinion and morale as effectively as any military action, and the Prophet, recognizing the value of an equally skilled response, specifically commissioned Hassan to answer these attacks in kind. He is reported to have told Hassan directly to compose verses against the Quraysh, and on more than one occasion prayed for him specifically in this task, saying: "O Allah, aid him with the Holy Spirit (Jibril)," and describing the effect of his composed verses in terms of considerable praise: "Indeed, his words are more piercing against them than the striking of arrows in the darkness of the night." (Sahih al-Bukhari 453, 6153, and related narrations concerning the Prophet's commissioning and praise of Hassan's poetry)
+
+The Prophet had a pulpit or platform specifically set up for Hassan within the mosque itself from which to recite his compositions defending Islam and responding to its critics, a level of institutional support for a single individual's poetic contribution that reflects how seriously this form of verbal defense was regarded within the broader effort to protect and advance the young community's standing.
+
+Hassan also composed some of the most memorable elegiac verses mourning the Prophet's death, capturing in poetic form the grief of the early community at losing him, verses that later generations of Muslims continued to recite and value as among the most moving literary responses to that loss preserved from the earliest period.
+
+In his later years, he was implicated, alongside several others, in the incident of al-Ifk, the false accusation against Aisha's honor, having repeated some of the slander that circulated during that difficult episode, for which he received the legally prescribed punishment once the matter was resolved and Aisha's innocence confirmed by revelation, a lapse that stands in the biographical record as a caution against how even a devoted poet of the faith could be drawn into spreading harmful rumor, and a reminder that his sincere service in other respects did not exempt him from accountability in this one.
+
+He lived to a very advanced age, continuing to compose poetry and remaining a respected, if occasionally controversial, figure within the Muslim community through the caliphates that followed the Prophet's death, dying around 54 AH, remembered above all as the poet whose verses the Prophet himself had prayed would be strengthened by the Holy Spirit in defense of the faith.`,
+    lessons: [
+      'The Prophet\'s active encouragement of Hassan\'s poetic talent shows that skills prized in pre-Islamic culture were not abandoned upon conversion but deliberately redirected toward the service of the new faith.',
+      'His involvement in spreading the slander against Aisha, despite his broader service to Islam, and his subsequent punishment, reflects that accountability for genuine wrongdoing applied even to devoted and valued Companions.',
+      'His elegiac verses mourning the Prophet\'s death captured, in a form the entire community could share and repeat, a grief that prose alone might have struggled to convey with the same lasting resonance.',
+    ],
+    sources: ['Sahih al-Bukhari', 'As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's109',
+    name: "Umm Waraqah bint Abdullah",
+    arabicName: 'أُمُّ وَرَقَة بِنْتُ عَبْدِ اللهِ',
+    era: 'sahabah',
+    title: "The Woman the Prophet Permitted to Lead Her Household in Prayer",
+    lifespan: 'd. c. 634 CE',
+    category: 'Companions of the Prophet',
+    image: '🕋',
+    summary: 'A woman who had memorized the Quran and asked the Prophet for permission to be martyred alongside the fighters at Badr, and to whom he instead granted an unusual permission to lead the members of her own household in prayer from her home.',
+    story: `Umm Waraqah bint Abdullah ibn al-Harith al-Ansariyyah was known among the early Muslim community of Madinah for having memorized a considerable portion, by some accounts the entirety, of the Quran, a distinction that placed her among a relatively select group of early believers with this level of command over the revealed text during the Prophet's own lifetime.
+
+Before the Battle of Badr, she approached the Prophet and asked his permission to accompany the fighters to the battle so that she might tend to the wounded and, she expressed to him directly, hoping that Allah might grant her martyrdom in that cause. The Prophet, rather than granting this specific request, told her instead to remain in her own home, informing her that Allah would grant her a martyrdom of her own in due course, without specifying at the time what form that would take. (Sunan Abu Dawud 591, and the extended narration of this episode)
+
+The Prophet also granted her, in light of her considerable command of the Quran, an unusual permission: he appointed a muadhdhin specifically for her own household and instructed her to lead the members of her own house in prayer, a specific and individual permission that later scholars have discussed at length regarding its precise scope and implications, generally understanding it as applying specifically to the members of her own household rather than establishing a broader general practice, though the episode itself remains a frequently cited point of reference in later discussions concerning women's capacity for Quranic mastery and leadership within a domestic context. (Sunan Abu Dawud 592, and the extended scholarly discussion surrounding this narration)
+
+The fulfillment of the Prophet's earlier promise regarding her eventual martyrdom came years later, during the caliphate of Umar ibn al-Khattab, when Umm Waraqah was killed by two of her own household slaves, a male and female servant whom she had promised freedom upon her death and who, in their impatience, murdered her and attempted to flee rather than wait for her natural death to secure the freedom she had already promised them. Umar, upon learning of the circumstances of her death, ordered the two servants apprehended and executed for the murder, and he is reported to have remarked that Umm Waraqah had indeed been martyred exactly as the Prophet had told her she would be, connecting her violent death directly back to the promise made to her so many years before at the time of Badr. (Sunan Abu Dawud 591, and the extended account of this episode as preserved in the biographical literature)
+
+Her life stands as a distinctive account combining an early and unusual permission regarding household leadership in prayer with the eventual and, in retrospect, precisely fulfilled promise the Prophet had made to her regarding the specific nature of the martyrdom she would eventually receive.`,
+    lessons: [
+      'The Prophet\'s promise of a future martyrdom to Umm Waraqah, fulfilled years later in circumstances neither of them could have anticipated at the time, reflects how a Prophetic statement can be confirmed by events long after it was first spoken.',
+      'Her command of the Quran and the specific permission she received regarding leading her own household in prayer remain a frequently referenced point in later discussions of women\'s religious scholarship and domestic leadership.',
+      'Umar\'s explicit connection of her death back to the Prophet\'s earlier promise shows how the early community actively tracked and confirmed the fulfillment of specific statements the Prophet had made during his own lifetime.',
+    ],
+    sources: ['Sunan Abu Dawud', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Usd al-Ghabah by Ibn al-Athir'],
+  },
+
+  {
+    id: 's110',
+    name: 'Dihyah al-Kalbi',
+    arabicName: 'دِحْيَةُ الكَلْبِي',
+    era: 'sahabah',
+    title: "The Envoy So Handsome the Angel Wore His Likeness",
+    lifespan: 'd. c. 670 CE',
+    category: 'Companions of the Prophet',
+    image: '✉️',
+    summary: 'A Companion of celebrated physical beauty entrusted with delivering the Prophet\'s letter to the Byzantine Emperor Heraclius, whose form the angel Jibril is reported to have taken on more than one occasion when appearing before the Companions.',
+    story: `Dihyah ibn Khalifah al-Kalbi was widely known among the Companions for a physical handsomeness so remarkable that it became a recurring point of reference in the biographical and hadith literature, with several narrations describing occasions on which the angel Jibril appeared to the Prophet or to other Companions in the form and likeness of Dihyah, a detail preserved directly by Aisha and other narrators as an established point of recognition among those close to the Prophet's household. (Sahih al-Bukhari 3634, and related narrations concerning the appearances of Jibril in Dihyah's form)
+
+He was entrusted by the Prophet with one of the most significant diplomatic missions of the period surrounding the Treaty of Hudaybiyyah: carrying the Prophet's letter inviting the Byzantine Emperor Heraclius to accept Islam. Dihyah traveled to deliver this letter at a time when Heraclius happened to be in Jerusalem following a successful campaign against the Persians, and the emperor, upon receiving and reading the letter, is reported to have made careful inquiry into the character and claims of the Prophet, questioning Abu Sufyan ibn Harb, who happened to be present in the region on a trading matter at the time and was summoned specifically because he was known to be one of the Prophet's own kinsmen and, crucially, still at that point an opponent of Islam whose testimony Heraclius judged would carry particular credibility precisely because he had no motive to speak favorably of him. Abu Sufyan's honest answers regarding the Prophet's known truthfulness, his following among both the noble and the humble, and the way his following grew rather than diminished, led Heraclius to conclude, according to the widely preserved account, that the description matched what he understood from his own scriptural knowledge to be true of an expected prophet, though he did not act on this private conviction by embracing Islam himself, citing the practical loss of his own throne and standing that such an act would entail. (Sahih al-Bukhari 7, and the extensive account of this exchange, one of the most detailed episodes preserved concerning the reception of the Prophet's letters to foreign rulers)
+
+Dihyah returned safely from this mission and continued to serve as a trusted and active Companion in the years that followed, and he is also recorded as having brought various gifts on behalf of foreign rulers back to the Prophet on more than one occasion in a diplomatic capacity, reflecting the ongoing trust placed in him for missions requiring both discretion and presentable bearing before foreign courts.
+
+He lived well beyond the Prophet's death and settled for a period in Syria, remembered specifically for the singular honor of having his own physical form associated so closely with the appearances of the angel Jibril, a detail that secured him a distinctive and often-repeated place in the biographical literature quite apart from his considerable service as an envoy.`,
+    lessons: [
+      'Dihyah\'s selection for the mission to Heraclius reflects the trust placed in Companions whose bearing and discretion suited the demands of foreign diplomacy at the highest level.',
+      'Heraclius\'s careful cross-examination of Abu Sufyan, chosen specifically because his hostility to the Prophet made his testimony more credible, illustrates a rigorous method of verification even a foreign emperor applied before drawing his own conclusions.',
+      'The detail of Jibril appearing in Dihyah\'s likeness, preserved directly from Aisha\'s own household testimony, offers a striking glimpse into how the Companions themselves came to recognize and describe events beyond ordinary experience.',
+    ],
+    sources: ['Sahih al-Bukhari', 'As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's111',
+    name: 'Al-Nu\'man ibn Bashir',
+    arabicName: 'النُّعْمَانُ بْنُ بَشِير',
+    era: 'sahabah',
+    title: "The First Child of the Ansar Born After the Hijrah",
+    lifespan: 'c. 622 CE - 684 CE',
+    category: 'Companions of the Prophet',
+    image: '👶',
+    summary: 'Reported among the first children of the Ansar born in Madinah after the Prophet\'s arrival, raised close enough to hear his teachings directly from early childhood, who transmitted a memorable parable on the unity of the believers\' body and later served as governor of both Kufa and Hims.',
+    story: `An-Nu'man ibn Bashir al-Ansari was, according to several of the classical biographical sources, among the earliest children of the Ansar born in Madinah following the Hijrah, placing his own life in a close and unusual parallel with the very establishment of the Muslim community in its new home. His father Bashir ibn Sa'd was himself a prominent and devoted Companion, and the household's closeness to the Prophet meant that an-Nu'man grew up with direct exposure to his teaching from the earliest years of his own conscious memory, despite being too young to have witnessed the Makkan period at all.
+
+He is remembered as a transmitter of one of the more widely cited parables attributed to the Prophet concerning the unity and mutual responsibility of the believing community, comparing the believers to a single body in which, if one part suffers, the rest of the body responds with fever and sleeplessness in shared distress: "The example of the believers in their affection, mercy, and compassion for each other is that of a body: when any limb aches, the whole body responds with sleeplessness and fever." (Sahih al-Bukhari 6011, and Sahih Muslim 2586, narrated through an-Nu'man ibn Bashir) This parable became one of the most frequently invoked images in later Islamic literature concerning the nature of communal solidarity among believers.
+
+He also transmitted an account concerning fairness between children in matters of gifts, describing an occasion when his own father wished to give him a particular gift and sought the Prophet's endorsement of the arrangement as a witness, only for the Prophet to ask whether he had given an equivalent gift to all of his other children, and upon learning that he had not, instructing him plainly to seek a different witness, since he himself would not bear witness to an act of unfairness among children, a ruling later scholars drew upon extensively in discussions of equitable treatment among one's offspring. (Sahih al-Bukhari 2587, and the extended narration of this episode)
+
+In his adult years, an-Nu'man went on to serve in administrative roles under the Umayyad caliphate, including as governor of Kufa and later of Hims in Syria, a period of his life that placed him within the more complex political currents of the post-civil war Umayyad period rather than the earlier and more directly documented era of the Prophet's own companions.
+
+He died in 65 AH amid the political instability that followed the death of the Caliph Yazid, killed during a period of considerable regional upheaval connected to the broader succession disputes of the time, bringing to an end a life that had begun as one of the very first children born into the Muslim community's new home in Madinah and closed decades later amid the political complexities of the following generation.`,
+    lessons: [
+      'An-Nu\'man\'s parable of the believers as a single body remains one of the most frequently cited images in Islamic literature for describing the mutual responsibility and shared feeling that should characterize the community of believers.',
+      'The episode of the Prophet declining to witness an unequal gift among his father\'s children established a lasting principle of fairness in how parents should treat their offspring.',
+      'A life beginning as one of the very first children of the Ansar born after the Hijrah, and ending amid the political upheavals of the following Umayyad generation, traces the arc of an entire early era of Islamic history within a single biography.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Sahih Muslim', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Tarikh al-Umam wal-Muluk by at-Tabari'],
+  },
+
+  {
+    id: 's112',
+    name: 'Abdullah ibn Ubayy',
+    arabicName: 'الأُبَيّ',
+    era: 'sahabah',
+    title: "The Would-Be King Whose Son Remained Devoted",
+    lifespan: 'd. 631 CE',
+    category: 'Companions of the Prophet',
+    image: '⚠️',
+    summary: 'A prominent Madinan chief whose ambitions for kingship were displaced by the Prophet\'s arrival, remembered chiefly as a leader of the hypocrites, whose own sincere and devoted Muslim son offered, in a striking episode, to kill his father himself if the Prophet wished it.',
+    story: `Abdullah ibn Ubayy ibn Salul was a prominent chief among the Khazraj of Madinah in the period immediately before the Hijrah, and by several historical accounts, the city's tribes had been on the verge of uniting behind him as a single king shortly before the Prophet's arrival, an ambition that the sudden and rapid growth of the Muslim community in Madinah displaced before it could be realized. This displaced ambition is understood by many of the classical historians as the underlying source of the sustained and often subtle hostility he maintained toward the Prophet throughout the remainder of his life, despite outwardly professing Islam alongside the rest of his tribe.
+
+He became, in the language of the Quran and the biographical literature, the most prominent figure among the munafiqun, the hypocrites of Madinah, a category the Quran addresses at length in several passages, describing individuals who outwardly professed the faith while working, often subtly, to undermine the Muslim community from within. Abdullah ibn Ubayy's specific acts of undermining conduct included withdrawing his own contingent of forces at a critical juncture before the Battle of Uhud, weakening the Muslim ranks considerably at a moment of genuine danger, and later playing a leading role in circulating and lending credibility to the slander against Aisha during the incident of al-Ifk, an act the Quran addresses directly and severely. (Surah an-Nur, 24:11, and the extensive exegetical literature identifying him as the primary instigator of that slander)
+
+Despite his father's conduct, Abdullah ibn Abdullah ibn Ubayy, his own son, was a sincere and devoted Muslim whose loyalty to the Prophet remained entirely undivided from his father's ambivalence. In one of the more striking episodes preserved concerning their relationship, the son is reported to have come to the Prophet directly, upon learning of talk among some of the other Companions expressing anger at his father's conduct and discussing the possibility of killing him for his repeated undermining of the community, and offered to carry out the act himself if the Prophet judged it necessary, reasoning that he would rather be the one to kill his own father than see the deed done by another man's hand, which he feared might leave him unable to control his own grief and anger toward whoever had killed him, given the natural bond of kinship regardless of his father's conduct. The Prophet declined this offer, instructing instead that his father be treated with patience and good conduct for as long as he remained among them. (Ibn Hisham, As-Sirah an-Nabawiyyah, and related accounts of this episode)
+
+When Abdullah ibn Ubayy eventually died in 9 AH, the Prophet, despite full awareness of his conduct throughout the Madinan period, initially agreed to a request from his devoted son to give him his own shirt to be used as part of his father's burial shroud and to attend and lead the funeral prayer over him, an act of remarkable clemency toward a man whose hostility had been so consistently documented, though revelation shortly afterward clarified that the Prophet should not pray over the hypocrites nor stand at their graves, a directive that established a clear boundary for how such cases should be handled going forward. (Surah at-Tawbah, 9:84, and the extended account of this episode in the seerah literature)`,
+    lessons: [
+      'The devoted loyalty of Abdullah ibn Ubayy\'s own son, standing in complete contrast to his father\'s conduct, shows that sincerity of faith is a matter of individual conviction rather than inherited family disposition.',
+      'The son\'s offer to kill his own father himself, out of concern for his own capacity to control his grief toward whoever else might do it, reveals a complexity of loyalty torn between natural filial bond and devotion to the Prophet.',
+      'The Prophet\'s initial clemency toward Abdullah ibn Ubayy\'s burial, followed by the clarifying revelation restricting prayer over hypocrites, illustrates how personal compassion and clear communal boundaries were each addressed in turn as the specific situation required.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'Surah at-Tawbah (9:84)', 'Surah an-Nur (24:11)', 'Sahih al-Bukhari'],
+  },
+
+  {
+    id: 's113',
+    name: "Abu Lubabah al-Ansari",
+    arabicName: 'أَبُو لُبَابَة الأَنْصَارِي',
+    era: 'sahabah',
+    title: "The Man Who Tied Himself to a Pillar in Repentance",
+    lifespan: 'd. c. 649 CE',
+    category: 'Companions of the Prophet',
+    image: '⛓️',
+    summary: 'A trusted Companion sent to advise the besieged Banu Qurayzah, who gave them an honest but unauthorized signal regarding their likely fate, and who, overwhelmed with guilt at this lapse, tied himself to a pillar of the mosque and refused food until the Prophet himself untied him upon confirmation of his repentance.',
+    story: `Bashir ibn Abd al-Mundhir, known by his kunyah Abu Lubabah al-Ansari, was a respected Companion whose standing among the community and prior relationships with the Jewish tribes of Madinah made him a natural choice when, during the siege following Banu Qurayzah's betrayal at the Battle of the Khandaq, their leaders requested that someone they trusted be sent to advise them on whether to accept the judgment of Sa'd ibn Muadh regarding their fate, given the severity of their earlier treachery during the siege.
+
+Abu Lubabah was sent to them for this purpose, and as their representatives asked him privately whether they should submit to the judgment that awaited them, he found himself, out of the genuine sympathy he felt for people he had long-standing personal connections with, unable to keep from indicating to them, through a gesture rather than explicit words, that submission to judgment would likely mean their execution — drawing his hand across his own throat as a silent signal of what he understood their fate to be. He immediately recognized the seriousness of what he had just done: conveying information that undermined the position of trust the Prophet had placed in him and potentially interfering with the very process of judgment the besieged tribe had specifically asked to be advised on honestly. (Ibn Hisham, As-Sirah an-Nabawiyyah, and the extended account of this episode)
+
+Overwhelmed with guilt at what he understood as a serious betrayal of the trust placed in him, Abu Lubabah did not wait to be confronted or judged by others; he went directly to the mosque of the Prophet, tied himself firmly to one of its pillars, and vowed that he would not eat, drink, or move from that spot until either he died there or Allah accepted his repentance and the Prophet himself untied him. He remained bound in this manner for a considerable period, refusing all food and comfort offered to him despite his family's concern, his resolve holding firm even as his physical condition worsened from the self-imposed deprivation.
+
+Revelation eventually confirmed that his sincere repentance had been accepted, and upon receiving this confirmation, the Prophet went to the mosque personally and untied him with his own hands, informing him that Allah had accepted his repentance and that he was free from the guilt he had bound himself over. Abu Lubabah, in his gratitude and continued desire to make amends beyond the mere resolution of guilt, then asked the Prophet's permission to give away his own property in Madinah entirely in charity as a further expression of his repentance, a request the Prophet moderated by advising him that giving away a portion rather than the entirety of his wealth would be sufficient and preferable. (Ibn Hisham, As-Sirah an-Nabawiyyah)
+
+His episode became one of the most vividly preserved illustrations in the seerah literature of the depth of genuine remorse a sincere believer could feel over even a single lapse in fulfilling an entrusted responsibility, and the pillar to which he tied himself came to be specifically remembered and identified within the mosque of the Prophet for generations afterward as a physical marker of his repentance.`,
+    lessons: [
+      'Abu Lubabah\'s immediate recognition of his own lapse, without waiting to be confronted by others, reflects a conscience so sensitive to breach of trust that it moved him to self-imposed and severe accountability.',
+      'His refusal of food and comfort until confirmation of Allah\'s acceptance shows a depth of genuine remorse rarely matched in its physical intensity among the recorded episodes of the early Companions.',
+      'The Prophet\'s moderation of his subsequent desire to give away his entire wealth demonstrates a wisdom in guiding sincere repentance toward balanced rather than excessive expression.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Al-Bidayah wan-Nihayah by Ibn Kathir'],
+  },
+
+  {
+    id: 's114',
+    name: 'Uqbah ibn Amir',
+    arabicName: 'عُقْبَةُ بْنُ عَامِر',
+    era: 'sahabah',
+    title: "The Master of the Bow and the Seven Modes of Recitation",
+    lifespan: 'd. 671 CE',
+    category: 'Companions of the Prophet',
+    image: '🏹',
+    summary: 'A Companion praised by the Prophet for his skill in archery and encouraged to pursue it as a form of worship in itself, who went on to master multiple modes of Quranic recitation and to govern Egypt with a reputation for scholarly rigor.',
+    story: `Uqbah ibn Amir al-Juhani accepted Islam and became known among the Companions for a particular mastery of archery, a skill the Prophet is reported to have specifically encouraged him and others to pursue and maintain, framing physical training in this particular discipline in terms unusually elevated compared to other worldly pursuits: "Whoever learns archery and then abandons it is not one of us," and on another occasion emphasizing repeatedly, according to Uqbah's own transmission, that strength lies in shooting, said three times for emphasis, indicating the importance placed on this specific martial skill within the broader framework of readiness for the community's defense. (Sahih Muslim 1919, narrated through Uqbah ibn Amir)
+
+Beyond his physical skill, Uqbah developed a considerable scholarly command of the Quran, becoming known as one of the Companions who had mastered several different authentic modes of recitation (qira'at), a distinction that placed him among a smaller group of individuals whose comprehensive command of the text's transmitted variations made them particularly valuable resources for later generations seeking to understand and preserve the full scope of authentic Quranic recitation.
+
+He participated in a number of the major campaigns of the early conquests, and in his later years he was appointed governor of Egypt under the caliphate of Muawiyah, a position in which he continued to be sought after specifically for his scholarly command of the Quran and hadith alongside his administrative responsibilities, students and scholars of the region drawing on his direct transmission from the Prophet's own era even as he carried out his governing duties.
+
+He is also remembered for transmitting a number of hadith concerning matters of daily conduct and worship, including guidance concerning specific supplications and the virtues of particular chapters of the Quran, reflecting a breadth of scholarly interest that extended well beyond his initial reputation as a skilled archer.
+
+He died in Egypt in 58 AH, having combined across his lifetime a rare balance of physical martial skill, encouraged directly by the Prophet as a discipline worth maintaining, with a depth of Quranic scholarship that made him a valued resource for the scholars of his own and the following generation.`,
+    lessons: [
+      'The Prophet\'s specific encouragement of archery as a discipline worth maintaining reflects a holistic view of readiness that included physical training alongside spiritual and scholarly pursuits.',
+      'Uqbah\'s mastery of multiple modes of Quranic recitation made him a particularly valuable resource for later generations concerned with preserving the full scope of the Quran\'s authentic transmission.',
+      'Combining rigorous scholarship with the practical responsibilities of governing a major province shows that administrative duty and continued learning were not treated as separate or competing pursuits among the Companions.',
+    ],
+    sources: ['Sahih Muslim', 'Sunan Abu Dawud', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's115',
+    name: 'Farwah ibn Amr al-Judhami',
+    arabicName: 'فَرْوَةُ بْنُ عَمْرٍو الجُذَامِي',
+    era: 'sahabah',
+    title: "The Border Governor Who Chose Execution Over Renouncing Islam",
+    lifespan: 'd. c. 630 CE',
+    category: 'Companions of the Prophet',
+    image: '🏛️',
+    summary: 'An Arab governor serving the Byzantine Empire on its Arabian frontier who accepted Islam through correspondence with the Prophet and sent gifts in confirmation, only to be captured and executed by Byzantine authorities upon learning of his conversion.',
+    story: `Farwah ibn Amr al-Judhami served as a governor appointed by the Byzantine Empire over a frontier region near Amman, on the Arabian side of the empire's border, a position of some local authority granted to an Arab administrator trusted by Constantinople to manage relations with the tribes of the surrounding region on the empire's behalf.
+
+Having heard of the Prophet's growing standing and message, Farwah sent correspondence to Madinah expressing his acceptance of Islam, along with gifts including a fine white mule that the Prophet is reported to have ridden and valued, an exchange that placed Farwah among a distinctive category of individuals who accepted the faith while still serving within the administrative structure of a foreign empire rather than residing among the Muslim community itself. (Ibn Hisham, As-Sirah an-Nabawiyyah; Ibn Sa'd, at-Tabaqat al-Kubra, with some variation across sources regarding the precise details of this correspondence)
+
+Word of his conversion eventually reached the Byzantine authorities, who regarded it as an unacceptable act of disloyalty from an administrator entrusted with a position within their own imperial structure, particularly given the tensions already building along the frontier between Byzantine territory and the expanding influence of the Muslim state in Arabia. Farwah was arrested and brought before Byzantine authorities, who gave him the option of renouncing his newly professed faith and returning to Christianity in exchange for his life and continued position, an offer he refused entirely and without hesitation despite the clear and immediate consequence that awaited his refusal.
+
+He was executed for his refusal to renounce Islam, reportedly composing verses in his final moments expressing his acceptance of whatever fate awaited him for the sake of his conviction, verses preserved in the biographical literature as a testimony to the completeness of his commitment despite having accepted the faith at a considerable geographic and political distance from the Muslim community itself, with little practical opportunity to ever have met the Prophet in person or to benefit from the physical protection and fellowship the community in Madinah could offer its own members.
+
+His death is remembered in the seerah literature as one of the more poignant examples of sincere conversion occurring even among administrators serving within the structures of the very empires the young Islamic state would eventually come into direct conflict with, a conviction that cost him his position, his safety, and ultimately his life, sustained entirely through correspondence and personal conviction rather than any sustained direct contact with the Prophet or the broader Muslim community.`,
+    lessons: [
+      'Farwah\'s conversion through correspondence alone, without ever residing among the Muslim community, shows that sincere conviction could take root and hold firm even at considerable geographic and political distance.',
+      'His refusal to renounce his newly professed faith in exchange for his life and position demonstrates a completeness of commitment reached without the benefit of direct fellowship or protection from the wider community of believers.',
+      'His story stands as an early instance of the tensions that would eventually characterize the broader relationship between the expanding Islamic state and the Byzantine Empire along their shared frontier.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'At-Tabaqat al-Kubra by Ibn Sa\'d', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's116',
+    name: 'Zaid ibn Sahl al-Ansari (Abu Talhah\'s son) — Umm Sulaym\'s Grief',
+    arabicName: 'ابْنُ أُمِّ سُلَيْم',
+    era: 'sahabah',
+    title: "The Household Whose Loss Taught the Ummah How to Grieve",
+    lifespan: 'd. c. 631 CE',
+    category: 'Companions of the Prophet',
+    image: '🕯️',
+    summary: 'The unnamed infant son of Abu Talhah and Umm Sulaym whose death and the manner of its disclosure — already recounted through his mother\'s composure — prompted the Prophet to bless the couple with further children who became reciters of the Quran, illustrating how grief handled well can be followed by lasting blessing.',
+    story: `The infant son of Abu Talhah al-Ansari and Umm Sulaym bint Milhan, whose death forms the center of one of the most widely cited episodes of composed maternal grief in the entire hadith literature, is not preserved by his own individual name in the primary sources, appearing instead entirely through the account of his mother's handling of his loss — a reminder that not every consequential moment in the seerah is centered on an adult Companion with an extensively documented independent biography, and that some of the most instructive episodes emerge from the smallest and briefest of lives.
+
+As recounted through Anas ibn Malik, his own half-brother through Umm Sulaym's earlier marriage, the child fell seriously ill and died while Abu Talhah was away from the household on some errand or duty. Umm Sulaym, rather than sending word of the loss that might reach her husband suddenly or in a manner he was unprepared for, composed the household, prepared her husband's evening meal as she ordinarily would upon his return, and only once he had eaten and rested did she raise the matter indirectly, through the parable of a family asked to return something that had only ever been lent to them, allowing Abu Talhah to arrive at the truth of what had happened through his own reasoning rather than a sudden and jarring announcement. (Sahih Muslim 2144, and the full narration as transmitted by Anas ibn Malik)
+
+When the Prophet learned the following morning of how the couple had handled the night's events — her composure in disclosure and his acceptance once he understood — he prayed for them, asking Allah to bless their night, a supplication Anas himself connected directly to the several children later born to the couple, a number of whom, by his account, went on to memorize and recite the Quran, becoming scholars and reciters of some standing within the following generation. (Sahih Muslim 2144)
+
+This single episode, centered on a nameless child whose brief life is remembered almost entirely through the manner of his death's disclosure, became one of the most frequently cited accounts in later Islamic literature addressing how grief ought to be communicated within a household — with wisdom, timing, and care for how the news lands on someone not yet prepared to receive it — and how such composed grief, met with acceptance rather than despair, can be followed by blessings extending across an entire subsequent generation.`,
+    lessons: [
+      'A life remembered by its ending rather than its length shows that even the briefest of lives can leave behind an instructive and lasting legacy for those who witness how it is mourned.',
+      'Umm Sulaym\'s careful timing and manner in disclosing the loss to her husband offers, to this day, a model for how difficult news might be shared with wisdom rather than in a manner that compounds its pain.',
+      'The Prophet\'s supplication following this night of composed grief, and its connection to the couple\'s later children who became reciters of the Quran, illustrates how sincere acceptance of loss can be followed by blessings extending well beyond the original sorrow.',
+    ],
+    sources: ['Sahih Muslim', 'Al-Isabah by Ibn Hajar al-Asqalani (in the entry on Umm Sulaym)', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's117',
+    name: "Abu Musa's Companion — Al-Ash'ariyyun",
+    arabicName: 'الأَشْعَرِيُّون',
+    era: 'sahabah',
+    title: "The Tribe the Prophet Praised for Sharing Their Provisions Equally",
+    lifespan: 'Various, 7th century CE',
+    category: 'Companions of the Prophet',
+    image: '🏺',
+    summary: 'A tribe of Yemeni converts led by Abu Musa al-Ash\'ari whose custom of pooling and equally dividing their provisions during hardship on campaign earned specific and lasting praise from the Prophet as a practice belonging fully to both him and to them.',
+    story: `The Ash'ariyyun, the tribe from which Abu Musa al-Ash'ari himself descended, arrived in the Muslim lands from Yemen as a group of converts noted collectively, rather than through any single individual's particular biography, for a specific communal practice the Prophet singled out for direct and lasting praise: when they went on military campaigns and their provisions ran low, rather than each man keeping and rationing whatever remained of his own individual supply separately, they would gather together all the food that remained among them, however little, and divide it equally among themselves using a single vessel, ensuring that no one among them, regardless of how much or little he had personally carried, went hungrier than any other member of the group. (Sahih al-Bukhari 2486, and Sahih Muslim 2500, narrated through Abu Musa al-Ash'ari)
+
+The Prophet, upon learning of this specific communal practice, declared it a matter of particular closeness between himself and them, saying plainly: "They are of me, and I am of them," a declaration echoing in its structure the same words he had used regarding Julaybib, extending to an entire tribal group collectively the same intimate association he elsewhere reserved for specific individuals whose conduct he found especially praiseworthy. (Sahih al-Bukhari 2486)
+
+This episode, brief as its documentation is compared to individually biographied Companions, has been preserved and repeated across generations of Islamic teaching on mutual aid and communal solidarity specifically because it captures, in a single simple custom, the kind of practical, everyday generosity the Prophet valued as highly as more dramatic acts of individual sacrifice — not risking one's life in battle, but simply ensuring that hardship, when it came, was shared equally rather than borne unevenly by whoever happened to have less.
+
+The tribe's collective conduct in this matter, and the Prophet's specific praise of it, became a frequently cited example in later discussions of Islamic economic ethics and communal responsibility, illustrating that the faith's concern for equitable sharing extended into even the smallest and most mundane details of daily provisioning among a group facing shared hardship together.`,
+    lessons: [
+      'The Ash\'ariyyun\'s custom of pooling and equally sharing whatever provisions remained, however little, reflects a form of generosity built into ordinary practice rather than reserved for dramatic or occasional acts.',
+      'The Prophet\'s declaration that they were of him and he of them, extended collectively to an entire tribe, shows that such close association was not limited only to individuals but could be earned through a shared communal practice.',
+      'This episode illustrates that Islamic teaching values the equitable sharing of even small and ordinary hardships as highly as more visibly dramatic forms of individual sacrifice.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Sahih Muslim', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's118',
+    name: 'Thumamah ibn Uthal',
+    arabicName: 'ثُمَامَةُ بْنُ أُثَال',
+    era: 'sahabah',
+    title: "The Captured Chief Freed Three Times Before He Chose Islam",
+    lifespan: 'd. c. 633 CE',
+    category: 'Companions of the Prophet',
+    image: '🕌',
+    summary: 'A powerful chief of the Banu Hanifah captured and tied to a pillar of the Prophet\'s mosque, offered freedom without ransom on three separate occasions before finally accepting Islam of his own accord, after which he immediately went to perform Umrah as his very first act as a believer.',
+    story: `Thumamah ibn Uthal al-Hanafi was a prominent and powerful chief of the Banu Hanifah tribe centered in the region of Yamama, known for his considerable influence over the tribes of that region even before his encounter with the Prophet, an influence significant enough that his eventual conversion carried consequences extending well beyond his own individual case.
+
+He was captured by a Muslim patrol while traveling and brought to Madinah, where he was tied to one of the pillars of the Prophet's mosque, a common practice for holding captives of some significance while their situation was determined. The Prophet came to him on three separate occasions over the following days, each time asking him what he thought his fate should be, and each time Thumamah answered in terms reflecting his own considerable pride and standing: that if the Prophet chose to kill him, he would be killing a man of blood already owed vengeance by some; that if he chose to show favor, he would be showing favor to one who would be grateful; and that if he wanted wealth in ransom, he could ask for whatever he wished and it would be provided. Each time, the Prophet, rather than accepting any ransom or imposing any punishment, simply ordered that he be released without condition. (Sahih al-Bukhari 462, and the extended narration of this three-part exchange)
+
+After the third such release, Thumamah, having witnessed this pattern of unconditional generosity extended to him despite his own open acknowledgment of his significant standing and the ransom he could easily have provided, went of his own accord to a nearby well, bathed, and returned to the mosque to declare his acceptance of Islam, explaining directly to the Prophet that until that moment there had been no face on earth he hated more than his, and no religion he despised more, but that after witnessing this treatment, there was now no face he loved more and no religion he found more dear, adding that Muslim horsemen had captured him while he was on his way to perform Umrah, and asking the Prophet's guidance on how he should now proceed given his changed circumstance. The Prophet advised him to complete the pilgrimage he had originally set out for, now as a believer rather than as he had originally intended it. (Sahih al-Bukhari 462)
+
+His conversion carried immediate and significant practical consequences beyond his own individual case: upon returning to his own territory in Yamama, Thumamah, given his considerable standing and influence there, halted the export of grain from that agriculturally rich region to Makkah, a measure that placed real economic pressure on the Quraysh, who depended on Yamama's grain, until the Prophet, upon learning of the hardship this was causing the ordinary people of Makkah who bore no responsibility for the political tensions involved, wrote to Thumamah asking him to lift the restriction for the sake of the general population's welfare, which he did. (Sahih al-Bukhari 462, and the extended historical discussion of this episode's economic and political dimensions)
+
+Thumamah's conversion, secured through repeated and unconditional generosity rather than any pressure or negotiated ransom, and his subsequent influence over an entire region's agricultural policy, illustrates how the conversion of a single influential figure could carry consequences extending across an entire tribal territory rather than remaining confined to his own personal circumstance.`,
+    lessons: [
+      'The Prophet\'s repeated and unconditional release of Thumamah, despite every opportunity to secure a substantial ransom, moved him to conviction in a manner no argument or pressure could have achieved.',
+      'Thumamah\'s own words, describing his complete reversal from hatred to love for both the Prophet and his faith, capture one of the most dramatic personal transformations recorded in the entire seerah.',
+      'The Prophet\'s later request that Thumamah lift his grain embargo, out of concern for ordinary Meccans uninvolved in the political tensions, shows a concern for civilian welfare that superseded any temptation to exploit a strategic advantage his new convert\'s influence had created.',
+    ],
+    sources: ['Sahih al-Bukhari', 'As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's119',
+    name: 'Al-Harith ibn Rib\'i (Abu Qatadah\'s Wider Household) — Kaltham bint Abd al-Muttalib',
+    arabicName: 'كَلْثُوم بِنْتُ عَبْدِ المُطَّلِب',
+    era: 'sahabah',
+    title: "The Prophet's Aunt Rarely Named, Often Present",
+    lifespan: 'Unknown',
+    category: 'Companions of the Prophet',
+    image: '🌙',
+    summary: 'One of the Prophet\'s several paternal aunts whose individual lives are only thinly preserved in the sources compared to Safiyyah, illustrating how much of the Prophet\'s extended family circle is known to history only in fragments and passing reference rather than full biography.',
+    story: `Abd al-Muttalib, the Prophet's grandfather, is recorded across the classical genealogical and biographical works as having had several daughters beyond Safiyyah, whose own life and courageous defense of the sheltered women during the Battle of the Trench has been preserved in considerable and vivid detail. These other aunts of the Prophet, including women named in various genealogical sources as Kaltham, Umaymah, Arwa, and Barrah, appear far more sparingly across the surviving record, their names sometimes varying slightly between different early genealogical compilations, and the specific episodes of their individual lives rarely rising to the level of detailed narrative preserved for their more prominently documented relatives.
+
+What can be said with reasonable confidence, drawing on the collective genealogical scholarship of Ibn Sa'd and later compilers, is that this extended circle of the Prophet's paternal aunts formed part of the same large Makkan household from which the Prophet himself emerged, several of them marrying into other branches of Quraysh and some of their descendants appearing in later generations among figures who interacted with the Muslim community in various capacities, though the sources vary considerably regarding which of these women themselves lived to witness or accept Islam directly, a matter the classical scholars themselves approached with some caution and acknowledged uncertainty given the thinness of the surviving material.
+
+This gap in the historical record is itself instructive: not every relative of even a Prophet's own household received the same degree of biographical attention as those whose lives intersected with a specific, memorable episode — a Safiyyah's courage during a siege, or a Zaynab's role in a Quranic revelation — and the classical scholars of seerah and genealogy were themselves careful to distinguish between what could be stated with confidence and what remained uncertain or thinly attested regarding the wider circle of the Prophet's extended family.
+
+Later historians and genealogists, when compiling comprehensive accounts of the Prophet's family tree, have generally preserved what fragments exist regarding these lesser-documented aunts primarily for the sake of completeness in tracing the wider Hashimite lineage, rather than because any single dramatic episode secured their individual memory in the way it did for their more thoroughly chronicled relatives.`,
+    lessons: [
+      'The thinness of the historical record concerning several of the Prophet\'s own paternal aunts is a useful reminder that not every member of even the most significant households left behind a fully documented individual biography.',
+      'The classical scholars\' own careful acknowledgment of uncertainty regarding these women reflects a scholarly honesty about the limits of what the surviving sources can confidently establish.',
+      'Genealogical completeness, pursued by later historians for its own sake, preserved what fragments exist of these lives even where no single dramatic episode secured their broader memory.',
+    ],
+    sources: ['At-Tabaqat al-Kubra by Ibn Sa\'d', 'Jamharat Ansab al-Arab by Ibn Hazm', 'As-Sirah an-Nabawiyyah by Ibn Hisham (genealogical sections)'],
+  },
+
+  {
+    id: 's120',
+    name: 'Abdullah ibn Jahsh',
+    arabicName: 'عَبْدُ اللهِ بْنُ جَحْش',
+    era: 'sahabah',
+    title: "The First to Bear the Title Ameer al-Mumineen, First Martyr Whose Body Was Mutilated",
+    lifespan: 'd. 625 CE',
+    category: 'Companions of the Prophet',
+    image: '🌾',
+    summary: 'The Prophet\'s cousin, appointed to lead the first small expedition that engaged in combat before Badr, sometimes credited as the first person addressed with a title later associated with the caliphate, who was killed and mutilated at Uhud in the same manner as his uncle Hamzah.',
+    story: `Abdullah ibn Jahsh al-Asadi was the Prophet's cousin through his aunt Umaymah bint Abd al-Muttalib, and the brother of Zaynab bint Jahsh, who would later become one of the Prophet's own wives. He accepted Islam early and emigrated first to Abyssinia and later to Madinah, establishing himself among the sincere and devoted early Muhajirun.
+
+In the second year after the Hijrah, before the Battle of Badr itself, the Prophet appointed Abdullah ibn Jahsh to lead a small reconnaissance expedition of about a dozen men toward Nakhlah, an area along a Qurayshi trade route, carrying a sealed letter of instructions he was told not to open until two days into the journey, at which point he was to proceed according to what it contained without compelling any of his men to continue against their will if they preferred not to. Upon opening the letter and finding instructions to observe Qurayshi movements in the area, he informed his men of the nature of the mission and proceeded, and in the course of this expedition, a small skirmish occurred with a Qurayshi trading party, resulting in the death of one man and the capture of others, along with goods from the caravan — an engagement that occurred, controversially, during one of the sacred months in which fighting was traditionally prohibited among the Arabs, a fact that caused some concern among the Muslims themselves regarding whether the action had been appropriate. (Ibn Hisham, As-Sirah an-Nabawiyyah, and the extended account of the Nakhlah expedition)
+
+This incident prompted direct Quranic address to the question of fighting during the sacred months, acknowledging the gravity of fighting during that period while also placing it in context against the greater severity of the persecution and expulsion the Muslims themselves had suffered at the hands of the Quraysh: "They ask you about the sacred month - about fighting therein. Say, 'Fighting therein is great [sin], but averting [people] from the way of Allah and disbelief in Him and [preventing access to] al-Masjid al-Haram and the expulsion of its people therefrom are greater [evil] in the sight of Allah.'" (Quran 2:217) This revelation, prompted directly by Abdullah ibn Jahsh's expedition, addressed a matter of real ethical concern within the early community with considerable nuance rather than either simple condemnation or unqualified endorsement.
+
+Some historical sources also note that Abdullah ibn Jahsh was, according to certain accounts, among the first individuals in early Islamic history to be referred to with a title resembling Ameer (commander) in connection with this expedition's leadership, though this detail is treated by later historians as a point of more limited and specific significance regarding his role as commander of that particular mission, rather than establishing any broader institutional title in the sense it would later carry under the caliphate.
+
+He fought at Badr and was killed at the Battle of Uhud, his body mutilated in the same wave of desecration inflicted upon his uncle Hamzah's body by the grieving and vengeful relatives of the Quraysh dead from Badr, a loss that placed him alongside Hamzah among the most severely honored martyrs of that difficult battle, mourned by his sister Zaynab and by the wider community that had seen him serve since the very earliest days of the Hijrah.`,
+    lessons: [
+      'The Nakhlah expedition and the revelation it prompted show how the early Muslim community\'s genuine ethical concerns over specific actions were addressed directly and with careful nuance rather than being dismissed or left unresolved.',
+      'Abdullah ibn Jahsh\'s adherence to the Prophet\'s instruction not to compel any reluctant participant demonstrates a respect for individual conscience even within a mission of considerable strategic importance.',
+      'His death and mutilation alongside Hamzah at Uhud placed him among the most severely honored martyrs of that battle, a loss felt deeply within his own family and the wider Muhajirun community.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'Surah al-Baqarah (2:217)', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Al-Bidayah wan-Nihayah by Ibn Kathir'],
+  },
+
+  {
+    id: 's121',
+    name: 'Suhayb ar-Rumi',
+    arabicName: 'صُهَيْبٌ الرُّومِي',
+    era: 'sahabah',
+    title: "The Roman Who Bought His Faith With All His Wealth",
+    lifespan: 'c. 587 CE - 659 CE',
+    category: 'Companions of the Prophet',
+    image: '💰',
+    summary: 'A man captured and enslaved as a child, raised among the Byzantines before being brought to Makkah, whose wealth the Quraysh demanded as the price of his freedom to emigrate, prompting the Prophet to declare that Suhayb had made a transaction of extraordinary profit.',
+    story: `Suhayb ibn Sinan, known by the epithet ar-Rumi — the Roman — on account of the years he spent captured and raised among Byzantine territory before eventually making his way to Arabia, was born to an Arab family but taken captive as a child during a period of regional conflict, spending his formative years among the Byzantines before eventually being brought to or making his way to Makkah, where he settled and, through considerable skill in trade, built up substantial personal wealth despite his unusual background as a former captive without the tribal protection that ordinarily accompanied standing in Makkan society.
+
+He accepted Islam in its early period, among the group of Companions who endured persecution without the benefit of powerful tribal backing to shield them, a vulnerability he shared with men like Bilal and Ammar ibn Yasir. When the Hijrah to Madinah began and Suhayb prepared to emigrate along with the other believers, the Quraysh, aware of the considerable wealth he had accumulated through years of successful trade, blocked his path as he attempted to leave the city and told him plainly that he had arrived in Makkah with nothing and had built his fortune only through his time among them, and that he would not be permitted to leave with that wealth intact, offering him a choice: surrender the entirety of his accumulated wealth to them, or remain in Makkah rather than depart with it.
+
+Suhayb, without hesitation, agreed to surrender all of his wealth in exchange for being permitted to complete his emigration and join the Prophet and the believers in Madinah, choosing the preservation of his faith and his place among the community of believers over the entirety of the fortune he had spent years building. Upon his arrival in Madinah and the Prophet learning of what had transpired, he is reported to have remarked with evident approval and even a note of congratulation: "Abu Yahya has made a profitable transaction, Abu Yahya has made a profitable transaction," repeating the observation using Suhayb's kunyah, a statement several of the classical commentators connect directly to the revelation: "And among the people is he who sells himself, seeking means to the approval of Allah. And Allah is kind to [His] servants." (Quran 2:207, with the exegetical literature widely connecting this verse to Suhayb's specific circumstance) (Al-Hakim, al-Mustadrak, and the extended account of this episode)
+
+Suhayb went on to serve as a devoted and active Companion for the remainder of the Prophet's life and beyond, and in a moment of particular historical significance, it was Suhayb whom Umar ibn al-Khattab appointed to lead the Muslims in prayer during the interim period following his own assassination, while the council of six senior Companions he had designated deliberated over the selection of the next caliph, a position of temporary but symbolically significant leadership entrusted to him specifically because of the depth of trust and respect he had earned across the decades of his service.
+
+He died in Madinah around 38 or 39 AH, having transformed, across the span of a single lifetime, from a captured child with no standing to a wealthy Makkan merchant, and finally to a believer who surrendered that entire fortune without hesitation for the sake of joining the Prophet, a transaction the Prophet himself declared to be, in the truest sense, the most profitable exchange Suhayb had ever made.`,
+    lessons: [
+      'Suhayb\'s willingness to surrender his entire accumulated fortune without hesitation, rather than remain in Makkah, reflects a scale of priorities in which faith and community outweighed even a lifetime\'s worth of hard-earned wealth.',
+      'The Prophet\'s declaration that Suhayb had made a profitable transaction reframes what appeared, in worldly terms, as a total loss into what was, in truth, the most valuable exchange of his entire life.',
+      'Umar\'s decision to entrust Suhayb with leading the prayer during the interim period after his assassination reflects the depth of trust his decades of quiet, devoted service had earned across the entire early Muslim community.',
+    ],
+    sources: ['Al-Mustadrak by al-Hakim', 'Surah al-Baqarah (2:207)', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+  {
+    id: 's122',
+    name: 'Abd ar-Rahman ibn Awf',
+    arabicName: 'عَبْدُ الرَّحْمَنِ بْنُ عَوْف',
+    era: 'sahabah',
+    title: "The Merchant Whose Trade Made Him Wealthy in Charity",
+    lifespan: '580 CE - 652 CE',
+    category: 'The Ten Promised Paradise',
+    image: '💼',
+    summary: 'An early convert and skilled merchant who arrived in Madinah with nothing, declined an offer of half a wealthy Ansari\'s property, and instead asked only to be shown the market — going on to become one of the wealthiest Companions while giving so generously that he once donated an entire caravan of seven hundred camels in a single day.',
+    story: `Abd ar-Rahman ibn Awf az-Zuhri was among the earliest converts to Islam in Makkah, one of a small group who accepted the faith within its first days, and he endured the persecution of that period alongside the other early believers before emigrating first to Abyssinia and later to Madinah.
+
+Upon arriving in Madinah as part of the Hijrah, he was paired, according to the Prophet's system of brotherhood between the Muhajirun and the Ansar, with Sa'd ibn ar-Rabi', a wealthy Ansari who offered to split his entire property and even one of his two wives with Abd ar-Rahman. He declined both offers with evident gratitude, asking instead only to be directed to the marketplace, where he set to work trading with the modest goods available to him. Within a short time, through skill and diligence, he had built considerable wealth once again, to the point that the Prophet, noticing traces of saffron perfume on him one day, asked what the matter was, and Abd ar-Rahman explained he had recently married, prompting the Prophet's approval and guidance to hold a wedding feast even with only a single sheep. (Sahih al-Bukhari 2049, and the account of his early trading success)
+
+He fought at Badr and every subsequent major engagement, and was counted among the ten Companions given the explicit promise of Paradise during their lifetimes. His wealth grew to such an extent over the following decades that he became known as one of the richest men in Madinah, yet his charitable giving matched it: he is recorded as having donated an entire trade caravan of seven hundred camels laden with goods to the poor of Madinah in a single day, an event so significant that the ground of the city is reported to have shaken under the sound of it, prompting Aisha to ask what was happening and to be told it was merely Abd ar-Rahman's caravan arriving, at which she remarked that she had heard the Prophet say he would enter Paradise crawling on account of his wealth, unless he gave in the manner he in fact did. (Sunan at-Tirmidhi, and the account of this caravan)
+
+He was among the six senior Companions Umar named to select his successor, and it was Abd ar-Rahman who led the consultations and ultimately proposed Uthman as caliph after carefully canvassing the views of the community. He died in Madinah around 32 AH, having spent decades applying commercial success entirely in service of open-handed generosity.`,
+    lessons: [
+      'Declining an offer of half a fortune in favor of asking only for the chance to work reflects a dignity and self-reliance that Abd ar-Rahman carried throughout his life.',
+      'His enormous charitable gifts, given at the height of his wealth rather than as an afterthought, show that worldly success and generosity are not in tension when rightly ordered.',
+      'His careful, consultative role in selecting Uthman as caliph reflects the same diligence he brought to trade, now applied to one of the most consequential decisions in the early caliphate.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Sunan at-Tirmidhi', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's123',
+    name: 'Salamah ibn al-Akwa',
+    arabicName: 'سَلَمَةُ بْنُ الأَكْوَع',
+    era: 'sahabah',
+    title: "The Runner Who Outpaced a Raiding Party Alone",
+    lifespan: 'd. 683 CE',
+    category: 'Companions of the Prophet',
+    image: '🏃',
+    summary: 'A skilled archer and famously fast runner who single-handedly harried a raiding party that had stolen the Prophet\'s camels, holding them off long enough for reinforcements to arrive and recover the herd.',
+    story: `Salamah ibn al-Akwa was known among the Companions for two particular talents: his skill with the bow, for which the Prophet is reported to have praised him directly, and his exceptional speed on foot, a talent that proved decisive in one notable episode during the Madinan period.
+
+When a raiding party from the tribe of Ghatafan struck the Prophet's grazing camels near Madinah and made off with them, killing the shepherd in the process, Salamah, who happened to be nearby, gave chase alone on foot, catching up with the raiders and harassing them with arrows, forcing them repeatedly to abandon portions of the herd as he pressed his pursuit, buying time until a company of Muslim horsemen arrived to complete the recovery. He is reported to have kept up this pursuit for a considerable distance, his speed alone allowing him to match and outlast mounted raiders. (Sahih Muslim 1806, and the extended account of this episode, known as the Raid of Dhi Qarad)
+
+He fought at several major engagements including Hunayn and the conquest of Khaybar, and he was among those present at the pledge of ar-Ridwan during the events of Hudaybiyyah. He settled later in life away from Madinah, in ar-Rabadhah, in a manner similar to the withdrawal chosen by Abu Dharr, preferring a simpler and more solitary life removed from the political affairs of the wider community.
+
+He died in Madinah, having returned there shortly before his death, around 64 AH, remembered specifically for the single dramatic episode of endurance and skill that recovered the Prophet's own herd through nothing more than his own legs and his bow.`,
+    lessons: [
+      'Salamah\'s solitary pursuit of armed raiders, relying on speed and skill rather than numbers, shows how an individual\'s particular talent could prove decisive at a critical moment.',
+      'His later preference for a simple, solitary life away from the political center reflects a contentment with quiet devotion over prominence.',
+    ],
+    sources: ['Sahih Muslim', 'Sahih al-Bukhari', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's124',
+    name: "Abu Sufyan ibn Harb",
+    arabicName: 'أَبُو سُفْيَانَ بْنُ حَرْب',
+    era: 'sahabah',
+    title: "The Quraysh Leader Who Led Every Army Against Islam, Then Fought For It",
+    lifespan: 'c. 565 CE - 653 CE',
+    category: 'Companions of the Prophet',
+    image: '🐫',
+    summary: 'The leader of the Quraysh who commanded the armies at Uhud and the Trench, held out against Islam longer than almost any other prominent Meccan, and accepted the faith only at the conquest of Makkah — later losing an eye fighting for the very community he had once led armies against.',
+    story: `Abu Sufyan ibn Harb was the most prominent leader of the Quraysh through most of the Madinan period, commanding the Meccan forces at the Battle of Uhud and later organizing and leading the confederation of tribes that besieged Madinah at the Battle of the Khandaq. As a leading merchant of Makkah whose caravans the Muslims had once attempted to intercept before Badr, he stood at the very center of the economic and military opposition to the Prophet's mission for the better part of two decades.
+
+He held out against accepting Islam longer than nearly any other prominent Meccan figure, only finally declaring his acceptance at the conquest of Makkah in 8 AH, when the Prophet's uncle al-Abbas, who had by then already accepted Islam, brought him to the Prophet the night before the city's fall and helped negotiate his position. Abu Sufyan's own account of this encounter describes him observing the reverence and immediate obedience the Prophet's followers showed him, remarking to al-Abbas that he had never seen a king commanding such genuine devotion, a comment al-Abbas told him reflected the reality of prophethood rather than mere kingship. (Ibn Hisham, As-Sirah an-Nabawiyyah)
+
+Once a Muslim, Abu Sufyan applied himself to the service of the faith with evident sincerity, fighting at the Battle of Ta'if and later at the Battle of Yarmouk during the conquest of Syria under Umar's caliphate, where he lost an eye in the fighting, a wound he is reported to have accepted with equanimity, remarking that he sought his reward from Allah alone for the injury.
+
+His daughter Umm Habibah had already become one of the Prophet's wives years before his own conversion, and his son Muawiyah would go on to found the Umayyad Caliphate decades later. Abu Sufyan died in Madinah around 31 or 32 AH, having lived to see the community he had once fought so fiercely to destroy become the dominant power across a vast expanse of territory.`,
+    lessons: [
+      'Abu Sufyan\'s eventual conversion, arrived at only after nearly two decades of open opposition, shows that the door to sincere faith remains open regardless of how long or how fiercely someone has resisted it.',
+      'His acceptance of the loss of an eye at Yarmouk, seeking reward from Allah alone, reflects a genuine transformation from opponent to devoted servant of the very cause he once fought.',
+      'His life traces one of the most complete arcs of reversal in the entire seerah, from the Quraysh\'s foremost general against Islam to a wounded veteran of its later conquests.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'Tarikh al-Umam wal-Muluk by at-Tabari', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's125',
+    name: 'Abu Hudhayfah ibn Utbah',
+    arabicName: 'أَبُو حُذَيْفَةَ بْنُ عُتْبَة',
+    era: 'sahabah',
+    title: "The Nobleman Who Fought His Own Father at Badr",
+    lifespan: 'd. 633 CE',
+    category: 'Companions of the Prophet',
+    image: '⚔️',
+    summary: 'An early convert of noble Qurayshi lineage whose own father and uncle fought and died on the opposing side at Badr, and who was killed himself years later at the Battle of Yamama defending the Quran against the forces of a false prophet.',
+    story: `Abu Hudhayfah ibn Utbah ibn Rabi'ah was among the earlier converts to Islam in Makkah, the son of Utbah ibn Rabi'ah, one of the most prominent chiefs of the Quraysh, whose opposition to the Prophet's mission placed father and son on opposite sides of the coming conflict well before it reached the battlefield.
+
+At the Battle of Badr, Abu Hudhayfah's own father Utbah, his uncle Shaybah, and other close relatives fought on the side of the Quraysh and were killed in the engagement, placing Abu Hudhayfah in a position similar to that of Abu Ubaydah ibn al-Jarrah, whose own father was killed by his hand at the same battle. Abu Hudhayfah is reported to have fought loyally for the Muslims despite the personal cost of losing close family members to that day's fighting, a sacrifice the Prophet is said to have noticed and later inquired after, concerned for whether the loss weighed on him unduly.
+
+He went on to participate in the subsequent major engagements of the Prophet's lifetime, and his freed servant, Salim, whom he had adopted in the pre-Islamic custom before its later restriction, was counted by the Prophet among the four men from whom the Quran should be learned, alongside Ibn Masud, Mu'adh ibn Jabal, and Ubay ibn Ka'b — a household connection that placed Abu Hudhayfah close to one of the most respected reciters of the early community.
+
+He was killed at the Battle of Yamama in 12 AH during the wars of apostasy, one of the many senior and sincere Companions lost in that single costly engagement against the forces of Musaylimah, a battle whose heavy toll among the Quran's memorizers directly prompted the compilation later undertaken by Zayd ibn Thabit.`,
+    lessons: [
+      'Abu Hudhayfah\'s willingness to fight loyally at Badr despite his own father and uncle standing on the opposing side shows a conviction that placed truth above even the closest ties of blood.',
+      'His household connection to Salim, one of the four reciters the Prophet named by name, reflects how ties of adoption and service in the early community intersected with some of its most valued scholarship.',
+      'His death at Yamama, alongside so many others, contributed to the urgency behind one of the most consequential undertakings in the preservation of the Quran.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'Sahih al-Bukhari', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's126',
+    name: 'Zayd ibn Aslam\'s Father — Aslam',
+    arabicName: 'أَسْلَم',
+    era: 'sahabah',
+    title: "Umar's Freed Servant Who Became a Trusted Household Companion",
+    lifespan: 'd. c. 60s AH',
+    category: 'Companions of the Prophet',
+    image: '🌿',
+    summary: 'A freed servant of Umar ibn al-Khattab who accompanied him closely through his caliphate, later transmitting valuable firsthand accounts of Umar\'s private conduct and whose own son Zayd became a noted scholar of the following generation.',
+    story: `Aslam was a servant of Umar ibn al-Khattab who was later freed and remained closely attached to his household, accompanying him on many of his private nightly rounds through the streets of Madinah, when Umar would go out, often disguised or unrecognized, to check personally on the welfare of the city's poor and to ensure his governors and officials were not neglecting their responsibilities.
+
+Because of this close proximity, Aslam became one of the more valuable transmitters of the private, unrecorded side of Umar's caliphate — moments not conducted in the public council but in the quiet hours of the night, when Umar's genuine concern for the wellbeing of ordinary people expressed itself away from any audience. Several of the most memorable episodes illustrating Umar's personal humility and vigilance as caliph, including nights spent personally carrying provisions to hungry families rather than simply ordering others to do so, come down to us specifically through Aslam's own eyewitness account. (Sahih al-Bukhari, various narrations transmitted through Aslam concerning Umar's conduct; Muwatta Imam Malik)
+
+He continued to serve the household after Umar's assassination and lived into the following decades, and his own son, Zayd ibn Aslam, went on to become one of the notable scholars of Madinah in the generation of the Tabi'in, transmitting hadith and legal rulings that later scholars, including Malik ibn Anas, drew upon directly.
+
+Aslam's own life illustrates how the household staff and freed servants closest to the great Companions often preserved details of their character that no public record could have captured, their proximity giving them access to a dimension of these men's lives available to almost no one else.`,
+    lessons: [
+      'Aslam\'s close proximity to Umar during his private nightly rounds preserved for later generations a portrait of humility and vigilance that no public record of his caliphate could have captured on its own.',
+      'The transmission of a great leader\'s character often depends on the testimony of those closest to his ordinary, unwitnessed conduct rather than his public actions alone.',
+      'His son Zayd\'s later scholarly prominence shows how a household of sincere and attentive service could produce, across a single generation, a lasting contribution to the preservation of Islamic learning.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Muwatta Imam Malik', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's127',
+    name: 'Al-Miswar ibn Makhramah',
+    arabicName: 'المِسْوَرُ بْنُ مَخْرَمَة',
+    era: 'sahabah',
+    title: "The Young Eyewitness of Hudaybiyyah",
+    lifespan: '624 CE - 683 CE',
+    category: 'Companions of the Prophet',
+    image: '📜',
+    summary: 'A boy present as a young child at the Treaty of Hudaybiyyah who grew up to become one of the most detailed and frequently cited narrators of that pivotal event, later dying from injuries sustained during the siege of Makkah decades afterward.',
+    story: `Al-Miswar ibn Makhramah az-Zuhri was born only shortly before the events of the Hijrah, and though still a young child during the period of the Treaty of Hudaybiyyah, he was present among the Muslim company that traveled with the Prophet on that occasion, old enough by the time of his later scholarly career to retain and transmit some of the most detailed surviving accounts of that pivotal negotiation and the pledge of ar-Ridwan that accompanied it.
+
+His transmissions concerning Hudaybiyyah, preserved extensively in the major hadith collections, include vivid details of the Companions' visible distress at the terms Suhayl ibn Amr negotiated, their eventual and immediate compliance once the Prophet demonstrated by his own example that they should shave their heads and end their pilgrimage state, and the broader atmosphere of tension and eventual relief that characterized the episode — a level of specific detail later scholars valued precisely because it captured the human texture of the event rather than only its political outcome. (Sahih al-Bukhari, extensive narrations concerning Hudaybiyyah transmitted through al-Miswar)
+
+He grew into a respected figure in Madinah and later relocated toward Makkah in his older years, and he was present, tragically, during the siege of Makkah in 64 AH connected to the political conflict surrounding Abdullah ibn az-Zubayr's opposition to the Umayyad caliphate. Al-Miswar was struck and fatally injured by a stone launched during the fighting around the Kabah itself, dying from the wound not long after, a death that placed him, along with the wider destruction the siege caused to the sacred precinct, among the sobering casualties of the civil conflicts that continued to trouble the Muslim community decades after the Prophet's own death.
+
+His transmissions remain among the most detailed and frequently cited primary accounts of the Hudaybiyyah period specifically because his childhood presence at the event, later recounted with a scholar's careful attention in his adult years, preserved details that might otherwise have been lost to the more summary accounts of adult participants less inclined toward such granular recollection.`,
+    lessons: [
+      'Al-Miswar\'s childhood presence at Hudaybiyyah, later transmitted with scholarly care in his adult years, shows how even a young witness\'s memory can become an invaluable historical record decades later.',
+      'His death from a stone during the later siege of Makkah is a sobering reminder of how the civil conflicts among Muslims, decades after the Prophet\'s death, claimed even those who had witnessed the earliest and most formative events of the faith.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Tarikh al-Umam wal-Muluk by at-Tabari'],
+  },
+
+  {
+    id: 's128',
+    name: 'Abdullah ibn az-Zubayr',
+    arabicName: 'عَبْدُ اللهِ بْنُ الزُّبَيْر',
+    era: 'sahabah',
+    title: "The First Child Born to the Muhajirun in Madinah",
+    lifespan: '624 CE - 692 CE',
+    category: 'Companions of the Prophet',
+    image: '🕋',
+    summary: 'The son of az-Zubayr ibn al-Awwam and Asma bint Abi Bakr, born shortly after the Hijrah and celebrated as the first Muhajir child born in Madinah, who grew up to challenge the Umayyad caliphate and was besieged and killed in Makkah decades later, having received his mother\'s final counsel to die steadfast rather than surrender.',
+    story: `Abdullah ibn az-Zubayr was born in Madinah shortly after his mother Asma bint Abi Bakr completed her emigration from Makkah while pregnant, and his birth was celebrated among the Muhajirun as the first child born to their community in its new home, an event the Prophet marked personally by performing the tahnik ritual for him — placing a small piece of chewed date in his mouth — and offering supplications for his wellbeing, a detail the Companions considered auspicious given the difficulties the community had faced since its emigration.
+
+He grew up within a family of extraordinary standing: his father az-Zubayr was among the ten Companions promised Paradise, his mother Asma was the daughter of Abu Bakr, and his aunt Aisha was a Mother of the Believers, placing him at the center of some of the earliest and most influential families of the Muhajirun. He became known in his youth for physical courage and, in later years, for a rigorous and independent scholarly temperament, transmitting hadith directly from his aunt Aisha and from several senior Companions.
+
+His most consequential role came decades after the Prophet's death, during the second civil war that followed the death of the Umayyad Caliph Yazid, when Abdullah declared his own opposition to Umayyad rule and was recognized by a considerable portion of the Muslim world, including the Hijaz, Iraq, and parts of Egypt, as caliph in his own right for nearly a decade. The Umayyads under Abd al-Malik ibn Marwan eventually sent an army under al-Hajjaj ibn Yusuf to besiege him in Makkah itself, a siege that inflicted considerable damage on the Kabah and the sacred precinct during the fighting.
+
+As the siege tightened and his position grew hopeless, Abdullah came to his elderly and by then blind mother Asma to ask her counsel on whether he should surrender to secure his own safety. She told him plainly that if he believed his cause just, he should meet his end steadfastly rather than submit to what he believed wrong, since death would come regardless. He was killed shortly afterward in 73 AH, and Asma herself died only days later, her own life closing almost immediately upon the loss of the son whose birth had once been celebrated as the very first hope of the Muhajirun's new home in Madinah.`,
+    lessons: [
+      'Abdullah\'s birth, celebrated as the first Muhajir child in Madinah, connected the community\'s hope for the future directly to a single infant welcomed by the Prophet himself.',
+      'His mother Asma\'s counsel in his final days, urging steadfastness over surrender, reflects a conviction she had carried since her own youth during the dangers of the Hijrah decades before.',
+      'His life and death illustrate how the political conflicts of the generation following the Companions could claim even those born at the very founding of the Muslim community in Madinah.',
+    ],
+    sources: ['Sahih al-Bukhari', 'Tarikh al-Umam wal-Muluk by at-Tabari', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's129',
+    name: "Abu Rafi",
+    arabicName: 'أَبُو رَافِع',
+    era: 'sahabah',
+    title: "The Freed Servant Who Carried the Prophet's Correspondence",
+    lifespan: 'd. c. 656 CE',
+    category: 'Companions of the Prophet',
+    image: '✉️',
+    summary: 'A servant of the Prophet\'s household, freed after accepting Islam, who was entrusted with delivering messages and later married Salma, the midwife of the Prophet\'s own household, going on to compile one of the earliest records of the Prophet\'s judicial rulings.',
+    story: `Abu Rafi was originally a servant in the household of al-Abbas, the Prophet's uncle, and was given by him as a gift to the Prophet, whereupon Abu Rafi accepted Islam and was freed. He remained closely attached to the Prophet's household afterward, serving in matters of correspondence and domestic trust that placed him in a position of considerable proximity to the Prophet's daily affairs.
+
+He was sent on more than one occasion to carry messages on the Prophet's behalf, including, according to several accounts, being dispatched to inform al-Abbas of the Prophet's own acceptance and treatment of him, and he later married Salma, a woman who had served as a midwife within the Prophet's own family, further deepening his household's ties to the Prophet's closest circle.
+
+In the years following the Prophet's death, Abu Rafi is credited by several later scholars, including adh-Dhahabi, with having compiled some of the earliest recorded material concerning the Prophet's judicial rulings and legal decisions, a contribution valued by later jurists precisely because his household proximity gave him direct access to matters of legal precedent that might not have been as fully preserved through more public channels of transmission.
+
+He remained active in service to the Muslim community through the early caliphates and is reported to have lived into the reign of Ali, dying sometime in the 650s CE, remembered chiefly for the quiet, sustained trust his household connection to the Prophet afforded him across decades of faithful service.`,
+    lessons: [
+      'Abu Rafi\'s path from servant to trusted household member illustrates how proximity and sincere service, rather than prior social standing, secured a lasting place of trust within the Prophet\'s own household.',
+      'His compilation of early legal rulings shows that the preservation of the Prophet\'s judicial precedent depended on individuals positioned to observe it directly within the ordinary course of household affairs.',
+    ],
+    sources: ['Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's130',
+    name: 'Salman ibn Sakhr — Aws ibn as-Samit',
+    arabicName: 'أَوْسُ بْنُ الصَّامِت',
+    era: 'sahabah',
+    title: "The Husband Whose Rash Words Prompted a Quranic Ruling",
+    lifespan: 'd. 636 CE',
+    category: 'Companions of the Prophet',
+    image: '📖',
+    summary: 'A Companion whose thoughtless use of a pre-Islamic divorce formula against his wife Khawlah prompted her direct appeal to the Prophet and a specific chapter of the Quran clarifying the matter and establishing a path of expiation.',
+    story: `Aws ibn as-Samit al-Ansari, the brother of Ubadah ibn as-Samit, was married to Khawlah bint Tha'labah, and in a moment of anger during a domestic disagreement, he uttered toward her the pre-Islamic formula of zihar — declaring her "like the back of my mother" — an expression that, under the customs of pre-Islamic Arabia, was understood to permanently end the marital relationship without granting the woman the rights of either a full divorce or continued marriage, leaving her in an ambiguous and difficult legal limbo.
+
+Khawlah, distressed at the uncertainty this left her in, went directly to the Prophet to ask his judgment on the matter, and the Prophet initially responded that he understood the custom to mean she had indeed become forbidden to her husband, following the established pre-Islamic understanding, since no specific revelation had yet addressed the matter directly. Khawlah, unwilling to accept this outcome without further recourse, continued to plead her case directly with the Prophet, describing her difficult circumstances with her young children and her lack of any alternative means of support, persisting in her appeal even as the Prophet reiterated the position as he then understood it. (Sunan Abu Dawud 2214, and the extended narration of this episode)
+
+Her persistence and the genuine hardship of her circumstance prompted the revelation of the opening verses of Surah al-Mujadilah, which directly addressed her situation, affirming that Allah had heard her plea and complaint, and establishing a specific ruling nullifying the pre-Islamic effect of zihar as an automatic and permanent separation, instead prescribing a specific expiation — freeing a slave, or if unable, fasting two consecutive months, or if unable, feeding sixty poor people — that a husband who uttered such words must fulfill before the marriage could resume normally. (Quran 58:1-4) Aws ibn as-Samit fulfilled the prescribed expiation, and the marriage was restored on the terms this new revelation established.
+
+This episode, prompted directly by a single woman's persistent and sincere appeal against what she recognized as an unjust custom, secured Khawlah bint Tha'labah's name as al-Mujadilah — the woman who pleaded — commemorated in the very title of the Quranic chapter her case prompted, while Aws himself is remembered chiefly as the husband whose rash words, and subsequent acceptance of the ruling and expiation that followed, became the occasion for one of the Quran's clearest interventions correcting an unjust pre-Islamic practice.`,
+    lessons: [
+      'Khawlah\'s persistent appeal to the Prophet, even after receiving an initial answer she found unjust, shows that sincere and respectful persistence in seeking a just resolution is not a lack of faith but a form of it.',
+      'The revelation prompted by this single household dispute demonstrates how individual cases among ordinary believers directly shaped some of the Quran\'s most specific legal rulings.',
+      'Aws\'s acceptance of the prescribed expiation reflects a willingness to submit to a corrective ruling even where it required him to acknowledge the harm of his own hasty words.',
+    ],
+    sources: ['Sunan Abu Dawud', 'Surah al-Mujadilah (58:1-4)', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's131',
+    name: 'Abdullah ibn Unays',
+    arabicName: 'عَبْدُ اللهِ بْنُ أُنَيْس',
+    era: 'sahabah',
+    title: "The Solitary Assassin of a Planned Attack on Madinah",
+    lifespan: 'd. 675 CE',
+    category: 'Companions of the Prophet',
+    image: '🗡️',
+    summary: 'A Companion sent alone by the Prophet to preemptively neutralize a tribal chief gathering forces to attack Madinah, who completed the difficult mission disguised among the enemy and returned to a personal reward of the Prophet\'s own walking staff, kept until his death as a token to be buried with him.',
+    story: `Abdullah ibn Unays al-Juhani accepted Islam and became known to the Prophet as a capable and trustworthy individual suited to missions requiring discretion and independent judgment. When intelligence reached Madinah that Khalid ibn Sufyan al-Hudhali, a tribal chief, was actively gathering forces with the stated intention of launching an attack on the city, the Prophet, rather than waiting for a larger confrontation to develop, called for a volunteer to travel alone and neutralize the threat before it could materialize into a full assault.
+
+Abdullah ibn Unays volunteered for the mission, and traveling by himself into hostile territory, he managed to gain access to Khalid's camp by presenting himself as a sympathizer gathering intelligence for the same cause, engaging him in conversation to confirm his identity and intentions before striking and killing him, then making his way back to Madinah, evading pursuit across a demanding return journey. (Sahih al-Bukhari, and the extended account of this mission as preserved in the biographical literature; Ibn Hisham, As-Sirah an-Nabawiyyah)
+
+Upon his return, the Prophet, in recognition of the mission's success and its considerable risk, gave Abdullah his own walking staff as a personal gift, telling him it would be a sign between them on the Day of Resurrection, since those who had received such tokens directly from the Prophet would be recognized by them. Abdullah is reported to have kept this staff with the greatest care for the remainder of his life, and he instructed that it be placed with him in his shroud and buried alongside his body when he died, so significant did he consider the token the Prophet had given him. (Al-Bidayah wan-Nihayah by Ibn Kathir, and the account of this episode)
+
+He continued to serve the Muslim community faithfully through the following decades and settled for a time in Syria, dying around 54 or 55 AH, remembered specifically for the solitary and dangerous mission he undertook at the Prophet's request and the singular personal token of recognition it earned him.`,
+    lessons: [
+      'Abdullah\'s willingness to undertake a solitary and highly dangerous mission reflects the trust the Prophet placed in Companions capable of independent judgment under pressure.',
+      'His preservation of the Prophet\'s staff throughout his life, and his instruction that it be buried with him, shows the profound personal significance even a simple physical token could carry when given directly by the Prophet.',
+    ],
+    sources: ['Sahih al-Bukhari', 'As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Bidayah wan-Nihayah by Ibn Kathir'],
+  },
+
+  {
+    id: 's132',
+    name: "Abu Basir",
+    arabicName: 'أَبُو بَصِير',
+    era: 'sahabah',
+    title: "The Fugitive Whose Persistence Exposed a Gap in the Treaty",
+    lifespan: 'd. c. 628 CE',
+    category: 'Companions of the Prophet',
+    image: '⛺',
+    summary: 'A Meccan convert who escaped captivity and fled to Madinah after Hudaybiyyah, only to be returned under the treaty\'s terms, but who then escaped again and gathered a growing band of similarly returned refugees along the coastal trade route, eventually pressuring the Quraysh into abandoning that clause of the treaty altogether.',
+    story: `Abu Basir Utbah ibn Asid was a Meccan who had accepted Islam and, following the conclusion of the Treaty of Hudaybiyyah, made his way to Madinah as a new believer seeking to join the Prophet's community. Under the treaty's specific terms, however, any Meccan who fled to the Muslims without his guardian's permission was to be returned to Makkah upon Quraysh request, and when representatives came to reclaim Abu Basir, the Prophet, holding firmly to the letter of the agreement he had just concluded despite the personal difficulty it caused, returned him to their custody.
+
+On the journey back toward Makkah, Abu Basir managed to escape his captors, killing one of them in the process, and made his way not back to Madinah, where the Prophet would again have been bound by treaty to return him, but to a location along the coastal trade route between Makkah and Syria, where he began to establish a camp of his own. Word of his situation spread, and other Meccan converts in a similar position — having accepted Islam but unable, under the treaty's terms, to be received in Madinah — began making their way to join him instead, until his growing band posed a genuine and mounting threat to Qurayshi caravan traffic along that route. (Sahih al-Bukhari 2731, and the extended account of this episode within the broader narrative of Hudaybiyyah)
+
+The Quraysh, recognizing that this band of refugees operating outside both their own control and the Prophet's direct jurisdiction posed a worse outcome for their trade interests than simply allowing such converts to join the Muslims in Madinah outright, eventually sent word to the Prophet requesting that he receive them into the Muslim community after all, effectively asking him to void the very clause of the treaty that had originally required Abu Basir's return — a reversal achieved not through any renegotiation but through the practical consequences of the situation Abu Basir's persistence had created.
+
+Abu Basir himself died before this resolution was fully realized, from illness while still at his coastal encampment, though the community he had gathered was received into Madinah shortly afterward in fulfillment of the Quraysh's own request, meaning the outcome he had worked toward was achieved even though he did not live to see it completed.`,
+    lessons: [
+      'Abu Basir\'s situation illustrates how the Prophet\'s strict adherence to the letter of a difficult treaty could still, through unforeseen consequences, produce an outcome that served the Muslims\' broader interest.',
+      'His persistence in the face of a genuinely unfavorable clause, rather than despairing at its unfairness, created the very pressure that eventually led to its abandonment.',
+      'That he did not live to see the resolution he had worked toward achieved is a reminder that sincere effort can bear fruit even beyond the lifetime of the one who initiated it.',
+    ],
+    sources: ['Sahih al-Bukhari', 'As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's133',
+    name: 'Zaynab bint Abi Salamah',
+    arabicName: 'زَيْنَبُ بِنْتُ أَبِي سَلَمَة',
+    era: 'sahabah',
+    title: "The Stepdaughter Raised in the Prophet's Own Household",
+    lifespan: 'c. 626 CE - 692 CE',
+    category: 'Companions of the Prophet',
+    image: '🌷',
+    summary: 'The daughter of Umm Salamah from her first marriage, raised partly within the Prophet\'s own household after her mother\'s remarriage to him, who grew into one of the notable female scholars of the following generation, transmitting extensively from her mother and from Aisha.',
+    story: `Zaynab bint Abi Salamah was the daughter of Umm Salamah and her first husband Abu Salamah ibn Abd al-Asad, born before her mother's subsequent marriage to the Prophet following Abu Salamah's death from wounds sustained at the Battle of Uhud. As a young child, she grew up partly within the Prophet's own household following her mother's remarriage, giving her direct and sustained childhood exposure to the domestic life of the Prophet's family in a manner few other individuals of her generation experienced.
+
+She is recorded in the hadith literature as having been given her original name Barrah by her family, which the Prophet is reported to have changed, following the same practice he applied to several other individuals bearing names implying self-praise, to Zaynab instead, a small but telling detail of the personal attention he extended even to the children within his household. (Sahih Muslim, in the context of narrations discussing the Prophet's practice of changing certain names)
+
+As she grew into adulthood, Zaynab became one of the more significant transmitters of hadith among the generation of women who had grown up closely connected to the Prophet's own household without being Companions in the fullest sense of having reached full religious maturity during his lifetime. She transmitted extensively from her mother Umm Salamah, drawing on the considerable body of knowledge concerning the Prophet's private conduct that her mother had preserved, and she is also recorded as having narrated material from Aisha and from her own father's memory as preserved within the family, making her household a particularly rich source for later scholars researching matters of the Prophet's domestic practice.
+
+She married Abdullah ibn Zam'ah and later Salih ibn Kaysan, according to varying accounts, and continued to reside in Madinah, where scholars of the following generation of the Tabi'in sought her out specifically for her direct connection through her mother to the Prophet's own household. She died around 73 AH, having spent her long life as one of the more valuable living connections between the Prophet's domestic circle and the scholars of the following generation who had never known it directly.`,
+    lessons: [
+      'The Prophet\'s attention to something as small as changing a child\'s name reflects a personal care that extended to even the youngest members of his household.',
+      'Zaynab\'s role as a transmitter drawing on her mother\'s firsthand knowledge shows how household memory, passed carefully from mother to daughter, became a vital channel for preserving details of the Prophet\'s private life.',
+    ],
+    sources: ['Sahih Muslim', 'Sahih al-Bukhari', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's134',
+    name: "Wathilah ibn al-Asqa",
+    arabicName: 'وَاثِلَةُ بْنُ الأَسْقَع',
+    era: 'sahabah',
+    title: "The Late Convert Who Outlived Nearly Every Companion in Syria",
+    lifespan: 'c. 585 CE - 705 CE',
+    category: 'Companions of the Prophet',
+    image: '🌅',
+    summary: 'A Companion who joined the Muslims relatively late in the Prophet\'s mission, participating in the Expedition of Tabuk, and who lived to such an extraordinary age in Syria that he became one of the very last living witnesses of the Prophet anywhere in the Muslim world.',
+    story: `Wathilah ibn al-Asqa al-Laythi accepted Islam relatively later in the span of the Prophet's mission, and by his own account had initially attempted to join earlier military expeditions before being turned away for lack of readiness or provisions, only finally participating directly alongside the Prophet during the Expedition of Tabuk in 9 AH, one of the last major undertakings of the Prophet's own lifetime.
+
+Despite the relative brevity of his direct association with the Prophet compared to some of the earlier Muhajirun and Ansar, Wathilah's transmissions of hadith reflect a genuine and sustained attentiveness to what he did witness, including matters concerning family relationships, the definition of close kinship for legal purposes, and various points of guidance he recalled receiving directly.
+
+He settled in Syria following the conquests and, much like Abu Umamah al-Bahili, became known there for the sheer length of his subsequent life, living, according to the most widely cited accounts, past the age of one hundred, well into the early Umayyad period. This extraordinary longevity made him one of the very last living Companions anywhere in the Muslim world by the time of his death, a status that drew students from across the region eager to learn directly from someone who had personally accompanied the Prophet, however briefly, before that direct connection was lost to living memory entirely.
+
+He died in Damascus in 85 AH, and several of the historians of the following generation specifically noted his death as marking, alongside that of Abu Umamah al-Bahili, the effective end of an era in which any living person could still claim to have personally known the Prophet.`,
+    lessons: [
+      'Wathilah\'s relatively late acceptance of Islam did not diminish the value of his later transmissions, showing that sincerity of attention mattered more than the length of direct association.',
+      'His extraordinary longevity made him an irreplaceable final link to the Prophet\'s own era for an entire generation of later scholars who would otherwise have had no living connection to it at all.',
+    ],
+    sources: ['Sahih Muslim', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Siyar Alam an-Nubala by adh-Dhahabi'],
+  },
+
+  {
+    id: 's135',
+    name: 'Amr ibn Umayyah ad-Damri',
+    arabicName: 'عَمْرُو بْنُ أُمَيَّةَ الضَّمْرِي',
+    era: 'sahabah',
+    title: "The Envoy Who Survived a Massacre and Avenged It Alone",
+    lifespan: 'd. c. 663 CE',
+    category: 'Companions of the Prophet',
+    image: '🏹',
+    summary: 'A Companion who survived the massacre of the reciters at Bi\'r Ma\'unah by chance of tribal protection, and who, on his return journey, killed two men in retaliation before learning they in fact carried a guarantee of safety, leading the Prophet to personally pay the compensation owed for their deaths.',
+    story: `Amr ibn Umayyah ad-Damri was among a group of some seventy reciters of the Quran sent by the Prophet at the request of a tribal chief to teach Islam to his people, a mission that ended in catastrophe when the escorting party was ambushed and massacred at a place called Bi'r Ma'unah by hostile tribesmen who had gathered against them despite the chief's original invitation. Amr survived only because his captors, recognizing a mark of tribal protection he carried, chose to free him rather than kill him alongside his companions, a mercy extended for reasons of tribal politics rather than any sympathy for his faith.
+
+On his journey back to Madinah, grieving deeply for his slaughtered companions, Amr encountered two men from a tribe he understood to be allied with those responsible for the massacre and, in his anger and grief, killed them before continuing on his way. Upon reaching the Prophet and recounting what had happened, he learned to his horror that the two men he had killed had, in fact, been traveling under a guarantee of safety extended by the Prophet himself, a guarantee Amr had not known about at the time of the encounter.
+
+The Prophet, upon learning the full circumstances, did not blame Amr for an act committed in ignorance of the guarantee, but he did insist on personally paying the blood money owed for the two men's deaths from his own resources, honoring the guarantee he had extended even though the deaths had resulted from an entirely unintended and understandable error made by a grieving survivor of a massacre. (Sahih al-Bukhari, in the extended accounts concerning Bi'r Ma'unah)
+
+Amr continued to serve the Muslim community in the years following this episode, and the massacre at Bi'r Ma'unah itself remained one of the most mourned losses of the Madinan period, remembered particularly for the loss of so many reciters of the Quran in a single act of betrayal, a grief the Prophet is reported to have carried visibly for a considerable time afterward.`,
+    lessons: [
+      'The Prophet\'s insistence on personally paying compensation for a death caused by an honest mistake, rather than excusing the matter entirely, reflects an uncompromising commitment to honoring guarantees regardless of the circumstances surrounding their breach.',
+      'Amr\'s survival by chance of tribal politics, while his companions were massacred, placed upon him the particular burden of carrying news of a tragedy he alone had lived to report.',
+    ],
+    sources: ['Sahih al-Bukhari', 'As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's136',
+    name: 'Al-Walid ibn al-Walid',
+    arabicName: 'الوَلِيدُ بْنُ الوَلِيد',
+    era: 'sahabah',
+    title: "Khalid ibn al-Walid's Brother Held Captive by His Own Family",
+    lifespan: 'd. c. 632 CE',
+    category: 'Companions of the Prophet',
+    image: '⛓️',
+    summary: 'The brother of Khalid ibn al-Walid, held captive and imprisoned by his own family in Makkah after his conversion, who composed a memorable poem describing his ordeal and eventually escaped to join the Prophet in Madinah.',
+    story: `Al-Walid ibn al-Walid ibn al-Mughirah, brother of the future military commander Khalid ibn al-Walid, accepted Islam well before his more famous brother did, at a time when Khalid himself remained a committed opponent of the Prophet's mission. His conversion, coming from within one of the more prominent families of the Banu Makhzum clan, was met with fierce resistance from his own relatives, who imprisoned him in an attempt to force him to recant.
+
+Held in captivity for a considerable period, al-Walid composed verses reflecting on his ordeal and his longing to be freed to join the Prophet and the believers, verses preserved in the biographical literature as an expression of the particular anguish of being held captive not by strangers but by one's own family specifically because of one's faith. He eventually managed to escape his confinement and made his way to Madinah, joining the Muslim community there.
+
+His journey to Islam, occurring well before his brother Khalid's own conversion at the same general period as Amr ibn al-As and Uthman ibn Talha, meant that for a time the two brothers stood on opposite sides of the very same conflict that would later see Khalid become Islam's most celebrated military commander. Al-Walid participated in campaigns following his escape and reconciliation with the Muslim community, and he is reported to have died relatively soon after, around the time of the Prophet's own death or shortly after, from illness or wounds, according to varying accounts.
+
+His story stands alongside that of his eventually more famous brother as a reminder that within even the same prominent Makkan families, individual members often arrived at faith through entirely separate and sometimes painfully divided paths.`,
+    lessons: [
+      'Al-Walid\'s imprisonment by his own family illustrates that persecution for faith could come from the most intimate of relationships, not only from wider Meccan society.',
+      'His verses composed in captivity reflect how even under severe restriction, sincere longing for reunion with the believing community found expression through the same poetic tradition the Arabs valued so highly.',
+      'His path to Islam, preceding his brother Khalid\'s own conversion, shows how even siblings within the same household could arrive at faith through entirely different timelines and circumstances.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Al-Bidayah wan-Nihayah by Ibn Kathir'],
+  },
+
+  {
+    id: 's137',
+    name: 'Rifa\'ah ibn Rafi',
+    arabicName: 'رِفَاعَةُ بْنُ رَافِع',
+    era: 'sahabah',
+    title: "The Farmer Whose Question on Livelihood Received a Direct Answer",
+    lifespan: 'd. c. 665 CE',
+    category: 'Companions of the Prophet',
+    image: '🌾',
+    summary: 'A Companion whose direct question to the Prophet about the best form of earning a livelihood received a specific answer naming honest manual labor and untainted trade — a brief exchange that became a foundational text in later Islamic discussions of lawful commerce.',
+    story: `Rifa'ah ibn Rafi az-Zuraqi was among the Ansar who fought at Badr and the subsequent engagements of the Prophet's lifetime, and he is remembered in the hadith literature chiefly for a single direct and practical question he posed to the Prophet concerning the nature of lawful earning.
+
+He asked the Prophet plainly which forms of earning were best, and the Prophet answered with a specific and often-cited response: a man's work with his own hands, and every transaction that is free of impermissible elements. (Musnad Ahmad, and related narrations concerning this exchange) This brief but precise answer became a foundational reference point in later Islamic economic and legal thought concerning the dignity of manual labor and the standards required for commercial transactions to be considered lawful.
+
+He also transmitted material concerning specific commercial practices the Prophet clarified as impermissible, contributing to the broader body of hadith concerning fair dealing in trade that later jurists drew upon extensively in constructing the detailed rulings of Islamic commercial law.
+
+He continued to live in Madinah through the early caliphates, remembered specifically for having posed a question whose brief and practical answer proved to have lasting consequence far beyond the moment of the exchange itself, shaping generations of subsequent Islamic teaching on the dignity of honest work and the ethics of trade.`,
+    lessons: [
+      'Rifa\'ah\'s simple, direct question about lawful earning received an answer that continues to shape Islamic economic ethics to this day, showing how a single brief exchange could carry consequences far beyond its immediate moment.',
+      'The Prophet\'s naming of manual labor as among the best forms of earning reflects a dignity accorded to honest physical work regardless of its social prestige.',
+    ],
+    sources: ['Musnad Ahmad', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's138',
+    name: 'Umm Kabshah al-Qazariyyah',
+    arabicName: 'أُمُّ كَبْشَة القُضَاعِيَّة',
+    era: 'sahabah',
+    title: "The Woman Whose Household Charity the Prophet Praised",
+    lifespan: 'd. unknown',
+    category: 'Companions of the Prophet',
+    image: '🍞',
+    summary: 'A woman of Madinah remembered specifically for a hadith in which the Prophet commended the quiet, consistent charity she distributed to the poor from her own limited household provisions without any expectation of recognition.',
+    story: `Umm Kabshah al-Qudaiyyah is remembered in the hadith literature primarily through a specific narration in which the Prophet, observing or being informed of her habitual practice of setting aside a portion of her household's food for distribution to those in need each day, however modest her own family's provisions were, commended the quiet consistency of this practice as a model of sincere and sustained charity, one carried out without any expectation of recognition or public acknowledgment. (Related in various collections concerning the virtues of consistent small charity)
+
+Her specific individual biography beyond this episode is only thinly preserved in the sources, a common circumstance for many of the ordinary women of Madinah whose sincere daily conduct earned brief but meaningful mention in the hadith literature without ever developing into the kind of extended biographical treatment given to the wives of the Prophet or the more prominent Companions directly involved in major public events.
+
+What her case illustrates, alongside similar brief mentions of otherwise undocumented Companions, is that the Prophet's attention to sincere and consistent charitable conduct extended to the quiet, daily habits of ordinary households throughout Madinah, not only to the dramatic acts of wealthy Companions like Uthman or Abd ar-Rahman ibn Awf, but to the modest and sustained generosity of families with far more limited means.`,
+    lessons: [
+      'Umm Kabshah\'s quiet, consistent charity, praised by the Prophet despite her family\'s modest means, shows that the value of generosity is measured by its sincerity and consistency rather than its scale.',
+      'The brevity of her surviving biography is itself a reminder that countless sincere and praiseworthy acts among the early Muslim community went largely undocumented beyond a single preserved mention.',
+    ],
+    sources: ['Al-Isabah by Ibn Hajar al-Asqalani', 'Usd al-Ghabah by Ibn al-Athir'],
+  },
+
+  {
+    id: 's139',
+    name: 'Al-Mughirah ibn Shu\'bah',
+    arabicName: 'المُغِيرَةُ بْنُ شُعْبَة',
+    era: 'sahabah',
+    title: "The Sharp-Witted Negotiator Who Governed Kufa and Basra",
+    lifespan: 'd. 671 CE',
+    category: 'Companions of the Prophet',
+    image: '⚖️',
+    summary: 'A shrewd and sharp-tongued Companion present at the negotiations of Hudaybiyyah, whose earlier life included a controversial act of killing a group of men who had themselves killed his own traveling companions, and who later served as a capable but occasionally controversial governor under three caliphs.',
+    story: `Al-Mughirah ibn Shu'bah ath-Thaqafi accepted Islam relatively later than some of the earlier Companions, and his path to conversion followed a difficult and morally complicated episode from before his acceptance of the faith: traveling with a group of men from a different tribe, he had been the sole survivor when his companions killed the members of that group in a dispute, and rather than face the consequence of this act within his own community, he fled to Madinah and, upon accepting Islam, informed the Prophet of what had occurred. The Prophet accepted his conversion but declined to accept the wealth he had taken from the men he claimed had wronged his own party, since the act itself, regardless of any prior wrong, had been one of treacherous killing rather than legitimate combat, a distinction the Prophet insisted on even while receiving al-Mughirah's sincere conversion. (As-Sirah an-Nabawiyyah by Ibn Hisham, and related accounts of this episode)
+
+Despite this complicated beginning, al-Mughirah went on to serve the Muslim community with evident skill, present at the negotiations of Hudaybiyyah, where his sharp and quick tongue in exchanges with the Quraysh negotiators is recorded in some detail, and he participated in several of the major conquests, losing an eye in one of the engagements in Persia.
+
+His later career centered on governance, serving as governor of both Kufa and Basra at different points under the caliphates of Umar, Uthman, and Muawiyah, a tenure marked by considerable administrative capability but also occasional controversy, including a notable episode in which he was accused of adultery, a charge that ultimately failed for lack of the required four eyewitnesses under Islamic legal standards, with one of the accusing witnesses receiving punishment for false accusation once the matter was resolved in al-Mughirah's favor.
+
+He died in Kufa in 50 AH, remembered as a Companion of considerable practical skill in negotiation and governance, whose career illustrates the more complicated and occasionally controversial dimension of leadership during the political transitions of the early caliphate, standing in some contrast to the more uniformly celebrated figures among his contemporaries.`,
+    lessons: [
+      'The Prophet\'s refusal to accept wealth gained through a treacherous act, even from a sincere new convert, shows that acceptance of Islam did not retroactively excuse the manner in which prior wrongs had been committed.',
+      'Al-Mughirah\'s long and capable but occasionally controversial career in governance illustrates that the early Companions were not uniformly free of complicated or contested episodes in their historical record.',
+      'The resolution of the accusation against him, requiring the strict legal standard of four eyewitnesses, reflects the rigor Islamic law applied even to serious accusations against prominent figures.',
+    ],
+    sources: ['As-Sirah an-Nabawiyyah by Ibn Hisham', 'Sahih al-Bukhari', 'Tarikh al-Umam wal-Muluk by at-Tabari', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's140',
+    name: 'Umm Ayman\'s Grandson — Kharijah ibn Zayd',
+    arabicName: 'خَارِجَةُ بْنُ زَيْد',
+    era: 'sahabah',
+    title: "A Child of the Ansar Among the Foremost Scholars of Madinah",
+    lifespan: 'c. 622 CE - 717 CE',
+    category: 'Companions of the Prophet',
+    image: '📚',
+    summary: 'A son of Zayd ibn Thabit born during the Prophet\'s own lifetime, too young to be more than a marginal Companion himself, who grew up to become one of the seven most renowned jurists of Madinah in the generation of the Tabi\'in, inheriting his father\'s scholarly legacy.',
+    story: `Kharijah ibn Zayd ibn Thabit was born in Madinah during the final years of the Prophet's own lifetime, the son of Zayd ibn Thabit, the Prophet's scribe and the man later entrusted with compiling the Quran under both Abu Bakr and Uthman. Given his young age at the time of the Prophet's death, Kharijah's own status as a Companion rests on the most minimal threshold of the classical definition, and the substantial body of his scholarly contribution belongs properly to the following generation of the Tabi'in rather than to direct transmission from the Prophet himself.
+
+He grew up within a household saturated in the scholarly legacy his father had built, inheriting both direct family knowledge of the Quran's compilation and a broader education in the fiqh and hadith that had developed in Madinah during the earliest decades of the faith. He went on to become recognized as one of al-Fuqaha as-Sab'ah, the Seven Jurists of Madinah, a designation given by later scholars to seven particularly authoritative legal scholars of that city in the generation following the Companions, whose combined and often converging opinions carried especially significant weight in matters of Islamic law during that formative period.
+
+His legal opinions and hadith transmissions, drawing heavily on his father's own direct knowledge as well as his broader education among the senior scholars of Madinah, were sought after by students who would go on to shape the following generations of Islamic jurisprudence, including scholars who later influenced the methodology of Malik ibn Anas himself.
+
+He died in Madinah around 99 or 100 AH, having spent his long life extending and building upon the scholarly foundation his father had helped lay during the very earliest years of the faith, representing the important but sometimes overlooked category of individuals born within the Prophet's own lifetime whose most significant contributions properly belong to the flourishing of scholarship in the generation that followed.`,
+    lessons: [
+      'Kharijah\'s life illustrates the important transitional category of the youngest Companions, whose personal memory of the Prophet was minimal but whose inherited household knowledge made them significant contributors to the following generation\'s scholarship.',
+      'His recognition as one of the Seven Jurists of Madinah shows how the legal and scholarly foundation laid by his father Zayd ibn Thabit continued to bear fruit through a subsequent generation of dedicated study.',
+    ],
+    sources: ['Siyar Alam an-Nubala by adh-Dhahabi', 'Al-Isabah by Ibn Hajar al-Asqalani', 'Tahdhib al-Tahdhib by Ibn Hajar al-Asqalani'],
+  },
+
+  {
+    id: 's141',
+    name: 'Safinah, Freed Servant of the Prophet',
+    arabicName: 'سَفِينَة',
+    era: 'sahabah',
+    title: "The Servant Whose Name Meant Ship",
+    lifespan: 'd. c. 674 CE',
+    category: 'Companions of the Prophet',
+    image: '🚢',
+    summary: 'A freed servant of the Prophet\'s household, given the name Safinah — meaning ship — by the Prophet himself for his capacity to carry burdens for the whole traveling party at once, later remembered for an episode in which a lion in the wilderness left him unharmed after he explained his errand to it directly.',
+    story: `Safinah was a servant, originally named otherwise, who came into the Prophet's household and was freed, remaining devotedly attached to his service afterward. His distinctive name, by which he became known for the rest of his life and to history, was given to him directly by the Prophet on account of his remarkable capacity for carrying loads: during travels, when the party's provisions and equipment grew too heavy or numerous for any single person to manage, Safinah would take up whatever remained regardless of how much had already been distributed among the rest of the group, prompting the Prophet to remark that he was like a ship, capable of carrying whatever needed carrying, and the name endured as his primary identification from that point onward. (Sunan Abu Dawud, and related narrations concerning the origin of his name)
+
+He is also remembered for a striking episode from a period after the Prophet's own death, when, traveling alone and having lost his way, his boat having been wrecked, he encountered a lion in the wilderness. Rather than fleeing, Safinah addressed the lion directly, explaining that he was a freed servant of the Messenger of Allah who had lost his way, and the lion, according to the widely preserved account, walked alongside him for a distance, guiding him back toward the correct path before departing peacefully, an episode later scholars have treated as a remarkable sign of the enduring blessing carried by those closely connected to the Prophet's own household. (Al-Bidayah wan-Nihayah by Ibn Kathir, and the account as transmitted in several later collections, with the usual scholarly caution regarding the precise chain of this particular narration)
+
+He fought in several of the campaigns of the early conquests and lived for some decades after the Prophet's death, continuing to be sought after by later Companions and their successors specifically because his household connection to the Prophet gave him access to details of domestic life and practice that few others outside the immediate family could offer.
+
+He died sometime in the later part of the first century after the Hijrah, remembered chiefly through his distinctive name and the two episodes — his capacity to bear any burden asked of him, and his peaceful encounter with a lion in the wilderness — that together captured something of the quiet, sustained blessing later generations associated with sincere service to the Prophet's own household.`,
+    lessons: [
+      'Safinah\'s name, earned through his willingness to carry whatever burden the traveling party needed regardless of what he had already taken on, reflects a service given without complaint or calculation of fairness to himself.',
+      'The account of his peaceful encounter with the lion, whatever its precise historical certainty, has been preserved by generations of Muslims as an evocative expression of the blessing believed to accompany sincere and devoted service to the Prophet\'s household.',
+    ],
+    sources: ['Sunan Abu Dawud', 'Al-Bidayah wan-Nihayah by Ibn Kathir', 'Al-Isabah by Ibn Hajar al-Asqalani'],
+  },
 ]

@@ -263,3 +263,58 @@
     font-size: 2.4rem;
   }
 }
+.auth-password-wrap {
+  position: relative;
+}
+
+.auth-password-wrap .auth-input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #5c7186;
+  padding: 4px;
+}
+
+.auth-password-toggle:hover {
+  color: #1a6fa8;
+}
+
+[data-theme="dark"] .auth-password-toggle {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .auth-password-toggle:hover {
+  color: #85ccff;
+}
+.auth-match {
+  font-size: 0.78rem;
+  margin: 6px 0 0;
+}
+
+.auth-match--ok {
+  color: #2e7d32;
+}
+
+.auth-match--no {
+  color: #c62828;
+}
+
+[data-theme="dark"] .auth-match--ok {
+  color: #5dcaa5;
+}
+
+[data-theme="dark"] .auth-match--no {
+  color: #ef9a9a;
+}

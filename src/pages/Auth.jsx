@@ -2,14 +2,44 @@ import React, { useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './Auth.css'
 
+const EyeIcon = ({ open }) => (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    {open ? (
+      <>
+        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ) : (
+      <>
+        <path d="M17.94 17.94A10.6 10.6 0 0 1 12 19c-7 0-11-7-11-7a20.3 20.3 0 0 1 5.06-5.94" />
+        <path d="M9.9 4.24A10.6 10.6 0 0 1 12 4c7 0 11 7 11 7a20.4 20.4 0 0 1-3.22 4.19" />
+        <path d="M14.12 14.12A3 3 0 1 1 9.88 9.88" />
+        <line x1="1" y1="1" x2="23" y2="23" />
+      </>
+    )}
+  </svg>
+)
+
 export default function Auth({ onAuth }) {
   const [mode, setMode] = useState('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
+
+  const switchMode = (next) => {
+    setMode(next)
+    setError(null)
+    setSuccess(null)
+    setConfirmPassword('')
+    setShowPassword(false)
+    setShowConfirm(false)
+  }
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -22,6 +52,10 @@ export default function Auth({ onAuth }) {
     }
     if (password.length < 6) {
       setError('Password must be at least 6 characters.')
+      return
+    }
+    if (mode === 'signup' && password !== confirmPassword) {
+      setError('Passwords do not match.')
       return
     }
 
@@ -83,13 +117,13 @@ export default function Auth({ onAuth }) {
         <div className="auth-tabs">
           <button
             className={`auth-tab ${mode === 'login' ? 'auth-tab--active' : ''}`}
-            onClick={() => { setMode('login'); setError(null); setSuccess(null) }}
+            onClick={() => switchMode('login')}
           >
             Sign In
           </button>
           <button
             className={`auth-tab ${mode === 'signup' ? 'auth-tab--active' : ''}`}
-            onClick={() => { setMode('signup'); setError(null); setSuccess(null) }}
+            onClick={() => switchMode('signup')}
           >
             Create Account
           </button>
@@ -125,15 +159,56 @@ export default function Auth({ onAuth }) {
 
           <div className="auth-field">
             <label className="auth-label">Password</label>
-            <input
-              type="password"
-              className="auth-input"
-              placeholder="At least 6 characters"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
+            <div className="auth-password-wrap">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className="auth-input"
+                placeholder="At least 6 characters"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={() => setShowPassword(s => !s)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <EyeIcon open={!showPassword} />
+              </button>
+            </div>
           </div>
+
+          {mode === 'signup' && (
+            <div className="auth-field">
+              <label className="auth-label">Confirm Password</label>
+              <div className="auth-password-wrap">
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  className="auth-input"
+                  placeholder="Type your password again"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+                <button
+                  type="button"
+                  className="auth-password-toggle"
+                  onClick={() => setShowConfirm(s => !s)}
+                  aria-label={showConfirm ? 'Hide password' : 'Show password'}
+                  title={showConfirm ? 'Hide password' : 'Show password'}
+                >
+                  <EyeIcon open={!showConfirm} />
+                </button>
+              </div>
+              {confirmPassword.length > 0 && (
+                <p className={`auth-match ${password === confirmPassword ? 'auth-match--ok' : 'auth-match--no'}`}>
+                  {password === confirmPassword ? '✓ Passwords match' : '✕ Passwords do not match'}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Error */}
           {error && (
