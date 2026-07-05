@@ -20,6 +20,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Spaces from './pages/Spaces.jsx'
 import PrayerTimes from './pages/PrayerTimes.jsx'
 import Disciplines from './pages/Disciplines.jsx'
+import Hifdh from './pages/Hifdh.jsx'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -172,6 +173,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard user={user} />} />
             <Route path="/spaces" element={<Spaces user={user} />} />
             <Route path="/prayer-times" element={<PrayerTimes />} />
+            <Route path="/hifdh" element={<Hifdh />} />
             <Route path="*" element={<Home user={user} />} />
           </Routes>
         </main>

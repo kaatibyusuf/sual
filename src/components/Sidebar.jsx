@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { path: '/dashboard', label: 'Dashboard', arabicLabel: 'لَوْحَتِي', icon: '📊' },
   { path: '/spaces', label: 'Spaces', arabicLabel: 'فَضَاءَات', icon: '🕌' },
   { path: '/prayer-times', label: 'Prayer Times', arabicLabel: 'مَوَاقِيت', icon: '🕌' },
+  { path: '/hifdh', label: 'Hifdh', arabicLabel: 'الحِفْظ', icon: '🧠' },
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'
