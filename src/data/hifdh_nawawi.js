@@ -1,13 +1,17 @@
 // src/data/hifdh_nawawi.js
-// Hifdh Simulator dataset — Al-Arba'oon An-Nawawiyyah.
+// Hifdh Simulator dataset — Al-Arba'oon An-Nawawiyyah (all 42 hadith).
 //
-// Currently contains the first 10 hadith. Extend to all 42 by following
-// the same shape. The `arabic` field carries the core matn; for very long
-// hadith (e.g. #2, the hadith of Jibril) a central segment is used so
-// drills stay practical.
+// IMPORTANT: this Arabic text was cross-checked against a full Arabic
+// matn source (takw.in reader, itself sourced from Nawawi's original
+// compilation) during generation, but a hifdh tool must never drill a
+// wrong text — verify once more against your own printed/trusted copy
+// of the Arba'in before shipping to students, especially hadith 24,
+// 28, 29, 35, 36, and 38, which are long and easy to miscopy a word in.
 //
-// IMPORTANT: verify every Arabic text against a printed copy of the
-// Arba'in before shipping — a hifdh tool must never drill a wrong text.
+// Hadith 41 ("La yu'minu ahadukum hatta yakuna hawahu taba'an...") is
+// graded hasan sahih by an-Nawawi via the chain in Kitab al-Hujjah, not
+// Bukhari/Muslim — flagged here since some students expect every hadith
+// in this set to be from the two Sahihs.
 
 export const NAWAWI_HADITH = [
   {
@@ -79,6 +83,230 @@ export const NAWAWI_HADITH = [
     source: 'Muslim',
     arabic: 'إِنَّ اللَّهَ طَيِّبٌ لَا يَقْبَلُ إِلَّا طَيِّبًا وَإِنَّ اللَّهَ أَمَرَ الْمُؤْمِنِينَ بِمَا أَمَرَ بِهِ الْمُرْسَلِينَ',
     translation: 'Allah is pure and accepts only what is pure, and Allah commanded the believers with what He commanded the Messengers...',
+  },
+  {
+    num: 11,
+    narrator: 'Al-Hasan ibn Ali',
+    source: 'Tirmidhi & Nasa\'i',
+    arabic: 'دَعْ مَا يَرِيبُكَ إِلَى مَا لَا يَرِيبُكَ',
+    translation: 'Leave that which makes you doubt for that which does not make you doubt.',
+  },
+  {
+    num: 12,
+    narrator: 'Abu Hurairah',
+    source: 'Tirmidhi',
+    arabic: 'مِنْ حُسْنِ إِسْلَامِ الْمَرْءِ تَرْكُهُ مَا لَا يَعْنِيهِ',
+    translation: 'Part of the excellence of a person\'s Islam is his leaving that which does not concern him.',
+  },
+  {
+    num: 13,
+    narrator: 'Anas ibn Malik',
+    source: 'Bukhari & Muslim',
+    arabic: 'لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ',
+    translation: 'None of you truly believes until he loves for his brother what he loves for himself.',
+  },
+  {
+    num: 14,
+    narrator: 'Abdullah ibn Mas\'ud',
+    source: 'Bukhari & Muslim',
+    arabic: 'لَا يَحِلُّ دَمُ امْرِئٍ مُسْلِمٍ إِلَّا بِإِحْدَى ثَلَاثٍ الثَّيِّبُ الزَّانِي وَالنَّفْسُ بِالنَّفْسِ وَالتَّارِكُ لِدِينِهِ الْمُفَارِقُ لِلْجَمَاعَةِ',
+    translation: 'The blood of a Muslim is not lawful except in one of three cases...',
+  },
+  {
+    num: 15,
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari & Muslim',
+    arabic: 'مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيُكْرِمْ جَارَهُ وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيُكْرِمْ ضَيْفَهُ',
+    translation: 'Whoever believes in Allah and the Last Day, let him speak good or remain silent...',
+  },
+  {
+    num: 16,
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari',
+    arabic: 'أَنَّ رَجُلًا قَالَ لِلنَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ أَوْصِنِي قَالَ لَا تَغْضَبْ فَرَدَّدَ مِرَارًا قَالَ لَا تَغْضَبْ',
+    translation: 'A man said to the Prophet ﷺ: advise me. He said: do not become angry. He repeated it several times; he said: do not become angry.',
+  },
+  {
+    num: 17,
+    narrator: 'Shaddad ibn Aws',
+    source: 'Muslim',
+    arabic: 'إِنَّ اللَّهَ كَتَبَ الْإِحْسَانَ عَلَى كُلِّ شَيْءٍ فَإِذَا قَتَلْتُمْ فَأَحْسِنُوا الْقِتْلَةَ وَإِذَا ذَبَحْتُمْ فَأَحْسِنُوا الذِّبْحَةَ وَلْيُحِدَّ أَحَدُكُمْ شَفْرَتَهُ وَلْيُرِحْ ذَبِيحَتَهُ',
+    translation: 'Allah has prescribed excellence in all things...',
+  },
+  {
+    num: 18,
+    narrator: 'Abu Dharr & Mu\'adh ibn Jabal',
+    source: 'Tirmidhi',
+    arabic: 'اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ',
+    translation: 'Fear Allah wherever you are, follow a bad deed with a good deed and it will erase it, and treat people with good character.',
+  },
+  {
+    num: 19,
+    narrator: 'Abdullah ibn Abbas',
+    source: 'Tirmidhi',
+    arabic: 'احْفَظِ اللَّهَ يَحْفَظْكَ احْفَظِ اللَّهَ تَجِدْهُ تُجَاهَكَ إِذَا سَأَلْتَ فَاسْأَلِ اللَّهَ وَإِذَا اسْتَعَنْتَ فَاسْتَعِنْ بِاللَّهِ',
+    translation: 'Guard Allah and He will guard you. Guard Allah and you will find Him before you. When you ask, ask Allah...',
+  },
+  {
+    num: 20,
+    narrator: 'Abu Mas\'ud al-Ansari',
+    source: 'Bukhari',
+    arabic: 'إِنَّ مِمَّا أَدْرَكَ النَّاسُ مِنْ كَلَامِ النُّبُوَّةِ الْأُولَى إِذَا لَمْ تَسْتَحِ فَاصْنَعْ مَا شِئْتَ',
+    translation: 'Among the words people have retained from the first prophethood: if you feel no shame, do as you wish.',
+  },
+  {
+    num: 21,
+    narrator: 'Sufyan ibn Abdullah ath-Thaqafi',
+    source: 'Muslim',
+    arabic: 'قُلْتُ يَا رَسُولَ اللَّهِ قُلْ لِي فِي الْإِسْلَامِ قَوْلًا لَا أَسْأَلُ عَنْهُ أَحَدًا غَيْرَكَ قَالَ قُلْ آمَنْتُ بِاللَّهِ ثُمَّ اسْتَقِمْ',
+    translation: 'I asked the Messenger of Allah for a single statement about Islam I would never need to ask anyone else about. He said: Say "I believe in Allah," then remain steadfast.',
+  },
+  {
+    num: 22,
+    narrator: 'Jabir ibn Abdullah',
+    source: 'Muslim',
+    arabic: 'أَرَأَيْتَ إِذَا صَلَّيْتُ الْمَكْتُوبَاتِ وَصُمْتُ رَمَضَانَ وَأَحْلَلْتُ الْحَلَالَ وَحَرَّمْتُ الْحَرَامَ وَلَمْ أَزِدْ عَلَى ذَلِكَ شَيْئًا أَأَدْخُلُ الْجَنَّةَ قَالَ نَعَمْ',
+    translation: 'A man asked: if I pray the five prescribed prayers, fast Ramadan, treat the lawful as lawful and the unlawful as unlawful, and add nothing else, will I enter Paradise? The Prophet said: Yes.',
+  },
+  {
+    num: 23,
+    narrator: 'Abu Malik al-Harith ibn Asim al-Ash\'ari',
+    source: 'Muslim',
+    arabic: 'الطُّهُورُ شَطْرُ الْإِيمَانِ وَالْحَمْدُ لِلَّهِ تَمْلَأُ الْمِيزَانَ وَسُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ تَمْلَآنِ أَوْ تَمْلَأُ مَا بَيْنَ السَّمَاءِ وَالْأَرْضِ وَالصَّلَاةُ نُورٌ وَالصَّدَقَةُ بُرْهَانٌ وَالصَّبْرُ ضِيَاءٌ وَالْقُرْآنُ حُجَّةٌ لَكَ أَوْ عَلَيْكَ كُلُّ النَّاسِ يَغْدُو فَبَائِعٌ نَفْسَهُ فَمُعْتِقُهَا أَوْ مُوبِقُهَا',
+    translation: 'Purification is half of faith. "Alhamdulillah" fills the scale, and "SubhanAllah" and "Alhamdulillah" fill what is between heaven and earth. Prayer is light, charity is proof, patience is illumination, and the Qur\'an is an argument for or against you. Every person goes out and sells himself, either freeing it or destroying it.',
+  },
+  {
+    num: 24,
+    narrator: 'Abu Dharr al-Ghifari',
+    source: 'Muslim',
+    arabic: 'يَا عِبَادِي إِنِّي حَرَّمْتُ الظُّلْمَ عَلَى نَفْسِي وَجَعَلْتُهُ بَيْنَكُمْ مُحَرَّمًا فَلَا تَظَالَمُوا يَا عِبَادِي كُلُّكُمْ ضَالٌّ إِلَّا مَنْ هَدَيْتُهُ فَاسْتَهْدُونِي أَهْدِكُمْ يَا عِبَادِي كُلُّكُمْ جَائِعٌ إِلَّا مَنْ أَطْعَمْتُهُ فَاسْتَطْعِمُونِي أُطْعِمْكُمْ يَا عِبَادِي كُلُّكُمْ عَارٍ إِلَّا مَنْ كَسَوْتُهُ فَاسْتَكْسُونِي أَكْسُكُمْ يَا عِبَادِي إِنَّكُمْ تُخْطِئُونَ بِاللَّيْلِ وَالنَّهَارِ وَأَنَا أَغْفِرُ الذُّنُوبَ جَمِيعًا فَاسْتَغْفِرُونِي أَغْفِرْ لَكُمْ',
+    translation: 'A hadith Qudsi in which Allah says: O My servants, I have forbidden oppression for Myself and made it forbidden among you, so do not oppress one another. All of you are astray except one I have guided, so seek guidance of Me. All of you are hungry except one I have fed, so seek food of Me. All of you are naked except one I have clothed, so seek clothing of Me. You sin by night and day and I forgive all sins, so seek forgiveness of Me and I will forgive you. (The full hadith continues well beyond this excerpt — check a complete matn before drilling the whole thing.)',
+  },
+  {
+    num: 25,
+    narrator: 'Abu Dharr al-Ghifari',
+    source: 'Muslim',
+    arabic: 'قَالُوا يَا رَسُولَ اللَّهِ ذَهَبَ أَهْلُ الدُّثُورِ بِالْأُجُورِ يُصَلُّونَ كَمَا نُصَلِّي وَيَصُومُونَ كَمَا نَصُومُ وَيَتَصَدَّقُونَ بِفُضُولِ أَمْوَالِهِمْ قَالَ أَوَلَيْسَ قَدْ جَعَلَ اللَّهُ لَكُمْ مَا تَصَّدَّقُونَ إِنَّ بِكُلِّ تَسْبِيحَةٍ صَدَقَةً وَكُلِّ تَكْبِيرَةٍ صَدَقَةً وَكُلِّ تَحْمِيدَةٍ صَدَقَةً وَكُلِّ تَهْلِيلَةٍ صَدَقَةً وَأَمْرٌ بِمَعْرُوفٍ صَدَقَةٌ وَنَهْيٌ عَنْ مُنْكَرٍ صَدَقَةٌ وَفِي بُضْعِ أَحَدِكُمْ صَدَقَةٌ',
+    translation: 'The Companions said the wealthy were taking all the reward through their extra charity. The Prophet replied that Allah has given them things to give in charity too: every tasbih, takbir, tahmid, and tahlil is charity, enjoining good and forbidding evil is charity, and even intimacy with one\'s spouse is charity.',
+  },
+  {
+    num: 26,
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari & Muslim',
+    arabic: 'كُلُّ سُلَامَى مِنَ النَّاسِ عَلَيْهِ صَدَقَةٌ كُلَّ يَوْمٍ تَطْلُعُ فِيهِ الشَّمْسُ تَعْدِلُ بَيْنَ اثْنَيْنِ صَدَقَةٌ وَتُعِينُ الرَّجُلَ فِي دَابَّتِهِ فَتَحْمِلُهُ عَلَيْهَا أَوْ تَرْفَعُ لَهُ عَلَيْهَا مَتَاعَهُ صَدَقَةٌ وَالْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ وَبِكُلِّ خُطْوَةٍ تَمْشِيهَا إِلَى الصَّلَاةِ صَدَقَةٌ وَتُمِيطُ الْأَذَى عَنِ الطَّرِيقِ صَدَقَةٌ',
+    translation: 'Every joint of a person owes a charity each day the sun rises: making peace between two people is charity, helping a man onto his mount or lifting his belongings is charity, a good word is charity, every step toward prayer is charity, and removing something harmful from the road is charity.',
+  },
+  {
+    num: 27,
+    narrator: 'An-Nawwas ibn Sam\'an',
+    source: 'Muslim',
+    arabic: 'الْبِرُّ حُسْنُ الْخُلُقِ وَالْإِثْمُ مَا حَاكَ فِي صَدْرِكَ وَكَرِهْتَ أَنْ يَطَّلِعَ عَلَيْهِ النَّاسُ',
+    translation: 'Righteousness is good character, and sin is that which wavers in your chest and which you dislike people finding out about.',
+  },
+  {
+    num: 28,
+    narrator: 'Al-Irbad ibn Sariyah',
+    source: 'Abu Dawud & Tirmidhi',
+    arabic: 'وَعَظَنَا رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مَوْعِظَةً وَجِلَتْ مِنْهَا الْقُلُوبُ وَذَرَفَتْ مِنْهَا الْعُيُونُ فَقُلْنَا يَا رَسُولَ اللَّهِ كَأَنَّهَا مَوْعِظَةُ مُوَدِّعٍ فَأَوْصِنَا قَالَ أُوصِيكُمْ بِتَقْوَى اللَّهِ وَالسَّمْعِ وَالطَّاعَةِ وَإِنْ تَأَمَّرَ عَلَيْكُمْ عَبْدٌ فَإِنَّهُ مَنْ يَعِشْ مِنْكُمْ فَسَيَرَى اخْتِلَافًا كَثِيرًا فَعَلَيْكُمْ بِسُنَّتِي وَسُنَّةِ الْخُلَفَاءِ الرَّاشِدِينَ الْمَهْدِيِّينَ عَضُّوا عَلَيْهَا بِالنَّوَاجِذِ وَإِيَّاكُمْ وَمُحْدَثَاتِ الْأُمُورِ فَإِنَّ كُلَّ بِدْعَةٍ ضَلَالَةٌ',
+    translation: 'The Prophet gave us an admonition that shook our hearts and brought tears to our eyes, and it felt like a farewell speech, so we asked him to advise us further. He instructed us to hold fast to taqwa, to hearing and obeying even a leader who is a freed slave, and to cling firmly to his Sunnah and that of the rightly-guided caliphs after him, warning against newly invented matters in religion since every innovation is misguidance.',
+  },
+  {
+    num: 29,
+    narrator: 'Mu\'adh ibn Jabal',
+    source: 'Tirmidhi',
+    arabic: 'أَلَا أَدُلُّكَ عَلَى أَبْوَابِ الْخَيْرِ الصَّوْمُ جُنَّةٌ وَالصَّدَقَةُ تُطْفِئُ الْخَطِيئَةَ كَمَا يُطْفِئُ الْمَاءُ النَّارَ وَصَلَاةُ الرَّجُلِ فِي جَوْفِ اللَّيْلِ ثُمَّ قَالَ أَلَا أُخْبِرُكَ بِرَأْسِ الْأَمْرِ وَعَمُودِهِ وَذِرْوَةِ سَنَامِهِ رَأْسُ الْأَمْرِ الْإِسْلَامُ وَعَمُودُهُ الصَّلَاةُ وَذِرْوَةُ سَنَامِهِ الْجِهَادُ',
+    translation: 'Shall I not show you the gates of good? Fasting is a shield, charity extinguishes sin as water extinguishes fire, and prayer in the depths of the night. Then he said: shall I tell you the head of the matter, its pillar, and its peak? The head of the matter is Islam, its pillar is prayer, and its peak is jihad.',
+  },
+  {
+    num: 30,
+    narrator: 'Abu Tha\'labah al-Khushani',
+    source: 'Daraqutni',
+    arabic: 'إِنَّ اللَّهَ تَعَالَى فَرَضَ فَرَائِضَ فَلَا تُضَيِّعُوهَا وَحَدَّ حُدُودًا فَلَا تَعْتَدُوهَا وَحَرَّمَ أَشْيَاءَ فَلَا تَنْتَهِكُوهَا وَسَكَتَ عَنْ أَشْيَاءَ رَحْمَةً لَكُمْ غَيْرَ نِسْيَانٍ فَلَا تَبْحَثُوا عَنْهَا',
+    translation: 'Allah has laid down obligations, so do not neglect them; set limits, so do not overstep them; forbidden certain things, so do not violate them; and stayed silent about other things out of mercy, not forgetfulness, so do not go searching into them.',
+  },
+  {
+    num: 31,
+    narrator: 'Abu al-Abbas Sahl ibn Sa\'d',
+    source: 'Ibn Majah',
+    arabic: 'يَا رَسُولَ اللَّهِ دُلَّنِي عَلَى عَمَلٍ إِذَا عَمِلْتُهُ أَحَبَّنِي اللَّهُ وَأَحَبَّنِي النَّاسُ فَقَالَ ازْهَدْ فِي الدُّنْيَا يُحِبَّكَ اللَّهُ وَازْهَدْ فِيمَا عِنْدَ النَّاسِ يُحِبَّكَ النَّاسُ',
+    translation: 'A man asked the Prophet to point him to an action that would earn him the love of Allah and the love of people. He said: be detached from this world and Allah will love you, and be detached from what people possess and people will love you.',
+  },
+  {
+    num: 32,
+    narrator: 'Abu Sa\'id al-Khudri',
+    source: 'Ibn Majah & Daraqutni',
+    arabic: 'لَا ضَرَرَ وَلَا ضِرَارَ',
+    translation: 'There is to be no infliction of harm nor reciprocating harm.',
+  },
+  {
+    num: 33,
+    narrator: 'Ibn Abbas',
+    source: 'Bayhaqi',
+    arabic: 'لَوْ يُعْطَى النَّاسُ بِدَعْوَاهُمْ لَادَّعَى رِجَالٌ أَمْوَالَ قَوْمٍ وَدِمَاءَهُمْ لَكِنَّ الْبَيِّنَةَ عَلَى الْمُدَّعِي وَالْيَمِينَ عَلَى مَنْ أَنْكَرَ',
+    translation: 'If people were given everything they claimed, some would claim the wealth and blood of others. But the burden of proof is on the claimant, and the oath is on the one who denies.',
+  },
+  {
+    num: 34,
+    narrator: 'Abu Sa\'id al-Khudri',
+    source: 'Muslim',
+    arabic: 'مَنْ رَأَى مِنْكُمْ مُنْكَرًا فَلْيُغَيِّرْهُ بِيَدِهِ فَإِنْ لَمْ يَسْتَطِعْ فَبِلِسَانِهِ فَإِنْ لَمْ يَسْتَطِعْ فَبِقَلْبِهِ وَذَلِكَ أَضْعَفُ الْإِيمَانِ',
+    translation: 'Whoever among you sees a wrong should change it with his hand; if he cannot, then with his tongue; if he cannot, then with his heart, and that is the weakest degree of faith.',
+  },
+  {
+    num: 35,
+    narrator: 'Abu Hurairah',
+    source: 'Muslim',
+    arabic: 'لَا تَحَاسَدُوا وَلَا تَنَاجَشُوا وَلَا تَبَاغَضُوا وَلَا تَدَابَرُوا وَلَا يَبِعْ بَعْضُكُمْ عَلَى بَيْعِ بَعْضٍ وَكُونُوا عِبَادَ اللَّهِ إِخْوَانًا الْمُسْلِمُ أَخُو الْمُسْلِمِ لَا يَظْلِمُهُ وَلَا يَخْذُلُهُ وَلَا يَكْذِبُهُ وَلَا يَحْقِرُهُ التَّقْوَى هَاهُنَا كُلُّ الْمُسْلِمِ عَلَى الْمُسْلِمِ حَرَامٌ دَمُهُ وَمَالُهُ وَعِرْضُهُ',
+    translation: 'Do not envy one another, artificially inflate prices against one another, hate one another, or turn away from one another. Be servants of Allah as brothers. A Muslim is the brother of a Muslim: he does not wrong him, abandon him, lie to him, or belittle him. Piety is here (pointing to the chest). The whole of a Muslim is inviolable to another Muslim: his blood, wealth, and honor.',
+  },
+  {
+    num: 36,
+    narrator: 'Abu Hurairah',
+    source: 'Muslim',
+    arabic: 'مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا نَفَّسَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ وَمَنْ يَسَّرَ عَلَى مُعْسِرٍ يَسَّرَ اللَّهُ عَلَيْهِ فِي الدُّنْيَا وَالْآخِرَةِ وَمَنْ سَتَرَ مُسْلِمًا سَتَرَهُ اللَّهُ فِي الدُّنْيَا وَالْآخِرَةِ وَاللَّهُ فِي عَوْنِ الْعَبْدِ مَا كَانَ الْعَبْدُ فِي عَوْنِ أَخِيهِ وَمَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ',
+    translation: 'Whoever relieves a believer of a worldly hardship, Allah relieves him of a hardship on the Day of Resurrection. Whoever makes things easy for someone in difficulty, Allah eases things for him in this life and the next. Whoever conceals the faults of a Muslim, Allah conceals his faults. Allah helps a servant as long as the servant helps his brother. Whoever takes a path seeking knowledge, Allah makes easy for him a path to Paradise.',
+  },
+  {
+    num: 37,
+    narrator: 'Ibn Abbas',
+    source: 'Bukhari & Muslim',
+    arabic: 'إِنَّ اللَّهَ كَتَبَ الْحَسَنَاتِ وَالسَّيِّئَاتِ ثُمَّ بَيَّنَ ذَلِكَ فَمَنْ هَمَّ بِحَسَنَةٍ فَلَمْ يَعْمَلْهَا كَتَبَهَا اللَّهُ عِنْدَهُ حَسَنَةً كَامِلَةً وَإِنْ هَمَّ بِهَا فَعَمِلَهَا كَتَبَهَا اللَّهُ عِنْدَهُ عَشْرَ حَسَنَاتٍ إِلَى سَبْعِمِائَةِ ضِعْفٍ إِلَى أَضْعَافٍ كَثِيرَةٍ وَإِنْ هَمَّ بِسَيِّئَةٍ فَلَمْ يَعْمَلْهَا كَتَبَهَا اللَّهُ عِنْدَهُ حَسَنَةً كَامِلَةً وَإِنْ هَمَّ بِهَا فَعَمِلَهَا كَتَبَهَا اللَّهُ سَيِّئَةً وَاحِدَةً',
+    translation: 'Allah has recorded good and bad deeds and explained this: whoever intends a good deed but does not do it, Allah records it as one complete good deed; if he intends it and does it, Allah records it as ten up to seven hundred times or more. Whoever intends a bad deed and does not do it, Allah records it as one complete good deed; if he intends it and does it, Allah records only one bad deed.',
+  },
+  {
+    num: 38,
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari',
+    arabic: 'مَنْ عَادَى لِي وَلِيًّا فَقَدْ آذَنْتُهُ بِالْحَرْبِ وَمَا تَقَرَّبَ إِلَيَّ عَبْدِي بِشَيْءٍ أَحَبَّ إِلَيَّ مِمَّا افْتَرَضْتُهُ عَلَيْهِ وَلَا يَزَالُ عَبْدِي يَتَقَرَّبُ إِلَيَّ بِالنَّوَافِلِ حَتَّى أُحِبَّهُ فَإِذَا أَحْبَبْتُهُ كُنْتُ سَمْعَهُ الَّذِي يَسْمَعُ بِهِ وَبَصَرَهُ الَّذِي يُبْصِرُ بِهِ وَيَدَهُ الَّتِي يَبْطِشُ بِهَا وَرِجْلَهُ الَّتِي يَمْشِي بِهَا',
+    translation: 'A hadith Qudsi: whoever shows enmity to a friend of Mine, I declare war upon him. My servant draws near to Me with nothing more beloved than what I have made obligatory upon him, and he keeps drawing nearer through voluntary acts until I love him. When I love him, I become his hearing with which he hears, his sight with which he sees, his hand with which he strikes, and his foot with which he walks.',
+  },
+  {
+    num: 39,
+    narrator: 'Ibn Abbas',
+    source: 'Ibn Majah',
+    arabic: 'إِنَّ اللَّهَ تَجَاوَزَ لِي عَنْ أُمَّتِي الْخَطَأَ وَالنِّسْيَانَ وَمَا اسْتُكْرِهُوا عَلَيْهِ',
+    translation: 'Allah has overlooked for my nation their mistakes, forgetfulness, and what they are forced to do under compulsion.',
+  },
+  {
+    num: 40,
+    narrator: 'Ibn Umar',
+    source: 'Bukhari',
+    arabic: 'كُنْ فِي الدُّنْيَا كَأَنَّكَ غَرِيبٌ أَوْ عَابِرُ سَبِيلٍ',
+    translation: 'The Prophet took hold of Ibn Umar\'s shoulder and said: be in this world as though you were a stranger or a traveler passing through.',
+  },
+  {
+    num: 41,
+    narrator: 'Abdullah ibn Amr ibn al-As',
+    source: 'Kitab al-Hujjah (hasan sahih)',
+    arabic: 'لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يَكُونَ هَوَاهُ تَبَعًا لِمَا جِئْتُ بِهِ',
+    translation: 'None of you truly believes until his desires are subordinate to what I have brought.',
+  },
+  {
+    num: 42,
+    narrator: 'Anas ibn Malik',
+    source: 'Tirmidhi',
+    arabic: 'يَا ابْنَ آدَمَ إِنَّكَ مَا دَعَوْتَنِي وَرَجَوْتَنِي غَفَرْتُ لَكَ عَلَى مَا كَانَ مِنْكَ وَلَا أُبَالِي يَا ابْنَ آدَمَ لَوْ بَلَغَتْ ذُنُوبُكَ عَنَانَ السَّمَاءِ ثُمَّ اسْتَغْفَرْتَنِي غَفَرْتُ لَكَ يَا ابْنَ آدَمَ إِنَّكَ لَوْ أَتَيْتَنِي بِقُرَابِ الْأَرْضِ خَطَايَا ثُمَّ لَقِيتَنِي لَا تُشْرِكُ بِي شَيْئًا لَأَتَيْتُكَ بِقُرَابِهَا مَغْفِرَةً',
+    translation: 'A hadith Qudsi: O son of Adam, as long as you call upon Me and hope in Me, I forgive you for what you have done and do not mind. O son of Adam, even if your sins reached the clouds of the sky and you then sought My forgiveness, I would forgive you. O son of Adam, if you came to Me with sins nearly filling the earth, then met Me without associating anything with Me, I would come to you with forgiveness nearly filling it.',
   },
 ]
 

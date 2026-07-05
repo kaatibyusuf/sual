@@ -52,6 +52,11 @@
   transition: all 0.2s ease;
 }
 
+.hifdh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .hifdh-btn--primary {
   background: linear-gradient(135deg, #094570, #1a6fa8);
   color: #ffffff;
@@ -62,6 +67,11 @@
 .hifdh-btn--primary:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(9,69,112,0.3);
+}
+
+.hifdh-btn--primary:disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(9,69,112,0.2);
 }
 
 .hifdh-start {
@@ -191,6 +201,73 @@
 .hifdh-next {
   width: 100%;
   padding: 14px;
+}
+
+/* ── Typed recall (fill-in-the-rest) ── */
+.hifdh-typed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.hifdh-typed-input {
+  width: 100%;
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 12px;
+  font-family: var(--font-ui);
+  font-size: 1.1rem;
+  line-height: 1.9;
+  color: #0d1b2a;
+  resize: vertical;
+  transition: all 0.15s ease;
+}
+
+.hifdh-typed-input:focus {
+  outline: none;
+  border-color: #1a6fa8;
+  background: #f5faff;
+}
+
+.hifdh-typed-input:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.hifdh-typed-feedback {
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1.5px solid;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.hifdh-typed-feedback p:first-child {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.hifdh-typed-feedback--correct {
+  border-color: #2e7d32;
+  background: #f0f9f2;
+  color: #2e7d32;
+}
+
+.hifdh-typed-feedback--wrong {
+  border-color: #c62828;
+  background: #fdf0f0;
+  color: #c62828;
+}
+
+.hifdh-typed-answer {
+  color: #0d1b2a;
+  direction: rtl;
+  text-align: right;
+  font-size: 1.1rem;
+  line-height: 1.9;
+  margin-top: 6px;
 }
 
 /* ── Done screen ── */
@@ -344,6 +421,33 @@
 [data-theme="dark"] .hifdh-option--wrong {
   background: rgba(198,40,40,0.15) !important;
   border-color: #c62828 !important;
+}
+
+[data-theme="dark"] .hifdh-typed-input {
+  background: #0f1f2e;
+  border-color: #1e3448;
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .hifdh-typed-input:focus {
+  border-color: #85CCFF;
+  background: #0a1825;
+}
+
+[data-theme="dark"] .hifdh-typed-feedback--correct {
+  background: rgba(46,125,50,0.15);
+  border-color: #2e7d32;
+  color: #7fc98a;
+}
+
+[data-theme="dark"] .hifdh-typed-feedback--wrong {
+  background: rgba(198,40,40,0.15);
+  border-color: #c62828;
+  color: #e08a8a;
+}
+
+[data-theme="dark"] .hifdh-typed-answer {
+  color: #c8e0f5;
 }
 
 [data-theme="dark"] .hifdh-btn {
