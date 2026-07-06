@@ -30,7 +30,7 @@ function shuffle(arr) {
   return a
 }
 function words(text) { return text.split(/\s+/).filter(Boolean) }
-function skeleton(word) { return word.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '') }
+function skeleton(word) { return word.replace(/[\u064B-\u0652\u0670]/g, '') }
 
 // ── Question generators ─────────────────────────────────────────
 
@@ -242,16 +242,115 @@ function makeOrder(item, collection) {
   }
 }
 
+// How does it end: only the opening is shown, the final phrase must be
+// recalled. Endings are where memorization decays first.
+function makeEnding(item, collection, hard) {
+  const w = words(item.arabic)
+  if (w.length < 14) return null
+  const cue = w.slice(0, 4).join(' ')
+  const correct = '... ' + w.slice(-5).join(' ')
+
+  let distractors = []
+  if (hard) {
+    // other 5-word windows from the same text (excluding the true ending)
+    const windows = []
+    for (let s = 0; s + 5 <= w.length - 5; s++) {
+      windows.push('... ' + w.slice(s, s + 5).join(' '))
+    }
+    distractors = shuffle([...new Set(windows)]).slice(0, 3)
+  }
+  if (distractors.length < 3) {
+    const extra = shuffle(collection.items.filter(x => x.num !== item.num && words(x.arabic).length >= 10))
+      .map(x => '... ' + words(x.arabic).slice(-5).join(' '))
+    for (const d of extra) {
+      if (distractors.length >= 3) break
+      if (!distractors.includes(d) && d !== correct) distractors.push(d)
+    }
+  }
+  if (distractors.length < 3) return null
+
+  return {
+    type: 'ending',
+    itemNum: item.num,
+    prompt: `This ${collection.itemNoun} begins as shown. How does it END?`,
+    arabicPrompt: cue + ' ...',
+    options: shuffle([{ text: correct, correct: true }, ...distractors.map(t => ({ text: t, correct: false }))]),
+  }
+}
+
+// What comes BEFORE: a phrase from deep inside the text is shown, the
+// preceding phrase must be recalled. Backward linkage is the classic
+// weakness exposed when a hafiz is asked to start from the middle.
+function makeBefore(item, collection, hard) {
+  const w = words(item.arabic)
+  if (w.length < 16) return null
+  const cut = Math.max(6, Math.floor(w.length * 0.6))
+  const shown = w.slice(cut, cut + 5).join(' ')
+  const correct = w.slice(cut - 5, cut).join(' ') + ' ...'
+
+  let distractors = []
+  if (hard) {
+    const windows = []
+    for (let s = 0; s + 5 <= w.length; s++) {
+      if (Math.abs(s - (cut - 5)) < 4) continue
+      windows.push(w.slice(s, s + 5).join(' ') + ' ...')
+    }
+    distractors = shuffle([...new Set(windows)]).slice(0, 3)
+  }
+  if (distractors.length < 3) {
+    const extra = shuffle(collection.items.filter(x => x.num !== item.num && words(x.arabic).length >= 12))
+      .map(x => {
+        const xw = words(x.arabic)
+        const s = Math.floor(xw.length * 0.5)
+        return xw.slice(s, s + 5).join(' ') + ' ...'
+      })
+    for (const d of extra) {
+      if (distractors.length >= 3) break
+      if (!distractors.includes(d) && d !== correct) distractors.push(d)
+    }
+  }
+  if (distractors.length < 3) return null
+
+  return {
+    type: 'before',
+    itemNum: item.num,
+    prompt: `What comes immediately BEFORE this phrase in the ${collection.itemNoun}?`,
+    arabicPrompt: '... ' + shown,
+    options: shuffle([{ text: correct, correct: true }, ...distractors.map(t => ({ text: t, correct: false }))]),
+  }
+}
+
+// Which item comes BEFORE this one in the collection (hard only) — the
+// mirror of makeAfter; backward order in the mushaf is its own memory.
+function makePrecedes(item, collection) {
+  const prevItem = collection.items.find(x => x.num === item.num - 1)
+  if (!prevItem) return null
+  const opening = (x) => words(x.arabic).slice(0, 5).join(' ') + '...'
+  const distractors = shuffle(collection.items.filter(x => x.num !== item.num && x.num !== prevItem.num))
+    .slice(0, 3)
+    .map(x => ({ text: opening(x), correct: false }))
+  if (distractors.length < 3) return null
+  return {
+    type: 'precedes',
+    itemNum: item.num,
+    prompt: `${item.label} is shown. Which ${collection.itemNoun} comes BEFORE it in ${collection.collectionName}?`,
+    arabicPrompt: item.arabic,
+    options: shuffle([{ text: opening(prevItem), correct: true }, ...distractors]),
+  }
+}
+
 function buildSession(dueItems, collection, hard) {
   const questions = []
-  const perItem = hard ? 3 : 2
+  const perItem = hard ? 4 : 3
   dueItems.forEach(item => {
     const makers = shuffle([
       () => makeFillBlank(item, collection, hard),
       () => makeMultiBlank(item, collection, hard),
       () => makeContinuation(item, collection, hard),
+      () => makeEnding(item, collection, hard),
+      () => makeBefore(item, collection, hard),
       () => makeWhichItem(item, collection, hard),
-      ...(hard ? [() => makeAfter(item, collection), () => makeOrder(item, collection)] : []),
+      ...(hard ? [() => makeAfter(item, collection), () => makePrecedes(item, collection), () => makeOrder(item, collection)] : []),
     ])
     let added = 0
     for (const make of makers) {
