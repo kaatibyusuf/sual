@@ -71,7 +71,7 @@ function makeFillBlank(item, collection, hard) {
 
   return {
     type: 'blank',
-    itemNum: item.num,
+    itemNum: item.key,
     prompt: `Which word completes this ${collection.itemNoun}?`,
     arabicPrompt: blanked,
     options: shuffle([{ text: target.word, correct: true }, ...distractors.map(t => ({ text: t, correct: false }))]),
@@ -132,7 +132,7 @@ function makeMultiBlank(item, collection, hard) {
 
   return {
     type: 'multiblank',
-    itemNum: item.num,
+    itemNum: item.key,
     prompt: `Three words are missing from this ${collection.itemNoun}. Fill them in order.`,
     textWords: w,
     gaps,          // indices into textWords, in text order
@@ -173,7 +173,7 @@ function makeContinuation(item, collection, hard) {
 
   return {
     type: 'continue',
-    itemNum: item.num,
+    itemNum: item.key,
     prompt: `How does this ${collection.itemNoun} continue?`,
     arabicPrompt: shown + ' ...',
     options: shuffle([{ text: correct, correct: true }, ...distractors.map(t => ({ text: t, correct: false }))]),
@@ -195,7 +195,7 @@ function makeWhichItem(item, collection, hard) {
   if (wrong.length < 3) return null
   return {
     type: 'which',
-    itemNum: item.num,
+    itemNum: item.key,
     latinOptions: true,
     prompt: `Which ${collection.itemNoun} is this?`,
     arabicPrompt: item.arabic,
@@ -216,7 +216,7 @@ function makeAfter(item, collection) {
   if (distractors.length < 3) return null
   return {
     type: 'after',
-    itemNum: item.num,
+    itemNum: item.key,
     prompt: `${item.label} is shown. Which ${collection.itemNoun} comes NEXT in ${collection.collectionName}?`,
     arabicPrompt: item.arabic,
     options: shuffle([{ text: opening(nextItem), correct: true }, ...distractors]),
@@ -235,7 +235,7 @@ function makeOrder(item, collection) {
   if (segments.length < 3) return null
   return {
     type: 'order',
-    itemNum: item.num,
+    itemNum: item.key,
     prompt: `Rebuild this ${collection.itemNoun}. Tap the segments in their correct order.`,
     segments: segments.map((text, i) => ({ text, position: i })),
     shuffled: shuffle(segments.map((text, i) => ({ text, position: i }))),
@@ -271,7 +271,7 @@ function makeEnding(item, collection, hard) {
 
   return {
     type: 'ending',
-    itemNum: item.num,
+    itemNum: item.key,
     prompt: `This ${collection.itemNoun} begins as shown. How does it END?`,
     arabicPrompt: cue + ' ...',
     options: shuffle([{ text: correct, correct: true }, ...distractors.map(t => ({ text: t, correct: false }))]),
@@ -313,7 +313,7 @@ function makeBefore(item, collection, hard) {
 
   return {
     type: 'before',
-    itemNum: item.num,
+    itemNum: item.key,
     prompt: `What comes immediately BEFORE this phrase in the ${collection.itemNoun}?`,
     arabicPrompt: '... ' + shown,
     options: shuffle([{ text: correct, correct: true }, ...distractors.map(t => ({ text: t, correct: false }))]),
@@ -332,7 +332,7 @@ function makePrecedes(item, collection) {
   if (distractors.length < 3) return null
   return {
     type: 'precedes',
-    itemNum: item.num,
+    itemNum: item.key,
     prompt: `${item.label} is shown. Which ${collection.itemNoun} comes BEFORE it in ${collection.collectionName}?`,
     arabicPrompt: item.arabic,
     options: shuffle([{ text: opening(prevItem), correct: true }, ...distractors]),
@@ -389,7 +389,7 @@ export default function Hifdh() {
   }
 
   const dueItems = useMemo(
-    () => (collection ? collection.items.filter(x => isDue(progress[x.num])) : []),
+    () => (collection ? collection.items.filter(x => isDue(progress[x.key])) : []),
     [collection, progress]
   )
 
@@ -459,13 +459,12 @@ export default function Hifdh() {
       clearQuestionState()
     } else {
       const updated = { ...progress }
-      Object.entries(results).forEach(([numStr, allCorrect]) => {
-        const num = Number(numStr)
-        const entry = updated[num] || { box: 0 }
+      Object.entries(results).forEach(([key, allCorrect]) => {
+        const entry = updated[key] || { box: 0 }
         const box = allCorrect
           ? Math.min(entry.box + 1, BOX_INTERVALS_DAYS.length - 1)
           : Math.max(entry.box - 1, 0)
-        updated[num] = { box, due: nextDue(box) }
+        updated[key] = { box, due: nextDue(box) }
       })
       saveProgress(collection.id, updated)
       setProgress(updated)
@@ -481,8 +480,8 @@ export default function Hifdh() {
     setFinished(false)
   }
 
-  const strengthOf = (num) => {
-    const entry = progress[num]
+  const strengthOf = (key) => {
+    const entry = progress[key]
     if (!entry) return 'new'
     if (entry.box >= 3) return 'strong'
     if (entry.box >= 1) return 'building'
@@ -528,8 +527,8 @@ export default function Hifdh() {
         <div className="hifdh-collections">
           {COLLECTIONS.map(col => {
             const prog = loadProgress(col.id)
-            const strong = col.items.filter(x => prog[x.num]?.box >= 3).length
-            const due = col.items.filter(x => isDue(prog[x.num])).length
+            const strong = col.items.filter(x => prog[x.key]?.box >= 3).length
+            const due = col.items.filter(x => isDue(prog[x.key])).length
             return (
               <button key={col.id} className="hifdh-collection card" onClick={() => chooseCollection(col)}>
                 <div className="hifdh-collection-top">
@@ -745,7 +744,7 @@ export default function Hifdh() {
         </div>
         <div className="hifdh-stat card">
           <span className="hifdh-stat-value" style={{ color: '#2e7d32' }}>
-            {collection.items.filter(x => strengthOf(x.num) === 'strong').length}
+            {collection.items.filter(x => strengthOf(x.key) === 'strong').length}
           </span>
           <span className="hifdh-stat-label">Strong</span>
         </div>
@@ -770,7 +769,7 @@ export default function Hifdh() {
       </p>
       <div className="hifdh-map">
         {collection.items.map(x => (
-          <div key={x.num} className={`hifdh-map-cell hifdh-map-cell--${strengthOf(x.num)}`} title={`${x.label} — ${x.meta}`}>
+          <div key={x.num} className={`hifdh-map-cell hifdh-map-cell--${strengthOf(x.key)}`} title={`${x.label} — ${x.meta}`}>
             {x.num}
           </div>
         ))}
