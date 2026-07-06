@@ -173,7 +173,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard user={user} />} />
             <Route path="/spaces" element={<Spaces user={user} />} />
             <Route path="/prayer-times" element={<PrayerTimes />} />
-            <Route path="/hifdh" element={<Hifdh />} />
+            <Route path="/hifdh" element={<Hifdh user={user} />} />
             <Route path="*" element={<Home user={user} />} />
           </Routes>
         </main>
