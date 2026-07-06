@@ -619,3 +619,71 @@
   .hifdh-collections { grid-template-columns: 1fr; }
   .hifdh-question-arabic { font-size: 1.15rem; }
 }
+
+/* ── Memorization scope ── */
+.hifdh-scope {
+  padding: 16px 18px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+  margin: 14px 0 6px;
+}
+
+.hifdh-scope-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.hifdh-scope-current {
+  font-size: 0.85rem;
+  color: #0d1b2a;
+}
+
+.hifdh-scope-current strong { color: #094570; }
+
+.hifdh-scope-meta {
+  font-size: 0.75rem;
+  color: #8a9ab0;
+}
+
+.hifdh-scope-slider {
+  width: 100%;
+  accent-color: #094570;
+  cursor: pointer;
+}
+
+.hifdh-scope-note {
+  font-size: 0.72rem;
+  color: #8a9ab0;
+  margin: 8px 0 0;
+}
+
+.hifdh-stat-of {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8a9ab0;
+}
+
+.hifdh-map-cell--outscope {
+  background: transparent;
+  color: #d5dfe9;
+  border: 1.5px dashed #e2eaf2;
+}
+
+[data-theme="dark"] .hifdh-scope {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .hifdh-scope-current { color: #c8e0f5; }
+[data-theme="dark"] .hifdh-scope-current strong { color: #85CCFF; }
+[data-theme="dark"] .hifdh-scope-slider { accent-color: #85CCFF; }
+
+[data-theme="dark"] .hifdh-map-cell--outscope {
+  border-color: #1a2c3e;
+  color: #23374a;
+}

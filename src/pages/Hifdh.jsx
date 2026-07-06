@@ -5,6 +5,14 @@ import './Hifdh.css'
 // ── Spaced repetition (Leitner boxes, per collection, in localStorage) ──
 const BOX_INTERVALS_DAYS = [0, 1, 3, 7, 14]
 const MODE_KEY = 'sual-hifdh-mode'
+const scopeStorageKey = (collectionId) => `sual-hifdh-scope-${collectionId}`
+
+function loadScope(col) {
+  const raw = localStorage.getItem(scopeStorageKey(col.id))
+  const n = raw ? parseInt(raw, 10) : NaN
+  if (!Number.isNaN(n) && n >= 1 && n <= col.items.length) return n
+  return col.items.length
+}
 const storageKey = (collectionId) => `sual-hifdh-${collectionId}`
 
 function loadProgress(collectionId) {
@@ -367,6 +375,7 @@ export default function Hifdh() {
   const [collection, setCollection] = useState(null)
   const [progress, setProgress] = useState({})
   const [mode, setMode] = useState(() => localStorage.getItem(MODE_KEY) || 'normal')
+  const [scope, setScope] = useState(1)
   const [session, setSession] = useState(null)
   const [qIndex, setQIndex] = useState(0)
   const [selected, setSelected] = useState(null)
@@ -384,13 +393,24 @@ export default function Hifdh() {
   const chooseCollection = (col) => {
     setCollection(col)
     setProgress(loadProgress(col.id))
+    setScope(loadScope(col))
     setSession(null)
     setFinished(false)
   }
 
+  const updateScope = (n) => {
+    setScope(n)
+    if (collection) localStorage.setItem(scopeStorageKey(collection.id), String(n))
+  }
+
+  const scopedItems = useMemo(
+    () => (collection ? collection.items.filter(x => x.num <= scope) : []),
+    [collection, scope]
+  )
+
   const dueItems = useMemo(
-    () => (collection ? collection.items.filter(x => isDue(progress[x.key])) : []),
-    [collection, progress]
+    () => scopedItems.filter(x => isDue(progress[x.key])),
+    [scopedItems, progress]
   )
 
   const sessionSize = hard ? 10 : 6
@@ -405,7 +425,8 @@ export default function Hifdh() {
 
   const startSession = () => {
     const due = shuffle(dueItems).slice(0, sessionSize)
-    const qs = buildSession(due, collection, hard)
+    const scopedCollection = { ...collection, items: scopedItems }
+    const qs = buildSession(due, scopedCollection, hard)
     if (qs.length === 0) return
     setSession(qs)
     setQIndex(0)
@@ -527,8 +548,10 @@ export default function Hifdh() {
         <div className="hifdh-collections">
           {COLLECTIONS.map(col => {
             const prog = loadProgress(col.id)
-            const strong = col.items.filter(x => prog[x.key]?.box >= 3).length
-            const due = col.items.filter(x => isDue(prog[x.key])).length
+            const sc = loadScope(col)
+            const inScope = col.items.filter(x => x.num <= sc)
+            const strong = inScope.filter(x => prog[x.key]?.box >= 3).length
+            const due = inScope.filter(x => isDue(prog[x.key])).length
             return (
               <button key={col.id} className="hifdh-collection card" onClick={() => chooseCollection(col)}>
                 <div className="hifdh-collection-top">
@@ -538,7 +561,7 @@ export default function Hifdh() {
                 <h2 className="hifdh-collection-title">{col.title}</h2>
                 <p className="hifdh-collection-sub">{col.subtitle}</p>
                 <div className="hifdh-collection-stats">
-                  <span>{col.items.length} {col.itemNounPlural} loaded</span>
+                  <span>{sc} of {col.items.length} in my hifdh</span>
                   <span className="hifdh-collection-due">{due > 0 ? `${due} due` : 'All rested'}</span>
                   <span style={{ color: '#2e7d32' }}>{strong} strong</span>
                 </div>
@@ -731,10 +754,31 @@ export default function Hifdh() {
         </p>
       )}
 
+      <div className="hifdh-scope card">
+        <div className="hifdh-scope-head">
+          <span className="hifdh-mode-label">My memorization</span>
+          <span className="hifdh-scope-current">
+            Up to <strong>{collection.items[scope - 1]?.label}</strong>
+            <span className="hifdh-scope-meta"> · {collection.items[scope - 1]?.meta}</span>
+          </span>
+        </div>
+        <input
+          type="range"
+          min={1}
+          max={collection.items.length}
+          value={scope}
+          onChange={e => updateScope(Number(e.target.value))}
+          className="hifdh-scope-slider"
+        />
+        <p className="hifdh-scope-note">
+          Only what you have actually memorized is reviewed. Move the slider as your hifdh grows.
+        </p>
+      </div>
+
       <div className="hifdh-stats">
         <div className="hifdh-stat card">
-          <span className="hifdh-stat-value">{collection.items.length}</span>
-          <span className="hifdh-stat-label">{collection.itemNounPlural} loaded</span>
+          <span className="hifdh-stat-value">{scope}<span className="hifdh-stat-of">/{collection.items.length}</span></span>
+          <span className="hifdh-stat-label">In my hifdh</span>
         </div>
         <div className="hifdh-stat card">
           <span className="hifdh-stat-value" style={{ color: dueItems.length > 0 ? '#e65100' : '#2e7d32' }}>
@@ -744,7 +788,7 @@ export default function Hifdh() {
         </div>
         <div className="hifdh-stat card">
           <span className="hifdh-stat-value" style={{ color: '#2e7d32' }}>
-            {collection.items.filter(x => strengthOf(x.key) === 'strong').length}
+            {scopedItems.filter(x => strengthOf(x.key) === 'strong').length}
           </span>
           <span className="hifdh-stat-label">Strong</span>
         </div>
@@ -769,7 +813,11 @@ export default function Hifdh() {
       </p>
       <div className="hifdh-map">
         {collection.items.map(x => (
-          <div key={x.num} className={`hifdh-map-cell hifdh-map-cell--${strengthOf(x.key)}`} title={`${x.label} — ${x.meta}`}>
+          <div
+            key={x.num}
+            className={`hifdh-map-cell ${x.num <= scope ? `hifdh-map-cell--${strengthOf(x.key)}` : 'hifdh-map-cell--outscope'}`}
+            title={x.num <= scope ? `${x.label} — ${x.meta}` : `${x.label} — beyond your current hifdh`}
+          >
             {x.num}
           </div>
         ))}
