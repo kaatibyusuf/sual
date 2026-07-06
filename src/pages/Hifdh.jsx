@@ -30,7 +30,7 @@ function shuffle(arr) {
   return a
 }
 function words(text) { return text.split(/\s+/).filter(Boolean) }
-function skeleton(word) { return word.replace(/[\u064B-\u0652\u0670]/g, '') }
+function skeleton(word) { return word.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '') }
 
 // ── Question generators ─────────────────────────────────────────
 
