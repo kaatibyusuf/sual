@@ -349,22 +349,36 @@ function makePrecedes(item, collection) {
 
 function buildSession(dueItems, collection, hard) {
   const questions = []
-  const perItem = hard ? 4 : 3
+  const perItem = 7
   dueItems.forEach(item => {
-    const makers = shuffle([
+    // Fixed-answer drills appear at most once per item; randomizable drills
+    // (fresh gaps / cut points each call) can repeat to reach the quota.
+    const onceOnly = shuffle([
+      () => makeWhichItem(item, collection, hard),
+      ...(hard ? [() => makeAfter(item, collection), () => makePrecedes(item, collection)] : []),
+    ])
+    const repeatable = [
       () => makeFillBlank(item, collection, hard),
       () => makeMultiBlank(item, collection, hard),
       () => makeContinuation(item, collection, hard),
       () => makeEnding(item, collection, hard),
       () => makeBefore(item, collection, hard),
-      () => makeWhichItem(item, collection, hard),
-      ...(hard ? [() => makeAfter(item, collection), () => makePrecedes(item, collection), () => makeOrder(item, collection)] : []),
-    ])
+      ...(hard ? [() => makeOrder(item, collection)] : []),
+    ]
     let added = 0
-    for (const make of makers) {
+    for (const make of onceOnly) {
       if (added >= perItem) break
       const q = make()
       if (q) { questions.push(q); added++ }
+    }
+    let round = 0
+    while (added < perItem && round < 4) {
+      for (const make of shuffle(repeatable)) {
+        if (added >= perItem) break
+        const q = make()
+        if (q) { questions.push(q); added++ }
+      }
+      round++
     }
   })
   return shuffle(questions)
