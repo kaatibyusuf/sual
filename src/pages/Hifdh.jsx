@@ -78,6 +78,69 @@ function makeFillBlank(item, collection, hard) {
   }
 }
 
+// Triple-gap drill: three words removed at once, filled from a word bank.
+// The deepest of the tap drills — partial familiarity cannot survive it.
+function makeMultiBlank(item, collection, hard) {
+  const w = words(item.arabic)
+  const candidateIdx = w
+    .map((word, i) => ({ word, i }))
+    .filter(({ word, i }) => i > 0 && word.length >= 4)
+    .map(({ i }) => i)
+  if (candidateIdx.length < 3) return null
+
+  // pick 3 gap positions, spaced at least 2 words apart where possible
+  const gaps = []
+  const pool = shuffle(candidateIdx)
+  for (const i of pool) {
+    if (gaps.length >= 3) break
+    if (gaps.every(g => Math.abs(g - i) >= 2)) gaps.push(i)
+  }
+  if (gaps.length < 3) {
+    for (const i of pool) {
+      if (gaps.length >= 3) break
+      if (!gaps.includes(i)) gaps.push(i)
+    }
+  }
+  if (gaps.length < 3) return null
+  gaps.sort((a, b) => a - b)
+
+  const gapWords = gaps.map(i => w[i])
+
+  // word bank: the 3 answers + 4 distractors
+  let distractors = []
+  const notAnswer = (word) => !gapWords.some(g => skeleton(g) === skeleton(word))
+  if (hard) {
+    distractors = shuffle(
+      w.filter((word, i) => !gaps.includes(i) && word.length >= 4 && notAnswer(word))
+    ).slice(0, 4)
+  }
+  if (distractors.length < 4) {
+    const extra = shuffle(
+      collection.items.filter(x => x.num !== item.num).flatMap(x => words(x.arabic))
+        .filter(word => word.length >= 4 && notAnswer(word))
+    )
+    for (const word of extra) {
+      if (distractors.length >= 4) break
+      if (!distractors.some(d => skeleton(d) === skeleton(word))) distractors.push(word)
+    }
+  }
+  if (distractors.length < 4) return null
+
+  const bank = shuffle(
+    [...gapWords, ...distractors].map((text, id) => ({ id, text }))
+  )
+
+  return {
+    type: 'multiblank',
+    itemNum: item.num,
+    prompt: `Three words are missing from this ${collection.itemNoun}. Fill them in order.`,
+    textWords: w,
+    gaps,          // indices into textWords, in text order
+    gapWords,      // the answers, in text order
+    bank,          // shuffled word bank of 7
+  }
+}
+
 function makeContinuation(item, collection, hard) {
   const w = words(item.arabic)
   if (w.length < 12) return null
@@ -117,7 +180,6 @@ function makeContinuation(item, collection, hard) {
   }
 }
 
-// Identify the item. Normal: random labels. Hard: NEIGHBORING items.
 function makeWhichItem(item, collection, hard) {
   const others = collection.items.filter(x => x.num !== item.num)
   let wrong
@@ -144,7 +206,6 @@ function makeWhichItem(item, collection, hard) {
   }
 }
 
-// Which item comes AFTER this one (hard only)
 function makeAfter(item, collection) {
   const nextItem = collection.items.find(x => x.num === item.num + 1)
   if (!nextItem) return null
@@ -162,7 +223,6 @@ function makeAfter(item, collection) {
   }
 }
 
-// Order the segments (hard only)
 function makeOrder(item, collection) {
   const w = words(item.arabic)
   if (w.length < 12) return null
@@ -188,6 +248,7 @@ function buildSession(dueItems, collection, hard) {
   dueItems.forEach(item => {
     const makers = shuffle([
       () => makeFillBlank(item, collection, hard),
+      () => makeMultiBlank(item, collection, hard),
       () => makeContinuation(item, collection, hard),
       () => makeWhichItem(item, collection, hard),
       ...(hard ? [() => makeAfter(item, collection), () => makeOrder(item, collection)] : []),
@@ -212,6 +273,8 @@ export default function Hifdh() {
   const [selected, setSelected] = useState(null)
   const [orderPicks, setOrderPicks] = useState([])
   const [orderDone, setOrderDone] = useState(false)
+  const [multiPicks, setMultiPicks] = useState([])   // bank entries chosen, in gap order
+  const [multiDone, setMultiDone] = useState(false)
   const [results, setResults] = useState({})
   const [finished, setFinished] = useState(false)
 
@@ -233,15 +296,21 @@ export default function Hifdh() {
 
   const sessionSize = hard ? 10 : 6
 
+  const clearQuestionState = () => {
+    setSelected(null)
+    setOrderPicks([])
+    setOrderDone(false)
+    setMultiPicks([])
+    setMultiDone(false)
+  }
+
   const startSession = () => {
     const due = shuffle(dueItems).slice(0, sessionSize)
     const qs = buildSession(due, collection, hard)
     if (qs.length === 0) return
     setSession(qs)
     setQIndex(0)
-    setSelected(null)
-    setOrderPicks([])
-    setOrderDone(false)
+    clearQuestionState()
     setResults({})
     setFinished(false)
   }
@@ -270,17 +339,25 @@ export default function Hifdh() {
     }
   }
 
-  const undoSegment = () => {
-    if (orderDone) return
-    setOrderPicks(orderPicks.slice(0, -1))
+  const pickBankWord = (entry) => {
+    if (multiDone) return
+    if (multiPicks.some(p => p.id === entry.id)) return
+    const next = [...multiPicks, entry]
+    setMultiPicks(next)
+    if (next.length === currentQ.gaps.length) {
+      const correct = next.every((p, i) => p.text === currentQ.gapWords[i])
+      recordResult(currentQ.itemNum, correct)
+      setMultiDone(true)
+    }
   }
+
+  const undoSegment = () => { if (!orderDone) setOrderPicks(orderPicks.slice(0, -1)) }
+  const undoBank = () => { if (!multiDone) setMultiPicks(multiPicks.slice(0, -1)) }
 
   const advance = () => {
     if (qIndex + 1 < session.length) {
       setQIndex(qIndex + 1)
-      setSelected(null)
-      setOrderPicks([])
-      setOrderDone(false)
+      clearQuestionState()
     } else {
       const updated = { ...progress }
       Object.entries(results).forEach(([numStr, allCorrect]) => {
@@ -311,6 +388,35 @@ export default function Hifdh() {
     if (entry.box >= 3) return 'strong'
     if (entry.box >= 1) return 'building'
     return 'weak'
+  }
+
+  // Render the multiblank text with picks filled in so far
+  const renderMultiText = () => {
+    const pieces = []
+    let gapCounter = 0
+    currentQ.textWords.forEach((word, i) => {
+      const gapIdx = currentQ.gaps.indexOf(i)
+      if (gapIdx !== -1) {
+        const picked = multiPicks[gapIdx]
+        if (picked) {
+          const rightAnswer = picked.text === currentQ.gapWords[gapIdx]
+          pieces.push(
+            <span
+              key={`g${i}`}
+              className={`hifdh-gap-filled ${multiDone ? (rightAnswer ? 'hifdh-gap-filled--correct' : 'hifdh-gap-filled--wrong') : ''}`}
+            >
+              {picked.text}
+            </span>
+          )
+        } else {
+          pieces.push(<span key={`g${i}`} className="hifdh-gap-empty">______</span>)
+        }
+        gapCounter++
+      } else {
+        pieces.push(<span key={i}> {word} </span>)
+      }
+    })
+    return pieces
   }
 
   // ── Collection chooser ──
@@ -382,6 +488,7 @@ export default function Hifdh() {
   // ── Active question ──
   if (session && currentQ) {
     const isOrder = currentQ.type === 'order'
+    const isMulti = currentQ.type === 'multiblank'
     return (
       <div className="page-content hifdh-page">
         <div className="hifdh-session-top">
@@ -394,7 +501,7 @@ export default function Hifdh() {
 
         <div className="hifdh-question card">
           <p className="hifdh-question-prompt">{currentQ.prompt}</p>
-          {!isOrder && <p className="hifdh-question-arabic arabic">{currentQ.arabicPrompt}</p>}
+          {!isOrder && !isMulti && <p className="hifdh-question-arabic arabic">{currentQ.arabicPrompt}</p>}
           {isOrder && (
             <div className={`hifdh-order-built ${orderDone ? (orderPicks.every((p, i) => p.position === i) ? 'hifdh-order-built--correct' : 'hifdh-order-built--wrong') : ''}`}>
               {orderPicks.length === 0
@@ -402,9 +509,12 @@ export default function Hifdh() {
                 : <span className="arabic">{orderPicks.map(p => p.text).join(' ')}</span>}
             </div>
           )}
+          {isMulti && (
+            <p className="hifdh-question-arabic arabic">{renderMultiText()}</p>
+          )}
         </div>
 
-        {!isOrder && (
+        {!isOrder && !isMulti && (
           <div className="hifdh-options">
             {currentQ.options.map((opt, i) => {
               let cls = 'hifdh-option'
@@ -421,6 +531,35 @@ export default function Hifdh() {
               )
             })}
           </div>
+        )}
+
+        {isMulti && (
+          <>
+            <div className="hifdh-bank">
+              {currentQ.bank.map((entry) => {
+                const used = multiPicks.some(p => p.id === entry.id)
+                return (
+                  <button
+                    key={entry.id}
+                    className={`hifdh-bank-word ${used ? 'hifdh-option--faded' : ''}`}
+                    onClick={() => pickBankWord(entry)}
+                    disabled={used || multiDone}
+                  >
+                    <span className="arabic">{entry.text}</span>
+                  </button>
+                )
+              })}
+            </div>
+            {!multiDone && multiPicks.length > 0 && (
+              <button className="hifdh-btn hifdh-undo" onClick={undoBank}>↩ Undo last</button>
+            )}
+            {multiDone && !multiPicks.every((p, i) => p.text === currentQ.gapWords[i]) && (
+              <div className="hifdh-order-answer">
+                <p className="hifdh-order-answer-label">Correct words in order:</p>
+                <p className="arabic">{currentQ.gapWords.join(' — ')}</p>
+              </div>
+            )}
+          </>
         )}
 
         {isOrder && (
@@ -452,7 +591,7 @@ export default function Hifdh() {
           </>
         )}
 
-        {(selected !== null || orderDone) && (
+        {(selected !== null || orderDone || multiDone) && (
           <button className="hifdh-btn hifdh-btn--primary hifdh-next" onClick={advance}>
             {qIndex + 1 < session.length ? 'Next →' : 'Finish Review'}
           </button>
