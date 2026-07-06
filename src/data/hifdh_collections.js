@@ -15,7 +15,7 @@ export const COLLECTIONS = [
     id: 'quran-starter',
     title: 'Qur\'an',
     arabicTitle: 'القُرْآن',
-    subtitle: 'Juz 28, 29 & 30 — Al-Mujadila to An-Nas',
+    subtitle: 'An-Naml to An-Nas',
     icon: '📖',
     itemNoun: 'surah',
     itemNounPlural: 'surahs',
