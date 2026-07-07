@@ -1,13 +1,39 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useState } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
 import './BottomNav.css'
 
 const ICONS = {
+  home: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 11.5 12 4l9 7.5" />
+      <path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
+    </svg>
+  ),
+  quiz: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  ),
   dashboard: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="20" x2="12" y2="10" />
       <line x1="18" y1="20" x2="18" y2="4" />
       <line x1="6" y1="20" x2="6" y2="16" />
+    </svg>
+  ),
+  profile: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+    </svg>
+  ),
+  menu: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="4" y1="7" x2="20" y2="7" />
+      <line x1="4" y1="12" x2="20" y2="12" />
+      <line x1="4" y1="17" x2="20" y2="17" />
     </svg>
   ),
   disciplines: (
@@ -20,13 +46,6 @@ const ICONS = {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="5" y="7" width="14" height="10" rx="2" transform="rotate(-6 12 12)" />
       <rect x="6" y="8" width="14" height="10" rx="2" />
-    </svg>
-  ),
-  quiz: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9" />
-      <circle cx="12" cy="12" r="4.5" />
-      <circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" />
     </svg>
   ),
   stories: (
@@ -42,6 +61,21 @@ const ICONS = {
       <path d="M12 21c-3-2.5-8-6-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5-5 8.5-8 11z" />
     </svg>
   ),
+  calendar: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+      <line x1="8" y1="3" x2="8" y2="7" />
+      <line x1="16" y1="3" x2="16" y2="7" />
+    </svg>
+  ),
+  tajweed: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
+      <line x1="8" y1="8" x2="16" y2="8" />
+      <line x1="8" y1="12" x2="16" y2="12" />
+    </svg>
+  ),
   prayerTimes: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 21v-8a8 8 0 0 1 16 0v8" />
@@ -51,42 +85,90 @@ const ICONS = {
       <line x1="16" y1="21" x2="16" y2="15" />
     </svg>
   ),
-  profile: (
+  spaces: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+      <circle cx="9" cy="9" r="5" />
+      <circle cx="15" cy="15" r="5" />
+    </svg>
+  ),
+  hifdh: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3a4.5 4.5 0 0 0-4.5 4.5c0 1.2.5 2.3 1.2 3.1A4.5 4.5 0 0 0 7.5 14a4.5 4.5 0 0 0 9 0 4.5 4.5 0 0 0-1.2-3.4c.7-.8 1.2-1.9 1.2-3.1A4.5 4.5 0 0 0 12 3z" />
+      <line x1="12" y1="18.5" x2="12" y2="21" />
     </svg>
   ),
 }
 
-const NAV_ITEMS = [
-  { to: '/dashboard',    icon: 'dashboard',   label: 'Dashboard' },
-  { to: '/',             icon: 'disciplines', label: 'Disciplines', end: true },
-  { to: '/flashcards',   icon: 'flashcards',  label: 'Flashcards' },
-  { to: '/quiz',         icon: 'quiz',        label: 'Quiz' },
-  { to: '/stories',      icon: 'stories',     label: 'Stories' },
-  { to: '/duas',         icon: 'duas',        label: 'Duas' },
+const PRIMARY_ITEMS = [
+  { to: '/', icon: 'home', label: 'Home', end: true },
+  { to: '/quiz', icon: 'quiz', label: 'Quiz' },
+  { to: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
+  { to: '/profile', icon: 'profile', label: 'Profile' },
+]
+
+const MORE_ITEMS = [
+  { to: '/discipline', icon: 'disciplines', label: 'Disciplines' },
+  { to: '/flashcards', icon: 'flashcards', label: 'Flashcards' },
+  { to: '/stories', icon: 'stories', label: 'Stories' },
+  { to: '/duas', icon: 'duas', label: 'Duas' },
+  { to: '/calendar', icon: 'calendar', label: 'Calendar' },
+  { to: '/tajweed', icon: 'tajweed', label: 'Tajweed' },
   { to: '/prayer-times', icon: 'prayerTimes', label: 'Prayer Times' },
-  { to: '/profile',      icon: 'profile',     label: 'Profile' },
+  { to: '/spaces', icon: 'spaces', label: 'Spaces' },
+  { to: '/hifdh', icon: 'hifdh', label: 'Hifdh' },
 ]
 
 export default function BottomNav() {
+  const [moreOpen, setMoreOpen] = useState(false)
+  const navigate = useNavigate()
+
+  const goTo = (path) => {
+    setMoreOpen(false)
+    navigate(path)
+  }
+
   return (
-    <nav className="bottom-nav" aria-label="Primary">
-      {NAV_ITEMS.map(item => (
-        <NavLink
-          key={item.to}
-          to={item.to}
-          end={item.end}
-          aria-label={item.label}
-          title={item.label}
-          className={({ isActive }) =>
-            `bottom-nav-card${isActive ? ' bottom-nav-card--active' : ''}`
-          }
+    <>
+      {moreOpen && (
+        <div className="bottom-nav-overlay" onClick={() => setMoreOpen(false)}>
+          <div className="bottom-nav-sheet" onClick={e => e.stopPropagation()}>
+            <div className="bottom-nav-sheet-handle" />
+            <p className="bottom-nav-sheet-title">More</p>
+            <div className="bottom-nav-sheet-grid">
+              {MORE_ITEMS.map(item => (
+                <button key={item.to} className="bottom-nav-sheet-item" onClick={() => goTo(item.to)}>
+                  <span className="bottom-nav-sheet-icon">{ICONS[item.icon]}</span>
+                  <span className="bottom-nav-sheet-label">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <nav className="bottom-nav" aria-label="Primary">
+        {PRIMARY_ITEMS.map(item => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            className={({ isActive }) =>
+              `bottom-nav-card${isActive ? ' bottom-nav-card--active' : ''}`
+            }
+          >
+            <span className="bottom-nav-icon">{ICONS[item.icon]}</span>
+            <span className="bottom-nav-label">{item.label}</span>
+          </NavLink>
+        ))}
+        <button
+          className={`bottom-nav-card ${moreOpen ? 'bottom-nav-card--active' : ''}`}
+          onClick={() => setMoreOpen(true)}
+          aria-label="More"
         >
-          <span className="bottom-nav-icon">{ICONS[item.icon]}</span>
-        </NavLink>
-      ))}
-    </nav>
+          <span className="bottom-nav-icon">{ICONS.menu}</span>
+          <span className="bottom-nav-label">More</span>
+        </button>
+      </nav>
+    </>
   )
 }

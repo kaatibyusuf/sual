@@ -1,101 +1,104 @@
-/* ============================================================
-   BOTTOM NAVIGATION (mobile only)
-   src/components/BottomNav.css
-   ============================================================ */
+/* Adjust selectors here to match whatever your existing BottomNav.css
+   already has for .bottom-nav / .bottom-nav-card / .bottom-nav-icon /
+   .bottom-nav-label -- this block only ADDS the sheet/overlay styles,
+   which are new. Paste this at the bottom of your existing file. */
 
-.bottom-nav {
-  display: none; /* hidden on desktop by default */
+.bottom-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 300;
+  display: flex;
+  align-items: flex-end;
 }
 
-@media (max-width: 768px) {
-  .bottom-nav {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    background: #ffffff;
-    border-top: 1.5px solid #c8d8e8;
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
-    box-shadow: 0 -2px 12px rgba(9, 69, 112, 0.08);
-  }
-
-  .bottom-nav-card {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    padding: 6px 2px;
-    border-radius: 10px;
-    text-decoration: none;
-    color: #6a8090;
-    transition: background 0.15s, color 0.15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .bottom-nav-card:active {
-    background: #eef5fb;
-  }
-
-  .bottom-nav-icon {
-    font-size: 1.35rem;
-    line-height: 1;
-  }
-
-  .bottom-nav-label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    font-family: var(--font-ui);
-  }
-
-  .bottom-nav-card--active {
-    color: #094570;
-  }
-
-  .bottom-nav-card--active .bottom-nav-icon {
-    transform: scale(1.08);
-  }
-
-  /* leave room at the bottom of the page so content isn't hidden behind the bar */
-  .page-content {
-    padding-bottom: 84px;
-  }
+.bottom-nav-sheet {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px 20px 0 0;
+  padding: 12px 20px 28px;
+  animation: sheetUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ============================================
-   Dark mode
-   ============================================ */
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
 
-[data-theme="dark"] .bottom-nav {
+.bottom-nav-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: #d0d8e2;
+  border-radius: 100px;
+  margin: 0 auto 16px;
+}
+
+.bottom-nav-sheet-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a6080;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 16px;
+}
+
+.bottom-nav-sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.bottom-nav-sheet-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.bottom-nav-sheet-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f4f8;
+  border-radius: 14px;
+  color: #094570;
+}
+
+.bottom-nav-sheet-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bottom-nav-sheet-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #24374a;
+  text-align: center;
+}
+
+[data-theme="dark"] .bottom-nav-sheet {
+  background: #0f1f2e;
+}
+
+[data-theme="dark"] .bottom-nav-sheet-handle {
+  background: #2c3f54;
+}
+
+[data-theme="dark"] .bottom-nav-sheet-title {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .bottom-nav-sheet-icon {
   background: #0a1825;
-  border-top-color: #1e3448;
-  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.25);
-}
-
-[data-theme="dark"] .bottom-nav-card {
-  color: #6a8090;
-}
-
-[data-theme="dark"] .bottom-nav-card:active {
-  background: #132030;
-}
-
-[data-theme="dark"] .bottom-nav-card--active {
   color: #85CCFF;
 }
 
-.bottom-nav-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-}
-
-.bottom-nav-icon svg {
-  width: 100%;
-  height: 100%;
+[data-theme="dark"] .bottom-nav-sheet-label {
+  color: #c8e0f5;
 }

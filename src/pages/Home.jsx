@@ -79,16 +79,6 @@ export default function Home({ user }) {
 
   return (
     <div className="page-content home-page">
-      <div className="home-hero">
-        <div className="home-hero-mark">سُؤَال</div>
-        <div className="home-hero-content">
-          <h1 className="home-hero-title">Sual</h1>
-          <p className="home-hero-subtitle">
-            Your companion for the Islamic sciences — ask, learn, and test your knowledge
-            in Fiqh, Seerah, Arabic, and more.
-          </p>
-        </div>
-      </div>
 
       {/* Today strip — Hijri date + next prayer, using the shared lib so it
           always agrees with the Calendar and Prayer Times pages */}
