@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { DISCIPLINES, KNOWLEDGE_BASE } from '../data/knowledge.js'
+import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
 import './Disciplines.css'
 
 export default function Disciplines() {
@@ -21,7 +22,7 @@ export default function Disciplines() {
           return (
             <Link key={d.id} to={`/discipline/${d.id}`} className="disciplines-card">
               <div className="disciplines-card-top">
-                <span className="disciplines-card-icon">{d.icon}</span>
+                <span className="disciplines-card-icon">{DISCIPLINE_ICONS[d.icon]}</span>
                 <span className="disciplines-card-arabic arabic">{d.arabicName}</span>
               </div>
               <h2 className="disciplines-card-name">{d.name}</h2>

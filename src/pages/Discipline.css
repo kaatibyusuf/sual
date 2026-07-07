@@ -501,3 +501,16 @@
   color: #094570;
   font-weight: 600;
 }
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+}
+
+.icon-inline svg {
+  width: 100%;
+  height: 100%;
+}

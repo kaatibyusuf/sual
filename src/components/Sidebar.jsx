@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { DISCIPLINES } from '../data/knowledge.js'
+import { DISCIPLINE_ICONS } from './disciplineIcons.jsx'
 import './Sidebar.css'
 
 const ICONS = {
@@ -140,7 +141,7 @@ export default function Sidebar({ onSignOut, user }) {
             to={`/discipline/${d.id}`}
             className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-link--active' : ''}`}
           >
-            <span className="sidebar-link-icon">{d.icon}</span>
+            <span className="sidebar-link-icon">{DISCIPLINE_ICONS[d.icon]}</span>
             <span className="sidebar-link-text">
               <span className="sidebar-link-latin">{d.name}</span>
             </span>

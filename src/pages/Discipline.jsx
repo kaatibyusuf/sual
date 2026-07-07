@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { DISCIPLINES, KNOWLEDGE_BASE } from '../data/knowledge.js'
+import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
 import { supabase } from '../lib/supabase.js'
 import {
   INTERMEDIATE_QA,
@@ -21,6 +22,36 @@ import {
   ADVANCED_TAFSEER_QA,
 } from '../data/knowledge_advanced.js'
 import './Discipline.css'
+
+const ICONS = {
+  lock: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </svg>
+  ),
+  source: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
+      <line x1="8" y1="8" x2="16" y2="8" />
+      <line x1="8" y1="12" x2="16" y2="12" />
+    </svg>
+  ),
+  bookmark: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 3h12v18l-6-4-6 4V3z" />
+    </svg>
+  ),
+  bookmarkFilled: (
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 3h12v18l-6-4-6 4V3z" />
+    </svg>
+  ),
+}
+
+const IconInline = ({ name }) => (
+  <span className="icon-inline">{ICONS[name]}</span>
+)
 
 const INTERMEDIATE_ALL = {
   fiqh:      INTERMEDIATE_QA?.fiqh || [],
@@ -144,7 +175,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
 
       <div className="discipline-header">
         <div className="discipline-header-inner">
-          <div className="discipline-header-icon">{discipline.icon}</div>
+          <div className="discipline-header-icon">{DISCIPLINE_ICONS[discipline.icon]}</div>
           <div>
             <p className="discipline-header-arabic arabic">{discipline.arabicName}</p>
             <h1 className="page-title" style={{ marginBottom: 4 }}>{discipline.name}</h1>
@@ -169,7 +200,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
               onClick={() => { if (!locked) { setActiveLevel(lv.key); setExpandedId(null) } }}
               title={locked ? 'Complete previous level to unlock' : lv.label}
             >
-              {locked ? '🔒 ' : ''}{lv.label}
+              {locked ? <IconInline name="lock" /> : ''}{lv.label}
               <span className="disc-level-tab-arabic arabic">{lv.arabic}</span>
             </button>
           )
@@ -198,7 +229,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
 
       {isLocked(activeLevel) ? (
         <div className="disc-locked-msg">
-          <div className="disc-locked-icon">🔒</div>
+          <div className="disc-locked-icon"><IconInline name="lock" /></div>
           <h3>Level Locked</h3>
           <p>
             Complete all Beginner content and achieve a 70% quiz average
@@ -236,7 +267,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
 
                       {qa.source && (
                         <p className="qa-source">
-                          <span className="qa-source-label">📚 Source:</span>
+                          <span className="qa-source-label"><IconInline name="source" /> Source:</span>
                           {qa.source}
                         </p>
                       )}
@@ -255,7 +286,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
                           onClick={(e) => { e.stopPropagation(); toggleBookmark(qid) }}
                           title={bookmarked ? 'Remove bookmark' : 'Save this Q&A'}
                         >
-                          {bookmarked ? '🔖 Saved' : '🔖 Save'}
+                          <IconInline name={bookmarked ? 'bookmarkFilled' : 'bookmark'} /> {bookmarked ? 'Saved' : 'Save'}
                         </button>
                       )}
                     </div>
