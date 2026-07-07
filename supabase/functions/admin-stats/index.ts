@@ -1,9 +1,7 @@
 // supabase/functions/admin-stats/index.ts
 //
 // Returns growth and activity metrics for the admin dashboard.
-// Verifies the caller is a real signed-in admin before returning anything --
-// deploy WITHOUT --no-verify-jwt so Supabase already confirms this is a
-// logged-in user before the function code even runs.
+// Verifies the caller is a real signed-in admin before returning anything.
 //
 // Deploy:  supabase functions deploy admin-stats
 // (no new secrets needed -- reuses the auto-injected Supabase env vars)
@@ -17,7 +15,27 @@ const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!
 
 const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
 
+// Browsers send a CORS preflight (OPTIONS) before the real request, and
+// expect these headers on every response, including error responses --
+// without them the browser blocks the call before Supabase even sees it.
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  })
+}
+
 serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   const authHeader = req.headers.get('Authorization') ?? ''
   const jwt = authHeader.replace('Bearer ', '')
 
@@ -26,7 +44,7 @@ serve(async (req) => {
   })
   const { data: userData, error: userErr } = await asUser.auth.getUser(jwt)
   if (userErr || !userData?.user) {
-    return new Response(JSON.stringify({ error: 'Not authenticated' }), { status: 401 })
+    return json({ error: 'Not authenticated' }, 401)
   }
 
   const { data: adminRow } = await admin
@@ -36,14 +54,14 @@ serve(async (req) => {
     .maybeSingle()
 
   if (!adminRow) {
-    return new Response(JSON.stringify({ error: 'Not an admin' }), { status: 403 })
+    return json({ error: 'Not an admin' }, 403)
   }
 
   const allUsers: { id: string; created_at: string }[] = []
   let page = 1
   while (true) {
     const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 })
-    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 })
+    if (error) return json({ error: error.message }, 500)
     allUsers.push(...data.users.map(u => ({ id: u.id, created_at: u.created_at })))
     if (data.users.length < 1000) break
     page++
@@ -69,7 +87,7 @@ serve(async (req) => {
   const { data: hifdhUserRows } = await admin.from('hifdh_progress').select('user_id')
   const hifdhActiveUsers = new Set((hifdhUserRows || []).map(r => r.user_id)).size
 
-  return new Response(JSON.stringify({
+  return json({
     totalUsers: allUsers.length,
     newLast7,
     newLast30,
@@ -78,5 +96,5 @@ serve(async (req) => {
     totalSpacesPosts: totalPosts ?? 0,
     hifdhActiveUsers,
     hifdhTotalProgressRows: hifdhRows ?? 0,
-  }), { headers: { 'Content-Type': 'application/json' } })
+  })
 })
