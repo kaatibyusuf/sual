@@ -60,27 +60,25 @@ const LEVELS = [
 ]
 
 export default function LevelSelect({ user, onLevelSelected }) {
-  const [selected, setSelected] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(null)
   const [error, setError] = useState(null)
 
-  const handleConfirm = async () => {
-    if (!selected) return
-    setLoading(true)
+  const choose = async (levelKey) => {
+    if (saving) return
+    setSaving(levelKey)
     setError(null)
     try {
       const { error } = await supabase.from('user_levels').upsert({
         user_id: user.id,
-        current_level: selected,
+        current_level: levelKey,
         level_selected: true,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'user_id' })
       if (error) throw error
-      onLevelSelected(selected)
+      onLevelSelected(levelKey)
     } catch (err) {
       setError(err.message)
-    } finally {
-      setLoading(false)
+      setSaving(null)
     }
   }
 
@@ -96,64 +94,65 @@ export default function LevelSelect({ user, onLevelSelected }) {
           <h1 className="level-select-title">Choose Your Level</h1>
           <p className="level-select-subtitle">
             اِخْتَرْ مُسْتَوَاكَ — Select the level that best describes where you are in your journey of Islamic knowledge.
-            You can advance to higher levels as you progress.
+            You can advance to higher levels as you progress. Tapping a level saves it immediately.
           </p>
-        </div>
-
-        <div className="level-select-cards">
-          {LEVELS.map(level => (
-            <button
-              key={level.key}
-              className={`level-card ${selected === level.key ? 'level-card--selected' : ''}`}
-              onClick={() => setSelected(level.key)}
-              style={{
-                '--level-color': level.color,
-                '--level-bg': level.bg,
-                '--level-border': level.border,
-              }}
-            >
-              <div className="level-card-top">
-                <span className="level-card-icon">{level.icon}</span>
-                <div className="level-card-titles">
-                  <h2 className="level-card-label">{level.label}</h2>
-                  <p className="level-card-arabic arabic">{level.arabic}</p>
-                </div>
-                <div className={`level-card-check ${selected === level.key ? 'level-card-check--active' : ''}`}>
-                  {selected === level.key ? '✓' : ''}
-                </div>
-              </div>
-
-              <p className="level-card-desc">{level.description}</p>
-
-              <div className="level-card-includes">
-                <p className="level-card-includes-title">What you will study:</p>
-                {level.includes.map((item, i) => (
-                  <div key={i} className="level-card-include-item">
-                    <span className="level-card-include-dot" style={{ background: level.color }} />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="level-card-req" style={{ borderColor: level.border, background: level.bg }}>
-                <span className="level-card-req-label">Requirement:</span>
-                <span className="level-card-req-text">{level.requirement}</span>
-              </div>
-            </button>
-          ))}
         </div>
 
         {error && (
           <div className="level-select-error">⚠️ {error}</div>
         )}
 
-        <button
-          className="level-select-confirm"
-          onClick={handleConfirm}
-          disabled={!selected || loading}
-        >
-          {loading ? 'Saving...' : selected ? `Begin as ${LEVELS.find(l => l.key === selected)?.label} →` : 'Select a level to continue'}
-        </button>
+        <div className="level-select-cards">
+          {LEVELS.map(level => {
+            const isSaving = saving === level.key
+            return (
+              <button
+                key={level.key}
+                className={`level-card ${isSaving ? 'level-card--selected' : ''}`}
+                onClick={() => choose(level.key)}
+                disabled={!!saving}
+                style={{
+                  '--level-color': level.color,
+                  '--level-bg': level.bg,
+                  '--level-border': level.border,
+                  opacity: saving && !isSaving ? 0.5 : 1,
+                }}
+              >
+                <div className="level-card-top">
+                  <span className="level-card-icon">{level.icon}</span>
+                  <div className="level-card-titles">
+                    <h2 className="level-card-label">{level.label}</h2>
+                    <p className="level-card-arabic arabic">{level.arabic}</p>
+                  </div>
+                  <div className={`level-card-check ${isSaving ? 'level-card-check--active' : ''}`}>
+                    {isSaving ? '…' : ''}
+                  </div>
+                </div>
+
+                <p className="level-card-desc">{level.description}</p>
+
+                <div className="level-card-includes">
+                  <p className="level-card-includes-title">What you will study:</p>
+                  {level.includes.map((item, i) => (
+                    <div key={i} className="level-card-include-item">
+                      <span className="level-card-include-dot" style={{ background: level.color }} />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="level-card-req" style={{ borderColor: level.border, background: level.bg }}>
+                  <span className="level-card-req-label">Requirement:</span>
+                  <span className="level-card-req-text">{level.requirement}</span>
+                </div>
+
+                <div className="level-card-cta" style={{ color: level.color }}>
+                  {isSaving ? 'Saving...' : `Begin as ${level.label} →`}
+                </div>
+              </button>
+            )
+          })}
+        </div>
 
         <p className="level-select-note">
           The Prophet ﷺ said: "Whoever Allah wants good for, He gives him understanding of the religion."

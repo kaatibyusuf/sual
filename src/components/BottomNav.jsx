@@ -109,7 +109,7 @@ const PRIMARY_ITEMS = [
 
 // Everything else, in the More sheet.
 const MORE_ITEMS = [
-  { to: '/discipline', icon: 'disciplines', label: 'Disciplines' },
+  { to: '/disciplines', icon: 'disciplines', label: 'Disciplines' },
   { to: '/flashcards', icon: 'flashcards', label: 'Flashcards' },
   { to: '/stories', icon: 'stories', label: 'Stories' },
   { to: '/duas', icon: 'duas', label: 'Duas' },

@@ -192,6 +192,7 @@
   flex: 1;
   min-height: 100vh;
   overflow: hidden;
+  margin-left: var(--sidebar-width);
 }
 
 .main-wrapper .main-content {
