@@ -189,3 +189,14 @@
   color: #ffffff;
   border-color: rgba(255,255,255,0.4);
 }
+.sidebar-wa-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+}
+
+
+.sidebar-wa-icon svg {
+  width: 100%;
+  height: 100%;
+}
