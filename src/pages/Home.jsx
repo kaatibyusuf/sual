@@ -22,7 +22,6 @@ export default function Home({ user }) {
   const [levelData, setLevelData] = useState(null)
   const [statsLoading, setStatsLoading] = useState(true)
 
-  // Keep the next-prayer countdown live without needing a full clock UI
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 30000)
     return () => clearInterval(interval)
@@ -79,9 +78,17 @@ export default function Home({ user }) {
 
   return (
     <div className="page-content home-page">
+      <div className="home-hero">
+        <div className="home-hero-mark">سُؤَال</div>
+        <div className="home-hero-content">
+          <h1 className="home-hero-title">Sual</h1>
+          <p className="home-hero-subtitle">
+            Your companion for the Islamic sciences — ask, learn, and test your knowledge
+            in Fiqh, Seerah, Arabic, and more.
+          </p>
+        </div>
+      </div>
 
-      {/* Today strip — Hijri date + next prayer, using the shared lib so it
-          always agrees with the Calendar and Prayer Times pages */}
       <div className="home-today-strip">
         <div className="home-today-item">
           <span className="home-today-label">Today</span>
@@ -98,8 +105,6 @@ export default function Home({ user }) {
         )}
       </div>
 
-      {/* Stats row — mirrors the exact fields Dashboard computes, so this
-          never shows a number that disagrees with the Dashboard page */}
       {user && !statsLoading && (
         <div className="home-stats-row">
           <Link to="/dashboard" className="home-stat-card">

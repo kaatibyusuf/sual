@@ -99,6 +99,7 @@ const ICONS = {
   ),
 }
 
+// The four always-visible tabs.
 const PRIMARY_ITEMS = [
   { to: '/', icon: 'home', label: 'Home', end: true },
   { to: '/quiz', icon: 'quiz', label: 'Quiz' },
@@ -106,6 +107,7 @@ const PRIMARY_ITEMS = [
   { to: '/profile', icon: 'profile', label: 'Profile' },
 ]
 
+// Everything else, in the More sheet.
 const MORE_ITEMS = [
   { to: '/discipline', icon: 'disciplines', label: 'Disciplines' },
   { to: '/flashcards', icon: 'flashcards', label: 'Flashcards' },

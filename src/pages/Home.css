@@ -2,12 +2,56 @@
   padding-top: 40px;
 }
 
-/* ── Today strip ────────────────────────────────────────────────
-   Both cards share one card treatment (background, radius, shadow)
-   and differ only in their accent color:
-   - Today   -> cool blue
-   - Prayer  -> gold, matches the amber countdown text inside it
-   ────────────────────────────────────────────────────────────── */
+.home-hero {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 24px;
+  padding: 40px;
+  background: linear-gradient(135deg, var(--regal-blue) 0%, #1a6fa3 100%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+.home-hero::after {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(133, 204, 255, 0.1);
+  pointer-events: none;
+}
+
+.home-hero-mark {
+  font-family: var(--font-arabic);
+  font-size: 5rem;
+  color: var(--pastel-blue);
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: 0.9;
+  text-shadow: 0 4px 24px rgba(133, 204, 255, 0.4);
+}
+
+.home-hero-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.home-hero-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
+  max-width: 480px;
+}
+
 .home-today-strip {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -74,8 +118,6 @@
   color: #c8952f;
 }
 
-/* ── Stats row ──────────────────────────────────────────────────
-   Same light/dark card treatment as the Today strip. */
 .home-stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -137,6 +179,15 @@
 }
 
 @media (max-width: 768px) {
+  .home-hero {
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px 24px;
+  }
+
+  .home-hero-mark { font-size: 3.5rem; }
+  .home-hero-title { font-size: 1.7rem; }
+
   .home-today-strip {
     grid-template-columns: 1fr;
   }
