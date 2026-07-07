@@ -1,3 +1,4 @@
+```css
 .counter {
   font-size: 16px;
   padding: 5px 10px;
@@ -192,10 +193,10 @@
   flex: 1;
   min-height: 100vh;
   overflow: hidden;
-  margin-left: var(--sidebar-width);
 }
 
 .main-wrapper .main-content {
   flex: 1;
   overflow-y: auto;
 }
+```

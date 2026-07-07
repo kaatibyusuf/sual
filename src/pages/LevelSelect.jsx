@@ -2,12 +2,37 @@ import React, { useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './LevelSelect.css'
 
+const ICONS = {
+  beginner: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21V10" />
+      <path d="M12 14c0-4-3-6-7-6 0 4 3 6 7 6z" />
+      <path d="M12 10c0-4 3-6 7-6 0 4-3 6-7 6z" />
+    </svg>
+  ),
+  intermediate: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      <line x1="9" y1="7" x2="15" y2="7" />
+      <line x1="9" y1="11" x2="15" y2="11" />
+    </svg>
+  ),
+  advanced: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 9l10-5 10 5-10 5-10-5z" />
+      <path d="M6 11.5v4c0 1.5 2.7 3 6 3s6-1.5 6-3v-4" />
+      <path d="M22 9v6" />
+    </svg>
+  ),
+}
+
 const LEVELS = [
   {
     key: 'beginner',
     label: 'Beginner',
     arabic: 'مُبْتَدِئ',
-    icon: '🌱',
+    icon: 'beginner',
     color: '#2e7d32',
     bg: 'rgba(46,125,50,0.08)',
     border: 'rgba(46,125,50,0.25)',
@@ -25,7 +50,7 @@ const LEVELS = [
     key: 'intermediate',
     label: 'Intermediate',
     arabic: 'مُتَوَسِّط',
-    icon: '📚',
+    icon: 'intermediate',
     color: '#e65100',
     bg: 'rgba(230,81,0,0.08)',
     border: 'rgba(230,81,0,0.25)',
@@ -43,7 +68,7 @@ const LEVELS = [
     key: 'advanced',
     label: 'Advanced',
     arabic: 'مُتَقَدِّم',
-    icon: '🎓',
+    icon: 'advanced',
     color: '#6a1b9a',
     bg: 'rgba(106,27,154,0.08)',
     border: 'rgba(106,27,154,0.25)',
@@ -119,7 +144,7 @@ export default function LevelSelect({ user, onLevelSelected }) {
                 }}
               >
                 <div className="level-card-top">
-                  <span className="level-card-icon">{level.icon}</span>
+                  <span className="level-card-icon">{ICONS[level.icon]}</span>
                   <div className="level-card-titles">
                     <h2 className="level-card-label">{level.label}</h2>
                     <p className="level-card-arabic arabic">{level.arabic}</p>
