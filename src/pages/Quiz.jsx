@@ -300,9 +300,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
           <div className="quiz-start-row">
             <p className="quiz-start-label">
-              Selected: <strong className="quiz-selected-inline">
-                {selectedInfo.icon} {selectedInfo.name}
-              </strong> · <strong>
+  Selected: <strong className="quiz-selected-inline">
+    <span className="icon-inline">{selectedInfo.icon}</span> {selectedInfo.name}
+  </strong> · <strong>
                 {selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1)}
               </strong>
             </p>
