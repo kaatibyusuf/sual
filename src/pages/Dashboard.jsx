@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { DISCIPLINES } from '../data/knowledge.js'
+import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
 import './Dashboard.css'
 
 const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced']
@@ -135,7 +136,7 @@ export default function Dashboard({ user }) {
 
         {levelIndex === LEVEL_ORDER.length - 1 && (
           <p className="dash-unlock-hint" style={{ color: '#6a1b9a' }}>
-            🎓 Advanced level unlocked — all content available
+            Advanced level unlocked — all content available
           </p>
         )}
       </div>
@@ -173,7 +174,7 @@ export default function Dashboard({ user }) {
               to={`/discipline/${d.id}`}
               className="dash-disc-row card"
             >
-              <span className="dash-disc-icon">{d.icon}</span>
+              <span className="dash-disc-icon">{DISCIPLINE_ICONS[d.icon]}</span>
               <div className="dash-disc-info">
                 <span className="dash-disc-name">{d.name}</span>
                 <span className="dash-disc-arabic arabic">{d.arabicName}</span>
@@ -223,7 +224,9 @@ export default function Dashboard({ user }) {
               })
               return (
                 <div key={i} className="dash-recent-row card">
-                  <span className="dash-recent-icon">{disc?.icon || '🎲'}</span>
+                  <span className="dash-recent-icon">
+                    {disc ? DISCIPLINE_ICONS[disc.icon] : DISCIPLINE_ICONS.tafseer}
+                  </span>
                   <div className="dash-recent-info">
                     <span className="dash-recent-name">{disc?.name || 'Mixed'}</span>
                     <span className="dash-recent-date">{date}</span>

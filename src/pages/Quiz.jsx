@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DISCIPLINES, QUIZ_QUESTIONS } from '../data/knowledge.js'
+import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
 import { supabase } from '../lib/supabase.js'
 import './Quiz.css'
 import {
@@ -21,6 +22,56 @@ import {
   ADVANCED_NAHW_QUIZ,
   ADVANCED_TAFSEER_QUIZ,
 } from '../data/knowledge_advanced.js'
+
+const ICONS = {
+  mixed: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="16 3 21 3 21 8" />
+      <line x1="4" y1="20" x2="21" y2="3" />
+      <polyline points="21 16 21 21 16 21" />
+      <line x1="15" y1="15" x2="21" y2="21" />
+      <line x1="4" y1="4" x2="9" y2="9" />
+    </svg>
+  ),
+  lock: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </svg>
+  ),
+  check: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  ),
+  cross: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  ),
+  target: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  chart: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="20" x2="12" y2="10" />
+      <line x1="18" y1="20" x2="18" y2="4" />
+      <line x1="6" y1="20" x2="6" y2="16" />
+    </svg>
+  ),
+  sparkle: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" />
+    </svg>
+  ),
+}
+
+const IconInline = ({ name }) => <span className="icon-inline">{ICONS[name]}</span>
 
 const INTERMEDIATE_QUIZ_ALL = {
   fiqh:      INTERMEDIATE_QUIZ || [],
@@ -142,7 +193,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
         .eq('user_id', user.id)
 
       setUnlockMsg(
-        `🎉 You've unlocked ${nextLevel.charAt(0).toUpperCase() + nextLevel.slice(1)} level!`
+        `You've unlocked ${nextLevel.charAt(0).toUpperCase() + nextLevel.slice(1)} level!`
       )
     } catch (err) {
       console.error('Level unlock check failed:', err)
@@ -180,10 +231,12 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     }
   }
 
-  const discLabel = (id) => {
-    if (id === 'mixed') return 'All Disciplines (Mixed)'
+  // Returns { icon, name } instead of a pre-joined string, so the
+  // caller can render the icon as JSX rather than concatenating text.
+  const discInfo = (id) => {
+    if (id === 'mixed') return { icon: ICONS.mixed, name: 'All Disciplines (Mixed)' }
     const d = DISCIPLINES.find(x => x.id === id)
-    return d ? `${d.icon} ${d.name}` : id
+    return d ? { icon: DISCIPLINE_ICONS[d.icon], name: d.name } : { icon: null, name: id }
   }
 
   const scorePercent = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0
@@ -196,6 +249,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
   // ── SELECT ───────────────────────────────────────────────────
   if (phase === 'select') {
+    const selectedInfo = discInfo(selectedDiscipline)
     return (
       <div className="page-content quiz-page">
         <h1 className="page-title">Quiz</h1>
@@ -208,7 +262,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
               className={`quiz-disc-btn ${selectedDiscipline === 'mixed' ? 'quiz-disc-btn--active' : ''}`}
               onClick={() => setSelectedDiscipline('mixed')}
             >
-              <span className="quiz-disc-icon">🎲</span>
+              <span className="quiz-disc-icon"><IconInline name="mixed" /></span>
               <span className="quiz-disc-name">Mixed</span>
               <span className="quiz-disc-arabic arabic">كُلّ العُلُوم</span>
             </button>
@@ -218,7 +272,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
                 className={`quiz-disc-btn ${selectedDiscipline === d.id ? 'quiz-disc-btn--active' : ''}`}
                 onClick={() => setSelectedDiscipline(d.id)}
               >
-                <span className="quiz-disc-icon">{d.icon}</span>
+                <span className="quiz-disc-icon">{DISCIPLINE_ICONS[d.icon]}</span>
                 <span className="quiz-disc-name">{d.name}</span>
                 <span className="quiz-disc-arabic arabic">{d.arabicName}</span>
               </button>
@@ -238,7 +292,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
                 onClick={() => !lv.locked && setSelectedLevel(lv.key)}
                 title={lv.locked ? 'Complete previous level to unlock' : ''}
               >
-                {lv.locked ? '🔒 ' : ''}{lv.label}
+                {lv.locked ? <IconInline name="lock" /> : ''}{lv.label}
                 <span className="quiz-level-arabic arabic">{lv.arabic}</span>
               </button>
             ))}
@@ -246,7 +300,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
           <div className="quiz-start-row">
             <p className="quiz-start-label">
-              Selected: <strong>{discLabel(selectedDiscipline)}</strong> · <strong>
+              Selected: <strong className="quiz-selected-inline">
+                {selectedInfo.icon} {selectedInfo.name}
+              </strong> · <strong>
                 {selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1)}
               </strong>
             </p>
@@ -300,7 +356,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
           {revealed && (
             <div className={`quiz-explanation ${chosen === q.correct ? 'quiz-explanation--correct' : 'quiz-explanation--wrong'}`}>
-              <span className="quiz-explanation-icon">{chosen === q.correct ? '✓' : '✗'}</span>
+              <span className="quiz-explanation-icon">
+                <IconInline name={chosen === q.correct ? 'check' : 'cross'} />
+              </span>
               <p>{q.explanation}</p>
             </div>
           )}
@@ -324,7 +382,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     <div className="page-content quiz-page">
       <div className="quiz-result-card card">
         <div className="quiz-result-header">
-          <span className="quiz-result-icon">🎯</span>
+          <span className="quiz-result-icon"><IconInline name="target" /></span>
           <h2 className="quiz-result-title">Quiz Complete</h2>
           <div className="quiz-result-score"  style={{ color }}>{score} / {questions.length}</div>
           <div className="quiz-result-percent" style={{ color }}>{scorePercent}%</div>
@@ -333,7 +391,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
         {unlockMsg && (
           <div className="quiz-unlock-banner">
-            {unlockMsg}
+            <IconInline name="sparkle" /> {unlockMsg}
           </div>
         )}
 
@@ -345,7 +403,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
               className={`quiz-review-item ${a.chosen === a.correct ? 'quiz-review-item--correct' : 'quiz-review-item--wrong'}`}
             >
               <div className="quiz-review-q">
-                <span className="quiz-review-icon">{a.chosen === a.correct ? '✓' : '✗'}</span>
+                <span className="quiz-review-icon">
+                  <IconInline name={a.chosen === a.correct ? 'check' : 'cross'} />
+                </span>
                 <strong>Q{i + 1}:</strong> {a.question}
               </div>
               <div className="quiz-review-ans">
@@ -362,7 +422,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
         <div className="quiz-result-actions">
           <button className="btn btn-primary" onClick={startQuiz}>Retry Quiz</button>
           <button className="btn btn-ghost"   onClick={() => setPhase('select')}>Change Discipline</button>
-          <Link   to="/dashboard" className="btn btn-ghost">📊 View Dashboard</Link>
+          <Link   to="/dashboard" className="btn btn-ghost">
+            <IconInline name="chart" /> View Dashboard
+          </Link>
         </div>
       </div>
     </div>

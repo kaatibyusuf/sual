@@ -414,3 +414,17 @@
   .profile-sub-details { grid-template-columns: 1fr; }
   .profile-form { padding: 20px; }
 }
+
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+}
+
+.icon-inline svg {
+  width: 100%;
+  height: 100%;
+}
