@@ -27,7 +27,7 @@ export default function Dashboard({ user }) {
             .from('quiz_history')
             .select('*')
             .eq('user_id', user.id)
-            .order('created_at', { ascending: false })
+            .order('taken_at', { ascending: false })
             .limit(50),
           supabase
             .from('user_levels')
@@ -219,7 +219,7 @@ export default function Dashboard({ user }) {
           <div className="dash-recent-list">
             {recent.map((r, i) => {
               const disc = DISCIPLINES.find(d => d.id === r.discipline)
-              const date = new Date(r.created_at).toLocaleDateString('en-GB', {
+              const date = new Date(r.taken_at).toLocaleDateString('en-GB', {
                 day: 'numeric', month: 'short',
               })
               return (

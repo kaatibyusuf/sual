@@ -166,7 +166,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
         .select('percentage')
         .eq('user_id', user.id)
         .eq('discipline', selectedDiscipline)
-        .order('created_at', { ascending: false })
+        .order('taken_at', { ascending: false })
         .limit(5)
 
       if (!history || history.length < 1) return
@@ -231,8 +231,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     }
   }
 
-  // Returns { icon, name } instead of a pre-joined string, so the
-  // caller can render the icon as JSX rather than concatenating text.
   const discInfo = (id) => {
     if (id === 'mixed') return { icon: ICONS.mixed, name: 'All Disciplines (Mixed)' }
     const d = DISCIPLINES.find(x => x.id === id)
