@@ -6,7 +6,7 @@ import { readFileSync } from 'fs'
 
 // -- EDIT THESE FOUR LINES --
 const SECRET = 'sual2026launchXk9mPqR7'      // same BROADCAST_SECRET as before
-const SUBJECT = 'Sual launches in 3 days'
+const SUBJECT = 'Sual Is Live!'
 const HTML_PATH = 'src/pages/sual-launch-email-2.html' // whichever email you're sending
 const EMAILS_PATH = 'emails.txt'                  // your exported Google Doc list
 // -----------------------------

@@ -6,8 +6,8 @@ import { readFileSync } from 'fs'
 
 // -- EDIT THESE THREE LINES --
 const SECRET = 'sual2026launchXk9mPqR7'
-const SUBJECT = 'Sual launches in 3 days'
-const HTML_PATH = 'src/pages/sual-launch-email-2.html' // adjust to your actual file path
+const SUBJECT = 'Sual Is Live!'
+const HTML_PATH = 'src\pages\sual-launch-day-email-long.html' // adjust to your actual file path
 // -----------------------------
 
 const FUNCTION_URL = 'https://fmqjgcowupsqzanarjva.supabase.co/functions/v1/send-broadcast'
