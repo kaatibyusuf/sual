@@ -95,6 +95,54 @@ const ADVANCED_QUIZ_ALL = {
 
 const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced']
 
+// ── Shuffle helpers ──────────────────────────────────────────────
+// `array.sort(() => Math.random() - 0.5)` (the previous approach) is
+// a well-known non-uniform shuffle — its bias depends on the sort
+// algorithm's comparison pattern. This is a proper Fisher-Yates,
+// which is uniformly random.
+function shuffle(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+// Guarantees every slot 0..size-1 is used exactly once before any
+// slot repeats, so the correct answer's position is evenly spread
+// across a quiz session instead of clumping — or, as was actually
+// happening here, never moving at all because the option order and
+// `correct` index were previously taken straight from the source
+// data with no shuffling step at all.
+function createPositionCycler(size) {
+  let queue = []
+  return function next() {
+    if (queue.length === 0) {
+      queue = shuffle(Array.from({ length: size }, (_, i) => i))
+    }
+    return queue.pop()
+  }
+}
+
+// Reorders a question's options and remaps `correct` to match,
+// placing the correct option at `position` and shuffling the wrong
+// options into the remaining slots.
+function reslotQuestion(q, position) {
+  const correctOption = q.options[q.correct]
+  const wrongOptions = q.options.filter((_, i) => i !== q.correct)
+  const shuffledWrong = shuffle(wrongOptions)
+  const options = new Array(q.options.length)
+  options[position] = correctOption
+  let w = 0
+  for (let i = 0; i < options.length; i++) {
+    if (i === position) continue
+    options[i] = shuffledWrong[w]
+    w++
+  }
+  return { ...q, options, correct: position }
+}
+
 function buildQuizPool(disciplineId, level = 'beginner') {
   const beginner     = QUIZ_QUESTIONS
   const intermediate = INTERMEDIATE_QUIZ_ALL
@@ -112,7 +160,7 @@ function buildQuizPool(disciplineId, level = 'beginner') {
         ? Object.values(intermediate).flat()
         : Object.values(beginner).flat()
 
-  return pool.sort(() => Math.random() - 0.5)
+  return shuffle(pool)
 }
 
 export default function Quiz({ user, userLevel = 'beginner' }) {
@@ -131,8 +179,22 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   const [unlockMsg,          setUnlockMsg]          = useState(null)
 
   const startQuiz = useCallback(() => {
-    const pool     = buildQuizPool(selectedDiscipline, selectedLevel)
-    const shuffled = pool.slice(0, Math.min(10, pool.length))
+    const pool   = buildQuizPool(selectedDiscipline, selectedLevel)
+    const picked = pool.slice(0, Math.min(10, pool.length))
+
+    // Reslot each question's options so the correct answer's button
+    // position is evenly spread across the session instead of
+    // reflecting whatever order the source data happened to use.
+    // Cyclers are keyed by option count in case some question sets
+    // don't all have the same number of options.
+    const cyclers = new Map()
+    const shuffled = picked.map(q => {
+      const size = q.options.length
+      if (!cyclers.has(size)) cyclers.set(size, createPositionCycler(size))
+      const position = cyclers.get(size)()
+      return reslotQuestion(q, position)
+    })
+
     setQuestions(shuffled)
     setCurrentIdx(0)
     setScore(0)
