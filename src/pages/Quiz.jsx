@@ -95,6 +95,66 @@ const ADVANCED_QUIZ_ALL = {
 
 const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced']
 
+// ── Answer-position shuffling ─────────────────────────────────
+// The question data has a fixed `correct` index baked in per
+// question (e.g. many were authored with the right answer at index
+// 1 / option B). Shuffling the *order of questions* does nothing to
+// fix that — the correct answer still lands on the same letter every
+// time a given question appears. These helpers reshuffle each
+// question's own options at quiz-start time and remap `correct` to
+// match, using a position cycler so the correct slot is spread
+// evenly across a 10-question session instead of left to chance
+// (plain per-question randomness can still clump on one letter over
+// a short session).
+function shuffle(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+function createPositionCycler(size) {
+  let queue = []
+  return function next() {
+    if (queue.length === 0) {
+      queue = shuffle(Array.from({ length: size }, (_, i) => i))
+    }
+    return queue.pop()
+  }
+}
+
+// Moves the correct option to `position`, shuffling the rest into the
+// remaining slots, and returns a new question object with `correct`
+// updated to match.
+function randomizeQuestionOptions(q, position) {
+  const correctText = q.options[q.correct]
+  const others = q.options.filter((_, i) => i !== q.correct)
+  const shuffledOthers = shuffle(others)
+  const options = new Array(q.options.length)
+  options[position] = correctText
+  let d = 0
+  for (let i = 0; i < options.length; i++) {
+    if (i === position) continue
+    options[i] = shuffledOthers[d]
+    d++
+  }
+  return { ...q, options, correct: position }
+}
+
+// One cycler per distinct option-count (almost always 4, but this
+// stays correct even if some question sets use a different count).
+function randomizeSession(questions) {
+  const cyclers = {}
+  return questions.map(q => {
+    const size = q.options.length
+    if (!cyclers[size]) cyclers[size] = createPositionCycler(size)
+    const position = cyclers[size]()
+    return randomizeQuestionOptions(q, position)
+  })
+}
+
 function buildQuizPool(disciplineId, level = 'beginner') {
   const beginner     = QUIZ_QUESTIONS
   const intermediate = INTERMEDIATE_QUIZ_ALL
@@ -141,7 +201,8 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
       return
     }
     setNoQuestionsMsg(null)
-    const shuffled = pool.slice(0, Math.min(10, pool.length))
+    const picked = pool.slice(0, Math.min(10, pool.length))
+    const shuffled = randomizeSession(picked)
     setQuestions(shuffled)
     setCurrentIdx(0)
     setScore(0)
