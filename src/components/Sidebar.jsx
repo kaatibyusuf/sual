@@ -52,6 +52,14 @@ const ICONS = {
       <line x1="8" y1="12" x2="16" y2="12" />
     </svg>
   ),
+  fiqh: (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="3" x2="12" y2="21" />
+    <line x1="4" y1="7" x2="20" y2="7" />
+    <path d="M4 7 2 12a3 3 0 0 0 6 0L6 7" />
+    <path d="M20 7 18 12a3 3 0 0 0 6 0l-2-5" />
+  </svg>
+),
   profile: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="8" r="4" />
@@ -91,6 +99,13 @@ const ICONS = {
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
     </svg>
   ),
+  tawheed: (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 3v18" />
+    <path d="M12 3a9 9 0 0 1 0 18" fill="none" />
+  </svg>
+),
 }
 
 const NAV_ITEMS = [
@@ -101,11 +116,13 @@ const NAV_ITEMS = [
   { path: '/duas', label: 'Duas', icon: 'duas' },
   { path: '/calendar', label: 'Calendar', icon: 'calendar' },
   { path: '/tajweed', label: 'Tajweed', icon: 'tajweed' },
+  { path: '/fiqh', label: 'Fiqh', icon: 'fiqh' },
   { path: '/profile', label: 'Profile', icon: 'profile' },
   { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
   { path: '/spaces', label: 'Spaces', icon: 'spaces' },
   { path: '/prayer-times', label: 'Prayer Times', icon: 'prayerTimes' },
   { path: '/hifdh', label: 'Hifdh', icon: 'hifdh' },
+  { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'
