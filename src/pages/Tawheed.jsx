@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TAWHEED_SECTIONS, TAWHEED_SCHOLARS } from '../data/tawheed.js'
+import { TAWHEED_SECTIONS, TAWHEED_SCHOLARS } from '../data/Tawheed.js'
 import './Tawheed.css'
 
 const LEVEL_COLORS = {
