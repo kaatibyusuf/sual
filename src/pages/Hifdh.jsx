@@ -1,31 +1,35 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { NAWAWI_HADITH, NAWAWI_TOTAL } from '../data/hifdh_nawawi.js'
+import { COLLECTIONS } from '../data/collections.js'
 import './Hifdh.css'
 
 // ── Spaced repetition (Leitner boxes, stored in localStorage) ──
 // box 0 = new/failed (due now), 1 = 1 day, 2 = 3 days, 3 = 7 days, 4 = 14 days
 const BOX_INTERVALS_DAYS = [0, 1, 3, 7, 14]
-const STORAGE_KEY = 'sual-hifdh-nawawi'
+const STORAGE_PREFIX = 'sual-hifdh'
 
-// How many hadith go into one review batch, and how many questions
-// each due hadith gets.
+// How many items go into one review batch, and how many questions
+// each due item gets.
 const SESSION_SIZE = 10
-const QUESTIONS_PER_HADITH = 3
+const QUESTIONS_PER_ITEM = 3
 
 // Every MCQ question type below produces exactly 1 correct answer +
 // 4 distractors, so the position cycler is fixed at 5 slots.
 const MCQ_OPTION_COUNT = 5
 
-function loadProgress() {
+function storageKey(collectionId) {
+  return `${STORAGE_PREFIX}-${collectionId}`
+}
+
+function loadProgress(collectionId) {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}
+    return JSON.parse(localStorage.getItem(storageKey(collectionId))) || {}
   } catch {
     return {}
   }
 }
 
-function saveProgress(progress) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
+function saveProgress(collectionId, progress) {
+  localStorage.setItem(storageKey(collectionId), JSON.stringify(progress))
 }
 
 function isDue(entry) {
@@ -50,7 +54,7 @@ function shuffle(arr) {
 }
 
 function words(text) {
-  return text.split(/\s+/).filter(Boolean)
+  return (text || '').split(/\s+/).filter(Boolean)
 }
 
 // Strip Arabic diacritics (tashkeel) and normalize alef/ya/ta-marbuta
@@ -99,14 +103,19 @@ function assembleOptions(correct, distractors, position) {
 }
 
 // ── Question generators ─────────────────────────────────────────
-// MCQ makers now return { type, hadithNum, prompt, arabicPrompt, correct, distractors }
-// — raw, unpositioned — so buildSession can assign the correct
-// answer's slot via the position cycler at assembly time.
+// These all operate on the generic item shape produced by
+// collections.js: { key, num, label, meta, arabic }. Nothing here
+// assumes "hadith" specifically, so the same generators serve the
+// Qur'an, the Arba'in, and Umdatul-Ahkam alike.
+//
+// MCQ makers return { type, itemKey, prompt, arabicPrompt, correct,
+// distractors } — raw, unpositioned — so buildSession can assign the
+// correct answer's slot via the position cycler at assembly time.
 
 // Type 1: fill the blank — one word removed, distractors matched by
 // word length so the blank can't be guessed by shape alone.
-function makeFillBlank(hadith, pool) {
-  const w = words(hadith.arabic)
+function makeFillBlank(item, pool) {
+  const w = words(item.arabic)
   const candidates = w
     .map((word, i) => ({ word, i }))
     .filter(({ word, i }) => i > 0 && word.length >= 4)
@@ -116,8 +125,8 @@ function makeFillBlank(hadith, pool) {
   const blanked = w.map((word, i) => (i === target.i ? '______' : word)).join(' ')
 
   const otherWords = pool
-    .filter(h => h.num !== hadith.num)
-    .flatMap(h => words(h.arabic))
+    .filter(it => it.key !== item.key)
+    .flatMap(it => words(it.arabic))
     .filter(word => word !== target.word)
 
   const closeLength = shuffle(
@@ -130,8 +139,8 @@ function makeFillBlank(hadith, pool) {
 
   return {
     type: 'blank',
-    hadithNum: hadith.num,
-    prompt: 'Which word completes this hadith?',
+    itemKey: item.key,
+    prompt: 'Which word completes this passage?',
     arabicPrompt: blanked,
     correct: { text: target.word },
     distractors: distractorWords.map(word => ({ text: word })),
@@ -139,100 +148,86 @@ function makeFillBlank(hadith, pool) {
 }
 
 // Type 2: what comes next — only the first third is shown, and
-// distractors are pulled from numerically nearby hadith so they're
+// distractors are pulled from numerically nearby items so they're
 // thematically closer and easier to confuse.
-function makeContinuation(hadith, pool) {
-  const w = words(hadith.arabic)
+function makeContinuation(item, pool) {
+  const w = words(item.arabic)
   if (w.length < 12) return null
   const split = Math.max(4, Math.floor(w.length / 3))
   const shown = w.slice(0, split).join(' ')
   const continuation = w.slice(split, split + 6).join(' ') + '...'
 
   const nearby = pool.filter(
-    h => h.num !== hadith.num && Math.abs(h.num - hadith.num) <= 4 && words(h.arabic).length >= 12
+    it => it.key !== item.key && Math.abs(it.num - item.num) <= 4 && words(it.arabic).length >= 12
   )
   const far = pool.filter(
-    h => h.num !== hadith.num && Math.abs(h.num - hadith.num) > 4 && words(h.arabic).length >= 12
+    it => it.key !== item.key && Math.abs(it.num - item.num) > 4 && words(it.arabic).length >= 12
   )
   const sourcePool = [...shuffle(nearby), ...shuffle(far)]
 
-  const distractors = sourcePool.slice(0, 4).map(h => {
-    const hw = words(h.arabic)
-    const s = Math.max(2, Math.floor(hw.length / 3))
-    return { text: hw.slice(s, s + 6).join(' ') + '...' }
+  const distractors = sourcePool.slice(0, 4).map(it => {
+    const iw = words(it.arabic)
+    const s = Math.max(2, Math.floor(iw.length / 3))
+    return { text: iw.slice(s, s + 6).join(' ') + '...' }
   })
 
   if (distractors.length < 4) return null
 
   return {
     type: 'continue',
-    hadithNum: hadith.num,
-    prompt: 'How does this hadith continue?',
+    itemKey: item.key,
+    prompt: 'How does this passage continue?',
     arabicPrompt: shown + ' ...',
     correct: { text: continuation },
     distractors,
   }
 }
 
-// Type 3: which number — locate the hadith in the collection
-function makeWhichNumber(hadith) {
-  const wrongNums = shuffle(
-    Array.from({ length: NAWAWI_TOTAL }, (_, i) => i + 1).filter(n => n !== hadith.num)
+// Type 3: which item — locate this item within the collection by its
+// label (e.g. "Hadith 12", "Surah An-Nas").
+function makeWhichItem(item, pool, collection) {
+  const wrongLabels = shuffle(
+    pool.filter(it => it.key !== item.key && it.label !== item.label)
   ).slice(0, 4)
+
+  if (wrongLabels.length < 4) return null
 
   return {
     type: 'number',
-    hadithNum: hadith.num,
-    prompt: 'Which hadith of the Arba\'in is this?',
-    arabicPrompt: hadith.arabic,
-    correct: { text: `Hadith ${hadith.num}` },
-    distractors: wrongNums.map(n => ({ text: `Hadith ${n}` })),
+    itemKey: item.key,
+    prompt: `Which ${collection.itemNoun} of ${collection.collectionName} is this?`,
+    arabicPrompt: item.arabic,
+    correct: { text: item.label },
+    distractors: wrongLabels.map(it => ({ text: it.label })),
   }
 }
 
-// Type 4: who narrated it — narrators repeat across the collection
-// (Abu Hurairah alone narrates several), so this isn't a free pass.
-function makeNarrator(hadith, pool) {
-  const otherNarrators = shuffle(
-    [...new Set(pool.filter(h => h.num !== hadith.num).map(h => h.narrator))]
-      .filter(n => n !== hadith.narrator)
+// Type 4: meta detail — narrator/source for hadith collections,
+// whatever descriptive tag the collection provides otherwise (e.g. a
+// Qur'an surah's theme or juz). Generic on purpose: it only reads
+// item.meta, so it needs no per-collection special-casing.
+function makeMeta(item, pool, collection) {
+  const otherMeta = shuffle(
+    [...new Set(pool.filter(it => it.key !== item.key).map(it => it.meta))]
+      .filter(m => m && m !== item.meta)
   ).slice(0, 4)
 
-  if (otherNarrators.length < 4) return null
+  if (!item.meta || otherMeta.length < 4) return null
 
   return {
-    type: 'narrator',
-    hadithNum: hadith.num,
-    prompt: 'Who narrated this hadith?',
-    arabicPrompt: hadith.arabic,
-    correct: { text: hadith.narrator },
-    distractors: otherNarrators.map(n => ({ text: n })),
+    type: 'meta',
+    itemKey: item.key,
+    prompt: `What is associated with this ${collection.itemNoun}?`,
+    arabicPrompt: item.arabic,
+    correct: { text: item.meta },
+    distractors: otherMeta.map(m => ({ text: m })),
   }
 }
 
-// Type 5: which collection — Bukhari, Muslim, Tirmidhi, etc.
-function makeSource(hadith, pool) {
-  const otherSources = shuffle(
-    [...new Set(pool.filter(h => h.num !== hadith.num).map(h => h.source))]
-      .filter(s => s !== hadith.source)
-  ).slice(0, 4)
-
-  if (otherSources.length < 4) return null
-
-  return {
-    type: 'source',
-    hadithNum: hadith.num,
-    prompt: 'Who collected this hadith?',
-    arabicPrompt: hadith.arabic,
-    correct: { text: hadith.source },
-    distractors: otherSources.map(s => ({ text: s })),
-  }
-}
-
-// Type 6 (typed, no multiple choice): the real hifdh test. Shows a
-// lead-in and requires typing the rest of the hadith from memory.
-function makeCompleteHadith(hadith) {
-  const w = words(hadith.arabic)
+// Type 5 (typed, no multiple choice): the real hifdh test. Shows a
+// lead-in and requires typing the rest of the passage from memory.
+function makeCompleteRecall(item) {
+  const w = words(item.arabic)
   if (w.length < 8) return null
   const cut = Math.max(4, Math.floor(w.length * 0.55))
   const lead = w.slice(0, cut).join(' ')
@@ -241,27 +236,26 @@ function makeCompleteHadith(hadith) {
 
   return {
     type: 'complete',
-    hadithNum: hadith.num,
-    prompt: 'Type the rest of this hadith from memory (no diacritics needed).',
+    itemKey: item.key,
+    prompt: 'Type the rest of this passage from memory (no diacritics needed).',
     arabicPrompt: lead + ' ...',
     answer: tail,
   }
 }
 
-function buildSession(dueHadith, pool) {
+function buildSession(dueItems, pool, collection) {
   const raw = []
-  dueHadith.forEach(h => {
+  dueItems.forEach(item => {
     const makers = shuffle([
-      () => makeFillBlank(h, pool),
-      () => makeContinuation(h, pool),
-      () => makeWhichNumber(h),
-      () => makeNarrator(h, pool),
-      () => makeSource(h, pool),
-      () => makeCompleteHadith(h),
+      () => makeFillBlank(item, pool),
+      () => makeContinuation(item, pool),
+      () => makeWhichItem(item, pool, collection),
+      () => makeMeta(item, pool, collection),
+      () => makeCompleteRecall(item),
     ])
     let added = 0
     for (const make of makers) {
-      if (added >= QUESTIONS_PER_HADITH) break
+      if (added >= QUESTIONS_PER_ITEM) break
       const q = make()
       if (q) { raw.push(q); added++ }
     }
@@ -284,24 +278,48 @@ function buildSession(dueHadith, pool) {
 
 // ── Component ───────────────────────────────────────────────────
 export default function Hifdh() {
-  const [progress, setProgress] = useState(loadProgress)
+  const [collectionId, setCollectionId] = useState(null)
+  const collection = useMemo(
+    () => COLLECTIONS.find(c => c.id === collectionId) || null,
+    [collectionId]
+  )
+
+  const [progress, setProgress] = useState({})
   const [session, setSession] = useState(null)   // array of questions
   const [qIndex, setQIndex] = useState(0)
   const [selected, setSelected] = useState(null) // option index picked (MCQ types)
   const [typedAnswer, setTypedAnswer] = useState('')
   const [typedSubmitted, setTypedSubmitted] = useState(false)
   const [typedCorrect, setTypedCorrect] = useState(false)
-  const [results, setResults] = useState({})     // hadithNum -> all-correct boolean
+  const [results, setResults] = useState({})     // itemKey -> all-correct boolean
   const [finished, setFinished] = useState(false)
 
-  const dueHadith = useMemo(
-    () => NAWAWI_HADITH.filter(h => isDue(progress[h.num])),
-    [progress]
+  // Load this collection's saved progress whenever the selected
+  // collection changes.
+  useEffect(() => {
+    if (collectionId) setProgress(loadProgress(collectionId))
+  }, [collectionId])
+
+  const dueItems = useMemo(
+    () => (collection ? collection.items.filter(it => isDue(progress[it.key])) : []),
+    [collection, progress]
   )
 
+  const openCollection = (id) => {
+    setCollectionId(id)
+    setSession(null)
+    setFinished(false)
+  }
+
+  const backToCollections = () => {
+    setCollectionId(null)
+    setSession(null)
+    setFinished(false)
+  }
+
   const startSession = () => {
-    const due = shuffle(dueHadith).slice(0, SESSION_SIZE)
-    const qs = buildSession(due, NAWAWI_HADITH)
+    const due = shuffle(dueItems).slice(0, SESSION_SIZE)
+    const qs = buildSession(due, collection.items, collection)
     if (qs.length === 0) return
     setSession(qs)
     setQIndex(0)
@@ -315,10 +333,10 @@ export default function Hifdh() {
 
   const currentQ = session ? session[qIndex] : null
 
-  const recordResult = (hadithNum, correct) => {
+  const recordResult = (itemKey, correct) => {
     setResults(prev => ({
       ...prev,
-      [hadithNum]: (prev[hadithNum] ?? true) && correct,
+      [itemKey]: (prev[itemKey] ?? true) && correct,
     }))
   }
 
@@ -326,7 +344,7 @@ export default function Hifdh() {
     if (selected !== null) return
     setSelected(optionIndex)
     const correct = currentQ.options[optionIndex].correct
-    recordResult(currentQ.hadithNum, correct)
+    recordResult(currentQ.itemKey, correct)
   }
 
   const submitTyped = () => {
@@ -334,7 +352,7 @@ export default function Hifdh() {
     const correct = normalizeArabic(typedAnswer) === normalizeArabic(currentQ.answer)
     setTypedCorrect(correct)
     setTypedSubmitted(true)
-    recordResult(currentQ.hadithNum, correct)
+    recordResult(currentQ.itemKey, correct)
   }
 
   const answered = selected !== null || typedSubmitted
@@ -349,34 +367,66 @@ export default function Hifdh() {
     } else {
       // Session over: move boxes and save
       const updated = { ...progress }
-      Object.entries(results).forEach(([numStr, allCorrect]) => {
-        const num = Number(numStr)
-        const entry = updated[num] || { box: 0 }
+      Object.entries(results).forEach(([key, allCorrect]) => {
+        const entry = updated[key] || { box: 0 }
         const box = allCorrect
           ? Math.min(entry.box + 1, BOX_INTERVALS_DAYS.length - 1)
           : Math.max(entry.box - 1, 0)
-        updated[num] = { box, due: nextDue(box) }
+        updated[key] = { box, due: nextDue(box) }
       })
-      saveProgress(updated)
+      saveProgress(collectionId, updated)
       setProgress(updated)
       setFinished(true)
     }
   }
 
   const resetAll = () => {
-    if (!window.confirm('Reset all hifdh progress? This cannot be undone.')) return
-    localStorage.removeItem(STORAGE_KEY)
+    if (!window.confirm(`Reset all ${collection.title} progress? This cannot be undone.`)) return
+    localStorage.removeItem(storageKey(collectionId))
     setProgress({})
     setSession(null)
     setFinished(false)
   }
 
-  const strengthOf = (num) => {
-    const entry = progress[num]
+  const strengthOf = (key) => {
+    const entry = progress[key]
     if (!entry) return 'new'
     if (entry.box >= 3) return 'strong'
     if (entry.box >= 1) return 'building'
     return 'weak'
+  }
+
+  // ── Collection picker screen ──
+  if (!collection) {
+    return (
+      <div className="page-content hifdh-page">
+        <h1 className="page-title">Hifdh Simulator</h1>
+        <p className="page-subtitle">مُحَاكِي الحِفْظ — Choose what to guard today</p>
+        <div className="hifdh-collections">
+          {COLLECTIONS.map(c => {
+            const p = loadProgress(c.id)
+            const due = c.items.filter(it => isDue(p[it.key])).length
+            const strong = c.items.filter(it => {
+              const e = p[it.key]
+              return e && e.box >= 3
+            }).length
+            return (
+              <button key={c.id} className="hifdh-collection-card card" onClick={() => openCollection(c.id)}>
+                <div className="hifdh-collection-icon">{c.icon}</div>
+                <div className="hifdh-collection-body">
+                  <h3 className="hifdh-collection-title">{c.title}</h3>
+                  <p className="hifdh-collection-arabic arabic">{c.arabicTitle}</p>
+                  <p className="hifdh-collection-subtitle">{c.subtitle}</p>
+                  <p className="hifdh-collection-stats">
+                    {strong}/{c.total} strong · {due} due
+                  </p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    )
   }
 
   // ── Session finished screen ──
@@ -385,23 +435,23 @@ export default function Hifdh() {
     const total = Object.keys(results).length
     return (
       <div className="page-content hifdh-page">
-        <h1 className="page-title">Hifdh Review</h1>
+        <h1 className="page-title">{collection.title} Review</h1>
         <div className="hifdh-done card">
           <div className="hifdh-done-icon">{strong === total ? '🌟' : '📚'}</div>
           <h2 className="hifdh-done-title">
             {strong === total ? 'Ma shaa Allah — perfect review' : 'Review complete'}
           </h2>
-          <p className="hifdh-done-score">{strong} of {total} hadith held firm</p>
+          <p className="hifdh-done-score">{strong} of {total} {collection.itemNounPlural} held firm</p>
           <p className="hifdh-done-note">
             {strong === total
-              ? 'Strong hadith return after a longer gap. Keep the streak.'
-              : 'Weak hadith will return sooner. Repetition is the whole secret of hifdh.'}
+              ? `Strong ${collection.itemNounPlural} return after a longer gap. Keep the streak.`
+              : `Weak ${collection.itemNounPlural} will return sooner. Repetition is the whole secret of hifdh.`}
           </p>
           <div className="hifdh-done-actions">
             <button className="hifdh-btn hifdh-btn--primary" onClick={() => setSession(null)}>
               Back to Overview
             </button>
-            {dueHadith.length > 0 && (
+            {dueItems.length > 0 && (
               <button className="hifdh-btn" onClick={startSession}>
                 Review Again
               </button>
@@ -471,7 +521,7 @@ export default function Hifdh() {
                   onClick={() => pick(i)}
                   disabled={selected !== null}
                 >
-                  <span className={currentQ.type === 'number' || currentQ.type === 'narrator' || currentQ.type === 'source' ? '' : 'arabic'}>
+                  <span className={currentQ.type === 'number' || currentQ.type === 'meta' ? '' : 'arabic'}>
                     {opt.text}
                   </span>
                 </button>
@@ -489,38 +539,41 @@ export default function Hifdh() {
     )
   }
 
-  // ── Overview screen ──
+  // ── Overview screen (per selected collection) ──
   return (
     <div className="page-content hifdh-page">
-      <h1 className="page-title">Hifdh Simulator</h1>
-      <p className="page-subtitle">مُحَاكِي الحِفْظ — Guard what you have memorized of the Arba'in An-Nawawiyyah</p>
+      <div className="hifdh-session-top">
+        <button className="hifdh-quit" onClick={backToCollections}>← Collections</button>
+      </div>
+      <h1 className="page-title">{collection.title}</h1>
+      <p className="page-subtitle">{collection.arabicTitle} — {collection.subtitle}</p>
 
       <div className="hifdh-stats">
         <div className="hifdh-stat card">
-          <span className="hifdh-stat-value">{NAWAWI_HADITH.length}</span>
-          <span className="hifdh-stat-label">Hadith loaded</span>
+          <span className="hifdh-stat-value">{collection.items.length}</span>
+          <span className="hifdh-stat-label">{collection.itemNounPlural} loaded</span>
         </div>
         <div className="hifdh-stat card">
-          <span className="hifdh-stat-value" style={{ color: dueHadith.length > 0 ? '#e65100' : '#2e7d32' }}>
-            {dueHadith.length}
+          <span className="hifdh-stat-value" style={{ color: dueItems.length > 0 ? '#e65100' : '#2e7d32' }}>
+            {dueItems.length}
           </span>
           <span className="hifdh-stat-label">Due for review</span>
         </div>
         <div className="hifdh-stat card">
           <span className="hifdh-stat-value" style={{ color: '#2e7d32' }}>
-            {NAWAWI_HADITH.filter(h => strengthOf(h.num) === 'strong').length}
+            {collection.items.filter(it => strengthOf(it.key) === 'strong').length}
           </span>
           <span className="hifdh-stat-label">Strong</span>
         </div>
       </div>
 
-      {dueHadith.length > 0 ? (
+      {dueItems.length > 0 ? (
         <button className="hifdh-btn hifdh-btn--primary hifdh-start" onClick={startSession}>
-          Start Review — {Math.min(dueHadith.length, SESSION_SIZE)} hadith →
+          Start Review — {Math.min(dueItems.length, SESSION_SIZE)} {collection.itemNounPlural} →
         </button>
       ) : (
         <div className="hifdh-alldone card">
-          <p>Nothing due right now. Every reviewed hadith is resting until its next appearance, in shaa Allah.</p>
+          <p>Nothing due right now. Every reviewed {collection.itemNoun} is resting until its next appearance, in shaa Allah.</p>
         </div>
       )}
 
@@ -532,14 +585,14 @@ export default function Hifdh() {
         <span><span className="hifdh-dot hifdh-dot--new" /> Not yet reviewed</span>
       </p>
       <div className="hifdh-map">
-        {NAWAWI_HADITH.map(h => (
-          <div key={h.num} className={`hifdh-map-cell hifdh-map-cell--${strengthOf(h.num)}`} title={`Hadith ${h.num} — ${h.narrator}`}>
-            {h.num}
+        {collection.items.map(it => (
+          <div key={it.key} className={`hifdh-map-cell hifdh-map-cell--${strengthOf(it.key)}`} title={`${it.label} — ${it.meta}`}>
+            {it.num}
           </div>
         ))}
       </div>
       <p className="hifdh-coming">
-        All {NAWAWI_TOTAL} hadith are loaded. Reviews mix blanks, narrator and source drills, and full-line recall typing — recognition alone won't carry you through.
+        All {collection.total} {collection.itemNounPlural} are loaded. Reviews mix blanks, detail drills, and full-line recall typing — recognition alone won't carry you through.
       </p>
 
       <button className="hifdh-reset" onClick={resetAll}>Reset all progress</button>
