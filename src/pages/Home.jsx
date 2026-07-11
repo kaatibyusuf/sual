@@ -49,7 +49,7 @@ export default function Home({ user }) {
             .from('quiz_history')
             .select('*')
             .eq('user_id', user.id)
-            .order('created_at', { ascending: false })
+            .order('taken_at', { ascending: false })
             .limit(50),
           supabase
             .from('user_levels')
