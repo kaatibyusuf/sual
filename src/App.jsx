@@ -15,6 +15,8 @@ import Stories from './pages/Stories.jsx'
 import Duas from './pages/Duas.jsx'
 import Calendar from './pages/Calendar.jsx'
 import Tajweed from './pages/Tajweed.jsx'
+import Fiqh from './pages/Fiqh.jsx'
+import Tawheed from './pages/Tawheed.jsx'
 import Profile from './pages/Profile.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Spaces from './pages/Spaces.jsx'
@@ -170,13 +172,15 @@ export default function App() {
             <Route path="/duas" element={<Duas />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/tajweed" element={<Tajweed />} />
+            <Route path="/fiqh" element={<Fiqh />} />
+            <Route path="/tawheed" element={<Tawheed />} />
             <Route path="/profile" element={<Profile user={user} />} />
             <Route path="/dashboard" element={<Dashboard user={user} />} />
             <Route path="/spaces" element={<Spaces user={user} />} />
             <Route path="/prayer-times" element={<PrayerTimes />} />
             <Route path="/hifdh" element={<Hifdh user={user} />} />
-            <Route path="*" element={<Home user={user} />} />
             <Route path="/admin" element={<Admin user={user} />} />
+            <Route path="*" element={<Home user={user} />} />
           </Routes>
         </main>
       </div>
