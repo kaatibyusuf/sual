@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react'
-import React, { useState, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DISCIPLINES, QUIZ_QUESTIONS } from '../data/knowledge.js'
 import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
