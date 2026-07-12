@@ -20,6 +20,7 @@ import Fiqh from './pages/fiqh.jsx'
 import Tawheed from './pages/Tawheed.jsx'
 import Profile from './pages/Profile.jsx'
 import Journey from './pages/Journey.jsx'
+import NotificationBell from './components/NotificationBell.jsx'
 import Spaces from './pages/Spaces.jsx'
 import PrayerTimes from './pages/PrayerTimes.jsx'
 import Disciplines from './pages/Disciplines.jsx'
@@ -155,6 +156,7 @@ export default function App() {
   return (
     <div className="app-layout">
       <Sidebar onSignOut={handleSignOut} user={user} />
+      <NotificationBell user={user} />
       <div className="main-wrapper">
         <Toolbar
           darkMode={darkMode}

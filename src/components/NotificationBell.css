@@ -1,0 +1,171 @@
+/* Positioned as a floating fixed element since it isn't wired into
+   Toolbar.jsx's own layout yet — safe to move once that file is
+   available, just drop the position/top/right rules below. */
+
+.notif-bell-wrapper {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 500;
+}
+
+.notif-bell-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid #c8d8e8;
+  background: #ffffff;
+  color: #094570;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(9, 69, 112, 0.10);
+  transition: all 0.15s ease;
+}
+
+.notif-bell-btn:hover {
+  border-color: #85CCFF;
+  background: #f0f7ff;
+}
+
+.notif-bell-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.notif-bell-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #c0392b;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.notif-bell-panel {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 300px;
+  max-width: calc(100vw - 40px);
+  background: #ffffff;
+  border: 1px solid #c8d8e8;
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(9, 69, 112, 0.18);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notif-bell-panel-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #4a6080;
+  margin-bottom: 2px;
+}
+
+.notif-bell-empty {
+  font-size: 0.85rem;
+  color: #8a9ab0;
+  padding: 8px 0;
+}
+
+.notif-bell-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.notif-bell-item:hover {
+  background: #f0f7ff;
+}
+
+.notif-bell-item-cat {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #094570;
+  opacity: 0.7;
+}
+
+.notif-bell-item-title {
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: #0d1b2a;
+  line-height: 1.4;
+}
+
+.notif-bell-viewall {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid #e8f0f8;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #094570;
+  text-decoration: none;
+  text-align: center;
+}
+
+.notif-bell-viewall:hover {
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .notif-bell-btn {
+  background: #0f1f2e;
+  border-color: #1e3448;
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .notif-bell-btn:hover {
+  background: #132030;
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .notif-bell-panel {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .notif-bell-item:hover {
+  background: #132030;
+}
+
+[data-theme="dark"] .notif-bell-item-title {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .notif-bell-viewall {
+  color: #85CCFF;
+  border-top-color: #1e3448;
+}
+
+@media (max-width: 768px) {
+  .notif-bell-wrapper {
+    top: auto;
+    bottom: 76px; /* clear of BottomNav */
+    right: 16px;
+  }
+
+  .notif-bell-panel {
+    top: auto;
+    bottom: 48px;
+  }
+}

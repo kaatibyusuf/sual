@@ -201,6 +201,7 @@ function buildTafseerQuestions(entry, historyPool) {
 }
 
 export default function Spaces({ user }) {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [subscription,   setSubscription]   = useState(null)
   const [subLoading,     setSubLoading]     = useState(true)
   const [confirmingPayment, setConfirmingPayment] = useState(false)
@@ -562,6 +563,24 @@ export default function Spaces({ user }) {
     if (activeTab === 'circles') fetchCircles()
     if (activeTab === 'tafseer') fetchTafseer()
   }, [activeTab, subscription, fetchAccountability, fetchCircles, fetchTafseer])
+
+  // Deep-link from a notification: /spaces?post=<id> opens that post
+  // directly. Gated on an ACTIVE subscription specifically (not just
+  // "user is logged in") — the post-detail view renders before the
+  // paywall check further down in this component, so without this
+  // guard a bare link could let a non-member jump straight to a
+  // post's content, which defeats the paywall's own intent even
+  // though the underlying row is already readable via RLS.
+  useEffect(() => {
+    if (subLoading || subscription?.status !== 'active') return
+    const postId = searchParams.get('post')
+    if (!postId) return
+    openPostById(postId)
+    const next = new URLSearchParams(searchParams)
+    next.delete('post')
+    setSearchParams(next, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subLoading, subscription, searchParams])
 
   if (!user) return null
 
