@@ -20,6 +20,47 @@ const CLASS_SCHEDULE = [
   { classId: 'hadeeth',   title: 'Hadeeth Class',   arabic: 'فَصْلُ الحَدِيث',    icon: '📜', day: 6, hour: 21, minute: 0 },
 ]
 
+// Fixed set of Sahaabah circles — five circles, one per member.
+// Named after the first five of the ten companions promised
+// Paradise, in their commonly narrated order.
+const CIRCLES = [
+  {
+    id: 'abu_bakr',
+    name: 'Halaqah Abi Bakr',
+    arabicName: 'حَلَقَةُ أَبِي بَكْر',
+    icon: '🕊️',
+    blurb: 'Named after Abu Bakr As-Siddiq, the first Caliph and the Prophet\'s closest companion — known for his unwavering trust in Allah.',
+  },
+  {
+    id: 'umar',
+    name: 'Halaqah Umar',
+    arabicName: 'حَلَقَةُ عُمَر',
+    icon: '⚔️',
+    blurb: 'Named after Umar ibn Al-Khattab, the second Caliph — known for his justice and strength in upholding the truth.',
+  },
+  {
+    id: 'uthman',
+    name: 'Halaqah Uthman',
+    arabicName: 'حَلَقَةُ عُثْمَان',
+    icon: '📖',
+    blurb: 'Named after Uthman ibn Affan, the third Caliph — known for his generosity and compiling the Quran into a single mushaf.',
+  },
+  {
+    id: 'ali',
+    name: 'Halaqah Ali',
+    arabicName: 'حَلَقَةُ عَلِيّ',
+    icon: '🗡️',
+    blurb: 'Named after Ali ibn Abi Talib, the fourth Caliph — known for his knowledge and closeness to the Prophet ﷺ.',
+  },
+  {
+    id: 'talhah',
+    name: 'Halaqah Talhah',
+    arabicName: 'حَلَقَةُ طَلْحَة',
+    icon: '🌿',
+    blurb: 'Named after Talhah ibn Ubaydillah, one of the ten promised Paradise — known for his generosity and bravery at Uhud.',
+  },
+]
+
 const CLASSES = [
   {
     id: 'arabiyyah',
@@ -219,6 +260,90 @@ function liveStatus(schedule, durationMinutes = 60) {
   return now >= start && now < end
 }
 
+// ── Daily tafseer quiz generator ──────────────────────────────
+// Builds a short multiple-choice test straight from whatever tafseer
+// text and lesson bullets were posted for the day — no separate quiz
+// content needs to be authored. Distractors are drawn from other
+// days' entries so the test still works with a small history.
+
+function tfWords(text) {
+  return (text || '').split(/\s+/).filter(Boolean)
+}
+
+function shuffleArr(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+function buildTafseerQuestions(entry, historyPool) {
+  const others = historyPool.filter(e => e.id !== entry.id)
+  const raw = []
+
+  // Q: which surah/ayah is today's — needs at least 3 other entries
+  // to build convincing wrong options.
+  if (others.length >= 3) {
+    const wrongLabels = shuffleArr(others).slice(0, 3).map(e => `${e.surah_name} ${e.surah_num}:${e.ayah_num}`)
+    raw.push({
+      question: "Which surah and ayah is today's verse from?",
+      optionPool: [`${entry.surah_name} ${entry.surah_num}:${entry.ayah_num}`, ...wrongLabels],
+      correctText: `${entry.surah_name} ${entry.surah_num}:${entry.ayah_num}`,
+    })
+  }
+
+  // Q per lesson bullet — needs a pool of other days' lessons to draw
+  // distractors from.
+  const allOtherLessons = others.flatMap(e => Array.isArray(e.lessons) ? e.lessons : [])
+  const lessons = Array.isArray(entry.lessons) ? entry.lessons : []
+  lessons.slice(0, 3).forEach(lesson => {
+    const wrong = shuffleArr(allOtherLessons.filter(l => l !== lesson)).slice(0, 3)
+    if (wrong.length < 3) return
+    raw.push({
+      question: "Which of these is a lesson drawn from today's ayah?",
+      optionPool: [lesson, ...wrong],
+      correctText: lesson,
+    })
+  })
+
+  // Fallback fill-blank straight from the tafseer body, in case there
+  // isn't enough history/lessons yet to build the question types above.
+  if (raw.length < 2) {
+    const sentences = (entry.tafseer_body || '').split(/(?<=[.!?])\s+/).filter(s => tfWords(s).length >= 5)
+    if (sentences.length > 0) {
+      const sentence = sentences[Math.floor(Math.random() * sentences.length)]
+      const words = tfWords(sentence)
+      const candidates = words.map((w, i) => ({ w, i })).filter(({ w }) => w.replace(/[.,!?]/g, '').length >= 5)
+      if (candidates.length > 0) {
+        const target = candidates[Math.floor(Math.random() * candidates.length)]
+        const blanked = words.map((w, i) => (i === target.i ? '______' : w)).join(' ')
+        const otherWords = others.flatMap(e => tfWords(e.tafseer_body)).filter(w => w.length >= 5 && w !== target.w)
+        const distractors = [...new Set(shuffleArr(otherWords))].slice(0, 3)
+        if (distractors.length === 3) {
+          raw.push({
+            question: "Which word completes this line from today's tafseer?",
+            context: blanked,
+            optionPool: [target.w, ...distractors],
+            correctText: target.w,
+          })
+        }
+      }
+    }
+  }
+
+  return raw.slice(0, 4).map(q => {
+    const options = shuffleArr(q.optionPool)
+    return {
+      question: q.question,
+      context: q.context || null,
+      options,
+      correct: options.indexOf(q.correctText),
+    }
+  })
+}
+
 export default function Spaces({ user }) {
   const [subscription,   setSubscription]   = useState(null)
   const [subLoading,     setSubLoading]     = useState(true)
@@ -240,6 +365,35 @@ export default function Spaces({ user }) {
     localStorage.setItem('sual-spaces-last-visit', new Date().toISOString())
     return prev ? new Date(prev) : null
   })
+
+  // ── Accountability partners state ──
+  const [myPair, setMyPair] = useState(null)
+  const [availableMembers, setAvailableMembers] = useState([])
+  const [accountabilityLoading, setAccountabilityLoading] = useState(false)
+  const [accountabilityError, setAccountabilityError] = useState(null)
+  const [pairing, setPairing] = useState(false)
+
+  // ── Sahaabah circles state ──
+  const [myCircle, setMyCircle] = useState(null)
+  const [circleCounts, setCircleCounts] = useState({})
+  const [circleMessages, setCircleMessages] = useState([])
+  const [circleMsgInput, setCircleMsgInput] = useState('')
+  const [circlesLoading, setCirclesLoading] = useState(false)
+  const [circlesError, setCirclesError] = useState(null)
+  const [joiningCircle, setJoiningCircle] = useState(false)
+  const [postingCircleMsg, setPostingCircleMsg] = useState(false)
+
+  // ── Daily tafseer state ──
+  const [todayTafseer, setTodayTafseer] = useState(null)
+  const [tafseerLoading, setTafseerLoading] = useState(false)
+  const [tafseerQuestions, setTafseerQuestions] = useState([])
+  const [tafseerPhase, setTafseerPhase] = useState('view')
+  const [tafseerQIndex, setTafseerQIndex] = useState(0)
+  const [tafseerChosen, setTafseerChosen] = useState(null)
+  const [tafseerRevealed, setTafseerRevealed] = useState(false)
+  const [tafseerScore, setTafseerScore] = useState(0)
+  const [tafseerAlreadyDone, setTafseerAlreadyDone] = useState(false)
+  const [tafseerPastScore, setTafseerPastScore] = useState('')
 
   // Keep class countdowns live without a visible clock
   const [, setClock] = useState(new Date())
@@ -311,6 +465,200 @@ export default function Spaces({ user }) {
     }
   }, [])
 
+  // ── Accountability partners fetch/actions ──
+  const fetchAccountability = useCallback(async () => {
+    setAccountabilityLoading(true)
+    setAccountabilityError(null)
+    try {
+      await supabase.rpc('release_lapsed_accountability_pairs')
+
+      const { data: pairData } = await supabase.rpc('get_my_accountability_pair')
+      const pair = Array.isArray(pairData) ? pairData[0] : pairData
+      setMyPair(pair || null)
+
+      if (!pair) {
+        const { data: avail } = await supabase.rpc('get_available_accountability_members')
+        setAvailableMembers(avail || [])
+      } else {
+        setAvailableMembers([])
+      }
+    } catch (err) {
+      setAccountabilityError(err.message)
+    } finally {
+      setAccountabilityLoading(false)
+    }
+  }, [])
+
+  const pairWith = async (otherUserId) => {
+    setPairing(true)
+    setAccountabilityError(null)
+    try {
+      const { error: rpcError } = await supabase.rpc('pair_accountability_partners', { other_user_id: otherUserId })
+      if (rpcError) throw rpcError
+      fetchAccountability()
+    } catch (err) {
+      setAccountabilityError(err.message)
+    } finally {
+      setPairing(false)
+    }
+  }
+
+  // ── Sahaabah circles fetch/actions ──
+  const fetchCircles = useCallback(async () => {
+    if (!user) return
+    setCirclesLoading(true)
+    setCirclesError(null)
+    try {
+      const { data: all } = await supabase.from('circle_memberships').select('user_id, circle_id')
+      const counts = {}
+      ;(all || []).forEach(row => { counts[row.circle_id] = (counts[row.circle_id] || 0) + 1 })
+      setCircleCounts(counts)
+
+      const mine = (all || []).find(row => row.user_id === user.id)
+      setMyCircle(mine ? mine.circle_id : null)
+
+      if (mine) {
+        const { data: msgs } = await supabase
+          .from('circle_messages')
+          .select('*')
+          .eq('circle_id', mine.circle_id)
+          .order('created_at', { ascending: true })
+        setCircleMessages(msgs || [])
+      } else {
+        setCircleMessages([])
+      }
+    } catch (err) {
+      setCirclesError(err.message)
+    } finally {
+      setCirclesLoading(false)
+    }
+  }, [user])
+
+  const joinCircle = async (circleId) => {
+    setJoiningCircle(true)
+    setCirclesError(null)
+    try {
+      const { error: insertError } = await supabase
+        .from('circle_memberships')
+        .insert({ user_id: user.id, circle_id: circleId })
+      if (insertError) throw insertError
+      fetchCircles()
+    } catch (err) {
+      setCirclesError(err.message)
+    } finally {
+      setJoiningCircle(false)
+    }
+  }
+
+  const submitCircleMessage = async () => {
+    if (!circleMsgInput.trim() || !myCircle) return
+    setPostingCircleMsg(true)
+    try {
+      const { error: insertError } = await supabase.from('circle_messages').insert({
+        circle_id: myCircle,
+        user_id: user.id,
+        body: circleMsgInput.trim(),
+      })
+      if (insertError) throw insertError
+      setCircleMsgInput('')
+      fetchCircles()
+    } catch (err) {
+      setCirclesError(err.message)
+    } finally {
+      setPostingCircleMsg(false)
+    }
+  }
+
+  // ── Daily tafseer fetch/actions ──
+  const fetchTafseer = useCallback(async () => {
+    if (!user) return
+    setTafseerLoading(true)
+    try {
+      const todayStr = new Date().toISOString().slice(0, 10)
+      const { data: entry } = await supabase
+        .from('daily_tafseer')
+        .select('*')
+        .eq('publish_date', todayStr)
+        .maybeSingle()
+      setTodayTafseer(entry || null)
+
+      const { data: history } = await supabase
+        .from('daily_tafseer')
+        .select('*')
+        .order('publish_date', { ascending: false })
+        .limit(20)
+
+      setTafseerPhase('view')
+      setTafseerQIndex(0)
+      setTafseerChosen(null)
+      setTafseerRevealed(false)
+      setTafseerScore(0)
+
+      if (entry) {
+        const built = buildTafseerQuestions(entry, history || [])
+        setTafseerQuestions(built)
+
+        const { data: prog } = await supabase
+          .from('daily_tafseer_progress')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('tafseer_id', entry.id)
+          .maybeSingle()
+        if (prog) {
+          setTafseerAlreadyDone(true)
+          setTafseerPastScore(`${prog.score} / ${prog.total}`)
+        } else {
+          setTafseerAlreadyDone(false)
+          setTafseerPastScore('')
+        }
+      } else {
+        setTafseerQuestions([])
+        setTafseerAlreadyDone(false)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setTafseerLoading(false)
+    }
+  }, [user])
+
+  const startTafseerQuiz = () => {
+    setTafseerPhase('quiz')
+    setTafseerQIndex(0)
+    setTafseerChosen(null)
+    setTafseerRevealed(false)
+    setTafseerScore(0)
+  }
+
+  const selectTafseerAnswer = (idx) => {
+    if (tafseerRevealed) return
+    setTafseerChosen(idx)
+    setTafseerRevealed(true)
+    const q = tafseerQuestions[tafseerQIndex]
+    if (idx === q.correct) setTafseerScore(s => s + 1)
+  }
+
+  const nextTafseerQuestion = () => {
+    const isLast = tafseerQIndex + 1 >= tafseerQuestions.length
+    if (isLast) {
+      const finalScore = tafseerChosen === tafseerQuestions[tafseerQIndex].correct ? tafseerScore : tafseerScore
+      supabase.from('daily_tafseer_progress').upsert({
+        user_id: user.id,
+        tafseer_id: todayTafseer.id,
+        score: finalScore,
+        total: tafseerQuestions.length,
+      }, { onConflict: 'user_id,tafseer_id' }).then(() => {
+        setTafseerAlreadyDone(true)
+        setTafseerPastScore(`${finalScore} / ${tafseerQuestions.length}`)
+      })
+      setTafseerPhase('result')
+    } else {
+      setTafseerQIndex(i => i + 1)
+      setTafseerChosen(null)
+      setTafseerRevealed(false)
+    }
+  }
+
   useEffect(() => {
     if (!user) return
     checkSubscription()
@@ -336,6 +684,15 @@ export default function Spaces({ user }) {
       fetchFeatured()
     }
   }, [subscription, fetchPosts, fetchFeatured])
+
+  // Fetch data for the new tabs only once they're active and the
+  // member is actually subscribed.
+  useEffect(() => {
+    if (subscription?.status !== 'active') return
+    if (activeTab === 'accountability') fetchAccountability()
+    if (activeTab === 'circles') fetchCircles()
+    if (activeTab === 'tafseer') fetchTafseer()
+  }, [activeTab, subscription, fetchAccountability, fetchCircles, fetchTafseer])
 
   if (!user) return null
 
@@ -454,6 +811,268 @@ export default function Spaces({ user }) {
     </div>
   )
 
+  // ── Accountability partners tab ──
+  const renderAccountability = () => (
+    <div className="spaces-accountability">
+      <div className="spaces-section-intro card">
+        <h3 className="spaces-section-intro-title">🤝 Accountability Partners</h3>
+        <p className="spaces-section-intro-text">
+          Pair up with another member to keep each other accountable in your learning.
+          Once paired, coordinate directly outside the app (WhatsApp, etc.) — Spaces just
+          keeps a record of who you're paired with. A pair stays together unless a
+          partner's subscription lapses without renewal; you can't unpair yourselves.
+        </p>
+      </div>
+
+      {accountabilityError && <div className="spaces-error">{accountabilityError}</div>}
+
+      {accountabilityLoading ? (
+        <div className="spaces-loading"><div className="spaces-spinner" /></div>
+      ) : myPair ? (
+        <div className="spaces-pair-card card">
+          <span className="spaces-pair-badge">✅ Paired</span>
+          <div className="spaces-pair-member">
+            <div className="spaces-post-avatar">{getInitials('M')}</div>
+            <div>
+              <p className="spaces-pair-name">Member {String(myPair.partner_id).slice(0, 8)}</p>
+              <BadgeStrip earnedIds={myPair.badge_ids || []} />
+            </div>
+          </div>
+          <p className="spaces-pair-since">Paired since {formatDate(myPair.paired_at)}</p>
+        </div>
+      ) : (
+        <>
+          <p className="spaces-available-label">Members without a partner — choose one to pair up</p>
+          {availableMembers.length === 0 ? (
+            <div className="spaces-empty card">
+              <p className="spaces-empty-icon">🤝</p>
+              <p className="spaces-empty-text">No unpaired members right now</p>
+              <p className="spaces-empty-sub">Check back soon.</p>
+            </div>
+          ) : (
+            <div className="spaces-available-list">
+              {availableMembers.map(m => (
+                <div key={m.user_id} className="spaces-available-item card">
+                  <div className="spaces-pair-member">
+                    <div className="spaces-post-avatar">{getInitials('M')}</div>
+                    <div>
+                      <p className="spaces-pair-name">Member {String(m.user_id).slice(0, 8)}</p>
+                      <BadgeStrip earnedIds={m.badge_ids || []} />
+                    </div>
+                  </div>
+                  <button
+                    className="spaces-submit-btn"
+                    onClick={() => pairWith(m.user_id)}
+                    disabled={pairing}
+                  >
+                    {pairing ? 'Pairing...' : 'Pair Up →'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+
+  // ── Sahaabah circles tab ──
+  const renderCircles = () => (
+    <div className="spaces-circles">
+      <div className="spaces-section-intro card">
+        <h3 className="spaces-section-intro-title">🕌 Sahaabah Circles</h3>
+        <p className="spaces-section-intro-text">
+          Join one of five circles named after prominent companions of the Prophet ﷺ —
+          a small group discussion thread to boost your accountability. You may join
+          one circle only.
+        </p>
+      </div>
+
+      {circlesError && <div className="spaces-error">{circlesError}</div>}
+
+      {circlesLoading ? (
+        <div className="spaces-loading"><div className="spaces-spinner" /></div>
+      ) : !myCircle ? (
+        <div className="spaces-circle-grid">
+          {CIRCLES.map(c => (
+            <button
+              key={c.id}
+              className="spaces-circle-card card"
+              onClick={() => joinCircle(c.id)}
+              disabled={joiningCircle}
+            >
+              <span className="spaces-circle-icon">{c.icon}</span>
+              <h4 className="spaces-circle-name">{c.name}</h4>
+              <p className="spaces-circle-arabic arabic">{c.arabicName}</p>
+              <p className="spaces-circle-blurb">{c.blurb}</p>
+              <span className="spaces-circle-count">{circleCounts[c.id] || 0} members</span>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <>
+          <div className="spaces-circle-header card">
+            <span className="spaces-circle-icon">{CIRCLES.find(c => c.id === myCircle)?.icon}</span>
+            <div>
+              <h3 className="spaces-circle-name">{CIRCLES.find(c => c.id === myCircle)?.name}</h3>
+              <p className="spaces-circle-arabic arabic">{CIRCLES.find(c => c.id === myCircle)?.arabicName}</p>
+            </div>
+          </div>
+
+          <div className="spaces-circle-messages">
+            {circleMessages.length === 0 ? (
+              <div className="spaces-no-replies">No messages yet. Start the conversation.</div>
+            ) : circleMessages.map((m, i) => (
+              <div key={i} className="spaces-reply card">
+                <div className="spaces-reply-header">
+                  <div className="spaces-reply-avatar" style={{ background: '#e8f0f8' }}>
+                    <span style={{ color: '#094570' }}>{getInitials(m.user_id)}</span>
+                  </div>
+                  <div>
+                    <p className="spaces-reply-author">Member</p>
+                    <p className="spaces-reply-date">{timeAgo(m.created_at)}</p>
+                  </div>
+                </div>
+                <p className="spaces-reply-body">{m.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="spaces-reply-input card">
+            <textarea
+              className="spaces-textarea"
+              placeholder="Share something with your circle..."
+              value={circleMsgInput}
+              onChange={e => setCircleMsgInput(e.target.value)}
+              rows={3}
+            />
+            <button
+              className="spaces-submit-btn"
+              onClick={submitCircleMessage}
+              disabled={postingCircleMsg || !circleMsgInput.trim()}
+            >
+              {postingCircleMsg ? 'Posting...' : 'Post →'}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  )
+
+  // ── Daily tafseer tab ──
+  const renderTafseer = () => {
+    if (tafseerLoading) {
+      return <div className="spaces-loading"><div className="spaces-spinner" /></div>
+    }
+
+    if (!todayTafseer) {
+      return (
+        <div className="spaces-empty card">
+          <p className="spaces-empty-icon">📖</p>
+          <p className="spaces-empty-text">No tafseer posted yet today</p>
+          <p className="spaces-empty-sub">Check back later — a new verse is shared daily.</p>
+        </div>
+      )
+    }
+
+    if (tafseerPhase === 'quiz' && tafseerQuestions.length > 0) {
+      const q = tafseerQuestions[tafseerQIndex]
+      return (
+        <div className="spaces-tafseer-quiz">
+          <div className="quiz-progress-header">
+            <span className="quiz-progress-label">Question {tafseerQIndex + 1} of {tafseerQuestions.length}</span>
+            <span className="quiz-score-badge badge badge-regal">Score: {tafseerScore}</span>
+          </div>
+          <div className="quiz-question-card card">
+            {q.context && <p className="spaces-tafseer-quiz-context arabic">{q.context}</p>}
+            <p className="quiz-question-text">{q.question}</p>
+            <div className="quiz-options">
+              {q.options.map((opt, idx) => {
+                let cls = 'quiz-option'
+                if (tafseerRevealed) {
+                  if (idx === q.correct) cls += ' quiz-option--correct'
+                  else if (idx === tafseerChosen && idx !== q.correct) cls += ' quiz-option--wrong'
+                } else if (tafseerChosen === idx) {
+                  cls += ' quiz-option--selected'
+                }
+                return (
+                  <button key={idx} className={cls} onClick={() => selectTafseerAnswer(idx)} disabled={tafseerRevealed}>
+                    <span className="quiz-option-letter">{String.fromCharCode(65 + idx)}</span>
+                    <span>{opt}</span>
+                  </button>
+                )
+              })}
+            </div>
+            {tafseerRevealed && (
+              <div className="quiz-next-row">
+                <button className="btn btn-primary" onClick={nextTafseerQuestion}>
+                  {tafseerQIndex + 1 < tafseerQuestions.length ? 'Next Question →' : 'See Result →'}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    }
+
+    if (tafseerPhase === 'result') {
+      const pct = Math.round((tafseerScore / tafseerQuestions.length) * 100)
+      return (
+        <div className="quiz-result-card card">
+          <div className="quiz-result-header">
+            <span className="quiz-result-icon">🎯</span>
+            <h2 className="quiz-result-title">Today's Tafseer Test Complete</h2>
+            <div className="quiz-result-score">{tafseerScore} / {tafseerQuestions.length}</div>
+            <div className="quiz-result-percent">{pct}%</div>
+          </div>
+          <div className="spaces-result-actions">
+            <button className="btn btn-ghost" onClick={() => setTafseerPhase('view')}>Back to Verse</button>
+          </div>
+        </div>
+      )
+    }
+
+    // ── 'view' phase ──
+    return (
+      <div className="spaces-tafseer-view">
+        <div className="spaces-tafseer-card card">
+          <p className="spaces-tafseer-ref">{todayTafseer.surah_name} · {todayTafseer.surah_num}:{todayTafseer.ayah_num}</p>
+          <p className="spaces-tafseer-arabic arabic-lg">{todayTafseer.arabic_text}</p>
+          <p className="spaces-tafseer-translation">"{todayTafseer.translation}"</p>
+        </div>
+
+        <div className="spaces-tafseer-card card">
+          <h4 className="spaces-class-section-title">📖 Tafseer</h4>
+          <p className="spaces-tafseer-body">{todayTafseer.tafseer_body}</p>
+        </div>
+
+        {Array.isArray(todayTafseer.lessons) && todayTafseer.lessons.length > 0 && (
+          <div className="spaces-tafseer-card card">
+            <h4 className="spaces-class-section-title">💡 Lessons</h4>
+            <ul className="spaces-class-curriculum">
+              {todayTafseer.lessons.map((l, i) => (
+                <li key={i} className="spaces-class-curriculum-item">
+                  <span className="spaces-class-curriculum-num">{i + 1}</span>
+                  <span>{l}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {tafseerAlreadyDone ? (
+          <div className="spaces-alldone card">✅ You've completed today's test — {tafseerPastScore}</div>
+        ) : tafseerQuestions.length > 0 ? (
+          <button className="spaces-submit-btn spaces-tafseer-start" onClick={startTafseerQuiz}>
+            Take Today's Test →
+          </button>
+        ) : (
+          <p className="spaces-tafseer-note">A test will be available once there's enough tafseer history to build one.</p>
+        )}
+      </div>
+    )
+  }
+
   if (subLoading) {
     return (
       <div className="page-content spaces-page">
@@ -562,8 +1181,8 @@ export default function Spaces({ user }) {
               { icon: '✍️', text: 'Structured Arabiyyah class — Beginner to Advanced' },
               { icon: '📜', text: 'Structured Hadeeth class — An-Nawawi to Sahih Al-Bukhari' },
               { icon: '💬', text: 'Threaded community discussions' },
-              { icon: '👥', text: 'Community of serious students' },
-              { icon: '🔒', text: 'Private and moderated environment' },
+              { icon: '🤝', text: 'Accountability partners and Sahaabah circles' },
+              { icon: '📖', text: 'A new tafseer verse and short test every day' },
             ].map((f, i) => (
               <div key={i} className="spaces-feature-item">
                 <span>{f.icon}</span>
@@ -726,9 +1345,12 @@ export default function Spaces({ user }) {
 
       <div className="spaces-main-tabs">
         {[
-          { key: 'community', label: 'Community',      icon: '💬' },
-          { key: 'arabiyyah', label: 'Arabiyyah Class', icon: '✍️' },
-          { key: 'hadeeth',   label: 'Hadeeth Class',   icon: '📜' },
+          { key: 'community',      label: 'Community',      icon: '💬' },
+          { key: 'arabiyyah',      label: 'Arabiyyah Class', icon: '✍️' },
+          { key: 'hadeeth',        label: 'Hadeeth Class',   icon: '📜' },
+          { key: 'accountability', label: 'Accountability',  icon: '🤝' },
+          { key: 'circles',        label: 'Circles',         icon: '🕌' },
+          { key: 'tafseer',        label: 'Daily Tafseer',   icon: '📖' },
         ].map(t => (
           <button
             key={t.key}
@@ -742,6 +1364,9 @@ export default function Spaces({ user }) {
 
       {activeTab === 'arabiyyah' && renderClass(CLASSES[0])}
       {activeTab === 'hadeeth' && renderClass(CLASSES[1])}
+      {activeTab === 'accountability' && renderAccountability()}
+      {activeTab === 'circles' && renderCircles()}
+      {activeTab === 'tafseer' && renderTafseer()}
 
       {activeTab === 'community' && (
         <>

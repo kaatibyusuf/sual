@@ -983,13 +983,6 @@
   font-weight: 500;
 }
 
-/* ═══════════════════════════════════════════════
-   PASTE EVERYTHING BELOW AT THE BOTTOM OF Spaces.css
-   New styles for: class schedule strip, featured
-   scholar card, category color dots, new-post
-   indicator, and reply counts.
-   ═══════════════════════════════════════════════ */
-
 /* ── Class schedule strip ── */
 .spaces-schedule-label {
   font-size: 0.75rem;
@@ -1229,4 +1222,373 @@
 
 [data-theme="dark"] .spaces-schedule-live {
   background: #b71c1c;
+}
+
+/* ═══════════════════════════════════════════════
+   New tabs: Accountability Partners, Sahaabah
+   Circles, Daily Tafseer
+   ═══════════════════════════════════════════════ */
+
+/* ── Shared section intro card ── */
+.spaces-section-intro {
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(9,69,112,0.04), #ffffff) !important;
+  border: 1.5px solid #c8d8e8;
+  border-left: 4px solid #094570;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.spaces-section-intro-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #094570;
+  margin-bottom: 8px;
+}
+
+.spaces-section-intro-text {
+  font-size: 0.85rem;
+  color: #2a3a4a;
+  line-height: 1.7;
+}
+
+/* ── Accountability partners ── */
+.spaces-pair-card {
+  padding: 20px;
+  background: #ffffff !important;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.spaces-pair-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.spaces-pair-member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.spaces-pair-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #094570;
+}
+
+.spaces-pair-since {
+  font-size: 0.78rem;
+  color: #8a9ab0;
+}
+
+.spaces-available-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a6080;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.spaces-available-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.spaces-available-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+/* ── Sahaabah circles ── */
+.spaces-circle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.spaces-circle-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: all 0.2s ease;
+}
+
+.spaces-circle-card:hover:not(:disabled) {
+  border-color: #85CCFF;
+  box-shadow: 0 6px 20px rgba(9,69,112,0.1);
+  transform: translateY(-2px);
+}
+
+.spaces-circle-card:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spaces-circle-icon { font-size: 1.8rem; }
+
+.spaces-circle-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #094570;
+  margin: 0;
+}
+
+.spaces-circle-arabic {
+  font-size: 0.95rem;
+  color: #4a6080;
+  margin: 0;
+}
+
+.spaces-circle-blurb {
+  font-size: 0.8rem;
+  color: #2a3a4a;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.spaces-circle-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #8a9ab0;
+  padding-top: 8px;
+  border-top: 1px solid #e8f0f8;
+}
+
+.spaces-circle-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.spaces-circle-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+/* ── Daily tafseer ── */
+.spaces-tafseer-view {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.spaces-tafseer-card {
+  padding: 22px 24px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+}
+
+.spaces-tafseer-ref {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a6080;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.spaces-tafseer-arabic {
+  color: #094570;
+  line-height: 2.2;
+  margin-bottom: 10px;
+}
+
+.spaces-tafseer-translation {
+  font-size: 0.9rem;
+  color: #4a6080;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.spaces-tafseer-body {
+  font-size: 0.9rem;
+  color: #0d1b2a;
+  line-height: 1.85;
+}
+
+.spaces-tafseer-start {
+  width: 100%;
+  padding: 16px;
+  font-size: 0.95rem;
+}
+
+.spaces-tafseer-note {
+  font-size: 0.8rem;
+  color: #8a9ab0;
+  font-style: italic;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.spaces-tafseer-quiz-context {
+  font-size: 1.05rem;
+  color: #4a6080;
+  line-height: 1.9;
+  direction: rtl;
+  text-align: right;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #dde8f2;
+}
+
+.spaces-alldone {
+  padding: 18px;
+  background: #f0f9f2 !important;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 12px;
+  color: #2e7d32;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.spaces-result-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .spaces-circle-grid { grid-template-columns: 1fr; }
+  .spaces-available-item { flex-direction: column; align-items: flex-start; }
+}
+
+/* ── Dark mode for new tabs ── */
+[data-theme="dark"] .spaces-section-intro {
+  background: linear-gradient(135deg, rgba(133,204,255,0.06), #0f1f2e) !important;
+  border-color: #1e3448;
+  border-left-color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-section-intro-title {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-section-intro-text {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .spaces-pair-card {
+  background: #0f1f2e !important;
+  border-color: rgba(46,125,50,0.4);
+}
+
+[data-theme="dark"] .spaces-pair-badge {
+  background: rgba(46,125,50,0.15);
+  color: #7fc98a;
+}
+
+[data-theme="dark"] .spaces-pair-name {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-available-label {
+  color: #7f97ae;
+}
+
+[data-theme="dark"] .spaces-available-item {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-circle-card {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-circle-card:hover:not(:disabled) {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-circle-name {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-circle-arabic {
+  color: #7f97ae;
+}
+
+[data-theme="dark"] .spaces-circle-blurb {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .spaces-circle-count {
+  color: #7f97ae;
+  border-top-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-circle-header {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-tafseer-card {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-tafseer-ref {
+  color: #7f97ae;
+}
+
+[data-theme="dark"] .spaces-tafseer-arabic {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-tafseer-translation {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .spaces-tafseer-body {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .spaces-tafseer-note {
+  color: #7f97ae;
+}
+
+[data-theme="dark"] .spaces-tafseer-quiz-context {
+  color: #a8c0d8;
+  border-bottom-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-alldone {
+  background: rgba(46,125,50,0.1) !important;
+  border-color: rgba(46,125,50,0.4);
+  color: #7fc98a;
 }
