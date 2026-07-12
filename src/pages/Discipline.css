@@ -232,7 +232,9 @@
 }
 
 /* ============================================
-   Answer Panel
+   Answer Panel (legacy accordion — kept for
+   reference in case any old link/bookmark
+   still points at an in-page anchor)
    ============================================ */
 
 .qa-answer {
@@ -464,8 +466,7 @@
 }
 
 /* ── Discipline.css additions ──────────────────────────────── */
- 
-/* Bookmark button inside expanded answer */
+
 .qa-bookmark-btn {
   display: inline-flex;
   align-items: center;
@@ -481,26 +482,26 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
- 
+
 .qa-bookmark-btn:hover {
   background: #e8f4ff;
 }
- 
+
 .qa-bookmark-btn--active {
   background: #094570;
   color: #ffffff;
   border-color: #094570;
 }
- 
+
 .qa-bookmark-btn--active:hover {
   background: #062f4a;
 }
- 
-/* Bookmark count in discipline header */
+
 .discipline-bookmark-count {
   color: #094570;
   font-weight: 600;
 }
+
 .icon-inline {
   display: inline-flex;
   align-items: center;
@@ -513,4 +514,141 @@
 .icon-inline svg {
   width: 100%;
   height: 100%;
+}
+
+/* ============================================
+   Q&A List — flat link rows (overview page)
+   ============================================ */
+
+.qa-item--link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.qa-item--link:hover {
+  background: #f0f7ff;
+}
+
+.qa-item--link .qa-chevron {
+  font-size: 0.9rem;
+  color: #8a9ab0;
+  margin-top: 0;
+  transition: transform 0.15s ease;
+}
+
+.qa-item--link:hover .qa-chevron {
+  transform: translateX(3px);
+  color: #094570;
+}
+
+.qa-bookmark-btn--inline {
+  margin-top: 0;
+  padding: 6px 8px;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .qa-item--link:hover {
+  background: #132030;
+}
+
+/* ============================================
+   Knowledge Reader — dedicated question page
+   ============================================ */
+
+.reader-page {
+  max-width: 720px;
+}
+
+.reader-article {
+  background: #ffffff;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 12px;
+  padding: 32px 36px;
+  margin-bottom: 20px;
+}
+
+.reader-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #4a6080;
+  margin-bottom: 14px;
+}
+
+.reader-question {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #094570;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* Reading-first measure: capped line length and generous line
+   height so long-form evidence reads comfortably rather than
+   feeling like UI chrome. Worth reusing on the blog's article
+   template so the reading experience matches in both places. */
+.reader-translation {
+  max-width: 62ch;
+}
+
+.reader-answer p {
+  font-size: 1.02rem;
+  color: #0d1b2a;
+  line-height: 1.9;
+  margin-bottom: 20px;
+  white-space: pre-line;
+}
+
+.reader-quiz-link {
+  margin-top: 28px;
+}
+
+.reader-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 4px 40px;
+}
+
+.reader-pager-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #094570;
+  text-decoration: none;
+}
+
+.reader-pager-link:hover {
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .reader-article {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .reader-question {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .reader-answer p {
+  color: #c8d8e8;
+}
+
+[data-theme="dark"] .reader-pager-link {
+  color: #85CCFF;
+}
+
+@media (max-width: 768px) {
+  .reader-article {
+    padding: 24px 20px;
+  }
+
+  .reader-question {
+    font-size: 1.15rem;
+  }
 }

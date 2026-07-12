@@ -53,13 +53,13 @@ const ICONS = {
     </svg>
   ),
   fiqh: (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="3" x2="12" y2="21" />
-    <line x1="4" y1="7" x2="20" y2="7" />
-    <path d="M4 7 2 12a3 3 0 0 0 6 0L6 7" />
-    <path d="M20 7 18 12a3 3 0 0 0 6 0l-2-5" />
-  </svg>
-),
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="3" x2="12" y2="21" />
+      <line x1="4" y1="7" x2="20" y2="7" />
+      <path d="M4 7 2 12a3 3 0 0 0 6 0L6 7" />
+      <path d="M20 7 18 12a3 3 0 0 0 6 0l-2-5" />
+    </svg>
+  ),
   profile: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="8" r="4" />
@@ -100,32 +100,92 @@ const ICONS = {
     </svg>
   ),
   tawheed: (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="9" />
-    <path d="M12 3v18" />
-    <path d="M12 3a9 9 0 0 1 0 18" fill="none" />
-  </svg>
-),
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 3v18" />
+      <path d="M12 3a9 9 0 0 1 0 18" fill="none" />
+    </svg>
+  ),
 }
 
-const NAV_ITEMS = [
-  { path: '/', label: 'Home', icon: 'home' },
-  { path: '/quiz', label: 'Quiz', icon: 'quiz' },
-  { path: '/flashcards', label: 'Flashcards', icon: 'flashcards' },
-  { path: '/stories', label: 'Stories', icon: 'stories' },
-  { path: '/duas', label: 'Duas', icon: 'duas' },
-  { path: '/calendar', label: 'Calendar', icon: 'calendar' },
-  { path: '/tajweed', label: 'Tajweed', icon: 'tajweed' },
-  { path: '/fiqh', label: 'Fiqh', icon: 'fiqh' },
-  { path: '/profile', label: 'Profile', icon: 'profile' },
-  { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-  { path: '/spaces', label: 'Spaces', icon: 'spaces' },
-  { path: '/prayer-times', label: 'Prayer Times', icon: 'prayerTimes' },
-  { path: '/hifdh', label: 'Hifdh', icon: 'hifdh' },
-  { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
+// ── Six-pillar grouping ───────────────────────────────────────
+// Home stays outside any group, at the very top, since it's the
+// entry point rather than a pillar. Everything else now belongs
+// to exactly one group, so the sidebar reads as a map of the app
+// rather than a flat list of fourteen equal-weight links.
+//
+// Disciplines (Fiqh, Tawheed, etc. from DISCIPLINES data) are
+// appended to the Learn group below, right after Stories, so all
+// "things to read and study" live in one place.
+
+const HOME_ITEM = { path: '/', label: 'Home', icon: 'home' }
+
+const NAV_GROUPS = [
+  {
+    label: 'Learn',
+    items: [
+      { path: '/disciplines', label: 'Disciplines', icon: 'fiqh' },
+      { path: '/stories', label: 'Stories', icon: 'stories' },
+    ],
+  },
+  {
+    label: 'Practice',
+    items: [
+      { path: '/quiz', label: 'Quiz', icon: 'quiz' },
+      { path: '/flashcards', label: 'Flashcards', icon: 'flashcards' },
+    ],
+  },
+  {
+    label: 'Memorise',
+    items: [
+      { path: '/hifdh', label: 'Hifdh', icon: 'hifdh' },
+    ],
+  },
+  {
+    label: 'Worship',
+    items: [
+      { path: '/prayer-times', label: 'Prayer Times', icon: 'prayerTimes' },
+      { path: '/duas', label: 'Duas', icon: 'duas' },
+      { path: '/calendar', label: 'Calendar', icon: 'calendar' },
+      { path: '/tajweed', label: 'Tajweed', icon: 'tajweed' },
+    ],
+  },
+  {
+    label: 'Community',
+    items: [
+      { path: '/spaces', label: 'Spaces', icon: 'spaces' },
+    ],
+  },
+  {
+    label: 'Journey',
+    items: [
+      { path: '/dashboard', label: 'Journey', icon: 'dashboard' },
+    ],
+  },
+  {
+    label: 'Account',
+    items: [
+      { path: '/profile', label: 'Profile', icon: 'profile' },
+    ],
+  },
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'
+
+function NavItem({ item }) {
+  return (
+    <NavLink
+      to={item.path}
+      end={item.path === '/'}
+      className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-link--active' : ''}`}
+    >
+      <span className="sidebar-link-icon">{ICONS[item.icon]}</span>
+      <span className="sidebar-link-text">
+        <span className="sidebar-link-latin">{item.label}</span>
+      </span>
+    </NavLink>
+  )
+}
 
 export default function Sidebar({ onSignOut, user }) {
   return (
@@ -136,33 +196,27 @@ export default function Sidebar({ onSignOut, user }) {
       </div>
 
       <nav className="sidebar-nav">
-        <p className="sidebar-section-label">Navigate</p>
-        {NAV_ITEMS.map(item => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            end={item.path === '/'}
-            className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-link--active' : ''}`}
-          >
-            <span className="sidebar-link-icon">{ICONS[item.icon]}</span>
-            <span className="sidebar-link-text">
-              <span className="sidebar-link-latin">{item.label}</span>
-            </span>
-          </NavLink>
-        ))}
+        <NavItem item={HOME_ITEM} />
 
-        <p className="sidebar-section-label" style={{ marginTop: '20px' }}>Disciplines</p>
-        {DISCIPLINES.map(d => (
-          <NavLink
-            key={d.id}
-            to={`/discipline/${d.id}`}
-            className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-link--active' : ''}`}
-          >
-            <span className="sidebar-link-icon">{DISCIPLINE_ICONS[d.icon]}</span>
-            <span className="sidebar-link-text">
-              <span className="sidebar-link-latin">{d.name}</span>
-            </span>
-          </NavLink>
+        {NAV_GROUPS.map(group => (
+          <React.Fragment key={group.label}>
+            <p className="sidebar-section-label" style={{ marginTop: '20px' }}>{group.label}</p>
+            {group.items.map(item => (
+              <NavItem key={item.path} item={item} />
+            ))}
+            {group.label === 'Learn' && DISCIPLINES.map(d => (
+              <NavLink
+                key={d.id}
+                to={`/discipline/${d.id}`}
+                className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-link--active' : ''}`}
+              >
+                <span className="sidebar-link-icon">{DISCIPLINE_ICONS[d.icon]}</span>
+                <span className="sidebar-link-text">
+                  <span className="sidebar-link-latin">{d.name}</span>
+                </span>
+              </NavLink>
+            ))}
+          </React.Fragment>
         ))}
       </nav>
 

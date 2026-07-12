@@ -31,13 +31,6 @@ const ICONS = {
       <path d="M8 11V7a4 4 0 0 1 8 0v4" />
     </svg>
   ),
-  source: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
-      <line x1="8" y1="8" x2="16" y2="8" />
-      <line x1="8" y1="12" x2="16" y2="12" />
-    </svg>
-  ),
   bookmark: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 3h12v18l-6-4-6 4V3z" />
@@ -81,13 +74,23 @@ const LEVELS = [
   { key: 'advanced',     label: 'Advanced',     arabic: 'مُتَقَدِّم', color: '#6a1b9a' },
 ]
 
+// Exported so the reader page can pull the exact same level->QA
+// mapping without duplicating this lookup logic.
+export function getLevelMap(id) {
+  const beginnerQAs = (KNOWLEDGE_BASE[id] || []).map(qa => ({ ...qa, level: 'beginner' }))
+  return {
+    beginner:     beginnerQAs,
+    intermediate: INTERMEDIATE_ALL[id] || [],
+    advanced:     ADVANCED_ALL[id] || [],
+  }
+}
+
 export default function Discipline({ userLevel = 'beginner', user = null }) {
   const { id } = useParams()
-  const [expandedId,       setExpandedId]       = useState(null)
-  const [search,           setSearch]           = useState('')
-  const [activeLevel,      setActiveLevel]      = useState(userLevel)
-  const [bookmarks,        setBookmarks]        = useState(new Set())
-  const [bookmarkLoading,  setBookmarkLoading]  = useState(false)
+  const [search,          setSearch]          = useState('')
+  const [activeLevel,     setActiveLevel]     = useState(userLevel)
+  const [bookmarks,       setBookmarks]       = useState(new Set())
+  const [bookmarkLoading, setBookmarkLoading] = useState(false)
 
   const discipline = DISCIPLINES.find(d => d.id === id)
   if (!discipline) return <Navigate to="/" replace />
@@ -109,7 +112,9 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
     load()
   }, [user, id])
 
-  const toggleBookmark = useCallback(async (qaId) => {
+  const toggleBookmark = useCallback(async (e, qaId) => {
+    e.preventDefault()
+    e.stopPropagation()
     if (!user || bookmarkLoading) return
     setBookmarkLoading(true)
     const isBookmarked = bookmarks.has(qaId)
@@ -144,15 +149,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
     }
   }, [user, id, bookmarks, bookmarkLoading])
 
-  const beginnerQAs     = (KNOWLEDGE_BASE[id] || []).map(qa => ({ ...qa, level: 'beginner' }))
-  const intermediateQAs = INTERMEDIATE_ALL[id] || []
-  const advancedQAs     = ADVANCED_ALL[id] || []
-
-  const levelMap = {
-    beginner:     beginnerQAs,
-    intermediate: intermediateQAs,
-    advanced:     advancedQAs,
-  }
+  const levelMap = getLevelMap(id)
 
   const isLocked = (key) => {
     if (key === 'intermediate') return userLevel === 'beginner'
@@ -168,12 +165,10 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
     qa.answer.toLowerCase().includes(search.toLowerCase())
   )
 
-  const toggle = (qid) => setExpandedId(prev => prev === qid ? null : qid)
-
   return (
     <div className="page-content discipline-page">
 
-      <Link to="/" className="discipline-back">← Back to Home</Link>
+      <Link to="/disciplines" className="discipline-back">← Back to Disciplines</Link>
 
       <div className="discipline-header">
         <div className="discipline-header-inner">
@@ -199,7 +194,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
                 locked ? 'disc-level-tab--locked' : '',
               ].join(' ').trim()}
               style={active ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
-              onClick={() => { if (!locked) { setActiveLevel(lv.key); setExpandedId(null) } }}
+              onClick={() => { if (!locked) setActiveLevel(lv.key) }}
               title={locked ? 'Complete previous level to unlock' : lv.label}
             >
               {locked ? <IconInline name="lock" /> : ''}{lv.label}
@@ -215,7 +210,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
           className="discipline-search-input"
           placeholder={`Search ${discipline.name}...`}
           value={search}
-          onChange={e => { setSearch(e.target.value); setExpandedId(null) }}
+          onChange={e => setSearch(e.target.value)}
         />
         {search && (
           <button className="discipline-search-clear" onClick={() => setSearch('')}>✕</button>
@@ -248,53 +243,28 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
         <>
           <div className="qa-list">
             {filtered.map((qa, i) => {
-              const qid        = qa.id || i
-              const open       = expandedId === qid
+              const qid        = qa.id ?? i
               const bookmarked = bookmarks.has(qid)
 
               return (
-                <div key={qid} className={`qa-item${open ? ' qa-item--open' : ''}`}>
-
-                  <button className="qa-question-btn" onClick={() => toggle(qid)}>
-                    <span className="qa-num">{i + 1}</span>
-                    <span className="qa-question-text">{qa.question}</span>
-                    <span className="qa-chevron">{open ? '▲' : '▼'}</span>
-                  </button>
-
-                  {open && (
-                    <div className="qa-answer">
-                      <div className="qa-answer-body">
-                        <p>{qa.answer}</p>
-                      </div>
-
-                      {qa.source && (
-                        <p className="qa-source">
-                          <span className="qa-source-label"><IconInline name="source" /> Source:</span>
-                          {qa.source}
-                        </p>
-                      )}
-
-                      {qa.tags?.length > 0 && (
-                        <div className="qa-tags">
-                          {qa.tags.map(t => (
-                            <span key={t} className="qa-tag">{t}</span>
-                          ))}
-                        </div>
-                      )}
-
-                      {user && (
-                        <button
-                          className={`qa-bookmark-btn ${bookmarked ? 'qa-bookmark-btn--active' : ''}`}
-                          onClick={(e) => { e.stopPropagation(); toggleBookmark(qid) }}
-                          title={bookmarked ? 'Remove bookmark' : 'Save this Q&A'}
-                        >
-                          <IconInline name={bookmarked ? 'bookmarkFilled' : 'bookmark'} /> {bookmarked ? 'Saved' : 'Save'}
-                        </button>
-                      )}
-                    </div>
+                <Link
+                  key={qid}
+                  to={`/discipline/${id}/${activeLevel}/${qid}`}
+                  className="qa-item qa-item--link"
+                >
+                  <span className="qa-num">{i + 1}</span>
+                  <span className="qa-question-text">{qa.question}</span>
+                  {user && (
+                    <button
+                      className={`qa-bookmark-btn qa-bookmark-btn--inline ${bookmarked ? 'qa-bookmark-btn--active' : ''}`}
+                      onClick={(e) => toggleBookmark(e, qid)}
+                      title={bookmarked ? 'Remove bookmark' : 'Save this Q&A'}
+                    >
+                      <IconInline name={bookmarked ? 'bookmarkFilled' : 'bookmark'} />
+                    </button>
                   )}
-
-                </div>
+                  <span className="qa-chevron">→</span>
+                </Link>
               )
             })}
           </div>

@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { COLLECTIONS } from '../data/collections.js'
+import {
+  isDue,
+  advanceBox,
+  strengthOf,
+  shuffle,
+} from '../lib/spacedRepetition.js'
+import { getHifdhProgress, saveHifdhProgress } from '../lib/hifdhProgress.js'
+import { supabase } from '../lib/supabase.js'
 import './Hifdh.css'
-
-// ── Spaced repetition (Leitner boxes, stored in localStorage) ──
-// box 0 = new/failed (due now), 1 = 1 day, 2 = 3 days, 3 = 7 days, 4 = 14 days
-const BOX_INTERVALS_DAYS = [0, 1, 3, 7, 14]
-const STORAGE_PREFIX = 'sual-hifdh'
 
 // How many items go into one review batch, and how many questions
 // each due item gets.
@@ -16,43 +19,7 @@ const QUESTIONS_PER_ITEM = 3
 // 4 distractors, so the position cycler is fixed at 5 slots.
 const MCQ_OPTION_COUNT = 5
 
-function storageKey(collectionId) {
-  return `${STORAGE_PREFIX}-${collectionId}`
-}
-
-function loadProgress(collectionId) {
-  try {
-    return JSON.parse(localStorage.getItem(storageKey(collectionId))) || {}
-  } catch {
-    return {}
-  }
-}
-
-function saveProgress(collectionId, progress) {
-  localStorage.setItem(storageKey(collectionId), JSON.stringify(progress))
-}
-
-function isDue(entry) {
-  if (!entry) return true // never reviewed
-  return new Date(entry.due) <= new Date()
-}
-
-function nextDue(box) {
-  const d = new Date()
-  d.setDate(d.getDate() + BOX_INTERVALS_DAYS[box])
-  return d.toISOString()
-}
-
 // ── Helpers ─────────────────────────────────────────────────────
-function shuffle(arr) {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
-
 function words(text) {
   return (text || '').split(/\s+/).filter(Boolean)
 }
@@ -277,7 +244,7 @@ function buildSession(dueItems, pool, collection) {
 }
 
 // ── Component ───────────────────────────────────────────────────
-export default function Hifdh() {
+export default function Hifdh({ user = null }) {
   const [collectionId, setCollectionId] = useState(null)
   const collection = useMemo(
     () => COLLECTIONS.find(c => c.id === collectionId) || null,
@@ -285,6 +252,11 @@ export default function Hifdh() {
   )
 
   const [progress, setProgress] = useState({})
+  const [progressLoading, setProgressLoading] = useState(false)
+  // Progress for every collection, used only on the picker screen to
+  // show due/strong counts without opening each collection.
+  const [allProgress, setAllProgress] = useState({})
+
   const [session, setSession] = useState(null)   // array of questions
   const [qIndex, setQIndex] = useState(0)
   const [selected, setSelected] = useState(null) // option index picked (MCQ types)
@@ -297,8 +269,31 @@ export default function Hifdh() {
   // Load this collection's saved progress whenever the selected
   // collection changes.
   useEffect(() => {
-    if (collectionId) setProgress(loadProgress(collectionId))
-  }, [collectionId])
+    if (!collectionId) return
+    let cancelled = false
+    setProgressLoading(true)
+    getHifdhProgress(user, collectionId).then(p => {
+      if (!cancelled) {
+        setProgress(p)
+        setProgressLoading(false)
+      }
+    })
+    return () => { cancelled = true }
+  }, [collectionId, user])
+
+  // Load a lightweight progress summary for every collection up
+  // front, for the picker screen's due/strong counts.
+  useEffect(() => {
+    let cancelled = false
+    Promise.all(COLLECTIONS.map(c => getHifdhProgress(user, c.id).then(p => [c.id, p])))
+      .then(entries => {
+        if (cancelled) return
+        const map = {}
+        entries.forEach(([id, p]) => { map[id] = p })
+        setAllProgress(map)
+      })
+    return () => { cancelled = true }
+  }, [user])
 
   const dueItems = useMemo(
     () => (collection ? collection.items.filter(it => isDue(progress[it.key])) : []),
@@ -366,34 +361,33 @@ export default function Hifdh() {
       setTypedCorrect(false)
     } else {
       // Session over: move boxes and save
-      const updated = { ...progress }
+      let updated = progress
       Object.entries(results).forEach(([key, allCorrect]) => {
-        const entry = updated[key] || { box: 0 }
-        const box = allCorrect
-          ? Math.min(entry.box + 1, BOX_INTERVALS_DAYS.length - 1)
-          : Math.max(entry.box - 1, 0)
-        updated[key] = { box, due: nextDue(box) }
+        updated = advanceBox(updated, key, allCorrect)
       })
-      saveProgress(collectionId, updated)
       setProgress(updated)
       setFinished(true)
+      saveHifdhProgress(user, collectionId, updated).then(() => {
+        setAllProgress(prev => ({ ...prev, [collectionId]: updated }))
+      })
     }
   }
 
-  const resetAll = () => {
+  const resetAll = async () => {
     if (!window.confirm(`Reset all ${collection.title} progress? This cannot be undone.`)) return
-    localStorage.removeItem(storageKey(collectionId))
+    localStorage.removeItem(`sual-hifdh-${collectionId}`)
+    if (user) {
+      const { error } = await supabase
+        .from('hifdh_progress')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('collection_id', collectionId)
+      if (error) console.error('Failed to clear remote hifdh progress:', error)
+    }
     setProgress({})
+    setAllProgress(prev => ({ ...prev, [collectionId]: {} }))
     setSession(null)
     setFinished(false)
-  }
-
-  const strengthOf = (key) => {
-    const entry = progress[key]
-    if (!entry) return 'new'
-    if (entry.box >= 3) return 'strong'
-    if (entry.box >= 1) return 'building'
-    return 'weak'
   }
 
   // ── Collection picker screen ──
@@ -404,7 +398,7 @@ export default function Hifdh() {
         <p className="page-subtitle">مُحَاكِي الحِفْظ — Choose what to guard today</p>
         <div className="hifdh-collections">
           {COLLECTIONS.map(c => {
-            const p = loadProgress(c.id)
+            const p = allProgress[c.id] || {}
             const due = c.items.filter(it => isDue(p[it.key])).length
             const strong = c.items.filter(it => {
               const e = p[it.key]
@@ -548,6 +542,10 @@ export default function Hifdh() {
       <h1 className="page-title">{collection.title}</h1>
       <p className="page-subtitle">{collection.arabicTitle} — {collection.subtitle}</p>
 
+      {progressLoading ? (
+        <div className="hifdh-alldone card"><p>Loading your progress…</p></div>
+      ) : (
+      <>
       <div className="hifdh-stats">
         <div className="hifdh-stat card">
           <span className="hifdh-stat-value">{collection.items.length}</span>
@@ -561,7 +559,7 @@ export default function Hifdh() {
         </div>
         <div className="hifdh-stat card">
           <span className="hifdh-stat-value" style={{ color: '#2e7d32' }}>
-            {collection.items.filter(it => strengthOf(it.key) === 'strong').length}
+            {collection.items.filter(it => strengthOf(progress, it.key) === 'strong').length}
           </span>
           <span className="hifdh-stat-label">Strong</span>
         </div>
@@ -586,7 +584,7 @@ export default function Hifdh() {
       </p>
       <div className="hifdh-map">
         {collection.items.map(it => (
-          <div key={it.key} className={`hifdh-map-cell hifdh-map-cell--${strengthOf(it.key)}`} title={`${it.label} — ${it.meta}`}>
+          <div key={it.key} className={`hifdh-map-cell hifdh-map-cell--${strengthOf(progress, it.key)}`} title={`${it.label} — ${it.meta}`}>
             {it.num}
           </div>
         ))}
@@ -594,6 +592,8 @@ export default function Hifdh() {
       <p className="hifdh-coming">
         All {collection.total} {collection.itemNounPlural} are loaded. Reviews mix blanks, detail drills, and full-line recall typing — recognition alone won't carry you through.
       </p>
+      </>
+      )}
 
       <button className="hifdh-reset" onClick={resetAll}>Reset all progress</button>
     </div>

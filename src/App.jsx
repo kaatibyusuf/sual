@@ -9,6 +9,7 @@ import Auth from './pages/Auth.jsx'
 import LevelSelect from './pages/LevelSelect.jsx'
 import Home from './pages/Home.jsx'
 import Discipline from './pages/Discipline.jsx'
+import DisciplineReader from './pages/DisciplineReader.jsx'
 import Quiz from './pages/Quiz.jsx'
 import Flashcards from './pages/Flashcards.jsx'
 import Stories from './pages/Stories.jsx'
@@ -18,7 +19,7 @@ import Tajweed from './pages/Tajweed.jsx'
 import Fiqh from './pages/fiqh.jsx'
 import Tawheed from './pages/Tawheed.jsx'
 import Profile from './pages/Profile.jsx'
-import Dashboard from './pages/Dashboard.jsx'
+import Journey from './pages/Journey.jsx'
 import Spaces from './pages/Spaces.jsx'
 import PrayerTimes from './pages/PrayerTimes.jsx'
 import Disciplines from './pages/Disciplines.jsx'
@@ -165,7 +166,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home user={user} />} />
             <Route path="/disciplines" element={<Disciplines />} />
-            <Route path="/discipline/:id" element={<Discipline userLevel={userLevel} />} />
+            <Route path="/discipline/:id" element={<Discipline userLevel={userLevel} user={user} />} />
+            <Route path="/discipline/:id/:level/:qid" element={<DisciplineReader user={user} />} />
             <Route path="/quiz" element={<Quiz user={user} userLevel={userLevel} />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/stories" element={<Stories />} />
@@ -175,7 +177,7 @@ export default function App() {
             <Route path="/fiqh" element={<Fiqh />} />
             <Route path="/tawheed" element={<Tawheed />} />
             <Route path="/profile" element={<Profile user={user} />} />
-            <Route path="/dashboard" element={<Dashboard user={user} />} />
+            <Route path="/dashboard" element={<Journey user={user} />} />
             <Route path="/spaces" element={<Spaces user={user} />} />
             <Route path="/prayer-times" element={<PrayerTimes />} />
             <Route path="/hifdh" element={<Hifdh user={user} />} />

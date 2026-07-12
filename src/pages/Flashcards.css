@@ -17,12 +17,11 @@
 
 .fc-deck-card {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
   padding: 20px;
   background: var(--white);
   border: none;
-  cursor: pointer;
   text-align: left;
   font-family: var(--font-ui);
   transition: all 0.2s ease;
@@ -31,7 +30,6 @@
 
 .fc-deck-card:hover {
   border-left-color: var(--pastel-blue);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
@@ -43,6 +41,9 @@
 .fc-deck-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .fc-deck-name {
@@ -64,15 +65,21 @@
   font-weight: 500;
 }
 
-.fc-deck-arrow {
-  color: var(--pastel-blue);
-  font-size: 1.2rem;
-  flex-shrink: 0;
-  transition: transform 0.2s ease;
+/* ---- Deck card actions (Browse All / Review Due) ---- */
+.fc-deck-actions {
+  display: flex;
+  gap: 8px;
 }
 
-.fc-deck-card:hover .fc-deck-arrow {
-  transform: translateX(4px);
+.fc-deck-action {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+}
+
+.fc-deck-action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ---- Active Deck Header ---- */
@@ -194,7 +201,7 @@
   max-width: 480px;
 }
 
-/* ---- Controls ---- */
+/* ---- Controls (Browse mode) ---- */
 .fc-controls {
   display: flex;
   gap: 12px;
@@ -206,6 +213,62 @@
   opacity: 0.35;
   cursor: not-allowed;
   transform: none;
+}
+
+/* ---- Controls (Review mode) ---- */
+.fc-review-hint {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.fc-review-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.fc-review-btn {
+  flex: 1;
+  max-width: 220px;
+  padding: 12px 16px;
+}
+
+/* ---- Review finished / empty states ---- */
+.fc-done {
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.fc-done-icon {
+  font-size: 2.4rem;
+  margin-bottom: 12px;
+}
+
+.fc-done-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--regal-blue);
+  margin-bottom: 10px;
+}
+
+.fc-done-score {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.fc-done-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ---- Progress Dots ---- */
@@ -259,5 +322,9 @@
 
   .fc-controls {
     flex-wrap: wrap;
+  }
+
+  .fc-deck-actions {
+    flex-direction: column;
   }
 }
