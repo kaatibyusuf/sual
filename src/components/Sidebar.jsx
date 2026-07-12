@@ -126,6 +126,8 @@ const NAV_GROUPS = [
     items: [
       { path: '/disciplines', label: 'Disciplines', icon: 'fiqh' },
       { path: '/stories', label: 'Stories', icon: 'stories' },
+      { path: '/tajweed', label: 'Tajweed', icon: 'tajweed' },
+      { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
     ],
   },
   {
@@ -147,9 +149,6 @@ const NAV_GROUPS = [
       { path: '/prayer-times', label: 'Prayer Times', icon: 'prayerTimes' },
       { path: '/duas', label: 'Duas', icon: 'duas' },
       { path: '/calendar', label: 'Calendar', icon: 'calendar' },
-      { path: '/tajweed', label: 'Tajweed', icon: 'tajweed' },
-      { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
-
     ],
   },
   {
