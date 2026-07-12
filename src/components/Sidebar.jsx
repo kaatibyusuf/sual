@@ -148,6 +148,8 @@ const NAV_GROUPS = [
       { path: '/duas', label: 'Duas', icon: 'duas' },
       { path: '/calendar', label: 'Calendar', icon: 'calendar' },
       { path: '/tajweed', label: 'Tajweed', icon: 'tajweed' },
+      { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
+
     ],
   },
   {
