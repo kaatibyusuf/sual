@@ -13,210 +13,77 @@ const CATEGORIES = [
   { key: 'general',   label: 'General',   arabic: 'عَامّ',        icon: '💬', color: '#8FD9C4' },
 ]
 
-// Weekly class sessions. day: 0 = Sunday ... 6 = Saturday, in the user's local time.
-// Edit these to match the real Telegram class times.
 const CLASS_SCHEDULE = [
   { classId: 'arabiyyah', title: 'Arabiyyah Class', arabic: 'فَصْلُ العَرَبِيَّة', icon: '✍️', day: 0, hour: 21, minute: 0 },
   { classId: 'hadeeth',   title: 'Hadeeth Class',   arabic: 'فَصْلُ الحَدِيث',    icon: '📜', day: 6, hour: 21, minute: 0 },
 ]
 
-// Fixed set of Sahaabah circles — five circles, one per member.
-// Named after the first five of the ten companions promised
-// Paradise, in their commonly narrated order.
 const CIRCLES = [
-  {
-    id: 'abu_bakr',
-    name: 'Halaqah Abi Bakr',
-    arabicName: 'حَلَقَةُ أَبِي بَكْر',
-    icon: '🕊️',
-    blurb: 'Named after Abu Bakr As-Siddiq, the first Caliph and the Prophet\'s closest companion — known for his unwavering trust in Allah.',
-  },
-  {
-    id: 'umar',
-    name: 'Halaqah Umar',
-    arabicName: 'حَلَقَةُ عُمَر',
-    icon: '⚔️',
-    blurb: 'Named after Umar ibn Al-Khattab, the second Caliph — known for his justice and strength in upholding the truth.',
-  },
-  {
-    id: 'uthman',
-    name: 'Halaqah Uthman',
-    arabicName: 'حَلَقَةُ عُثْمَان',
-    icon: '📖',
-    blurb: 'Named after Uthman ibn Affan, the third Caliph — known for his generosity and compiling the Quran into a single mushaf.',
-  },
-  {
-    id: 'ali',
-    name: 'Halaqah Ali',
-    arabicName: 'حَلَقَةُ عَلِيّ',
-    icon: '🗡️',
-    blurb: 'Named after Ali ibn Abi Talib, the fourth Caliph — known for his knowledge and closeness to the Prophet ﷺ.',
-  },
-  {
-    id: 'talhah',
-    name: 'Halaqah Talhah',
-    arabicName: 'حَلَقَةُ طَلْحَة',
-    icon: '🌿',
-    blurb: 'Named after Talhah ibn Ubaydillah, one of the ten promised Paradise — known for his generosity and bravery at Uhud.',
-  },
+  { id: 'abu_bakr', name: 'Halaqah Abi Bakr', arabicName: 'حَلَقَةُ أَبِي بَكْر', icon: '🕊️', blurb: 'Named after Abu Bakr As-Siddiq, the first Caliph and the Prophet\'s closest companion — known for his unwavering trust in Allah.' },
+  { id: 'umar', name: 'Halaqah Umar', arabicName: 'حَلَقَةُ عُمَر', icon: '⚔️', blurb: 'Named after Umar ibn Al-Khattab, the second Caliph — known for his justice and strength in upholding the truth.' },
+  { id: 'uthman', name: 'Halaqah Uthman', arabicName: 'حَلَقَةُ عُثْمَان', icon: '📖', blurb: 'Named after Uthman ibn Affan, the third Caliph — known for his generosity and compiling the Quran into a single mushaf.' },
+  { id: 'ali', name: 'Halaqah Ali', arabicName: 'حَلَقَةُ عَلِيّ', icon: '🗡️', blurb: 'Named after Ali ibn Abi Talib, the fourth Caliph — known for his knowledge and closeness to the Prophet ﷺ.' },
+  { id: 'talhah', name: 'Halaqah Talhah', arabicName: 'حَلَقَةُ طَلْحَة', icon: '🌿', blurb: 'Named after Talhah ibn Ubaydillah, one of the ten promised Paradise — known for his generosity and bravery at Uhud.' },
 ]
 
 const CLASSES = [
   {
-    id: 'arabiyyah',
-    title: 'Arabiyyah Class',
-    arabicTitle: 'فَصْلُ العَرَبِيَّة',
-    icon: '✍️',
+    id: 'arabiyyah', title: 'Arabiyyah Class', arabicTitle: 'فَصْلُ العَرَبِيَّة', icon: '✍️',
     description: 'A structured Arabic language programme from absolute beginner to mastery of the classical sciences.',
     color: '#094570',
     levels: [
-      {
-        key: 'beginner',
-        label: 'Beginner',
-        arabic: 'مُبْتَدِئ',
-        color: '#2e7d32',
-        icon: '🌱',
-        title: 'Duruus Lughahtil-Arabiyyah',
-        arabicTitle: 'دُرُوسُ اللُّغَةِ العَرَبِيَّة',
+      { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32', icon: '🌱',
+        title: 'Duruus Lughahtil-Arabiyyah', arabicTitle: 'دُرُوسُ اللُّغَةِ العَرَبِيَّة',
         description: 'Complete study of the three volumes of Duruus Al-Lughah Al-Arabiyyah by Dr V. Abdur Raheem — the gold standard for learning Arabic from scratch. Covers reading, writing, vocabulary, basic grammar, and simple conversation.',
-        curriculum: [
-          'Volume 1 — Arabic alphabet, vowels, basic nouns and verbs, simple sentences',
-          'Volume 2 — Expanded grammar, verb conjugation, common expressions',
-          'Volume 3 — Intermediate grammar, reading comprehension, composition',
-          'Weekly vocabulary memorization and dictation tests',
-          'Simple Arabic composition exercises from Week 8',
-        ],
-        outcome: 'Read Arabic text with vowels fluently, understand basic Quranic vocabulary, and write simple Arabic sentences.',
-        duration: '6 months',
-        commitment: '5 hours per week',
-      },
-      {
-        key: 'intermediate',
-        label: 'Intermediate',
-        arabic: 'مُتَوَسِّط',
-        color: '#e65100',
-        icon: '📖',
-        title: 'Nahw, Sarf and Insha',
-        arabicTitle: 'النَّحْو وَالصَّرْف وَالإِنْشَاء',
+        curriculum: ['Volume 1 — Arabic alphabet, vowels, basic nouns and verbs, simple sentences', 'Volume 2 — Expanded grammar, verb conjugation, common expressions', 'Volume 3 — Intermediate grammar, reading comprehension, composition', 'Weekly vocabulary memorization and dictation tests', 'Simple Arabic composition exercises from Week 8'],
+        outcome: 'Read Arabic text with vowels fluently, understand basic Quranic vocabulary, and write simple Arabic sentences.', duration: '6 months', commitment: '5 hours per week' },
+      { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', icon: '📖',
+        title: 'Nahw, Sarf and Insha', arabicTitle: 'النَّحْو وَالصَّرْف وَالإِنْشَاء',
         description: 'Systematic study of Arabic grammar (Nahw), morphology (Sarf), and Arabic composition (Insha). Students move from passive reading to active command of the language structures used in Islamic scholarship.',
-        curriculum: [
-          'Nahw — Al-Ajrumiyyah with full i\'rab practice on Quranic verses',
-          'Nahw — Qatr An-Nada by Ibn Hisham with commentary',
-          'Sarf — Shudha Al-Urf by Al-Hamlawi, all verb forms and patterns',
-          'Insha — Guided Arabic composition, letter writing, and paragraph construction',
-          'Weekly i\'rab exercises on selected Quranic passages',
-          'Monthly composition assignments reviewed and corrected',
-        ],
-        outcome: 'Perform full i\'rab of Quranic verses, understand the morphological structure of any Arabic word, and write correct Arabic prose.',
-        duration: '8 months',
-        commitment: '7 hours per week',
-      },
-      {
-        key: 'advanced',
-        label: 'Advanced',
-        arabic: 'مُتَقَدِّم',
-        color: '#6a1b9a',
-        icon: '🏛️',
-        title: 'Classical Sciences — Alfiyyah, Sarf, Balaghah',
-        arabicTitle: 'الأَلْفِيَّة وَالصَّرْف وَالبَلَاغَة',
+        curriculum: ["Nahw — Al-Ajrumiyyah with full i'rab practice on Quranic verses", 'Nahw — Qatr An-Nada by Ibn Hisham with commentary', 'Sarf — Shudha Al-Urf by Al-Hamlawi, all verb forms and patterns', 'Insha — Guided Arabic composition, letter writing, and paragraph construction', "Weekly i'rab exercises on selected Quranic passages", 'Monthly composition assignments reviewed and corrected'],
+        outcome: "Perform full i'rab of Quranic verses, understand the morphological structure of any Arabic word, and write correct Arabic prose.", duration: '8 months', commitment: '7 hours per week' },
+      { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', icon: '🏛️',
+        title: 'Classical Sciences — Alfiyyah, Sarf, Balaghah', arabicTitle: 'الأَلْفِيَّة وَالصَّرْف وَالبَلَاغَة',
         description: 'Study of the classical Arabic sciences at the level of the traditional Madrasah curriculum. This level produces scholars capable of reading unvowelled classical texts independently.',
-        curriculum: [
-          'Alfiyyah Ibn Malik — the 1,000-line poem covering all of Arabic grammar with commentary of Ibn Aqil',
-          'Advanced Sarf — Maqsud fi Al-Sarf and Al-Kaylani with all derived forms',
-          'Balaghah — Al-Balaghatul-Wadihah',
-          'Reading of classical unvowelled texts',
-          'Weekly memorization of Alfiyyah verses with i\'rab',
-          'Independent reading and translation of classical Arabic texts',
-        ],
-        outcome: 'Read unvowelled classical Arabic texts independently, understand Alfiyyah Ibn Malik, and apply Balaghah principles to Quranic analysis.',
-        duration: '12 months',
-        commitment: '10 hours per week',
-      },
+        curriculum: ['Alfiyyah Ibn Malik — the 1,000-line poem covering all of Arabic grammar with commentary of Ibn Aqil', 'Advanced Sarf — Maqsud fi Al-Sarf and Al-Kaylani with all derived forms', 'Balaghah — Al-Balaghatul-Wadihah', 'Reading of classical unvowelled texts', 'Weekly memorization of Alfiyyah verses with i\'rab', 'Independent reading and translation of classical Arabic texts'],
+        outcome: "Read unvowelled classical Arabic texts independently, understand Alfiyyah Ibn Malik, and apply Balaghah principles to Quranic analysis.", duration: '12 months', commitment: '10 hours per week' },
     ],
   },
   {
-    id: 'hadeeth',
-    title: 'Hadeeth Class',
-    arabicTitle: 'فَصْلُ الحَدِيث',
-    icon: '📜',
+    id: 'hadeeth', title: 'Hadeeth Class', arabicTitle: 'فَصْلُ الحَدِيث', icon: '📜',
     description: 'A structured Hadeeth memorization and study programme — from the Forty of An-Nawawi to the great collections of the Sunnah.',
     color: '#7b3f00',
     levels: [
-      {
-        key: 'beginner',
-        label: 'Beginner',
-        arabic: 'مُبْتَدِئ',
-        color: '#2e7d32',
-        icon: '🌱',
-        title: 'Al-Arba\'oon An-Nawawiyyah',
-        arabicTitle: 'الأَرْبَعُونَ النَّوَوِيَّة',
+      { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32', icon: '🌱',
+        title: "Al-Arba'oon An-Nawawiyyah", arabicTitle: 'الأَرْبَعُونَ النَّوَوِيَّة',
         description: 'Complete memorization and study of the Forty Hadith of Imam An-Nawawi — the foundational text of Islamic learning for over seven centuries. Every hadith is memorized in Arabic with its chain, studied for its meanings, and applied to daily life.',
-        curriculum: [
-          'Memorization of all 42 hadith with Arabic text and sanad',
-          'Study of Imam An-Nawawi\'s commentary on each hadith',
-          'Understanding the fiqh and aqeedah derived from each hadith',
-          'Weekly recitation test — 2 hadith per week minimum',
-          'Final examination — recite all 42 from memory',
-        ],
-        outcome: 'Memorize all 42 hadith of An-Nawawi with their Arabic text, understand their meanings and scholarly commentary, and extract basic Islamic rulings from them.',
-        duration: '6 months',
-        commitment: '3 hours per week',
+        curriculum: ['Memorization of all 42 hadith with Arabic text and sanad', "Study of Imam An-Nawawi's commentary on each hadith", 'Understanding the fiqh and aqeedah derived from each hadith', 'Weekly recitation test — 2 hadith per week minimum', 'Final examination — recite all 42 from memory'],
+        outcome: 'Memorize all 42 hadith of An-Nawawi with their Arabic text, understand their meanings and scholarly commentary, and extract basic Islamic rulings from them.', duration: '6 months', commitment: '3 hours per week',
         hadiths: [
           { num: 1,  text: 'إِنَّمَا الأَعْمَالُ بِالنِّيَّات', translation: 'Actions are by intentions' },
           { num: 2,  text: 'الإِسْلَامُ أَنْ تَشْهَدَ أَنْ لَا إِلَهَ إِلَّا اللَّه', translation: 'Islam is that you testify there is no god but Allah' },
           { num: 3,  text: 'بُنِيَ الإِسْلَامُ عَلَى خَمْس', translation: 'Islam was built on five' },
-          { num: 4,  text: 'إِنَّ أَحَدَكُمْ يُجْمَعُ خَلْقُهُ فِي بَطْنِ أُمِّه', translation: 'The creation of each of you is gathered in his mother\'s womb' },
+          { num: 4,  text: 'إِنَّ أَحَدَكُمْ يُجْمَعُ خَلْقُهُ فِي بَطْنِ أُمِّه', translation: "The creation of each of you is gathered in his mother's womb" },
           { num: 5,  text: 'مَنْ أَحْدَثَ فِي أَمْرِنَا هَذَا مَا لَيْسَ مِنْه', translation: 'Whoever introduces into this affair of ours that which is not of it' },
           { num: 6,  text: 'الحَلَالُ بَيِّنٌ وَالحَرَامُ بَيِّن', translation: 'The halal is clear and the haram is clear' },
           { num: 7,  text: 'الدِّينُ النَّصِيحَة', translation: 'The religion is sincere advice' },
           { num: 8,  text: 'أُمِرْتُ أَنْ أُقَاتِلَ النَّاسَ حَتَّى يَشْهَدُوا', translation: 'I was commanded to fight the people until they testify' },
           { num: 9,  text: 'مَا نَهَيْتُكُمْ عَنْهُ فَاجْتَنِبُوه', translation: 'Whatever I have forbidden you, avoid it' },
           { num: 10, text: 'إِنَّ اللَّهَ طَيِّبٌ لَا يَقْبَلُ إِلَّا طَيِّبًا', translation: 'Allah is pure and accepts only what is pure' },
-        ],
-      },
-      {
-        key: 'intermediate',
-        label: 'Intermediate',
-        arabic: 'مُتَوَسِّط',
-        color: '#e65100',
-        icon: '📖',
-        title: 'Bulugh Al-Maram and Umdat Al-Ahkam',
-        arabicTitle: 'بُلُوغُ المَرَام وَعُمْدَةُ الأَحْكَام',
+        ] },
+      { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', icon: '📖',
+        title: 'Bulugh Al-Maram and Umdat Al-Ahkam', arabicTitle: 'بُلُوغُ المَرَام وَعُمْدَةُ الأَحْكَام',
         description: 'Memorization and study of the two greatest collections of legal hadith — Bulugh Al-Maram by Ibn Hajar Al-Asqalani and Umdatul-Ahkam by Ibn Qudamah. These books form the backbone of fiqh al-hadith study in traditional Islamic scholarship.',
-        curriculum: [
-          'Umdatul-Ahkam — 414 hadith on acts of worship and transactions, memorization and study',
-          'Bulughul-Maram — systematic study of all chapters',
-          'Weekly memorization target — 5 hadith per week minimum',
-          'Monthly written examination on chapters covered',
-        ],
-        outcome: 'Memorize core legal hadith from both texts, understand how scholars derive fiqh rulings from hadith, and read Ibn Hajar\'s Arabic commentary.',
-        duration: '10 months',
-        commitment: '6 hours per week',
-      },
-      {
-        key: 'advanced',
-        label: 'Advanced',
-        arabic: 'مُتَقَدِّم',
-        color: '#6a1b9a',
-        icon: '🏛️',
-        title: 'Sahih Bukhari Memorization',
-        arabicTitle: 'حِفْظُ صَحِيح البُخَارِي',
+        curriculum: ['Umdatul-Ahkam — 414 hadith on acts of worship and transactions, memorization and study', 'Bulughul-Maram — systematic study of all chapters', 'Weekly memorization target — 5 hadith per week minimum', 'Monthly written examination on chapters covered'],
+        outcome: "Memorize core legal hadith from both texts, understand how scholars derive fiqh rulings from hadith, and read Ibn Hajar's Arabic commentary.", duration: '10 months', commitment: '6 hours per week' },
+      { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', icon: '🏛️',
+        title: 'Sahih Bukhari Memorization', arabicTitle: 'حِفْظُ صَحِيح البُخَارِي',
         description: 'The pinnacle of hadith study — systematic memorization and deep study of Sahih Al-Bukhari, the most authentic book after the Quran. Students study with Fath Al-Bari, the greatest commentary on Al-Bukhari by Ibn Hajar Al-Asqalani.',
-        curriculum: [
-          'Memorization of selected hadith from each chapter of Sahih Bukhari (Kitab Al-Iman through Kitab Al-Jami\')',
-          'Study of Fath Al-Bari by Ibn Hajar Al-Asqalani — chapter by chapter',
-          'Hadith sciences (Mustalahul-Hadith) — understanding chains, narrators, and authentication',
-          'Independent research assignments on specific hadith and their commentaries',
-        ],
-        outcome: 'Memorize 200+ hadith from Sahih Al-Bukhari, read and understand hadith sciences at an advanced level.',
-        duration: '18 months',
-        commitment: '12 hours per week',
-      },
+        curriculum: ["Memorization of selected hadith from each chapter of Sahih Bukhari (Kitab Al-Iman through Kitab Al-Jami')", 'Study of Fath Al-Bari by Ibn Hajar Al-Asqalani — chapter by chapter', 'Hadith sciences (Mustalahul-Hadith) — understanding chains, narrators, and authentication', 'Independent research assignments on specific hadith and their commentaries'],
+        outcome: 'Memorize 200+ hadith from Sahih Al-Bukhari, read and understand hadith sciences at an advanced level.', duration: '18 months', commitment: '12 hours per week' },
     ],
   },
 ]
-
-// ── Time helpers ────────────────────────────────────────────────
 
 function timeAgo(dateStr) {
   const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
@@ -260,12 +127,6 @@ function liveStatus(schedule, durationMinutes = 60) {
   return now >= start && now < end
 }
 
-// ── Daily tafseer quiz generator ──────────────────────────────
-// Builds a short multiple-choice test straight from whatever tafseer
-// text and lesson bullets were posted for the day — no separate quiz
-// content needs to be authored. Distractors are drawn from other
-// days' entries so the test still works with a small history.
-
 function tfWords(text) {
   return (text || '').split(/\s+/).filter(Boolean)
 }
@@ -283,8 +144,6 @@ function buildTafseerQuestions(entry, historyPool) {
   const others = historyPool.filter(e => e.id !== entry.id)
   const raw = []
 
-  // Q: which surah/ayah is today's — needs at least 3 other entries
-  // to build convincing wrong options.
   if (others.length >= 3) {
     const wrongLabels = shuffleArr(others).slice(0, 3).map(e => `${e.surah_name} ${e.surah_num}:${e.ayah_num}`)
     raw.push({
@@ -294,8 +153,6 @@ function buildTafseerQuestions(entry, historyPool) {
     })
   }
 
-  // Q per lesson bullet — needs a pool of other days' lessons to draw
-  // distractors from.
   const allOtherLessons = others.flatMap(e => Array.isArray(e.lessons) ? e.lessons : [])
   const lessons = Array.isArray(entry.lessons) ? entry.lessons : []
   lessons.slice(0, 3).forEach(lesson => {
@@ -308,8 +165,6 @@ function buildTafseerQuestions(entry, historyPool) {
     })
   })
 
-  // Fallback fill-blank straight from the tafseer body, in case there
-  // isn't enough history/lessons yet to build the question types above.
   if (raw.length < 2) {
     const sentences = (entry.tafseer_body || '').split(/(?<=[.!?])\s+/).filter(s => tfWords(s).length >= 5)
     if (sentences.length > 0) {
@@ -347,6 +202,7 @@ function buildTafseerQuestions(entry, historyPool) {
 export default function Spaces({ user }) {
   const [subscription,   setSubscription]   = useState(null)
   const [subLoading,     setSubLoading]     = useState(true)
+  const [confirmingPayment, setConfirmingPayment] = useState(false)
   const [posts,          setPosts]          = useState([])
   const [postsLoading,   setPostsLoading]   = useState(false)
   const [category,       setCategory]       = useState('all')
@@ -366,14 +222,12 @@ export default function Spaces({ user }) {
     return prev ? new Date(prev) : null
   })
 
-  // ── Accountability partners state ──
   const [myPair, setMyPair] = useState(null)
   const [availableMembers, setAvailableMembers] = useState([])
   const [accountabilityLoading, setAccountabilityLoading] = useState(false)
   const [accountabilityError, setAccountabilityError] = useState(null)
   const [pairing, setPairing] = useState(false)
 
-  // ── Sahaabah circles state ──
   const [myCircle, setMyCircle] = useState(null)
   const [circleCounts, setCircleCounts] = useState({})
   const [circleMessages, setCircleMessages] = useState([])
@@ -383,7 +237,6 @@ export default function Spaces({ user }) {
   const [joiningCircle, setJoiningCircle] = useState(false)
   const [postingCircleMsg, setPostingCircleMsg] = useState(false)
 
-  // ── Daily tafseer state ──
   const [todayTafseer, setTodayTafseer] = useState(null)
   const [tafseerLoading, setTafseerLoading] = useState(false)
   const [tafseerQuestions, setTafseerQuestions] = useState([])
@@ -395,7 +248,6 @@ export default function Spaces({ user }) {
   const [tafseerAlreadyDone, setTafseerAlreadyDone] = useState(false)
   const [tafseerPastScore, setTafseerPastScore] = useState('')
 
-  // Keep class countdowns live without a visible clock
   const [, setClock] = useState(new Date())
   useEffect(() => {
     const interval = setInterval(() => setClock(new Date()), 60000)
@@ -443,7 +295,6 @@ export default function Spaces({ user }) {
     }
   }, [user, category])
 
-  // Question of the Week: the post behind the most recent scholar answer
   const fetchFeatured = useCallback(async () => {
     try {
       const { data: reply } = await supabase
@@ -465,7 +316,6 @@ export default function Spaces({ user }) {
     }
   }, [])
 
-  // ── Accountability partners fetch/actions ──
   const fetchAccountability = useCallback(async () => {
     setAccountabilityLoading(true)
     setAccountabilityError(null)
@@ -503,7 +353,6 @@ export default function Spaces({ user }) {
     }
   }
 
-  // ── Sahaabah circles fetch/actions ──
   const fetchCircles = useCallback(async () => {
     if (!user) return
     setCirclesLoading(true)
@@ -569,7 +418,6 @@ export default function Spaces({ user }) {
     }
   }
 
-  // ── Daily tafseer fetch/actions ──
   const fetchTafseer = useCallback(async () => {
     if (!user) return
     setTafseerLoading(true)
@@ -659,22 +507,44 @@ export default function Spaces({ user }) {
     }
   }
 
+  // ── Payment return handling ──────────────────────────────────
+  // Paystack redirects the browser back here after checkout, but the
+  // ONLY trustworthy signal that a payment actually succeeded is the
+  // server-to-server webhook (see supabase/functions/paystack-webhook),
+  // which activates the subscriptions row directly. This effect does
+  // NOT grant access itself — it just clears the URL and briefly
+  // polls for the webhook having landed, since the webhook can take a
+  // few seconds longer than the browser redirect.
   useEffect(() => {
     if (!user) return
     checkSubscription()
+
     const params = new URLSearchParams(window.location.search)
     if (params.get('payment') === 'success') {
-      const ref = params.get('ref') || 'manual_' + Date.now()
-      supabase.from('subscriptions').upsert({
-        user_id: user.id,
-        status: 'active',
-        paystack_customer_code: ref,
-        started_at: new Date().toISOString(),
-        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      }, { onConflict: 'user_id' }).then(() => {
-        window.history.replaceState({}, '', '/spaces')
-        checkSubscription()
-      })
+      window.history.replaceState({}, '', '/spaces')
+      setConfirmingPayment(true)
+      let attempts = 0
+      const poll = setInterval(async () => {
+        attempts++
+        const { data } = await supabase
+          .from('subscriptions')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        if (data?.status === 'active') {
+          setSubscription(data)
+          setConfirmingPayment(false)
+          clearInterval(poll)
+        } else if (attempts >= 8) {
+          // ~40s of polling — stop trying; the webhook may simply be
+          // delayed further, or something needs manual attention. The
+          // email_log / subscriptions tables are the source of truth
+          // for support to check from here, not this browser tab.
+          setConfirmingPayment(false)
+          clearInterval(poll)
+        }
+      }, 5000)
+      return () => clearInterval(poll)
     }
   }, [user, checkSubscription])
 
@@ -685,8 +555,6 @@ export default function Spaces({ user }) {
     }
   }, [subscription, fetchPosts, fetchFeatured])
 
-  // Fetch data for the new tabs only once they're active and the
-  // member is actually subscribed.
   useEffect(() => {
     if (subscription?.status !== 'active') return
     if (activeTab === 'accountability') fetchAccountability()
@@ -766,8 +634,12 @@ export default function Spaces({ user }) {
     }
   }
 
+  // ── Checkout ─────────────────────────────────────────────────
+  // The reference embeds the FULL Supabase user id (not truncated),
+  // wrapped in a delimiter that never appears inside a uuid, so the
+  // webhook can extract it with zero ambiguity: sual_<uuid>_<epoch ms>
   const handlePaystack = () => {
-    const ref = 'sual_' + user.id.slice(0, 8) + '_' + Date.now()
+    const ref = 'sual_' + user.id + '_' + Date.now()
     window.location.href = 'https://paystack.com/buy/sual-spaces-vcvfks?email=' +
       encodeURIComponent(user.email) + '&ref=' + ref
   }
@@ -780,7 +652,6 @@ export default function Spaces({ user }) {
   const isPaid = subscription?.status === 'active'
   const catOf = (key) => CATEGORIES.find(c => c.key === key)
 
-  // Shared schedule strip, used on both the member view and the paywall
   const renderSchedule = () => (
     <div className="spaces-schedule">
       {CLASS_SCHEDULE.map(s => {
@@ -811,7 +682,6 @@ export default function Spaces({ user }) {
     </div>
   )
 
-  // ── Accountability partners tab ──
   const renderAccountability = () => (
     <div className="spaces-accountability">
       <div className="spaces-section-intro card">
@@ -876,7 +746,6 @@ export default function Spaces({ user }) {
     </div>
   )
 
-  // ── Sahaabah circles tab ──
   const renderCircles = () => (
     <div className="spaces-circles">
       <div className="spaces-section-intro card">
@@ -959,7 +828,6 @@ export default function Spaces({ user }) {
     </div>
   )
 
-  // ── Daily tafseer tab ──
   const renderTafseer = () => {
     if (tafseerLoading) {
       return <div className="spaces-loading"><div className="spaces-spinner" /></div>
@@ -1032,7 +900,6 @@ export default function Spaces({ user }) {
       )
     }
 
-    // ── 'view' phase ──
     return (
       <div className="spaces-tafseer-view">
         <div className="spaces-tafseer-card card">
@@ -1084,7 +951,6 @@ export default function Spaces({ user }) {
     )
   }
 
-  // ── Post detail view ──────────────────────────────────────────
   if (activePost) {
     const cat = catOf(activePost.category)
     return (
@@ -1157,14 +1023,26 @@ export default function Spaces({ user }) {
     )
   }
 
-  // ── Paywall ───────────────────────────────────────────────────
   if (!isPaid) {
     return (
       <div className="page-content spaces-page">
         <h1 className="page-title">Spaces</h1>
         <p className="page-subtitle">فَضَاءَات — A community for serious students of Islamic knowledge</p>
 
-        {/* Live class schedule shown even to non-members: this is what the money buys */}
+        {confirmingPayment && (
+          <div className="card" style={{
+            padding: '14px 18px',
+            marginBottom: 16,
+            background: 'rgba(9,69,112,0.06)',
+            border: '1px solid rgba(9,69,112,0.2)',
+            borderRadius: 10,
+            color: '#094570',
+            fontSize: '0.9rem',
+          }}>
+            Confirming your payment — this can take up to a minute. No need to refresh or pay again.
+          </div>
+        )}
+
         <p className="spaces-schedule-label">This week in Spaces</p>
         {renderSchedule()}
 
@@ -1211,7 +1089,6 @@ export default function Spaces({ user }) {
     )
   }
 
-  // ── Class view renderer ───────────────────────────────────────
   const renderClass = (cls) => {
     const currentLevelKey = classLevel[cls.id]
     const currentLevel    = cls.levels.find(l => l.key === currentLevelKey)
@@ -1327,7 +1204,6 @@ export default function Spaces({ user }) {
     )
   }
 
-  // ── Main paid view ────────────────────────────────────────────
   return (
     <div className="page-content spaces-page">
 
@@ -1370,10 +1246,8 @@ export default function Spaces({ user }) {
 
       {activeTab === 'community' && (
         <>
-          {/* Next class sessions */}
           {renderSchedule()}
 
-          {/* Question of the Week: latest scholar-answered thread */}
           {featured && (
             <button className="spaces-featured card" onClick={() => openPostById(featured.post.id)}>
               <div className="spaces-featured-head">
