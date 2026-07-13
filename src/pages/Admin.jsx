@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase.js'
+import './Admin.css'
 
 export default function Admin({ user }) {
   const [stats, setStats] = useState(null)
