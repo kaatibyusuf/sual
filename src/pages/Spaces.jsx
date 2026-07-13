@@ -227,6 +227,9 @@ export default function Spaces({ user }) {
 
   const [myPair, setMyPair] = useState(null)
   const [myGender, setMyGender] = useState(null)
+  const [pairMessages, setPairMessages] = useState([])
+  const [pairMsgInput, setPairMsgInput] = useState('')
+  const [postingPairMsg, setPostingPairMsg] = useState(false)
   const [availableMembers, setAvailableMembers] = useState([])
   const [roster, setRoster] = useState([])
   const [accountabilityLoading, setAccountabilityLoading] = useState(false)
@@ -374,8 +377,10 @@ export default function Spaces({ user }) {
       if (!pair) {
         const { data: avail } = await supabase.rpc('get_available_accountability_members')
         setAvailableMembers(avail || [])
+        setPairMessages([])
       } else {
         setAvailableMembers([])
+        fetchPairMessages(pair.pair_id)
       }
 
       const { data: rosterData, error: rosterError } = await supabase.rpc('get_accountability_roster')
@@ -391,6 +396,40 @@ export default function Spaces({ user }) {
       setAccountabilityLoading(false)
     }
   }, [user])
+
+  const fetchPairMessages = async (pairId) => {
+    try {
+      const { data, error } = await supabase
+        .from('accountability_messages')
+        .select('*')
+        .eq('pair_id', pairId)
+        .order('created_at', { ascending: true })
+      if (error) throw error
+      setPairMessages(data || [])
+    } catch (err) {
+      console.error('Failed to load accountability messages:', err)
+      setPairMessages([])
+    }
+  }
+
+  const submitPairMessage = async () => {
+    if (!pairMsgInput.trim() || !myPair?.pair_id) return
+    setPostingPairMsg(true)
+    try {
+      const { error } = await supabase.from('accountability_messages').insert({
+        pair_id: myPair.pair_id,
+        user_id: user.id,
+        body: pairMsgInput.trim(),
+      })
+      if (error) throw error
+      setPairMsgInput('')
+      fetchPairMessages(myPair.pair_id)
+    } catch (err) {
+      setAccountabilityError(err.message)
+    } finally {
+      setPostingPairMsg(false)
+    }
+  }
 
   const pairWith = async (otherUserId) => {
     setPairing(true)
@@ -809,9 +848,9 @@ export default function Spaces({ user }) {
         <h3 className="spaces-section-intro-title">🤝 Accountability Partners</h3>
         <p className="spaces-section-intro-text">
           Pair up with another member to keep each other accountable in your learning.
-          Once paired, coordinate directly outside the app (WhatsApp, etc.) — Spaces just
-          keeps a record of who you're paired with. A pair stays together unless a
-          partner's subscription lapses without renewal; you can't unpair yourselves.
+          Once paired, you get a private message thread right here to actually coordinate —
+          nothing else about your identity is shared beyond that. A pair stays together
+          unless a partner's subscription lapses without renewal; you can't unpair yourselves.
         </p>
       </div>
 
@@ -829,24 +868,70 @@ export default function Spaces({ user }) {
           </p>
         </div>
       ) : myPair ? (
-        <div className="spaces-pair-card card">
-          <span className="spaces-pair-badge">✅ Paired</span>
-          <div className="spaces-pair-member">
-            <div className="spaces-post-avatar">{getInitials('M')}</div>
-            <div>
-              <p className="spaces-pair-name">
-                Member {String(myPair.partner_id).slice(0, 8)}
-                {myPair.gender && (
-                  <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
-                    {myPair.gender === 'male' ? '♂' : '♀'} {myPair.gender}
-                  </span>
-                )}
-              </p>
-              <BadgeStrip earnedIds={myPair.badge_ids || []} />
+        <>
+          <div className="spaces-pair-card card">
+            <span className="spaces-pair-badge">✅ Paired</span>
+            <div className="spaces-pair-member">
+              <div className="spaces-post-avatar">{getInitials('M')}</div>
+              <div>
+                <p className="spaces-pair-name">
+                  Member {String(myPair.partner_id).slice(0, 8)}
+                  {myPair.gender && (
+                    <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
+                      {myPair.gender === 'male' ? '♂' : '♀'} {myPair.gender}
+                    </span>
+                  )}
+                </p>
+                <BadgeStrip earnedIds={myPair.badge_ids || []} />
+              </div>
             </div>
+            <p className="spaces-pair-since">Paired since {formatDate(myPair.paired_at)}</p>
           </div>
-          <p className="spaces-pair-since">Paired since {formatDate(myPair.paired_at)}</p>
-        </div>
+
+          {/* Private thread, just the two of you — this is the actual
+              answer to "how do partners contact each other," since
+              nothing beyond a truncated member id was ever exchanged
+              before this existed. */}
+          <div className="spaces-circle-messages">
+            {pairMessages.length === 0 ? (
+              <div className="spaces-no-replies">No messages yet. Say salaam and set your first check-in.</div>
+            ) : pairMessages.map((m) => (
+              <div
+                key={m.id}
+                className="spaces-reply card"
+                style={m.user_id === user.id ? { borderLeft: '3px solid #094570' } : undefined}
+              >
+                <div className="spaces-reply-header">
+                  <div className="spaces-reply-avatar" style={{ background: '#e8f0f8' }}>
+                    <span style={{ color: '#094570' }}>{getInitials(m.user_id)}</span>
+                  </div>
+                  <div>
+                    <p className="spaces-reply-author">{m.user_id === user.id ? 'You' : 'Your Partner'}</p>
+                    <p className="spaces-reply-date">{timeAgo(m.created_at)}</p>
+                  </div>
+                </div>
+                <p className="spaces-reply-body">{m.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="spaces-reply-input card">
+            <textarea
+              className="spaces-textarea"
+              placeholder="Message your accountability partner..."
+              value={pairMsgInput}
+              onChange={e => setPairMsgInput(e.target.value)}
+              rows={3}
+            />
+            <button
+              className="spaces-submit-btn"
+              onClick={submitPairMessage}
+              disabled={postingPairMsg || !pairMsgInput.trim()}
+            >
+              {postingPairMsg ? 'Sending...' : 'Send →'}
+            </button>
+          </div>
+        </>
       ) : (
         <>
           <p className="spaces-available-label">Members without a partner — choose one to pair up</p>
