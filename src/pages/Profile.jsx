@@ -3,16 +3,20 @@ import { supabase } from '../lib/supabase.js'
 import './Profile.css'
 import { BadgesSection } from '../components/Badges.jsx'
 
+const LEVELS = [
+  { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
+  { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100' },
+  { key: 'advanced',     label: 'Advanced',     arabic: 'مُتَقَدِّم', color: '#6a1b9a' },
+]
 
-export default function Profile({ user }) {
-  if (!user) return null
-
+export default function Profile({ user, userLevel, setUserLevel }) {
   const [name, setName] = useState(user?.user_metadata?.full_name || '')
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [avatarLoading, setAvatarLoading] = useState(false)
+  const [levelLoading, setLevelLoading] = useState(false)
   const [success, setSuccess] = useState(null)
   const [error, setError] = useState(null)
   const [activeTab, setActiveTab] = useState('profile')
@@ -21,9 +25,16 @@ export default function Profile({ user }) {
   const fileRef = useRef()
 
   useEffect(() => {
+    if (!user) return
     fetchAvatar()
     fetchSubscription()
   }, [user])
+
+  // All hooks are declared above this line, unconditionally, before
+  // any early return — required so this component stays safe to
+  // render even if a future change ever calls it before `user` is
+  // guaranteed to exist.
+  if (!user) return null
 
   const fetchAvatar = async () => {
     if (!user) return
@@ -47,10 +58,9 @@ export default function Profile({ user }) {
       setSubscription(null)
     } finally {
       setSubLoading(false)
-
     }
   }
-<BadgesSection user={user} />
+
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -107,6 +117,33 @@ export default function Profile({ user }) {
     }
   }
 
+  // Fully open switch, on purpose — undoing a mistaken level pick
+  // shouldn't be harder than making it. This never touches quiz
+  // history or badges, and if someone drops down but their existing
+  // quiz average still qualifies them for a higher level, the
+  // existing auto-upgrade logic in Quiz.jsx will simply bump them
+  // back up the moment they pass another quiz, so nothing about the
+  // earned-progression system is undermined by allowing this.
+  const handleChangeLevel = async (newLevel) => {
+    if (newLevel === userLevel || levelLoading) return
+    setLevelLoading(true)
+    setError(null)
+    setSuccess(null)
+    try {
+      const { error } = await supabase
+        .from('user_levels')
+        .update({ current_level: newLevel, level_selected: true })
+        .eq('user_id', user.id)
+      if (error) throw error
+      setUserLevel?.(newLevel)
+      setSuccess(`Level switched to ${newLevel.charAt(0).toUpperCase() + newLevel.slice(1)}.`)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLevelLoading(false)
+    }
+  }
+
   const initials = name
     ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : user?.email?.[0]?.toUpperCase() || 'U'
@@ -158,6 +195,10 @@ export default function Profile({ user }) {
           <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
         </div>
       </div>
+
+      {/* Badges — previously declared as a bare expression outside
+          the returned JSX, so it never actually rendered. Fixed here. */}
+      <BadgesSection user={user} />
 
       {/* Subscription card */}
       <div className={`profile-sub-card ${isPaid ? 'profile-sub-card--active' : 'profile-sub-card--inactive'}`}>
@@ -211,6 +252,52 @@ export default function Profile({ user }) {
             </a>
           </div>
         )}
+      </div>
+
+      {/* Learning Level card */}
+      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
+        <p style={{
+          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
+          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
+        }}>
+          Learning Level
+        </p>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
+          Switch anytime, including back down if you picked the wrong one by mistake.
+          This only changes your default level — quiz performance still unlocks higher
+          levels the normal way.
+        </p>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {LEVELS.map(lv => {
+            const active = userLevel === lv.key
+            return (
+              <button
+                key={lv.key}
+                onClick={() => handleChangeLevel(lv.key)}
+                disabled={levelLoading || active}
+                style={{
+                  flex: '1 1 140px',
+                  padding: '10px 14px',
+                  borderRadius: 10,
+                  border: active ? `2px solid ${lv.color}` : '2px solid #c8d8e8',
+                  background: active ? '#ffffff' : '#f5f8fb',
+                  color: active ? lv.color : '#6a8090',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  cursor: active ? 'default' : 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 2,
+                  opacity: levelLoading && !active ? 0.6 : 1,
+                }}
+              >
+                <span>{active ? '✓ ' : ''}{lv.label}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>{lv.arabic}</span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Tabs */}

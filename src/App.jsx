@@ -178,7 +178,7 @@ export default function App() {
             <Route path="/tajweed" element={<Tajweed />} />
             <Route path="/fiqh" element={<Fiqh />} />
             <Route path="/tawheed" element={<Tawheed />} />
-            <Route path="/profile" element={<Profile user={user} />} />
+            <Route path="/profile" element={<Profile user={user} userLevel={userLevel} setUserLevel={setUserLevel} />} />
             <Route path="/dashboard" element={<Journey user={user} />} />
             <Route path="/spaces" element={<Spaces user={user} />} />
             <Route path="/prayer-times" element={<PrayerTimes />} />
