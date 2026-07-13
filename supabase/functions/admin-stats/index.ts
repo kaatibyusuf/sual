@@ -5,6 +5,15 @@
 //
 // Deploy:  supabase functions deploy admin-stats
 // (no new secrets needed -- reuses the auto-injected Supabase env vars)
+//
+// FIX: hifdhActiveUsers previously fetched all hifdh_progress rows
+// unpaginated and deduped client-side — PostgREST caps that at 1000
+// rows by default, and hifdh_progress stores one row per reviewed
+// item per user per collection, so it very likely exceeded that,
+// silently truncating the count and freezing it as new users' rows
+// fell outside the first 1000 returned. Now counted via a database
+// function (admin_hifdh_active_user_count, see
+// admin_hifdh_count_function.sql) that isn't subject to that cap.
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -81,11 +90,13 @@ serve(async (req) => {
     admin.from('quiz_history').select('*', { count: 'exact', head: true }),
     admin.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
     admin.from('spaces_posts').select('*', { count: 'exact', head: true }),
-    admin.from('hifdh_progress').select('user_id', { count: 'exact', head: true }),
+    admin.from('hifdh_progress').select('*', { count: 'exact', head: true }),
   ])
 
-  const { data: hifdhUserRows } = await admin.from('hifdh_progress').select('user_id')
-  const hifdhActiveUsers = new Set((hifdhUserRows || []).map(r => r.user_id)).size
+  const { data: hifdhActiveUsers, error: hifdhCountError } = await admin.rpc('admin_hifdh_active_user_count')
+  if (hifdhCountError) {
+    console.error('Failed to get hifdh active user count:', hifdhCountError)
+  }
 
   return json({
     totalUsers: allUsers.length,
@@ -94,7 +105,7 @@ serve(async (req) => {
     activeSubscriptions: activeSubs ?? 0,
     totalQuizzesTaken: totalQuizzes ?? 0,
     totalSpacesPosts: totalPosts ?? 0,
-    hifdhActiveUsers,
+    hifdhActiveUsers: hifdhActiveUsers ?? 0,
     hifdhTotalProgressRows: hifdhRows ?? 0,
   })
 })
