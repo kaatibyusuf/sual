@@ -226,6 +226,7 @@ export default function Spaces({ user }) {
   })
 
   const [myPair, setMyPair] = useState(null)
+  const [myGender, setMyGender] = useState(null)
   const [availableMembers, setAvailableMembers] = useState([])
   const [roster, setRoster] = useState([])
   const [accountabilityLoading, setAccountabilityLoading] = useState(false)
@@ -359,6 +360,13 @@ export default function Spaces({ user }) {
     try {
       await supabase.rpc('release_lapsed_accountability_pairs')
 
+      const { data: myProfile } = await supabase
+        .from('profiles')
+        .select('gender')
+        .eq('id', user.id)
+        .maybeSingle()
+      setMyGender(myProfile?.gender || null)
+
       const { data: pairData } = await supabase.rpc('get_my_accountability_pair')
       const pair = Array.isArray(pairData) ? pairData[0] : pairData
       setMyPair(pair || null)
@@ -382,7 +390,7 @@ export default function Spaces({ user }) {
     } finally {
       setAccountabilityLoading(false)
     }
-  }, [])
+  }, [user])
 
   const pairWith = async (otherUserId) => {
     setPairing(true)
@@ -811,13 +819,29 @@ export default function Spaces({ user }) {
 
       {accountabilityLoading ? (
         <div className="spaces-loading"><div className="spaces-spinner" /></div>
+      ) : !myGender && !myPair ? (
+        <div className="spaces-empty card">
+          <p className="spaces-empty-icon">🤝</p>
+          <p className="spaces-empty-text">Set your gender in Profile first</p>
+          <p className="spaces-empty-sub">
+            Accountability pairing only ever matches members of the same gender —
+            <a href="/profile"> head to your Profile</a> to set it, then come back here.
+          </p>
+        </div>
       ) : myPair ? (
         <div className="spaces-pair-card card">
           <span className="spaces-pair-badge">✅ Paired</span>
           <div className="spaces-pair-member">
             <div className="spaces-post-avatar">{getInitials('M')}</div>
             <div>
-              <p className="spaces-pair-name">Member {String(myPair.partner_id).slice(0, 8)}</p>
+              <p className="spaces-pair-name">
+                Member {String(myPair.partner_id).slice(0, 8)}
+                {myPair.gender && (
+                  <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
+                    {myPair.gender === 'male' ? '♂' : '♀'} {myPair.gender}
+                  </span>
+                )}
+              </p>
               <BadgeStrip earnedIds={myPair.badge_ids || []} />
             </div>
           </div>
@@ -839,7 +863,14 @@ export default function Spaces({ user }) {
                   <div className="spaces-pair-member">
                     <div className="spaces-post-avatar">{getInitials('M')}</div>
                     <div>
-                      <p className="spaces-pair-name">Member {String(m.user_id).slice(0, 8)}</p>
+                      <p className="spaces-pair-name">
+                        Member {String(m.user_id).slice(0, 8)}
+                        {m.gender && (
+                          <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
+                            {m.gender === 'male' ? '♂' : '♀'} {m.gender}
+                          </span>
+                        )}
+                      </p>
                       <BadgeStrip earnedIds={m.badge_ids || []} />
                     </div>
                   </div>
@@ -892,6 +923,11 @@ export default function Spaces({ user }) {
                     <div key={r.member_id} className="spaces-available-item card">
                       <p className="spaces-pair-name">
                         Member {String(r.member_id).slice(0, 8)} ↔ Member {String(r.partner_id).slice(0, 8)}
+                        {r.gender && (
+                          <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
+                            {r.gender === 'male' ? '♂' : '♀'} {r.gender} pair
+                          </span>
+                        )}
                       </p>
                       <p className="spaces-pair-since">Since {formatDate(r.paired_at)}</p>
                     </div>
@@ -906,7 +942,14 @@ export default function Spaces({ user }) {
                 <div className="spaces-available-list">
                   {seekingMembers.map(r => (
                     <div key={r.member_id} className="spaces-available-item card">
-                      <p className="spaces-pair-name">Member {String(r.member_id).slice(0, 8)}</p>
+                      <p className="spaces-pair-name">
+                        Member {String(r.member_id).slice(0, 8)}
+                        {r.gender && (
+                          <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
+                            {r.gender === 'male' ? '♂' : '♀'} {r.gender}
+                          </span>
+                        )}
+                      </p>
                     </div>
                   ))}
                 </div>

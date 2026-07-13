@@ -15,6 +15,8 @@ export default function Profile({ user, userLevel, setUserLevel }) {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [gender, setGenderState] = useState(null)
+  const [genderLoading, setGenderLoading] = useState(false)
   const [avatarLoading, setAvatarLoading] = useState(false)
   const [levelLoading, setLevelLoading] = useState(false)
   const [success, setSuccess] = useState(null)
@@ -28,6 +30,7 @@ export default function Profile({ user, userLevel, setUserLevel }) {
     if (!user) return
     fetchAvatar()
     fetchSubscription()
+    fetchGender()
   }, [user])
 
   // All hooks are declared above this line, unconditionally, before
@@ -42,6 +45,41 @@ export default function Profile({ user, userLevel, setUserLevel }) {
     if (data?.publicUrl) {
       const res = await fetch(data.publicUrl, { method: 'HEAD' }).catch(() => null)
       if (res?.ok) setAvatarUrl(data.publicUrl + '?t=' + Date.now())
+    }
+  }
+
+  const fetchGender = async () => {
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('gender')
+        .eq('id', user.id)
+        .maybeSingle()
+      setGenderState(data?.gender || null)
+    } catch (err) {
+      console.error('Failed to load gender:', err)
+    }
+  }
+
+  // Required before Accountability pairing works at all — the
+  // matching functions filter and enforce by this, server-side, not
+  // just in the UI. See accountability_gender_migration.sql.
+  const handleSetGender = async (value) => {
+    if (value === gender || genderLoading) return
+    setGenderLoading(true)
+    setError(null)
+    setSuccess(null)
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({ id: user.id, gender: value }, { onConflict: 'id' })
+      if (error) throw error
+      setGenderState(value)
+      setSuccess('Saved.')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setGenderLoading(false)
     }
   }
 
@@ -252,6 +290,50 @@ export default function Profile({ user, userLevel, setUserLevel }) {
             </a>
           </div>
         )}
+      </div>
+
+      {/* Gender — required before Accountability pairing works.
+          Self-declared, same as name and email; there's no
+          verification mechanism, and every comparable platform
+          handles it the same way. Used to keep pairing single-gender,
+          enforced server-side in pair_accountability_partners. */}
+      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
+        <p style={{
+          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
+          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
+        }}>
+          Gender
+        </p>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
+          Required to see or use Accountability Partners in Spaces — pairing only ever
+          matches members of the same gender.
+        </p>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {['male', 'female'].map(g => {
+            const active = gender === g
+            return (
+              <button
+                key={g}
+                onClick={() => handleSetGender(g)}
+                disabled={genderLoading || active}
+                style={{
+                  flex: 1,
+                  padding: '10px 14px',
+                  borderRadius: 10,
+                  border: active ? '2px solid #094570' : '2px solid #c8d8e8',
+                  background: active ? '#ffffff' : '#f5f8fb',
+                  color: active ? '#094570' : '#6a8090',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  cursor: active ? 'default' : 'pointer',
+                  textTransform: 'capitalize',
+                }}
+              >
+                {active ? '✓ ' : ''}{g}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Learning Level card */}
