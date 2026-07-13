@@ -7,6 +7,7 @@ import {
   shuffle,
 } from '../lib/spacedRepetition.js'
 import { getHifdhProgress, saveHifdhProgress } from '../lib/hifdhProgress.js'
+import { getScope, setScope, clearScope } from '../lib/hifdhScope.js'
 import { supabase } from '../lib/supabase.js'
 import './Hifdh.css'
 
@@ -257,6 +258,12 @@ export default function Hifdh({ user = null }) {
   // show due/strong counts without opening each collection.
   const [allProgress, setAllProgress] = useState({})
 
+  // Declared memorization scope for the open collection — null means
+  // unrestricted (full collection), matching today's behavior until
+  // someone actually sets one.
+  const [scope, setScopeState] = useState(null)
+  const [scopeLoading, setScopeLoading] = useState(false)
+
   const [session, setSession] = useState(null)   // array of questions
   const [qIndex, setQIndex] = useState(0)
   const [selected, setSelected] = useState(null) // option index picked (MCQ types)
@@ -281,6 +288,20 @@ export default function Hifdh({ user = null }) {
     return () => { cancelled = true }
   }, [collectionId, user])
 
+  // Load the declared memorization scope for this collection.
+  useEffect(() => {
+    if (!collectionId) return
+    let cancelled = false
+    setScopeLoading(true)
+    getScope(user, collectionId).then(s => {
+      if (!cancelled) {
+        setScopeState(s)
+        setScopeLoading(false)
+      }
+    })
+    return () => { cancelled = true }
+  }, [collectionId, user])
+
   // Load a lightweight progress summary for every collection up
   // front, for the picker screen's due/strong counts.
   useEffect(() => {
@@ -295,9 +316,29 @@ export default function Hifdh({ user = null }) {
     return () => { cancelled = true }
   }, [user])
 
+  // The items actually in play — everything if no scope is set, or
+  // only what's within the declared "memorized up to" boundary.
+  // Distractors, due-counting, and stats all derive from this rather
+  // than the raw collection, so nothing outside a user's own
+  // memorization scope leaks into their review session.
+  const scopedItems = useMemo(() => {
+    if (!collection) return []
+    if (scope === null) return collection.items
+    return collection.items.filter(it => it.num <= scope)
+  }, [collection, scope])
+
+  const handleScopeChange = async (newScope) => {
+    setScopeState(newScope)
+    if (newScope === null) {
+      await clearScope(user, collectionId)
+    } else {
+      await setScope(user, collectionId, newScope)
+    }
+  }
+
   const dueItems = useMemo(
-    () => (collection ? collection.items.filter(it => isDue(progress[it.key])) : []),
-    [collection, progress]
+    () => scopedItems.filter(it => isDue(progress[it.key])),
+    [scopedItems, progress]
   )
 
   const openCollection = (id) => {
@@ -314,7 +355,7 @@ export default function Hifdh({ user = null }) {
 
   const startSession = () => {
     const due = shuffle(dueItems).slice(0, SESSION_SIZE)
-    const qs = buildSession(due, collection.items, collection)
+    const qs = buildSession(due, scopedItems, collection)
     if (qs.length === 0) return
     setSession(qs)
     setQIndex(0)
@@ -542,7 +583,7 @@ export default function Hifdh({ user = null }) {
       <h1 className="page-title">{collection.title}</h1>
       <p className="page-subtitle">{collection.arabicTitle} — {collection.subtitle}</p>
 
-      {progressLoading ? (
+      {progressLoading || scopeLoading ? (
         <div className="hifdh-alldone card"><p>Loading your progress…</p></div>
       ) : (
       <>
@@ -559,11 +600,51 @@ export default function Hifdh({ user = null }) {
         </div>
         <div className="hifdh-stat card">
           <span className="hifdh-stat-value" style={{ color: '#2e7d32' }}>
-            {collection.items.filter(it => strengthOf(progress, it.key) === 'strong').length}
+            {scopedItems.filter(it => strengthOf(progress, it.key) === 'strong').length}
           </span>
           <span className="hifdh-stat-label">Strong</span>
         </div>
       </div>
+
+      {/* Memorization scope — "I've memorized up to here". No row in
+          hifdh_scope means unrestricted, same as before this existed;
+          setting it restricts review and distractors to what's
+          actually been memorized, and dims the rest on the map below. */}
+      {(() => {
+        const nums = collection.items.map(it => it.num)
+        const minNum = nums.length ? Math.min(...nums) : 0
+        const maxNum = nums.length ? Math.max(...nums) : 0
+        const sliderValue = scope === null ? maxNum : scope
+        const currentItem = collection.items.find(it => it.num === sliderValue)
+        const label = sliderValue < minNum ? 'None yet' : (currentItem?.label || sliderValue)
+
+        return (
+          <div className="card" style={{ padding: '18px 20px', marginBottom: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#094570' }}>
+                I've memorized up to: <span style={{ fontWeight: 800 }}>{label}</span>
+              </p>
+              <p style={{ fontSize: '0.78rem', color: '#8a9ab0' }}>
+                {scopedItems.length} of {collection.items.length} in scope
+              </p>
+            </div>
+            <input
+              type="range"
+              min={minNum - 1}
+              max={maxNum}
+              value={sliderValue}
+              onChange={e => {
+                const v = Number(e.target.value)
+                handleScopeChange(v >= maxNum ? null : v)
+              }}
+              style={{ width: '100%' }}
+            />
+            <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginTop: 6 }}>
+              Reviews, distractors, and the map below only draw from what's in scope.
+            </p>
+          </div>
+        )
+      })()}
 
       {dueItems.length > 0 ? (
         <button className="hifdh-btn hifdh-btn--primary hifdh-start" onClick={startSession}>
@@ -583,11 +664,19 @@ export default function Hifdh({ user = null }) {
         <span><span className="hifdh-dot hifdh-dot--new" /> Not yet reviewed</span>
       </p>
       <div className="hifdh-map">
-        {collection.items.map(it => (
-          <div key={it.key} className={`hifdh-map-cell hifdh-map-cell--${strengthOf(progress, it.key)}`} title={`${it.label} — ${it.meta}`}>
-            {it.num}
-          </div>
-        ))}
+        {collection.items.map(it => {
+          const outOfScope = scope !== null && it.num > scope
+          return (
+            <div
+              key={it.key}
+              className={`hifdh-map-cell hifdh-map-cell--${strengthOf(progress, it.key)}`}
+              title={outOfScope ? `${it.label} — outside your memorization scope` : `${it.label} — ${it.meta}`}
+              style={outOfScope ? { opacity: 0.25 } : undefined}
+            >
+              {it.num}
+            </div>
+          )
+        })}
       </div>
       <p className="hifdh-coming">
         All {collection.total} {collection.itemNounPlural} are loaded. Reviews mix blanks, detail drills, and full-line recall typing — recognition alone won't carry you through.
