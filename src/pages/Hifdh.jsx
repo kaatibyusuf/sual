@@ -8,6 +8,7 @@ import {
 } from '../lib/spacedRepetition.js'
 import { getHifdhProgress, saveHifdhProgress } from '../lib/hifdhProgress.js'
 import { getScope, setScope, clearScope } from '../lib/hifdhScope.js'
+import { surahToJuz } from '../lib/quranJuz.js'
 import { supabase } from '../lib/supabase.js'
 import './Hifdh.css'
 
@@ -618,6 +619,45 @@ export default function Hifdh({ user = null }) {
         const currentItem = collection.items.find(it => it.num === sliderValue)
         const label = sliderValue < minNum ? 'None yet' : (currentItem?.label || sliderValue)
 
+        // Juz picker — Qur'an collection only. Clicking a Juz sets
+        // scope to wherever that Juz ends within THIS collection
+        // (which may be a subset of the full mushaf), a quicker,
+        // more natural entry point than dragging the slider across
+        // dozens of surahs one at a time. Still sets the same
+        // contiguous scope value underneath — this is a friendlier
+        // input method, not a separate non-contiguous selection
+        // system.
+        const isQuranCollection = collection.id === 'quran-starter'
+        let juzButtons = null
+        if (isQuranCollection) {
+          const relevantJuz = [...new Set(collection.items.map(it => surahToJuz(it.num)))].sort((a, b) => a - b)
+          const effectiveJuz = surahToJuz(sliderValue)
+          juzButtons = relevantJuz.map(j => {
+            const juzEndScope = Math.max(
+              ...collection.items.filter(it => surahToJuz(it.num) <= j).map(it => it.num)
+            )
+            const filled = scope === null || j <= effectiveJuz
+            return (
+              <button
+                key={j}
+                onClick={() => handleScopeChange(juzEndScope)}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  border: filled ? '2px solid #2e7d32' : '2px solid #c8d8e8',
+                  background: filled ? '#eaf5ea' : '#f5f8fb',
+                  color: filled ? '#2e7d32' : '#6a8090',
+                  fontWeight: 700,
+                  fontSize: '0.78rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Juz {j}
+              </button>
+            )
+          })
+        }
+
         return (
           <div className="card" style={{ padding: '18px 20px', marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
@@ -628,6 +668,13 @@ export default function Hifdh({ user = null }) {
                 {scopedItems.length} of {collection.items.length} in scope
               </p>
             </div>
+
+            {isQuranCollection && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+                {juzButtons}
+              </div>
+            )}
+
             <input
               type="range"
               min={minNum - 1}
@@ -640,7 +687,9 @@ export default function Hifdh({ user = null }) {
               style={{ width: '100%' }}
             />
             <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginTop: 6 }}>
-              Reviews, distractors, and the map below only draw from what's in scope.
+              {isQuranCollection
+                ? 'Tap a Juz for a quick jump, or fine-tune with the slider.'
+                : "Reviews, distractors, and the map below only draw from what's in scope."}
             </p>
           </div>
         )
