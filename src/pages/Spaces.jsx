@@ -207,6 +207,7 @@ export default function Spaces({ user }) {
   const [confirmingPayment, setConfirmingPayment] = useState(false)
   const [posts,          setPosts]          = useState([])
   const [postsLoading,   setPostsLoading]   = useState(false)
+  const [postsError,     setPostsError]     = useState(null)
   const [category,       setCategory]       = useState('all')
   const [activePost,     setActivePost]     = useState(null)
   const [replies,        setReplies]        = useState([])
@@ -276,22 +277,54 @@ export default function Spaces({ user }) {
   const fetchPosts = useCallback(async () => {
     if (!user) return
     setPostsLoading(true)
+    setPostsError(null)
     try {
       let query = supabase
         .from('spaces_posts')
-        .select('*, profiles(badge_ids), spaces_replies(count)')
+        .select('*, spaces_replies(count)')
         .order('created_at', { ascending: false })
       if (category !== 'all') query = query.eq('category', category)
-      const { data } = await query
+      const { data, error } = await query
 
-      const enriched = (data || []).map(post => ({
+      if (error) {
+        console.error('fetchPosts failed:', error)
+        setPostsError(error.message || 'Failed to load posts.')
+        setPosts([])
+        return
+      }
+
+      const rows = data || []
+
+      // Badges are fetched separately rather than via an embedded
+      // join — spaces_posts.user_id and profiles.id both reference
+      // auth.users independently, with no direct FK between the two
+      // tables themselves, so PostgREST has no relationship to embed
+      // through. A manual lookup avoids needing a schema change.
+      const userIds = [...new Set(rows.map(p => p.user_id).filter(Boolean))]
+      const badgeMap = {}
+      if (userIds.length > 0) {
+        const { data: profileRows, error: profileError } = await supabase
+          .from('profiles')
+          .select('id, badge_ids')
+          .in('id', userIds)
+        if (profileError) {
+          // Non-fatal — badges are cosmetic, posts should still show.
+          console.error('Failed to load author badges:', profileError)
+        } else {
+          (profileRows || []).forEach(p => { badgeMap[p.id] = p.badge_ids || [] })
+        }
+      }
+
+      const enriched = rows.map(post => ({
         ...post,
-        author_badge_ids: post.profiles?.badge_ids || [],
+        author_badge_ids: badgeMap[post.user_id] || [],
         reply_count: post.spaces_replies?.[0]?.count ?? 0,
       }))
       setPosts(enriched)
     } catch (err) {
-      console.error(err)
+      console.error('fetchPosts threw:', err)
+      setPostsError(err.message || 'Failed to load posts.')
+      setPosts([])
     } finally {
       setPostsLoading(false)
     }
@@ -585,15 +618,36 @@ export default function Spaces({ user }) {
   if (!user) return null
 
   const fetchReplies = async (postId) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('spaces_replies')
-      .select('*, profiles(badge_ids)')
+      .select('*')
       .eq('post_id', postId)
       .order('created_at', { ascending: true })
 
-    const enriched = (data || []).map(r => ({
+    if (error) {
+      console.error('fetchReplies failed:', error)
+      setReplies([])
+      return
+    }
+
+    const rows = data || []
+    const userIds = [...new Set(rows.map(r => r.user_id).filter(Boolean))]
+    const badgeMap = {}
+    if (userIds.length > 0) {
+      const { data: profileRows, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, badge_ids')
+        .in('id', userIds)
+      if (profileError) {
+        console.error('Failed to load reply author badges:', profileError)
+      } else {
+        (profileRows || []).forEach(p => { badgeMap[p.id] = p.badge_ids || [] })
+      }
+    }
+
+    const enriched = rows.map(r => ({
       ...r,
-      author_badge_ids: r.profiles?.badge_ids || [],
+      author_badge_ids: badgeMap[r.user_id] || [],
     }))
     setReplies(enriched)
   }
@@ -1344,6 +1398,10 @@ export default function Spaces({ user }) {
 
           {postsLoading ? (
             <div className="spaces-loading"><div className="spaces-spinner" /></div>
+          ) : postsError ? (
+            <div className="spaces-error card" style={{ padding: 20 }}>
+              Couldn't load posts: {postsError}
+            </div>
           ) : posts.length === 0 ? (
             <div className="spaces-empty card">
               <p className="spaces-empty-icon">💬</p>
