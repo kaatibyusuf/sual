@@ -7,7 +7,7 @@ import {
   shuffle,
 } from '../lib/spacedRepetition.js'
 import { getHifdhProgress, saveHifdhProgress } from '../lib/hifdhProgress.js'
-import { getScope, setScope, clearScope } from '../lib/hifdhScope.js'
+import { getScopeSet, setScopeSet, clearScopeSet } from '../lib/hifdhScope.js'
 import { surahToJuz } from '../lib/quranJuz.js'
 import { supabase } from '../lib/supabase.js'
 import './Hifdh.css'
@@ -259,10 +259,11 @@ export default function Hifdh({ user = null }) {
   // show due/strong counts without opening each collection.
   const [allProgress, setAllProgress] = useState({})
 
-  // Declared memorization scope for the open collection — null means
+  // Declared memorization scope for the open collection — a SET of
+  // item keys, not a single "up to here" boundary. null means
   // unrestricted (full collection), matching today's behavior until
-  // someone actually sets one.
-  const [scope, setScopeState] = useState(null)
+  // someone actually engages with the picker.
+  const [scopeSet, setScopeSetState] = useState(null)
   const [scopeLoading, setScopeLoading] = useState(false)
 
   const [session, setSession] = useState(null)   // array of questions
@@ -294,9 +295,9 @@ export default function Hifdh({ user = null }) {
     if (!collectionId) return
     let cancelled = false
     setScopeLoading(true)
-    getScope(user, collectionId).then(s => {
+    getScopeSet(user, collectionId).then(s => {
       if (!cancelled) {
-        setScopeState(s)
+        setScopeSetState(s)
         setScopeLoading(false)
       }
     })
@@ -317,24 +318,39 @@ export default function Hifdh({ user = null }) {
     return () => { cancelled = true }
   }, [user])
 
-  // The items actually in play — everything if no scope is set, or
-  // only what's within the declared "memorized up to" boundary.
+  // The items actually in play — everything if no scope is set at
+  // all, or only the specific items the user has checked off.
   // Distractors, due-counting, and stats all derive from this rather
   // than the raw collection, so nothing outside a user's own
   // memorization scope leaks into their review session.
   const scopedItems = useMemo(() => {
     if (!collection) return []
-    if (scope === null) return collection.items
-    return collection.items.filter(it => it.num <= scope)
-  }, [collection, scope])
+    if (scopeSet === null) return collection.items
+    return collection.items.filter(it => scopeSet.has(it.key))
+  }, [collection, scopeSet])
 
-  const handleScopeChange = async (newScope) => {
-    setScopeState(newScope)
-    if (newScope === null) {
-      await clearScope(user, collectionId)
+  // Persists a full replacement set. `null` clears the scope entirely
+  // (back to unrestricted); an array (possibly empty) becomes the new
+  // exact set of memorized items.
+  const persistScopeSet = async (newSetOrNull) => {
+    setScopeSetState(newSetOrNull)
+    if (newSetOrNull === null) {
+      await clearScopeSet(user, collectionId)
     } else {
-      await setScope(user, collectionId, newScope)
+      await setScopeSet(user, collectionId, [...newSetOrNull])
     }
+  }
+
+  // Toggling starts from an empty working set the first time someone
+  // interacts with the picker, not from "everything" — engaging with
+  // the picker means "I'm now declaring exactly what I know," not
+  // "remove one thing from an assumed-complete set."
+  const toggleItemKeys = (keys, forceState) => {
+    const current = scopeSet === null ? new Set() : new Set(scopeSet)
+    const allCurrentlyIn = keys.every(k => current.has(k))
+    const shouldAdd = forceState !== undefined ? forceState : !allCurrentlyIn
+    keys.forEach(k => shouldAdd ? current.add(k) : current.delete(k))
+    persistScopeSet(current)
   }
 
   const dueItems = useMemo(
@@ -607,56 +623,97 @@ export default function Hifdh({ user = null }) {
         </div>
       </div>
 
-      {/* Memorization scope — "I've memorized up to here". No row in
-          hifdh_scope means unrestricted, same as before this existed;
-          setting it restricts review and distractors to what's
-          actually been memorized, and dims the rest on the map below. */}
+      {/* Memorization scope. No rows at all for this collection means
+          unrestricted — same as before this existed. Once someone
+          engages with the picker, it's a real SET of memorized items,
+          not a single boundary — needed because real hifdh order is
+          often not front-to-back (Juz Amma first, then working
+          backward, is extremely common). */}
       {(() => {
+        const isQuranCollection = collection.id === 'quran-starter'
+        const isUnrestricted = scopeSet === null
+        const scopeCount = isUnrestricted ? collection.items.length : scopeSet.size
+
+        // `it.num` is a sequential position within this loaded set,
+        // NOT the real mushaf surah number — the real number lives in
+        // `it.key`, built elsewhere as 'q' + the actual surah number.
+        const realSurah = (it) => parseInt(String(it.key).replace(/^q/, ''), 10)
+
+        if (isQuranCollection) {
+          const juzGroups = {}
+          collection.items.forEach(it => {
+            const j = surahToJuz(realSurah(it))
+            if (!juzGroups[j]) juzGroups[j] = []
+            juzGroups[j].push(it)
+          })
+          const juzNumbers = Object.keys(juzGroups).map(Number).sort((a, b) => a - b)
+
+          return (
+            <div className="card" style={{ padding: '18px 20px', marginBottom: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#094570' }}>
+                  {isUnrestricted
+                    ? 'Reviewing everything — scope not set yet'
+                    : `${scopeCount} of ${collection.items.length} surahs marked memorized`}
+                </p>
+                {!isUnrestricted && (
+                  <button
+                    onClick={() => persistScopeSet(null)}
+                    style={{ fontSize: '0.75rem', color: '#8a9ab0', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                  >
+                    Reset — review everything
+                  </button>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+                {juzNumbers.map(j => {
+                  const keysInJuz = juzGroups[j].map(it => it.key)
+                  const filled = !isUnrestricted && keysInJuz.every(k => scopeSet.has(k))
+                  return (
+                    <button
+                      key={j}
+                      onClick={() => toggleItemKeys(keysInJuz)}
+                      style={{
+                        padding: '6px 10px',
+                        borderRadius: 8,
+                        border: filled ? '2px solid #2e7d32' : '2px solid #c8d8e8',
+                        background: filled ? '#eaf5ea' : '#f5f8fb',
+                        color: filled ? '#2e7d32' : '#6a8090',
+                        fontWeight: 700,
+                        fontSize: '0.78rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {filled ? '✓ ' : ''}Juz {j}
+                    </button>
+                  )
+                })}
+              </div>
+              <p style={{ fontSize: '0.78rem', color: '#8a9ab0' }}>
+                Tap any Juz you've memorized — any combination, any order. Memorized Juz
+                Amma first? Start there. Reviews and quiz distractors only draw from
+                what's marked.
+              </p>
+            </div>
+          )
+        }
+
+        // Non-Qur'an collections: hadith is studied in order in
+        // practice (Nawawi 1–42, Umdatul-Ahkam in sequence), so a
+        // simple contiguous "up to here" slider stays the natural
+        // control here — it still writes into the same set-based
+        // storage underneath, just filling everything from the start
+        // through the chosen point in one action.
         const nums = collection.items.map(it => it.num)
         const minNum = nums.length ? Math.min(...nums) : 0
         const maxNum = nums.length ? Math.max(...nums) : 0
-        const sliderValue = scope === null ? maxNum : scope
+        const scopedNums = isUnrestricted
+          ? []
+          : collection.items.filter(it => scopeSet.has(it.key)).map(it => it.num)
+        const sliderValue = isUnrestricted ? maxNum : (scopedNums.length ? Math.max(...scopedNums) : minNum - 1)
         const currentItem = collection.items.find(it => it.num === sliderValue)
         const label = sliderValue < minNum ? 'None yet' : (currentItem?.label || sliderValue)
-
-        // Juz picker — Qur'an collection only. Clicking a Juz sets
-        // scope to wherever that Juz ends within THIS collection
-        // (which may be a subset of the full mushaf), a quicker,
-        // more natural entry point than dragging the slider across
-        // dozens of surahs one at a time. Still sets the same
-        // contiguous scope value underneath — this is a friendlier
-        // input method, not a separate non-contiguous selection
-        // system.
-        const isQuranCollection = collection.id === 'quran-starter'
-        let juzButtons = null
-        if (isQuranCollection) {
-          const relevantJuz = [...new Set(collection.items.map(it => surahToJuz(it.num)))].sort((a, b) => a - b)
-          const effectiveJuz = surahToJuz(sliderValue)
-          juzButtons = relevantJuz.map(j => {
-            const juzEndScope = Math.max(
-              ...collection.items.filter(it => surahToJuz(it.num) <= j).map(it => it.num)
-            )
-            const filled = scope === null || j <= effectiveJuz
-            return (
-              <button
-                key={j}
-                onClick={() => handleScopeChange(juzEndScope)}
-                style={{
-                  padding: '6px 10px',
-                  borderRadius: 8,
-                  border: filled ? '2px solid #2e7d32' : '2px solid #c8d8e8',
-                  background: filled ? '#eaf5ea' : '#f5f8fb',
-                  color: filled ? '#2e7d32' : '#6a8090',
-                  fontWeight: 700,
-                  fontSize: '0.78rem',
-                  cursor: 'pointer',
-                }}
-              >
-                Juz {j}
-              </button>
-            )
-          })
-        }
 
         return (
           <div className="card" style={{ padding: '18px 20px', marginBottom: 20 }}>
@@ -665,16 +722,9 @@ export default function Hifdh({ user = null }) {
                 I've memorized up to: <span style={{ fontWeight: 800 }}>{label}</span>
               </p>
               <p style={{ fontSize: '0.78rem', color: '#8a9ab0' }}>
-                {scopedItems.length} of {collection.items.length} in scope
+                {scopeCount} of {collection.items.length} in scope
               </p>
             </div>
-
-            {isQuranCollection && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
-                {juzButtons}
-              </div>
-            )}
-
             <input
               type="range"
               min={minNum - 1}
@@ -682,14 +732,17 @@ export default function Hifdh({ user = null }) {
               value={sliderValue}
               onChange={e => {
                 const v = Number(e.target.value)
-                handleScopeChange(v >= maxNum ? null : v)
+                if (v >= maxNum) {
+                  persistScopeSet(null)
+                } else {
+                  const keys = collection.items.filter(it => it.num <= v).map(it => it.key)
+                  persistScopeSet(new Set(keys))
+                }
               }}
               style={{ width: '100%' }}
             />
             <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginTop: 6 }}>
-              {isQuranCollection
-                ? 'Tap a Juz for a quick jump, or fine-tune with the slider.'
-                : "Reviews, distractors, and the map below only draw from what's in scope."}
+              Reviews, distractors, and the map below only draw from what's in scope.
             </p>
           </div>
         )
@@ -714,7 +767,7 @@ export default function Hifdh({ user = null }) {
       </p>
       <div className="hifdh-map">
         {collection.items.map(it => {
-          const outOfScope = scope !== null && it.num > scope
+          const outOfScope = scopeSet !== null && !scopeSet.has(it.key)
           return (
             <div
               key={it.key}

@@ -1,52 +1,68 @@
 // src/lib/hifdhScope.js
 //
-// A user's declared memorization scope per collection — "I've
-// memorized up to item number N" — stored in hifdh_scope. No row for
-// a given user/collection means unrestricted (the full collection is
-// shown), which is the same as today's behavior; the restriction only
-// applies once someone actually sets a scope via the slider.
+// A user's declared memorization scope per collection, now a SET of
+// individually memorized item keys rather than a single "up to here"
+// boundary — needed because real memorization order often isn't
+// contiguous from the start of a collection (Juz Amma first, then
+// working backward or jumping around, is extremely common).
+//
+// null (no rows at all for this user/collection) means unrestricted
+// — the full collection is shown — same meaning as before this
+// existed. An empty, explicitly-set set means "declared nothing yet,
+// only review what I check off," which is a real, different state
+// from "haven't engaged with this at all."
 
 import { supabase } from './supabase.js'
 
-export async function getScope(user, collectionId) {
+export async function getScopeSet(user, collectionId) {
   if (!user) return null
   try {
     const { data, error } = await supabase
-      .from('hifdh_scope')
-      .select('scope')
+      .from('hifdh_scope_items')
+      .select('item_key')
       .eq('user_id', user.id)
       .eq('collection_id', collectionId)
-      .maybeSingle()
     if (error) throw error
-    return data ? data.scope : null
+    if (!data || data.length === 0) return null
+    return new Set(data.map(r => r.item_key))
   } catch (err) {
-    console.error('Failed to load hifdh scope:', err)
+    console.error('Failed to load hifdh scope items:', err)
     return null
   }
 }
 
-export async function setScope(user, collectionId, scopeValue) {
+// Replaces the entire set for this collection with exactly the given
+// item keys. Simpler and safer than diffing add/remove — the caller
+// always has the full intended set in hand already (it's just local
+// state), so a clear-then-insert avoids any drift between client and
+// server state.
+export async function setScopeSet(user, collectionId, itemKeys) {
   if (!user) return
-  const { error } = await supabase
-    .from('hifdh_scope')
-    .upsert({
-      user_id: user.id,
-      collection_id: collectionId,
-      scope: scopeValue,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: 'user_id,collection_id' })
-  if (error) console.error('Failed to save hifdh scope:', error)
+  try {
+    const { error: delError } = await supabase
+      .from('hifdh_scope_items')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('collection_id', collectionId)
+    if (delError) throw delError
+
+    if (itemKeys.length === 0) return // empty set — nothing to insert, deletion above is enough
+
+    const rows = itemKeys.map(item_key => ({ user_id: user.id, collection_id: collectionId, item_key }))
+    const { error: insError } = await supabase.from('hifdh_scope_items').insert(rows)
+    if (insError) throw insError
+  } catch (err) {
+    console.error('Failed to save hifdh scope items:', err)
+  }
 }
 
-// null scopeValue means "no restriction" — remove the row entirely
-// rather than storing a sentinel, so getScope's null-check stays the
-// single source of truth for "unrestricted."
-export async function clearScope(user, collectionId) {
+// Back to fully unrestricted — removes every row for this collection.
+export async function clearScopeSet(user, collectionId) {
   if (!user) return
   const { error } = await supabase
-    .from('hifdh_scope')
+    .from('hifdh_scope_items')
     .delete()
     .eq('user_id', user.id)
     .eq('collection_id', collectionId)
-  if (error) console.error('Failed to clear hifdh scope:', error)
+  if (error) console.error('Failed to clear hifdh scope items:', error)
 }
