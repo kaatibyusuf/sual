@@ -227,6 +227,7 @@ export default function Spaces({ user }) {
 
   const [myPair, setMyPair] = useState(null)
   const [availableMembers, setAvailableMembers] = useState([])
+  const [roster, setRoster] = useState([])
   const [accountabilityLoading, setAccountabilityLoading] = useState(false)
   const [accountabilityError, setAccountabilityError] = useState(null)
   const [pairing, setPairing] = useState(false)
@@ -239,6 +240,7 @@ export default function Spaces({ user }) {
   const [circlesError, setCirclesError] = useState(null)
   const [joiningCircle, setJoiningCircle] = useState(false)
   const [postingCircleMsg, setPostingCircleMsg] = useState(false)
+  const [switchingCircleMode, setSwitchingCircleMode] = useState(false)
 
   const [todayTafseer, setTodayTafseer] = useState(null)
   const [tafseerLoading, setTafseerLoading] = useState(false)
@@ -367,6 +369,14 @@ export default function Spaces({ user }) {
       } else {
         setAvailableMembers([])
       }
+
+      const { data: rosterData, error: rosterError } = await supabase.rpc('get_accountability_roster')
+      if (rosterError) {
+        console.error('Failed to load accountability roster:', rosterError)
+        setRoster([])
+      } else {
+        setRoster(rosterData || [])
+      }
     } catch (err) {
       setAccountabilityError(err.message)
     } finally {
@@ -426,6 +436,35 @@ export default function Spaces({ user }) {
         .from('circle_memberships')
         .insert({ user_id: user.id, circle_id: circleId })
       if (insertError) throw insertError
+      fetchCircles()
+    } catch (err) {
+      setCirclesError(err.message)
+    } finally {
+      setJoiningCircle(false)
+    }
+  }
+
+  const switchCircle = async (newCircleId) => {
+    if (newCircleId === myCircle) { setSwitchingCircleMode(false); return }
+    setJoiningCircle(true)
+    setCirclesError(null)
+    try {
+      // Remove the existing membership first, then join the new one —
+      // done as two calls rather than an update, since we don't know
+      // whether user_id carries a uniqueness constraint this could
+      // rely on instead.
+      const { error: delError } = await supabase
+        .from('circle_memberships')
+        .delete()
+        .eq('user_id', user.id)
+      if (delError) throw delError
+
+      const { error: insertError } = await supabase
+        .from('circle_memberships')
+        .insert({ user_id: user.id, circle_id: newCircleId })
+      if (insertError) throw insertError
+
+      setSwitchingCircleMode(false)
       fetchCircles()
     } catch (err) {
       setCirclesError(err.message)
@@ -817,6 +856,65 @@ export default function Spaces({ user }) {
           )}
         </>
       )}
+
+      {/* Community roster — everyone's status, not just what's
+          relevant to the current viewer's own pairing state. */}
+      <div className="spaces-section-intro card" style={{ marginTop: 24 }}>
+        <h3 className="spaces-section-intro-title">📋 Who's Paired, Who's Seeking</h3>
+      </div>
+
+      {(() => {
+        const seenIds = new Set()
+        const rosterPairs = []
+        roster.filter(r => r.status === 'paired').forEach(r => {
+          if (seenIds.has(r.member_id)) return
+          seenIds.add(r.member_id)
+          seenIds.add(r.partner_id)
+          rosterPairs.push(r)
+        })
+        const seekingMembers = roster.filter(r => r.status === 'seeking')
+
+        if (roster.length === 0) {
+          return (
+            <div className="spaces-empty card">
+              <p className="spaces-empty-text">No active members to show yet.</p>
+            </div>
+          )
+        }
+
+        return (
+          <>
+            {rosterPairs.length > 0 && (
+              <>
+                <p className="spaces-available-label">Paired ({rosterPairs.length})</p>
+                <div className="spaces-available-list" style={{ marginBottom: 20 }}>
+                  {rosterPairs.map(r => (
+                    <div key={r.member_id} className="spaces-available-item card">
+                      <p className="spaces-pair-name">
+                        Member {String(r.member_id).slice(0, 8)} ↔ Member {String(r.partner_id).slice(0, 8)}
+                      </p>
+                      <p className="spaces-pair-since">Since {formatDate(r.paired_at)}</p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {seekingMembers.length > 0 && (
+              <>
+                <p className="spaces-available-label">Seeking a partner ({seekingMembers.length})</p>
+                <div className="spaces-available-list">
+                  {seekingMembers.map(r => (
+                    <div key={r.member_id} className="spaces-available-item card">
+                      <p className="spaces-pair-name">Member {String(r.member_id).slice(0, 8)}</p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        )
+      })()}
     </div>
   )
 
@@ -835,31 +933,55 @@ export default function Spaces({ user }) {
 
       {circlesLoading ? (
         <div className="spaces-loading"><div className="spaces-spinner" /></div>
-      ) : !myCircle ? (
-        <div className="spaces-circle-grid">
-          {CIRCLES.map(c => (
+      ) : !myCircle || switchingCircleMode ? (
+        <>
+          {switchingCircleMode && (
+            <p className="spaces-available-label">
+              Choose a new circle — you'll leave {CIRCLES.find(c => c.id === myCircle)?.name || 'your current circle'}.
+            </p>
+          )}
+          <div className="spaces-circle-grid">
+            {CIRCLES.map(c => (
+              <button
+                key={c.id}
+                className="spaces-circle-card card"
+                onClick={() => switchingCircleMode ? switchCircle(c.id) : joinCircle(c.id)}
+                disabled={joiningCircle || c.id === myCircle}
+              >
+                <span className="spaces-circle-icon">{c.icon}</span>
+                <h4 className="spaces-circle-name">{c.name}</h4>
+                <p className="spaces-circle-arabic arabic">{c.arabicName}</p>
+                <p className="spaces-circle-blurb">{c.blurb}</p>
+                <span className="spaces-circle-count">
+                  {circleCounts[c.id] || 0} members{c.id === myCircle ? ' · current' : ''}
+                </span>
+              </button>
+            ))}
+          </div>
+          {switchingCircleMode && (
             <button
-              key={c.id}
-              className="spaces-circle-card card"
-              onClick={() => joinCircle(c.id)}
-              disabled={joiningCircle}
+              className="btn btn-ghost"
+              style={{ marginTop: 12 }}
+              onClick={() => setSwitchingCircleMode(false)}
             >
-              <span className="spaces-circle-icon">{c.icon}</span>
-              <h4 className="spaces-circle-name">{c.name}</h4>
-              <p className="spaces-circle-arabic arabic">{c.arabicName}</p>
-              <p className="spaces-circle-blurb">{c.blurb}</p>
-              <span className="spaces-circle-count">{circleCounts[c.id] || 0} members</span>
+              Cancel
             </button>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
         <>
           <div className="spaces-circle-header card">
             <span className="spaces-circle-icon">{CIRCLES.find(c => c.id === myCircle)?.icon}</span>
-            <div>
+            <div style={{ flex: 1 }}>
               <h3 className="spaces-circle-name">{CIRCLES.find(c => c.id === myCircle)?.name}</h3>
               <p className="spaces-circle-arabic arabic">{CIRCLES.find(c => c.id === myCircle)?.arabicName}</p>
             </div>
+            <button
+              className="btn btn-ghost"
+              onClick={() => setSwitchingCircleMode(true)}
+            >
+              Switch Circle
+            </button>
           </div>
 
           <div className="spaces-circle-messages">
