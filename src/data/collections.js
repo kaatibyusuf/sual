@@ -8,7 +8,7 @@ export const COLLECTIONS = [
     id: 'quran-starter',
     title: 'Qur\'an',
     arabicTitle: 'القُرْآن',
-    subtitle: 'From An-Naml to An-Nas',
+    subtitle: 'The complete Qur\'an',
     icon: '📖',
     itemNoun: 'surah',
     itemNounPlural: 'surahs',

@@ -45,14 +45,22 @@ export const JUZ_BOUNDARIES = [
   { juz: 30, surah: 78, ayah: 1 },
 ]
 
-// Which Juz does this surah's opening ayah belong to? Works for any
-// surah number 1–114.
-export function surahToJuz(surahNum) {
+// Which Juz does a specific ayah belong to? Generalized version of
+// surahToJuz below — needed to find where a surah ENDS, not just
+// where it starts, since some surahs (Al-Baqarah, An-Nisa) span
+// multiple Juz entirely on their own.
+export function ayahToJuz(surahNum, ayahNum) {
   let result = 1
   for (const b of JUZ_BOUNDARIES) {
-    const startsBeforeOrAt = b.surah < surahNum || (b.surah === surahNum && b.ayah <= 1)
+    const startsBeforeOrAt = b.surah < surahNum || (b.surah === surahNum && b.ayah <= ayahNum)
     if (startsBeforeOrAt) result = b.juz
     else break
   }
   return result
+}
+
+// Which Juz does this surah's OPENING ayah belong to? Works for any
+// surah number 1–114.
+export function surahToJuz(surahNum) {
+  return ayahToJuz(surahNum, 1)
 }

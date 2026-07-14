@@ -8,7 +8,7 @@ import {
 } from '../lib/spacedRepetition.js'
 import { getHifdhProgress, saveHifdhProgress } from '../lib/hifdhProgress.js'
 import { getScopeSet, setScopeSet, clearScopeSet } from '../lib/hifdhScope.js'
-import { surahToJuz } from '../lib/quranJuz.js'
+import { surahToJuz, ayahToJuz } from '../lib/quranJuz.js'
 import { supabase } from '../lib/supabase.js'
 import './Hifdh.css'
 
@@ -640,13 +640,35 @@ export default function Hifdh({ user = null }) {
         const realSurah = (it) => parseInt(String(it.key).replace(/^q/, ''), 10)
 
         if (isQuranCollection) {
+          // Ayah count per surah is embedded in `meta`, e.g.
+          // "Surah 2 · Madani · 286 ayat" — parsed here so a surah's
+          // full covered Juz range can be computed, not just where
+          // it starts.
+          const totalAyatOf = (it) => {
+            const m = String(it.meta || '').match(/(\d+)\s*ayat/i)
+            return m ? parseInt(m[1], 10) : 1
+          }
+
           const juzGroups = {}
           collection.items.forEach(it => {
             const j = surahToJuz(realSurah(it))
             if (!juzGroups[j]) juzGroups[j] = []
             juzGroups[j].push(it)
           })
-          const juzNumbers = Object.keys(juzGroups).map(Number).sort((a, b) => a - b)
+          const startJuzNumbers = Object.keys(juzGroups).map(Number).sort((a, b) => a - b)
+
+          // Every Juz number 1–30 is covered by exactly one of these
+          // groups by construction — a surah's own starting Juz is
+          // always a group key (the surah IS that item), and its
+          // range extends through wherever its last ayah actually
+          // falls, absorbing any Juz that starts mid-surah with no
+          // new surah of its own (Juz 2 and 3 inside Al-Baqarah, Juz
+          // 5 inside An-Nisa) rather than leaving them unrepresented.
+          const juzRanges = startJuzNumbers.map(startJ => {
+            const items = juzGroups[startJ]
+            const endJ = Math.max(...items.map(it => ayahToJuz(realSurah(it), totalAyatOf(it))))
+            return { startJ, endJ, items }
+          })
 
           return (
             <div className="card" style={{ padding: '18px 20px', marginBottom: 20 }}>
@@ -667,13 +689,15 @@ export default function Hifdh({ user = null }) {
               </div>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
-                {juzNumbers.map(j => {
-                  const keysInJuz = juzGroups[j].map(it => it.key)
+                {juzRanges.map(({ startJ, endJ, items }) => {
+                  const keysInJuz = items.map(it => it.key)
                   const filled = !isUnrestricted && keysInJuz.every(k => scopeSet.has(k))
+                  const label = endJ > startJ ? `Juz ${startJ}–${endJ}` : `Juz ${startJ}`
                   return (
                     <button
-                      key={j}
+                      key={startJ}
                       onClick={() => toggleItemKeys(keysInJuz)}
+                      title={endJ > startJ ? `Spans Juz ${startJ} through ${endJ} — tracked as one surah` : undefined}
                       style={{
                         padding: '6px 10px',
                         borderRadius: 8,
@@ -685,7 +709,7 @@ export default function Hifdh({ user = null }) {
                         cursor: 'pointer',
                       }}
                     >
-                      {filled ? '✓ ' : ''}Juz {j}
+                      {filled ? '✓ ' : ''}{label}
                     </button>
                   )
                 })}
@@ -781,7 +805,7 @@ export default function Hifdh({ user = null }) {
         })}
       </div>
       <p className="hifdh-coming">
-        All {collection.total} {collection.itemNounPlural} are loaded. Reviews mix blanks, detail drills, and full-line recall typing — recognition alone won't carry you through.
+        All {collection.items.length} {collection.itemNounPlural} are loaded. Reviews mix blanks, detail drills, and full-line recall typing — recognition alone won't carry you through.
       </p>
       </>
       )}
