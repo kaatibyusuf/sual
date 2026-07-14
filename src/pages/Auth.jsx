@@ -6,6 +6,9 @@ export default function Auth({ onAuth }) {
   const [mode, setMode] = useState('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [info, setInfo] = useState(null)
@@ -25,8 +28,14 @@ export default function Auth({ onAuth }) {
   }
 
   const handleSignUp = async () => {
-    setLoading(true)
     setError(null)
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+
+    setLoading(true)
     try {
       const { data, error } = await supabase.auth.signUp({ email, password })
       if (error) throw error
@@ -63,6 +72,19 @@ export default function Auth({ onAuth }) {
     }
   }
 
+  // Reset confirm-password state whenever the user switches tabs,
+  // so a stale mismatch error doesn't linger across modes.
+  const switchMode = (nextMode) => {
+    setMode(nextMode)
+    setConfirmPassword('')
+    setShowConfirmPassword(false)
+    setError(null)
+    setInfo(null)
+  }
+
+  const passwordsMismatch =
+    mode === 'signup' && confirmPassword.length > 0 && password !== confirmPassword
+
   return (
     <div className="auth-page">
       <div className="auth-card">
@@ -77,10 +99,10 @@ export default function Auth({ onAuth }) {
         </p>
 
         <div className="auth-tabs">
-          <button className={`auth-tab ${mode === 'signin' ? 'auth-tab--active' : ''}`} onClick={() => setMode('signin')}>
+          <button className={`auth-tab ${mode === 'signin' ? 'auth-tab--active' : ''}`} onClick={() => switchMode('signin')}>
             Sign In
           </button>
-          <button className={`auth-tab ${mode === 'signup' ? 'auth-tab--active' : ''}`} onClick={() => setMode('signup')}>
+          <button className={`auth-tab ${mode === 'signup' ? 'auth-tab--active' : ''}`} onClick={() => switchMode('signup')}>
             Create Account
           </button>
         </div>
@@ -92,8 +114,54 @@ export default function Auth({ onAuth }) {
 
         <div className="auth-field">
           <label className="auth-label">Password</label>
-          <input type="password" className="auth-input" value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters" />
+          <div className="auth-input-wrap">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              className="auth-input"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="At least 6 characters"
+              autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+            />
+            <button
+              type="button"
+              className="auth-eye-btn"
+              onClick={() => setShowPassword(s => !s)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              <EyeIcon open={showPassword} />
+            </button>
+          </div>
         </div>
+
+        {mode === 'signup' && (
+          <div className="auth-field">
+            <label className="auth-label">Confirm Password</label>
+            <div className="auth-input-wrap">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                className={`auth-input ${passwordsMismatch ? 'auth-input--error' : ''}`}
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter your password"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="auth-eye-btn"
+                onClick={() => setShowConfirmPassword(s => !s)}
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                tabIndex={-1}
+              >
+                <EyeIcon open={showConfirmPassword} />
+              </button>
+            </div>
+            {passwordsMismatch && (
+              <p className="auth-field-hint auth-field-hint--error">Passwords don't match.</p>
+            )}
+          </div>
+        )}
 
         {error && (
           <div className="auth-error">
@@ -109,7 +177,11 @@ export default function Auth({ onAuth }) {
           </div>
         )}
 
-        <button className="auth-submit-btn" onClick={mode === 'signin' ? handleSignIn : handleSignUp} disabled={loading}>
+        <button
+          className="auth-submit-btn"
+          onClick={mode === 'signin' ? handleSignIn : handleSignUp}
+          disabled={loading || (mode === 'signup' && confirmPassword.length > 0 && password !== confirmPassword)}
+        >
           {mode === 'signin' ? 'Sign In →' : 'Create Account →'}
         </button>
 
@@ -127,5 +199,19 @@ export default function Auth({ onAuth }) {
         </div>
       </div>
     </div>
+  )
+}
+
+function EyeIcon({ open }) {
+  return open ? (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  ) : (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
   )
 }
