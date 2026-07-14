@@ -1,6 +1,7 @@
 import { NAWAWI_HADITH, NAWAWI_TOTAL } from './hifdh_nawawi.js'
 import { QURAN_ITEMS } from './hifdh_quran.js'
 import { UMDAH_HADITH } from './hifdh_umdah.js'
+import { TUHFAH_ATFAL } from './hifdh_tuhfah.js'
 
 export const COLLECTIONS = [
   {
@@ -57,4 +58,22 @@ export const COLLECTIONS = [
       arabic: h.arabic,
     })),
   },
+  {
+  id: 'tuhfah',
+  title: 'Tuhfat al-Atfal',
+  arabicTitle: 'تُحْفَةُ الأَطْفَال',
+  subtitle: 'Al-Jamzuri\'s classical poem on the rules of Tajweed',
+  icon: '📿',
+  itemNoun: 'verse',
+  itemNounPlural: 'verses',
+  collectionName: 'Tuhfat al-Atfal',
+  total: TUHFAH_ATFAL.length,
+  items: TUHFAH_ATFAL.map(v => ({
+    key: 't' + v.num,
+    num: v.num,
+    label: `Verse ${v.num}`,
+    meta: v.meta,
+    arabic: v.arabic,
+  })),
+},
 ]
