@@ -37,10 +37,15 @@ const ADMIN_EMAILS = (Deno.env.get('ADMIN_EMAILS') ?? '')
 
 const supabaseAdmin = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
 
+// x-client-info and apikey are headers the Supabase JS client attaches
+// to every request automatically — without allowlisting them here, the
+// browser's CORS preflight rejects the call before it ever reaches this
+// function. Same fix applied to admin-manage-tafseer, which hit this
+// first since it was tested from the browser before this one was.
 function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, content-type',
+    'Access-Control-Allow-Headers': 'authorization, content-type, x-client-info, apikey',
   }
 }
 
