@@ -260,6 +260,13 @@ export default function Spaces({ user }) {
   const [tafseerAlreadyDone, setTafseerAlreadyDone] = useState(false)
   const [tafseerPastScore, setTafseerPastScore] = useState('')
 
+  // Daily Class Lesson — Arabiyyah + Hadeeth, one entry per class,
+  // level, and date. Refires automatically whenever the person
+  // switches level, since classLevel is a dependency of the effect
+  // that calls this.
+  const [classLesson, setClassLesson] = useState(null)
+  const [classLessonLoading, setClassLessonLoading] = useState(false)
+
   const [, setClock] = useState(new Date())
   useEffect(() => {
     const interval = setInterval(() => setClock(new Date()), 60000)
@@ -644,6 +651,31 @@ export default function Spaces({ user }) {
     }
   }
 
+  // ── Daily Class Lesson (Arabiyyah + Hadeeth) ─────────────────
+  // Sits alongside the existing Telegram group links in renderClass,
+  // it does not replace them. One row per (class_id, level,
+  // publish_date), so each level's rotation is independent.
+  const fetchClassLesson = useCallback(async (classId, level) => {
+    setClassLessonLoading(true)
+    try {
+      const todayStr = new Date().toISOString().slice(0, 10)
+      const { data, error } = await supabase
+        .from('class_daily_lessons')
+        .select('*')
+        .eq('class_id', classId)
+        .eq('level', level)
+        .eq('publish_date', todayStr)
+        .maybeSingle()
+      if (error) throw error
+      setClassLesson(data || null)
+    } catch (err) {
+      console.error('Failed to load class daily lesson:', err)
+      setClassLesson(null)
+    } finally {
+      setClassLessonLoading(false)
+    }
+  }, [])
+
   // ── Payment return handling ──────────────────────────────────
   // Paystack redirects the browser back here after checkout, but the
   // ONLY trustworthy signal that a payment actually succeeded is the
@@ -718,7 +750,9 @@ export default function Spaces({ user }) {
     if (activeTab === 'accountability') fetchAccountability()
     if (activeTab === 'circles') fetchCircles()
     if (activeTab === 'tafseer') fetchTafseer()
-  }, [activeTab, subscription, fetchAccountability, fetchCircles, fetchTafseer])
+    if (activeTab === 'arabiyyah') fetchClassLesson('arabiyyah', classLevel.arabiyyah)
+    if (activeTab === 'hadeeth') fetchClassLesson('hadeeth', classLevel.hadeeth)
+  }, [activeTab, subscription, fetchAccountability, fetchCircles, fetchTafseer, fetchClassLesson, classLevel])
 
   // Deep-link from a notification: /spaces?post=<id> opens that post
   // directly. Gated on an ACTIVE subscription specifically (not just
@@ -1510,6 +1544,42 @@ export default function Spaces({ user }) {
               <p className="spaces-class-content-arabic arabic">{currentLevel.arabicTitle}</p>
               <p className="spaces-class-content-desc">{currentLevel.description}</p>
             </div>
+
+            {/* Daily Class Lesson — sits alongside the Telegram CTA
+                below, does not replace it. */}
+            {classLessonLoading ? (
+              <div className="spaces-loading"><div className="spaces-spinner" /></div>
+            ) : classLesson ? (
+              <div className="spaces-tafseer-card card">
+                <h4 className="spaces-class-section-title">📖 Today's Lesson — {classLesson.title}</h4>
+                {classLesson.arabic_text && <p className="spaces-tafseer-arabic arabic-lg">{classLesson.arabic_text}</p>}
+                {classLesson.transliteration && (
+                  <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
+                    {classLesson.transliteration}
+                  </p>
+                )}
+                {classLesson.translation && <p className="spaces-tafseer-translation">"{classLesson.translation}"</p>}
+                {classLesson.commentary && (
+                  <p className="spaces-tafseer-body" style={{ marginTop: 12 }}>{classLesson.commentary}</p>
+                )}
+                {Array.isArray(classLesson.lessons) && classLesson.lessons.length > 0 && (
+                  <ul className="spaces-class-curriculum" style={{ marginTop: 12 }}>
+                    {classLesson.lessons.map((l, i) => (
+                      <li key={i} className="spaces-class-curriculum-item">
+                        <span className="spaces-class-curriculum-num">{i + 1}</span>
+                        <span>{l}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : (
+              <div className="spaces-empty card">
+                <p className="spaces-empty-icon">📖</p>
+                <p className="spaces-empty-text">No lesson posted yet today for this level</p>
+                <p className="spaces-empty-sub">The curriculum and Telegram group below are still there in the meantime.</p>
+              </div>
+            )}
 
             <div className="spaces-class-section card">
               <h4 className="spaces-class-section-title">📋 Curriculum</h4>

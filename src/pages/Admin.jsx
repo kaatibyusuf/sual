@@ -14,6 +14,18 @@ const EMPTY_ENTRY = {
   lessons: [''],
 }
 
+const EMPTY_CLASS_LESSON = {
+  class_id: 'hadeeth',
+  level: 'beginner',
+  publish_date: '',
+  title: '',
+  arabic_text: '',
+  transliteration: '',
+  translation: '',
+  commentary: '',
+  lessons: [''],
+}
+
 export default function Admin({ user }) {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -32,6 +44,14 @@ export default function Admin({ user }) {
   const [tafseerError, setTafseerError] = useState(null)
   const [tafseerSaved, setTafseerSaved] = useState(null)
   const [editingDate, setEditingDate] = useState(null)
+
+  const [classLessonEntries, setClassLessonEntries] = useState([])
+  const [classLessonListLoading, setClassLessonListLoading] = useState(false)
+  const [classLessonForm, setClassLessonForm] = useState(EMPTY_CLASS_LESSON)
+  const [classLessonSaving, setClassLessonSaving] = useState(false)
+  const [classLessonError, setClassLessonError] = useState(null)
+  const [classLessonSaved, setClassLessonSaved] = useState(null)
+  const [editingClassLessonKey, setEditingClassLessonKey] = useState(null)
 
   const fetchStats = async () => {
     setLoading(true)
@@ -165,6 +185,101 @@ export default function Admin({ user }) {
     }
   }
 
+  // ── Class daily lessons (Arabiyyah + Hadeeth) ────────────────
+  const fetchClassLessonList = async () => {
+    setClassLessonListLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-class-lessons', {
+        body: { action: 'list' },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setClassLessonEntries(data.entries || [])
+    } catch (err) {
+      console.error('Failed to load class lesson entries:', err)
+    } finally {
+      setClassLessonListLoading(false)
+    }
+  }
+
+  const loadClassLessonIntoForm = (entry) => {
+    setEditingClassLessonKey(`${entry.class_id}|${entry.level}|${entry.publish_date}`)
+    setClassLessonForm({
+      class_id: entry.class_id,
+      level: entry.level,
+      publish_date: entry.publish_date || '',
+      title: entry.title || '',
+      arabic_text: entry.arabic_text || '',
+      transliteration: entry.transliteration || '',
+      translation: entry.translation || '',
+      commentary: entry.commentary || '',
+      lessons: Array.isArray(entry.lessons) && entry.lessons.length > 0 ? entry.lessons : [''],
+    })
+    setClassLessonSaved(null)
+    setClassLessonError(null)
+  }
+
+  const resetClassLessonForm = () => {
+    setEditingClassLessonKey(null)
+    setClassLessonForm(EMPTY_CLASS_LESSON)
+    setClassLessonSaved(null)
+    setClassLessonError(null)
+  }
+
+  const updateClassLessonLesson = (idx, value) => {
+    setClassLessonForm(f => {
+      const lessons = [...f.lessons]
+      lessons[idx] = value
+      return { ...f, lessons }
+    })
+  }
+
+  const addClassLessonField = () => {
+    setClassLessonForm(f => ({ ...f, lessons: [...f.lessons, ''] }))
+  }
+
+  const removeClassLessonField = (idx) => {
+    setClassLessonForm(f => ({ ...f, lessons: f.lessons.filter((_, i) => i !== idx) }))
+  }
+
+  const saveClassLesson = async () => {
+    setClassLessonSaving(true)
+    setClassLessonError(null)
+    setClassLessonSaved(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-class-lessons', {
+        body: { action: 'upsert', entry: classLessonForm },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setClassLessonSaved(data.entry)
+      resetClassLessonForm()
+      fetchClassLessonList()
+    } catch (err) {
+      console.error('Failed to save class lesson entry:', err)
+      setClassLessonError(err.message)
+    } finally {
+      setClassLessonSaving(false)
+    }
+  }
+
+  const deleteClassLesson = async (entry) => {
+    if (!window.confirm(`Delete the ${entry.class_id} (${entry.level}) lesson for ${entry.publish_date}?`)) return
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-class-lessons', {
+        body: { action: 'delete', class_id: entry.class_id, level: entry.level, publish_date: entry.publish_date },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      const key = `${entry.class_id}|${entry.level}|${entry.publish_date}`
+      if (editingClassLessonKey === key) resetClassLessonForm()
+      fetchClassLessonList()
+    } catch (err) {
+      console.error('Failed to delete class lesson entry:', err)
+      setClassLessonError(err.message)
+    }
+  }
+
   // FIX: this previously only ran the fetch inline inside useEffect
   // with an empty dependency array — meaning it fired once, the very
   // first time this component ever mounted in the browser session,
@@ -176,6 +291,7 @@ export default function Admin({ user }) {
   useEffect(() => {
     fetchStats()
     fetchTafseerList()
+    fetchClassLessonList()
   }, [])
 
   if (!user) return null
@@ -475,6 +591,194 @@ export default function Admin({ user }) {
                   </span>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Daily Class Lesson manager — Arabiyyah + Hadeeth, one entry
+          per (class, level, date), sitting alongside the existing
+          Telegram links rather than replacing them. */}
+      <div className="card" style={{ marginTop: 20, padding: 20 }}>
+        <h3 style={{ marginBottom: 6 }}>Daily Class Lesson</h3>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
+          {editingClassLessonKey
+            ? `Editing the ${classLessonForm.class_id} (${classLessonForm.level}) entry for ${classLessonForm.publish_date}.`
+            : 'One entry per class and level per day. Members see this in-app alongside the Telegram group, not instead of it.'}
+        </p>
+
+        {classLessonError && <div className="admin-error" style={{ marginBottom: 12 }}>{classLessonError}</div>}
+        {classLessonSaved && (
+          <div
+            className="card"
+            style={{
+              marginBottom: 14,
+              padding: '12px 16px',
+              background: 'rgba(46,125,50,0.08)',
+              border: '1px solid rgba(46,125,50,0.25)',
+              color: '#2e7d32',
+              fontSize: '0.85rem',
+            }}
+          >
+            Saved {classLessonSaved.class_id} ({classLessonSaved.level}) entry for {classLessonSaved.publish_date}.
+          </div>
+        )}
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 12 }}>
+          <div>
+            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Class</label>
+            <select
+              value={classLessonForm.class_id}
+              onChange={e => setClassLessonForm(f => ({ ...f, class_id: e.target.value }))}
+              disabled={!!editingClassLessonKey}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
+            >
+              <option value="hadeeth">Hadeeth</option>
+              <option value="arabiyyah">Arabiyyah</option>
+            </select>
+          </div>
+          <div>
+            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Level</label>
+            <select
+              value={classLessonForm.level}
+              onChange={e => setClassLessonForm(f => ({ ...f, level: e.target.value }))}
+              disabled={!!editingClassLessonKey}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+          <div>
+            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Publish date</label>
+            <input
+              type="date"
+              value={classLessonForm.publish_date}
+              onChange={e => setClassLessonForm(f => ({ ...f, publish_date: e.target.value }))}
+              disabled={!!editingClassLessonKey}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Title</label>
+          <input
+            type="text"
+            placeholder={classLessonForm.class_id === 'hadeeth' ? 'Hadith 11 — On sincerity' : 'Idafah — the possessive construction'}
+            value={classLessonForm.title}
+            onChange={e => setClassLessonForm(f => ({ ...f, title: e.target.value }))}
+            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Arabic text</label>
+          <textarea
+            rows={2}
+            dir="rtl"
+            value={classLessonForm.arabic_text}
+            onChange={e => setClassLessonForm(f => ({ ...f, arabic_text: e.target.value }))}
+            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '1rem', fontFamily: 'inherit' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Transliteration</label>
+          <textarea
+            rows={2}
+            value={classLessonForm.transliteration}
+            onChange={e => setClassLessonForm(f => ({ ...f, transliteration: e.target.value }))}
+            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Translation</label>
+          <textarea
+            rows={2}
+            value={classLessonForm.translation}
+            onChange={e => setClassLessonForm(f => ({ ...f, translation: e.target.value }))}
+            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Commentary</label>
+          <textarea
+            rows={5}
+            value={classLessonForm.commentary}
+            onChange={e => setClassLessonForm(f => ({ ...f, commentary: e.target.value }))}
+            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 16 }}>
+          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 6 }}>Lessons</label>
+          {classLessonForm.lessons.map((lesson, idx) => (
+            <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+              <input
+                type="text"
+                placeholder={`Lesson ${idx + 1}`}
+                value={lesson}
+                onChange={e => updateClassLessonLesson(idx, e.target.value)}
+                style={{ flex: 1, padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
+              />
+              {classLessonForm.lessons.length > 1 && (
+                <button className="btn btn-ghost" onClick={() => removeClassLessonField(idx)} type="button">✕</button>
+              )}
+            </div>
+          ))}
+          <button className="btn btn-ghost" onClick={addClassLessonField} type="button">+ Add lesson</button>
+        </div>
+
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            className="btn btn-primary"
+            onClick={saveClassLesson}
+            disabled={classLessonSaving || !classLessonForm.publish_date || !classLessonForm.title.trim()}
+          >
+            {classLessonSaving ? 'Saving…' : editingClassLessonKey ? 'Update Entry' : 'Save Entry'}
+          </button>
+          {editingClassLessonKey && (
+            <button className="btn btn-ghost" onClick={resetClassLessonForm} type="button">Cancel Edit</button>
+          )}
+        </div>
+
+        <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid #e8f0f8' }}>
+          <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 10 }}>Recent entries</p>
+          {classLessonListLoading ? (
+            <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>Loading…</p>
+          ) : classLessonEntries.length === 0 ? (
+            <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>No entries yet.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {classLessonEntries.map(entry => {
+                const key = `${entry.class_id}|${entry.level}|${entry.publish_date}`
+                return (
+                  <div
+                    key={key}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '8px 12px',
+                      borderRadius: 8,
+                      background: editingClassLessonKey === key ? 'rgba(9,69,112,0.06)' : '#f5f8fb',
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    <span>
+                      <strong>{entry.publish_date}</strong> — {entry.class_id} · {entry.level} — {entry.title}
+                    </span>
+                    <span style={{ display: 'flex', gap: 8 }}>
+                      <button className="btn btn-ghost" onClick={() => loadClassLessonIntoForm(entry)} type="button">Edit</button>
+                      <button className="btn btn-ghost" onClick={() => deleteClassLesson(entry)} type="button" style={{ color: '#c0392b' }}>Delete</button>
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>
