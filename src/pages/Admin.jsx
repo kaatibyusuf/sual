@@ -8,6 +8,11 @@ export default function Admin({ user }) {
   const [error, setError] = useState(null)
   const [lastUpdated, setLastUpdated] = useState(null)
 
+  const [grantEmail, setGrantEmail] = useState('')
+  const [granting, setGranting] = useState(false)
+  const [grantResult, setGrantResult] = useState(null)
+  const [grantError, setGrantError] = useState(null)
+
   const fetchStats = async () => {
     setLoading(true)
     setError(null)
@@ -22,6 +27,28 @@ export default function Admin({ user }) {
       setError(err.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const grantAccess = async () => {
+    const email = grantEmail.trim().toLowerCase()
+    if (!email) return
+    setGranting(true)
+    setGrantError(null)
+    setGrantResult(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-grant-access', {
+        body: { email },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setGrantResult(data)
+      setGrantEmail('')
+    } catch (err) {
+      console.error('Failed to grant access:', err)
+      setGrantError(err.message)
+    } finally {
+      setGranting(false)
     }
   }
 
@@ -98,6 +125,64 @@ export default function Admin({ user }) {
           </div>
         </div>
       ) : null}
+
+      {/* Manual Spaces access grant — for members who paid but are
+          stuck without access. Writes to `subscriptions` the same
+          way the Paystack webhook does on a real successful charge,
+          so a manually-granted member is indistinguishable from one
+          who paid normally. If the email has no existing Sual
+          account, one is created and invited automatically. */}
+      <div className="card" style={{ marginTop: 28, padding: 20 }}>
+        <h3 style={{ marginBottom: 6 }}>Grant Spaces Access</h3>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 14 }}>
+          For members who paid but can't get into Spaces. If they don't have a Sual
+          account yet, one will be created and they'll be emailed a link to set a
+          password.
+        </p>
+
+        {grantError && <div className="admin-error" style={{ marginBottom: 12 }}>{grantError}</div>}
+
+        {grantResult && (
+          <div
+            className="card"
+            style={{
+              marginBottom: 14,
+              padding: '12px 16px',
+              background: 'rgba(46,125,50,0.08)',
+              border: '1px solid rgba(46,125,50,0.25)',
+              color: '#2e7d32',
+              fontSize: '0.85rem',
+            }}
+          >
+            Access granted for {grantResult.email}.{' '}
+            {grantResult.accountCreated ? 'A new account was created and invited.' : 'Existing account activated.'}{' '}
+            {grantResult.welcomeEmailSent ? 'Welcome email sent.' : 'Welcome email already sent previously.'}
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <input
+            type="email"
+            placeholder="member@email.com"
+            value={grantEmail}
+            onChange={e => setGrantEmail(e.target.value)}
+            style={{
+              flex: '1 1 260px',
+              padding: '10px 14px',
+              borderRadius: 8,
+              border: '1px solid #d0e0ec',
+              fontSize: '0.9rem',
+            }}
+          />
+          <button
+            className="btn btn-primary"
+            onClick={grantAccess}
+            disabled={granting || !grantEmail.trim()}
+          >
+            {granting ? 'Granting…' : 'Grant Access'}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

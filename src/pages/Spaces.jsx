@@ -214,11 +214,14 @@ export default function Spaces({ user }) {
   const [newPost,        setNewPost]        = useState({ title: '', body: '', category: 'general' })
   const [newReply,       setNewReply]       = useState('')
   const [showNewPost,    setShowNewPost]    = useState(false)
+  const [showWelcomePrompt, setShowWelcomePrompt] = useState(false)
   const [posting,        setPosting]        = useState(false)
   const [error,          setError]          = useState(null)
   const [activeTab,      setActiveTab]      = useState('community')
   const [classLevel,     setClassLevel]     = useState({ arabiyyah: 'beginner', hadeeth: 'beginner' })
   const [featured,       setFeatured]       = useState(null)
+  const [memberCount,    setMemberCount]    = useState(null)
+  const [justJoined,     setJustJoined]     = useState(false)
   const [lastVisit]                          = useState(() => {
     const prev = localStorage.getItem('sual-spaces-last-visit')
     localStorage.setItem('sual-spaces-last-visit', new Date().toISOString())
@@ -354,6 +357,19 @@ export default function Spaces({ user }) {
       if (post) setFeatured({ post, reply })
     } catch {
       setFeatured(null)
+    }
+  }, [])
+
+  // Community-wide member count — subscriptions is RLS-locked to each
+  // user's own row, so a SECURITY DEFINER function is needed to count
+  // everyone, same pattern as get_accountability_roster().
+  const fetchMemberCount = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_spaces_member_count')
+      if (error) throw error
+      setMemberCount(data)
+    } catch (err) {
+      console.error('Failed to load member count:', err)
     }
   }, [])
 
@@ -655,6 +671,7 @@ export default function Spaces({ user }) {
         if (data?.status === 'active') {
           setSubscription(data)
           setConfirmingPayment(false)
+          setJustJoined(true)
           clearInterval(poll)
         } else if (attempts >= 8) {
           // ~40s of polling — stop trying; the webhook may simply be
@@ -673,8 +690,28 @@ export default function Spaces({ user }) {
     if (subscription?.status === 'active') {
       fetchPosts()
       fetchFeatured()
+      fetchMemberCount()
     }
-  }, [subscription, fetchPosts, fetchFeatured])
+  }, [subscription, fetchPosts, fetchFeatured, fetchMemberCount])
+
+  // Fires once, right when a fresh subscription is detected by the
+  // payment poll above — drops the new member straight into the
+  // community tab with the new-post modal open and a starter message
+  // pre-filled, so the first thing they do with their new access is
+  // introduce themselves rather than land on an empty feed.
+  useEffect(() => {
+    if (justJoined && subscription?.status === 'active') {
+      setActiveTab('community')
+      setNewPost({
+        title: "Assalamu alaikum, I'm new here",
+        body: "Assalamu alaikum everyone, I'm new here. ",
+        category: 'general',
+      })
+      setShowNewPost(true)
+      setShowWelcomePrompt(true)
+      setJustJoined(false)
+    }
+  }, [justJoined, subscription])
 
   useEffect(() => {
     if (subscription?.status !== 'active') return
@@ -750,6 +787,11 @@ export default function Spaces({ user }) {
     if (data) openPost(data)
   }
 
+  const closeNewPostModal = () => {
+    setShowNewPost(false)
+    setShowWelcomePrompt(false)
+  }
+
   const submitPost = async () => {
     if (!newPost.title.trim() || !newPost.body.trim()) {
       setError('Please fill in all fields.')
@@ -766,7 +808,7 @@ export default function Spaces({ user }) {
       })
       if (error) throw error
       setNewPost({ title: '', body: '', category: 'general' })
-      setShowNewPost(false)
+      closeNewPostModal()
       fetchPosts()
     } catch (err) {
       setError(err.message)
@@ -1352,6 +1394,11 @@ export default function Spaces({ user }) {
       <div className="page-content spaces-page">
         <h1 className="page-title">Spaces</h1>
         <p className="page-subtitle">فَضَاءَات — A community for serious students of Islamic knowledge</p>
+        {memberCount !== null && (
+          <p style={{ fontSize: '0.85rem', color: '#6a8090', marginTop: -8, marginBottom: 16 }}>
+            👥 {memberCount.toLocaleString()} members
+          </p>
+        )}
 
         {confirmingPayment && (
           <div className="card" style={{
@@ -1535,6 +1582,11 @@ export default function Spaces({ user }) {
         <div>
           <h1 className="page-title">Spaces</h1>
           <p className="page-subtitle">فَضَاءَات — Community for serious students</p>
+          {memberCount !== null && (
+            <p style={{ fontSize: '0.85rem', color: '#6a8090', marginTop: 4 }}>
+              👥 {memberCount.toLocaleString()} members
+            </p>
+          )}
         </div>
         {activeTab === 'community' && (
           <button className="spaces-new-btn" onClick={() => setShowNewPost(true)}>
@@ -1587,9 +1639,16 @@ export default function Spaces({ user }) {
           )}
 
           {showNewPost && (
-            <div className="spaces-modal-overlay" onClick={() => setShowNewPost(false)}>
+            <div className="spaces-modal-overlay" onClick={closeNewPostModal}>
               <div className="spaces-modal card" onClick={e => e.stopPropagation()}>
-                <h3 className="spaces-modal-title">New Post</h3>
+                <h3 className="spaces-modal-title">
+                  {showWelcomePrompt ? "You're in — introduce yourself" : 'New Post'}
+                </h3>
+                {showWelcomePrompt && (
+                  <p style={{ fontSize: '0.88rem', color: '#6a8090', marginBottom: 14 }}>
+                    Your subscription is active. Before anything else, say salaam to the community and share what you're here to learn.
+                  </p>
+                )}
                 {error && <div className="spaces-error">{error}</div>}
                 <div className="spaces-field">
                   <label className="spaces-label">Category</label>
@@ -1624,7 +1683,7 @@ export default function Spaces({ user }) {
                   />
                 </div>
                 <div className="spaces-modal-actions">
-                  <button className="spaces-cancel-btn" onClick={() => setShowNewPost(false)}>Cancel</button>
+                  <button className="spaces-cancel-btn" onClick={closeNewPostModal}>Cancel</button>
                   <button className="spaces-submit-btn" onClick={submitPost} disabled={posting}>
                     {posting ? 'Posting...' : 'Post →'}
                   </button>
