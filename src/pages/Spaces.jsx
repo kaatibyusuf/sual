@@ -1271,6 +1271,11 @@ export default function Spaces({ user }) {
         <div className="spaces-tafseer-card card">
           <p className="spaces-tafseer-ref">{todayTafseer.surah_name} · {todayTafseer.surah_num}:{todayTafseer.ayah_num}</p>
           <p className="spaces-tafseer-arabic arabic-lg">{todayTafseer.arabic_text}</p>
+          {todayTafseer.transliteration && (
+            <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
+              {todayTafseer.transliteration}
+            </p>
+          )}
           <p className="spaces-tafseer-translation">"{todayTafseer.translation}"</p>
         </div>
 
@@ -1550,7 +1555,7 @@ export default function Spaces({ user }) {
                 All classes are conducted and coordinated through Telegram.
               </p>
 
-              <a
+              
                 className="spaces-submit-btn spaces-telegram-btn"
                 href={
                   currentLevel.key === 'beginner'
