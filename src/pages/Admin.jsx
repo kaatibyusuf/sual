@@ -23,6 +23,7 @@ const EMPTY_CLASS_LESSON = {
   transliteration: '',
   translation: '',
   commentary: '',
+  audio_url: '',
   lessons: [''],
 }
 
@@ -52,6 +53,10 @@ export default function Admin({ user }) {
   const [classLessonError, setClassLessonError] = useState(null)
   const [classLessonSaved, setClassLessonSaved] = useState(null)
   const [editingClassLessonKey, setEditingClassLessonKey] = useState(null)
+
+  const [audioFile, setAudioFile] = useState(null)
+  const [audioUploading, setAudioUploading] = useState(false)
+  const [audioUploadError, setAudioUploadError] = useState(null)
 
   const fetchStats = async () => {
     setLoading(true)
@@ -213,10 +218,13 @@ export default function Admin({ user }) {
       transliteration: entry.transliteration || '',
       translation: entry.translation || '',
       commentary: entry.commentary || '',
+      audio_url: entry.audio_url || '',
       lessons: Array.isArray(entry.lessons) && entry.lessons.length > 0 ? entry.lessons : [''],
     })
     setClassLessonSaved(null)
     setClassLessonError(null)
+    setAudioFile(null)
+    setAudioUploadError(null)
   }
 
   const resetClassLessonForm = () => {
@@ -224,6 +232,8 @@ export default function Admin({ user }) {
     setClassLessonForm(EMPTY_CLASS_LESSON)
     setClassLessonSaved(null)
     setClassLessonError(null)
+    setAudioFile(null)
+    setAudioUploadError(null)
   }
 
   const updateClassLessonLesson = (idx, value) => {
@@ -240,6 +250,46 @@ export default function Admin({ user }) {
 
   const removeClassLessonField = (idx) => {
     setClassLessonForm(f => ({ ...f, lessons: f.lessons.filter((_, i) => i !== idx) }))
+  }
+
+  // Uploads directly to Storage via a signed URL scoped to one exact
+  // path — the file's bytes never pass through admin-manage-class-lessons
+  // itself, which matters since edge functions have a request size
+  // limit well below what a full class recording would need.
+  const uploadAudio = async () => {
+    if (!audioFile) return
+    if (!classLessonForm.publish_date) {
+      setAudioUploadError('Set the publish date first.')
+      return
+    }
+    setAudioUploading(true)
+    setAudioUploadError(null)
+    try {
+      const { data: urlData, error: urlError } = await supabase.functions.invoke('admin-manage-class-lessons', {
+        body: {
+          action: 'get_upload_url',
+          class_id: classLessonForm.class_id,
+          level: classLessonForm.level,
+          publish_date: classLessonForm.publish_date,
+          filename: audioFile.name,
+        },
+      })
+      if (urlError) throw urlError
+      if (urlData?.error) throw new Error(urlData.error)
+
+      const { error: uploadError } = await supabase.storage
+        .from('class-audio')
+        .uploadToSignedUrl(urlData.path, urlData.token, audioFile)
+      if (uploadError) throw uploadError
+
+      setClassLessonForm(f => ({ ...f, audio_url: urlData.audioUrl }))
+      setAudioFile(null)
+    } catch (err) {
+      console.error('Failed to upload audio:', err)
+      setAudioUploadError(err.message)
+    } finally {
+      setAudioUploading(false)
+    }
   }
 
   const saveClassLesson = async () => {
@@ -598,7 +648,8 @@ export default function Admin({ user }) {
 
       {/* Daily Class Lesson manager — Arabiyyah + Hadeeth, one entry
           per (class, level, date), sitting alongside the existing
-          Telegram links rather than replacing them. */}
+          Telegram links rather than replacing them. Now also
+          supports attaching a class audio recording. */}
       <div className="card" style={{ marginTop: 20, padding: 20 }}>
         <h3 style={{ marginBottom: 6 }}>Daily Class Lesson</h3>
         <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
@@ -714,6 +765,40 @@ export default function Admin({ user }) {
           />
         </div>
 
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Class audio</label>
+          {classLessonForm.audio_url && (
+            <div style={{ marginBottom: 8 }}>
+              <audio controls src={classLessonForm.audio_url} style={{ width: '100%' }} />
+              <button
+                className="btn btn-ghost"
+                type="button"
+                onClick={() => setClassLessonForm(f => ({ ...f, audio_url: '' }))}
+                style={{ marginTop: 4, fontSize: '0.78rem' }}
+              >
+                Remove audio
+              </button>
+            </div>
+          )}
+          {audioUploadError && <div className="admin-error" style={{ marginBottom: 8 }}>{audioUploadError}</div>}
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <input
+              type="file"
+              accept="audio/*"
+              onChange={e => setAudioFile(e.target.files?.[0] || null)}
+              style={{ fontSize: '0.85rem' }}
+            />
+            <button
+              className="btn btn-ghost"
+              type="button"
+              onClick={uploadAudio}
+              disabled={!audioFile || audioUploading}
+            >
+              {audioUploading ? 'Uploading…' : 'Upload'}
+            </button>
+          </div>
+        </div>
+
         <div style={{ marginBottom: 16 }}>
           <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 6 }}>Lessons</label>
           {classLessonForm.lessons.map((lesson, idx) => (
@@ -771,6 +856,7 @@ export default function Admin({ user }) {
                   >
                     <span>
                       <strong>{entry.publish_date}</strong> — {entry.class_id} · {entry.level} — {entry.title}
+                      {entry.audio_url && <span style={{ marginLeft: 6 }}>🎧</span>}
                     </span>
                     <span style={{ display: 'flex', gap: 8 }}>
                       <button className="btn btn-ghost" onClick={() => loadClassLessonIntoForm(entry)} type="button">Edit</button>

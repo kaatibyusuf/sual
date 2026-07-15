@@ -2,14 +2,16 @@
 //
 // Lets an admin create, override, or preview daily lesson entries for
 // the Arabiyyah and Hadeeth classes — one entry per (class_id, level,
-// publish_date), so each level rotates its own content independently
-// rather than sharing a single daily post across levels. This sits
-// alongside the existing Telegram group links in each class, it does
-// not replace them.
+// publish_date). Also issues signed Storage upload URLs for class
+// audio, so large recordings (tens to hundreds of MB) are uploaded
+// directly from the browser to Storage rather than through this
+// function's own request body, which has a much lower size limit.
 //
 // SECURITY: same caller-verification pattern as the other admin
 // functions — re-checks the caller's own auth token against
 // ADMIN_EMAILS on every call, never trusts client-side route gating.
+// The signed upload URL itself is short-lived and scoped to one exact
+// storage path, so even if intercepted it can't be reused elsewhere.
 //
 // Deploy:  supabase functions deploy admin-manage-class-lessons
 // Uses the same ADMIN_EMAILS secret already set for the other admin functions.
@@ -28,16 +30,17 @@ const supabaseAdmin = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_
 
 const VALID_CLASS_IDS = ['arabiyyah', 'hadeeth']
 const VALID_LEVELS = ['beginner', 'intermediate', 'advanced']
+const AUDIO_BUCKET = 'class-audio'
 
-// x-client-info and apikey included from the start this time — the
-// tafseer manager and access-grant functions both hit a CORS
-// preflight rejection from missing these, since the Supabase JS
-// client attaches them to every request automatically.
 function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'authorization, content-type, x-client-info, apikey',
   }
+}
+
+function sanitizeFilename(name: string) {
+  return name.replace(/[^a-zA-Z0-9._-]/g, '_')
 }
 
 serve(async (req) => {
@@ -81,6 +84,48 @@ serve(async (req) => {
     return new Response(JSON.stringify({ ok: true, entries: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
   }
 
+  // Issues a signed upload URL scoped to one exact path. The client
+  // then uploads the audio file directly to Storage with this URL —
+  // the file's bytes never pass through this function, avoiding its
+  // request size limit entirely. audioUrl (the eventual public
+  // playback URL) is returned alongside so the client can save it
+  // straight into the entry once the upload finishes.
+  if (action === 'get_upload_url') {
+    const classId = (body.class_id || '').trim()
+    const level = (body.level || '').trim()
+    const publishDate = (body.publish_date || '').trim()
+    const filename = sanitizeFilename((body.filename || 'audio.mp3').trim())
+
+    if (!VALID_CLASS_IDS.includes(classId)) {
+      return new Response(JSON.stringify({ error: `class_id must be one of ${VALID_CLASS_IDS.join(', ')}` }), { status: 400, headers: corsHeaders() })
+    }
+    if (!VALID_LEVELS.includes(level)) {
+      return new Response(JSON.stringify({ error: `level must be one of ${VALID_LEVELS.join(', ')}` }), { status: 400, headers: corsHeaders() })
+    }
+    if (!publishDate) {
+      return new Response(JSON.stringify({ error: 'publish_date is required' }), { status: 400, headers: corsHeaders() })
+    }
+
+    const path = `${classId}/${level}/${publishDate}-${Date.now()}-${filename}`
+
+    const { data: signed, error: signError } = await supabaseAdmin
+      .storage
+      .from(AUDIO_BUCKET)
+      .createSignedUploadUrl(path)
+
+    if (signError) return new Response(JSON.stringify({ error: signError.message }), { status: 500, headers: corsHeaders() })
+
+    const { data: publicUrlData } = supabaseAdmin.storage.from(AUDIO_BUCKET).getPublicUrl(path)
+
+    return new Response(JSON.stringify({
+      ok: true,
+      path,
+      token: signed.token,
+      signedUrl: signed.signedUrl,
+      audioUrl: publicUrlData.publicUrl,
+    }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
+  }
+
   if (action === 'upsert') {
     const entry = body.entry || {}
     const classId = (entry.class_id || '').trim()
@@ -109,6 +154,7 @@ serve(async (req) => {
       transliteration: entry.transliteration ? String(entry.transliteration).trim() : null,
       translation: entry.translation ? String(entry.translation).trim() : null,
       commentary: entry.commentary ? String(entry.commentary).trim() : null,
+      audio_url: entry.audio_url ? String(entry.audio_url).trim() : null,
       lessons: Array.isArray(entry.lessons)
         ? entry.lessons.map((l: string) => String(l).trim()).filter(Boolean)
         : [],

@@ -1560,7 +1560,12 @@ export default function Spaces({ user }) {
                 )}
                 {classLesson.translation && <p className="spaces-tafseer-translation">"{classLesson.translation}"</p>}
                 {classLesson.commentary && (
-                  <p className="spaces-tafseer-body" style={{ marginTop: 12 }}>{classLesson.commentary}</p>
+                  <>
+                    <p className="spaces-tafseer-body" style={{ marginTop: 12 }}>{classLesson.commentary}</p>
+                    {classLesson.audio_url && (
+                      <audio controls src={classLesson.audio_url} style={{ width: '100%', marginTop: 12 }} />
+                    )}
+                  </>
                 )}
                 {Array.isArray(classLesson.lessons) && classLesson.lessons.length > 0 && (
                   <ul className="spaces-class-curriculum" style={{ marginTop: 12 }}>
