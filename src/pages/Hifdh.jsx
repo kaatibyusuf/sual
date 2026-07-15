@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { COLLECTIONS } from '../data/collections.js'
 import {
   isDue,
@@ -275,6 +275,19 @@ export default function Hifdh({ user = null }) {
   const [results, setResults] = useState({})     // itemKey -> all-correct boolean
   const [finished, setFinished] = useState(false)
 
+  // Voice recitation check — an alternate way to answer 'complete'
+  // type questions, using the browser's MediaRecorder to capture a
+  // short clip and hifdh-voice-check (Whisper-family transcription)
+  // to score it against the same expected text the typed path checks
+  // against. Falls back invisibly to typing-only when unsupported.
+  const [voiceSupported] = useState(() => typeof window !== 'undefined' && !!(navigator.mediaDevices && window.MediaRecorder))
+  const [isRecording, setIsRecording] = useState(false)
+  const [voiceChecking, setVoiceChecking] = useState(false)
+  const [voiceResult, setVoiceResult] = useState(null) // { correct, transcript }
+  const [voiceError, setVoiceError] = useState(null)
+  const mediaRecorderRef = useRef(null)
+  const audioChunksRef = useRef([])
+
   // Load this collection's saved progress whenever the selected
   // collection changes.
   useEffect(() => {
@@ -380,6 +393,8 @@ export default function Hifdh({ user = null }) {
     setTypedAnswer('')
     setTypedSubmitted(false)
     setTypedCorrect(false)
+    setVoiceResult(null)
+    setVoiceError(null)
     setResults({})
     setFinished(false)
   }
@@ -408,6 +423,71 @@ export default function Hifdh({ user = null }) {
     recordResult(currentQ.itemKey, correct)
   }
 
+  // ── Voice recitation check ───────────────────────────────────
+  const startRecording = async () => {
+    setVoiceError(null)
+    setVoiceResult(null)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : (MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '')
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream)
+      audioChunksRef.current = []
+      recorder.ondataavailable = e => { if (e.data.size > 0) audioChunksRef.current.push(e.data) }
+      recorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop())
+        const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || 'audio/webm' })
+        checkRecitation(blob)
+      }
+      mediaRecorderRef.current = recorder
+      recorder.start()
+      setIsRecording(true)
+    } catch (err) {
+      console.error('Microphone access failed:', err)
+      setVoiceError('Could not access your microphone. Check your browser permissions, or type your answer instead.')
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop()
+      setIsRecording(false)
+    }
+  }
+
+  const blobToBase64 = (blob) => new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(String(reader.result).split(',')[1] || '')
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
+
+  const checkRecitation = async (blob) => {
+    setVoiceChecking(true)
+    try {
+      const base64 = await blobToBase64(blob)
+      const { data, error } = await supabase.functions.invoke('hifdh-voice-check', {
+        body: {
+          audio: base64,
+          mimeType: blob.type || 'audio/webm',
+          expectedText: currentQ.answer,
+        },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setVoiceResult({ correct: data.correct, transcript: data.transcript })
+      setTypedCorrect(data.correct)
+      setTypedSubmitted(true)
+      recordResult(currentQ.itemKey, data.correct)
+    } catch (err) {
+      console.error('Voice check failed:', err)
+      setVoiceError(err.message || 'Could not check your recitation. Try typing instead.')
+    } finally {
+      setVoiceChecking(false)
+    }
+  }
+
   const answered = selected !== null || typedSubmitted
 
   const next = () => {
@@ -417,6 +497,8 @@ export default function Hifdh({ user = null }) {
       setTypedAnswer('')
       setTypedSubmitted(false)
       setTypedCorrect(false)
+      setVoiceResult(null)
+      setVoiceError(null)
     } else {
       // Session over: move boxes and save
       let updated = progress
@@ -542,11 +624,26 @@ export default function Hifdh({ user = null }) {
               onChange={e => setTypedAnswer(e.target.value)}
               disabled={typedSubmitted}
             />
+
+            {voiceSupported && !typedSubmitted && (
+              <div style={{ marginTop: 10 }}>
+                {voiceError && <p style={{ color: '#c0392b', fontSize: '0.82rem', marginBottom: 6 }}>{voiceError}</p>}
+                <button
+                  className="hifdh-btn"
+                  onClick={isRecording ? stopRecording : startRecording}
+                  disabled={voiceChecking}
+                >
+                  {voiceChecking ? 'Checking your recitation…' : isRecording ? '⏹ Stop & Check' : '🎤 Recite Instead'}
+                </button>
+              </div>
+            )}
+
             {!typedSubmitted ? (
               <button
                 className="hifdh-btn hifdh-btn--primary"
                 onClick={submitTyped}
                 disabled={typedAnswer.trim().length === 0}
+                style={{ marginTop: 10 }}
               >
                 Check
               </button>
@@ -554,6 +651,11 @@ export default function Hifdh({ user = null }) {
               <div className={`hifdh-typed-feedback ${typedCorrect ? 'hifdh-typed-feedback--correct' : 'hifdh-typed-feedback--wrong'}`}>
                 <p>{typedCorrect ? 'Correct — exact recall.' : 'Not quite. The correct continuation is:'}</p>
                 {!typedCorrect && <p className="arabic hifdh-typed-answer">{currentQ.answer}</p>}
+                {voiceResult && (
+                  <p style={{ fontSize: '0.8rem', color: '#8a9ab0', marginTop: 6 }}>
+                    Heard: <span className="arabic">{voiceResult.transcript}</span>
+                  </p>
+                )}
               </div>
             )}
           </div>

@@ -12,10 +12,18 @@
     <title>Sual | سُؤَال</title>
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="#094570" />
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
-<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+    <!-- iOS-specific PWA tags — Safari ignores manifest.json's
+         "display": "standalone" entirely for these; without these,
+         "Add to Home Screen" still just bookmarks the page with the
+         address bar and Safari chrome visible, which is likely what
+         people mean when they say it "didn't really install." -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Sual" />
   </head>
   <body>
     <div id="root"></div>
