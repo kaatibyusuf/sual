@@ -1555,7 +1555,7 @@ export default function Spaces({ user }) {
                 All classes are conducted and coordinated through Telegram.
               </p>
 
-              
+              <a
                 className="spaces-submit-btn spaces-telegram-btn"
                 href={
                   currentLevel.key === 'beginner'
