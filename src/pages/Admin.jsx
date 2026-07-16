@@ -252,10 +252,6 @@ export default function Admin({ user }) {
     setClassLessonForm(f => ({ ...f, lessons: f.lessons.filter((_, i) => i !== idx) }))
   }
 
-  // Uploads directly to Storage via a signed URL scoped to one exact
-  // path — the file's bytes never pass through admin-manage-class-lessons
-  // itself, which matters since edge functions have a request size
-  // limit well below what a full class recording would need.
   const uploadAudio = async () => {
     if (!audioFile) return
     if (!classLessonForm.publish_date) {
@@ -330,14 +326,6 @@ export default function Admin({ user }) {
     }
   }
 
-  // FIX: this previously only ran the fetch inline inside useEffect
-  // with an empty dependency array — meaning it fired once, the very
-  // first time this component ever mounted in the browser session,
-  // and never again. In a router-based single-page app, navigating
-  // away from /admin and back doesn't reload the page, so the numbers
-  // looked permanently frozen even as real subscriptions and Hifdh
-  // activity kept changing underneath. Pulling fetchStats out to its
-  // own function lets a manual refresh call the identical logic.
   useEffect(() => {
     fetchStats()
     fetchTafseerList()
@@ -347,525 +335,442 @@ export default function Admin({ user }) {
   if (!user) return null
 
   return (
-    <div className="page-content admin-page">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+    <div className="admin-page">
+      <div className="admin-header">
         <div>
-          <h1 className="page-title">Admin Dashboard</h1>
-          <p className="page-subtitle">Growth and activity at a glance</p>
+          <h1 className="admin-title">Admin Dashboard</h1>
+          <p className="admin-subtitle">Sual — growth and activity at a glance</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="admin-header-actions">
           {lastUpdated && (
-            <span style={{ fontSize: '0.8rem', color: '#8a9ab0' }}>
-              Last updated: {lastUpdated.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            <span className="admin-updated">
+              updated {lastUpdated.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
             </span>
           )}
-          <button className="btn btn-primary" onClick={fetchStats} disabled={loading}>
+          <button className="admin-btn" onClick={fetchStats} disabled={loading}>
             {loading ? 'Refreshing…' : '↻ Refresh'}
           </button>
         </div>
       </div>
 
-      {error && <div className="admin-error card">Couldn't load stats: {error}</div>}
+      {error && <div className="admin-error" style={{ marginBottom: 16 }}>Couldn't load stats: {error}</div>}
 
       {loading ? (
-        <div className="admin-loading"><p>Loading…</p></div>
+        <div className="admin-loading">Loading…</div>
       ) : stats ? (
         <div className="admin-stats-grid">
-          <div className="admin-stat card">
+          <div className="admin-stat">
+            <span className="admin-stat-label">Total Users</span>
             <span className="admin-stat-value">{stats.totalUsers}</span>
-            <span className="admin-stat-label">Total users</span>
           </div>
-          <div className="admin-stat card">
+          <div className="admin-stat">
+            <span className="admin-stat-label">New — 7 Days</span>
             <span className="admin-stat-value">{stats.newLast7}</span>
-            <span className="admin-stat-label">New (last 7 days)</span>
           </div>
-          <div className="admin-stat card">
+          <div className="admin-stat">
+            <span className="admin-stat-label">New — 30 Days</span>
             <span className="admin-stat-value">{stats.newLast30}</span>
-            <span className="admin-stat-label">New (last 30 days)</span>
           </div>
-          <div className="admin-stat card">
-            <span className="admin-stat-value" style={{ color: '#2e7d32' }}>{stats.activeSubscriptions}</span>
-            <span className="admin-stat-label">Active Spaces subscriptions</span>
+          <div className="admin-stat">
+            <span className="admin-stat-label">Active Spaces Subs</span>
+            <span className="admin-stat-value admin-stat-value--green">{stats.activeSubscriptions}</span>
           </div>
-          <div className="admin-stat card">
+          <div className="admin-stat">
+            <span className="admin-stat-label">Quizzes Taken</span>
             <span className="admin-stat-value">{stats.totalQuizzesTaken}</span>
-            <span className="admin-stat-label">Quizzes taken (all time)</span>
           </div>
-          <div className="admin-stat card">
+          <div className="admin-stat">
+            <span className="admin-stat-label">Spaces Posts</span>
             <span className="admin-stat-value">{stats.totalSpacesPosts}</span>
-            <span className="admin-stat-label">Spaces posts (all time)</span>
           </div>
-          <div className="admin-stat card">
-            <span className="admin-stat-value" style={{ color: '#094570' }}>{stats.hifdhActiveUsers}</span>
-            <span className="admin-stat-label">Hifdh — active users</span>
+          <div className="admin-stat">
+            <span className="admin-stat-label">Hifdh — Active Users</span>
+            <span className="admin-stat-value admin-stat-value--blue">{stats.hifdhActiveUsers}</span>
           </div>
-          <div className="admin-stat card">
+          <div className="admin-stat">
+            <span className="admin-stat-label">Hifdh — Progress Rows</span>
             <span className="admin-stat-value">{stats.hifdhTotalProgressRows}</span>
-            <span className="admin-stat-label">Hifdh — total progress rows</span>
           </div>
         </div>
       ) : null}
 
-      {/* Manual Spaces access grant — for members who paid but are
-          stuck without access. Writes to `subscriptions` the same
-          way the Paystack webhook does on a real successful charge,
-          so a manually-granted member is indistinguishable from one
-          who paid normally. If the email has no existing Sual
-          account, one is created and invited automatically. */}
-      <div className="card" style={{ marginTop: 28, padding: 20 }}>
-        <h3 style={{ marginBottom: 6 }}>Grant Spaces Access</h3>
-        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 14 }}>
-          For members who paid but can't get into Spaces. If they don't have a Sual
-          account yet, one will be created and they'll be emailed a link to set a
-          password.
-        </p>
+      {/* Manual Spaces access grant */}
+      <div className="admin-panel">
+        <div className="admin-panel-header">
+          <h3 className="admin-panel-title">🔑 Grant Spaces Access</h3>
+          <p className="admin-panel-desc">
+            For members who paid but can't get into Spaces. If they don't have a Sual
+            account yet, one will be created and they'll be emailed a link to set a password.
+          </p>
+        </div>
 
         {grantError && <div className="admin-error" style={{ marginBottom: 12 }}>{grantError}</div>}
-
         {grantResult && (
-          <div
-            className="card"
-            style={{
-              marginBottom: 14,
-              padding: '12px 16px',
-              background: 'rgba(46,125,50,0.08)',
-              border: '1px solid rgba(46,125,50,0.25)',
-              color: '#2e7d32',
-              fontSize: '0.85rem',
-            }}
-          >
+          <div className="admin-success" style={{ marginBottom: 12 }}>
             Access granted for {grantResult.email}.{' '}
             {grantResult.accountCreated ? 'A new account was created and invited.' : 'Existing account activated.'}{' '}
             {grantResult.welcomeEmailSent ? 'Welcome email sent.' : 'Welcome email already sent previously.'}
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <div className="admin-inline-row">
           <input
             type="email"
+            className="admin-input"
             placeholder="member@email.com"
             value={grantEmail}
             onChange={e => setGrantEmail(e.target.value)}
-            style={{
-              flex: '1 1 260px',
-              padding: '10px 14px',
-              borderRadius: 8,
-              border: '1px solid #d0e0ec',
-              fontSize: '0.9rem',
-            }}
+            style={{ flex: '1 1 260px' }}
           />
-          <button
-            className="btn btn-primary"
-            onClick={grantAccess}
-            disabled={granting || !grantEmail.trim()}
-          >
+          <button className="admin-btn" onClick={grantAccess} disabled={granting || !grantEmail.trim()}>
             {granting ? 'Granting…' : 'Grant Access'}
           </button>
         </div>
       </div>
 
-      {/* Daily Tafseer manager — create ahead of time, override a bad
-          automated pick, or add lessons/transliteration the generator
-          doesn't fetch. Upserts on publish_date, so setting a future
-          date here means daily-tafseer-generator will find that row
-          already exists and skip it automatically on its own. */}
-      <div className="card" style={{ marginTop: 20, padding: 20 }}>
-        <h3 style={{ marginBottom: 6 }}>Daily Tafseer</h3>
-        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
-          {editingDate
-            ? `Editing the entry for ${editingDate}.`
-            : 'Set a date to create a new entry, or edit one from the list below. Setting a future date here means the automated generator will skip that day.'}
-        </p>
+      {/* Daily Tafseer manager */}
+      <div className="admin-panel">
+        <div className="admin-panel-header">
+          <h3 className="admin-panel-title">📖 Daily Tafseer</h3>
+          <p className="admin-panel-desc">
+            {editingDate
+              ? `Editing the entry for ${editingDate}.`
+              : 'Set a date to create a new entry, or edit one from the list below. Setting a future date here means the automated generator will skip that day.'}
+          </p>
+        </div>
 
         {tafseerError && <div className="admin-error" style={{ marginBottom: 12 }}>{tafseerError}</div>}
-        {tafseerSaved && (
-          <div
-            className="card"
-            style={{
-              marginBottom: 14,
-              padding: '12px 16px',
-              background: 'rgba(46,125,50,0.08)',
-              border: '1px solid rgba(46,125,50,0.25)',
-              color: '#2e7d32',
-              fontSize: '0.85rem',
-            }}
-          >
-            Saved tafseer entry for {tafseerSaved.publish_date}.
-          </div>
-        )}
+        {tafseerSaved && <div className="admin-success" style={{ marginBottom: 12 }}>Saved tafseer entry for {tafseerSaved.publish_date}.</div>}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 12 }}>
-          <div>
-            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Publish date</label>
+        <div className="admin-field-row">
+          <div className="admin-field">
+            <label className="admin-label">Publish date</label>
             <input
               type="date"
+              className="admin-input"
               value={tafseerForm.publish_date}
               onChange={e => setTafseerForm(f => ({ ...f, publish_date: e.target.value }))}
               disabled={!!editingDate}
-              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
             />
           </div>
-          <div>
-            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Surah name</label>
+          <div className="admin-field">
+            <label className="admin-label">Surah name</label>
             <input
               type="text"
+              className="admin-input"
               placeholder="Al-Baqarah"
               value={tafseerForm.surah_name}
               onChange={e => setTafseerForm(f => ({ ...f, surah_name: e.target.value }))}
-              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
             />
           </div>
-          <div>
-            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Surah #</label>
+          <div className="admin-field">
+            <label className="admin-label">Surah #</label>
             <input
-              type="number"
-              min="1" max="114"
+              type="number" min="1" max="114"
+              className="admin-input"
               value={tafseerForm.surah_num}
               onChange={e => setTafseerForm(f => ({ ...f, surah_num: e.target.value }))}
-              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
             />
           </div>
-          <div>
-            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Ayah #</label>
+          <div className="admin-field">
+            <label className="admin-label">Ayah #</label>
             <input
-              type="number"
-              min="1"
+              type="number" min="1"
+              className="admin-input"
               value={tafseerForm.ayah_num}
               onChange={e => setTafseerForm(f => ({ ...f, ayah_num: e.target.value }))}
-              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
             />
           </div>
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Arabic text</label>
+        <div className="admin-field">
+          <label className="admin-label">Arabic text</label>
           <textarea
-            rows={2}
-            dir="rtl"
+            rows={2} dir="rtl"
+            className="admin-textarea admin-textarea--arabic"
             value={tafseerForm.arabic_text}
             onChange={e => setTafseerForm(f => ({ ...f, arabic_text: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '1rem', fontFamily: 'inherit' }}
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Transliteration</label>
+        <div className="admin-field">
+          <label className="admin-label">Transliteration</label>
           <textarea
             rows={2}
+            className="admin-textarea"
             placeholder="Bismillahir-Rahmanir-Raheem..."
             value={tafseerForm.transliteration}
             onChange={e => setTafseerForm(f => ({ ...f, transliteration: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Translation</label>
+        <div className="admin-field">
+          <label className="admin-label">Translation</label>
           <textarea
             rows={2}
+            className="admin-textarea"
             value={tafseerForm.translation}
             onChange={e => setTafseerForm(f => ({ ...f, translation: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Commentary (tafseer)</label>
+        <div className="admin-field">
+          <label className="admin-label">Commentary (tafseer)</label>
           <textarea
             rows={5}
+            className="admin-textarea"
             value={tafseerForm.tafseer_body}
             onChange={e => setTafseerForm(f => ({ ...f, tafseer_body: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
           />
         </div>
 
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 6 }}>Lessons</label>
+        <div className="admin-field">
+          <label className="admin-label">Lessons</label>
           {tafseerForm.lessons.map((lesson, idx) => (
-            <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+            <div key={idx} className="admin-lesson-field">
               <input
                 type="text"
+                className="admin-input"
                 placeholder={`Lesson ${idx + 1}`}
                 value={lesson}
                 onChange={e => updateLesson(idx, e.target.value)}
-                style={{ flex: 1, padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
               />
               {tafseerForm.lessons.length > 1 && (
-                <button className="btn btn-ghost" onClick={() => removeLessonField(idx)} type="button">✕</button>
+                <button className="admin-btn-ghost" onClick={() => removeLessonField(idx)} type="button">✕</button>
               )}
             </div>
           ))}
-          <button className="btn btn-ghost" onClick={addLessonField} type="button">+ Add lesson</button>
+          <button className="admin-btn-ghost" onClick={addLessonField} type="button">+ Add lesson</button>
         </div>
 
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div className="admin-actions-row">
           <button
-            className="btn btn-primary"
+            className="admin-btn"
             onClick={saveTafseer}
             disabled={tafseerSaving || !tafseerForm.publish_date || !tafseerForm.surah_name || !tafseerForm.arabic_text || !tafseerForm.translation}
           >
             {tafseerSaving ? 'Saving…' : editingDate ? 'Update Entry' : 'Save Entry'}
           </button>
           {editingDate && (
-            <button className="btn btn-ghost" onClick={resetTafseerForm} type="button">Cancel Edit</button>
+            <button className="admin-btn-ghost" onClick={resetTafseerForm} type="button">Cancel Edit</button>
           )}
         </div>
 
-        <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid #e8f0f8' }}>
-          <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 10 }}>Recent entries</p>
+        <div className="admin-list">
+          <p className="admin-list-label">Recent entries</p>
           {tafseerListLoading ? (
-            <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>Loading…</p>
+            <p className="admin-empty">Loading…</p>
           ) : tafseerEntries.length === 0 ? (
-            <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>No entries yet.</p>
+            <p className="admin-empty">No entries yet.</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {tafseerEntries.map(entry => (
-                <div
-                  key={entry.publish_date}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '8px 12px',
-                    borderRadius: 8,
-                    background: editingDate === entry.publish_date ? 'rgba(9,69,112,0.06)' : '#f5f8fb',
-                    fontSize: '0.85rem',
-                  }}
-                >
-                  <span>
-                    <strong>{entry.publish_date}</strong> — {entry.surah_name} {entry.surah_num}:{entry.ayah_num}
-                  </span>
-                  <span style={{ display: 'flex', gap: 8 }}>
-                    <button className="btn btn-ghost" onClick={() => loadEntryIntoForm(entry)} type="button">Edit</button>
-                    <button className="btn btn-ghost" onClick={() => deleteTafseer(entry.publish_date)} type="button" style={{ color: '#c0392b' }}>Delete</button>
-                  </span>
-                </div>
-              ))}
-            </div>
+            tafseerEntries.map(entry => (
+              <div
+                key={entry.publish_date}
+                className={`admin-list-item ${editingDate === entry.publish_date ? 'admin-list-item--active' : ''}`}
+              >
+                <span className="admin-list-item-text">
+                  <strong>{entry.publish_date}</strong> — {entry.surah_name} {entry.surah_num}:{entry.ayah_num}
+                </span>
+                <span className="admin-list-item-actions">
+                  <button className="admin-btn-ghost" onClick={() => loadEntryIntoForm(entry)} type="button">Edit</button>
+                  <button className="admin-btn-ghost admin-btn-danger" onClick={() => deleteTafseer(entry.publish_date)} type="button">Delete</button>
+                </span>
+              </div>
+            ))
           )}
         </div>
       </div>
 
-      {/* Daily Class Lesson manager — Arabiyyah + Hadeeth, one entry
-          per (class, level, date), sitting alongside the existing
-          Telegram links rather than replacing them. Now also
-          supports attaching a class audio recording. */}
-      <div className="card" style={{ marginTop: 20, padding: 20 }}>
-        <h3 style={{ marginBottom: 6 }}>Daily Class Lesson</h3>
-        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
-          {editingClassLessonKey
-            ? `Editing the ${classLessonForm.class_id} (${classLessonForm.level}) entry for ${classLessonForm.publish_date}.`
-            : 'One entry per class and level per day. Members see this in-app alongside the Telegram group, not instead of it.'}
-        </p>
+      {/* Daily Class Lesson manager */}
+      <div className="admin-panel">
+        <div className="admin-panel-header">
+          <h3 className="admin-panel-title">🎧 Daily Class Lesson</h3>
+          <p className="admin-panel-desc">
+            {editingClassLessonKey
+              ? `Editing the ${classLessonForm.class_id} (${classLessonForm.level}) entry for ${classLessonForm.publish_date}.`
+              : 'One entry per class and level per day. Sits alongside the Telegram group, not instead of it.'}
+          </p>
+        </div>
 
         {classLessonError && <div className="admin-error" style={{ marginBottom: 12 }}>{classLessonError}</div>}
         {classLessonSaved && (
-          <div
-            className="card"
-            style={{
-              marginBottom: 14,
-              padding: '12px 16px',
-              background: 'rgba(46,125,50,0.08)',
-              border: '1px solid rgba(46,125,50,0.25)',
-              color: '#2e7d32',
-              fontSize: '0.85rem',
-            }}
-          >
+          <div className="admin-success" style={{ marginBottom: 12 }}>
             Saved {classLessonSaved.class_id} ({classLessonSaved.level}) entry for {classLessonSaved.publish_date}.
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 12 }}>
-          <div>
-            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Class</label>
+        <div className="admin-field-row">
+          <div className="admin-field">
+            <label className="admin-label">Class</label>
             <select
+              className="admin-select"
               value={classLessonForm.class_id}
               onChange={e => setClassLessonForm(f => ({ ...f, class_id: e.target.value }))}
               disabled={!!editingClassLessonKey}
-              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
             >
               <option value="hadeeth">Hadeeth</option>
               <option value="arabiyyah">Arabiyyah</option>
             </select>
           </div>
-          <div>
-            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Level</label>
+          <div className="admin-field">
+            <label className="admin-label">Level</label>
             <select
+              className="admin-select"
               value={classLessonForm.level}
               onChange={e => setClassLessonForm(f => ({ ...f, level: e.target.value }))}
               disabled={!!editingClassLessonKey}
-              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
             >
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>
               <option value="advanced">Advanced</option>
             </select>
           </div>
-          <div>
-            <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Publish date</label>
+          <div className="admin-field">
+            <label className="admin-label">Publish date</label>
             <input
               type="date"
+              className="admin-input"
               value={classLessonForm.publish_date}
               onChange={e => setClassLessonForm(f => ({ ...f, publish_date: e.target.value }))}
               disabled={!!editingClassLessonKey}
-              style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
             />
           </div>
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Title</label>
+        <div className="admin-field">
+          <label className="admin-label">Title</label>
           <input
             type="text"
+            className="admin-input"
             placeholder={classLessonForm.class_id === 'hadeeth' ? 'Hadith 11 — On sincerity' : 'Idafah — the possessive construction'}
             value={classLessonForm.title}
             onChange={e => setClassLessonForm(f => ({ ...f, title: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Arabic text</label>
+        <div className="admin-field">
+          <label className="admin-label">Arabic text</label>
           <textarea
-            rows={2}
-            dir="rtl"
+            rows={2} dir="rtl"
+            className="admin-textarea admin-textarea--arabic"
             value={classLessonForm.arabic_text}
             onChange={e => setClassLessonForm(f => ({ ...f, arabic_text: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '1rem', fontFamily: 'inherit' }}
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Transliteration</label>
+        <div className="admin-field">
+          <label className="admin-label">Transliteration</label>
           <textarea
             rows={2}
+            className="admin-textarea"
             value={classLessonForm.transliteration}
             onChange={e => setClassLessonForm(f => ({ ...f, transliteration: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Translation</label>
+        <div className="admin-field">
+          <label className="admin-label">Translation</label>
           <textarea
             rows={2}
+            className="admin-textarea"
             value={classLessonForm.translation}
             onChange={e => setClassLessonForm(f => ({ ...f, translation: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Commentary</label>
+        <div className="admin-field">
+          <label className="admin-label">Commentary</label>
           <textarea
             rows={5}
+            className="admin-textarea"
             value={classLessonForm.commentary}
             onChange={e => setClassLessonForm(f => ({ ...f, commentary: e.target.value }))}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem', fontFamily: 'inherit' }}
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 4 }}>Class audio</label>
+        <div className="admin-field">
+          <label className="admin-label">Class audio</label>
           {classLessonForm.audio_url && (
             <div style={{ marginBottom: 8 }}>
-              <audio controls src={classLessonForm.audio_url} style={{ width: '100%' }} />
+              <audio controls src={classLessonForm.audio_url} className="admin-audio" />
               <button
-                className="btn btn-ghost"
+                className="admin-btn-ghost admin-btn-danger"
                 type="button"
                 onClick={() => setClassLessonForm(f => ({ ...f, audio_url: '' }))}
-                style={{ marginTop: 4, fontSize: '0.78rem' }}
+                style={{ marginTop: 6, fontSize: '0.75rem' }}
               >
                 Remove audio
               </button>
             </div>
           )}
           {audioUploadError && <div className="admin-error" style={{ marginBottom: 8 }}>{audioUploadError}</div>}
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="admin-inline-row">
             <input
               type="file"
               accept="audio/*"
               onChange={e => setAudioFile(e.target.files?.[0] || null)}
-              style={{ fontSize: '0.85rem' }}
+              style={{ fontSize: '0.82rem', color: 'var(--admin-muted)' }}
             />
-            <button
-              className="btn btn-ghost"
-              type="button"
-              onClick={uploadAudio}
-              disabled={!audioFile || audioUploading}
-            >
+            <button className="admin-btn-ghost" type="button" onClick={uploadAudio} disabled={!audioFile || audioUploading}>
               {audioUploading ? 'Uploading…' : 'Upload'}
             </button>
           </div>
         </div>
 
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 6 }}>Lessons</label>
+        <div className="admin-field">
+          <label className="admin-label">Lessons</label>
           {classLessonForm.lessons.map((lesson, idx) => (
-            <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+            <div key={idx} className="admin-lesson-field">
               <input
                 type="text"
+                className="admin-input"
                 placeholder={`Lesson ${idx + 1}`}
                 value={lesson}
                 onChange={e => updateClassLessonLesson(idx, e.target.value)}
-                style={{ flex: 1, padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.88rem' }}
               />
               {classLessonForm.lessons.length > 1 && (
-                <button className="btn btn-ghost" onClick={() => removeClassLessonField(idx)} type="button">✕</button>
+                <button className="admin-btn-ghost" onClick={() => removeClassLessonField(idx)} type="button">✕</button>
               )}
             </div>
           ))}
-          <button className="btn btn-ghost" onClick={addClassLessonField} type="button">+ Add lesson</button>
+          <button className="admin-btn-ghost" onClick={addClassLessonField} type="button">+ Add lesson</button>
         </div>
 
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div className="admin-actions-row">
           <button
-            className="btn btn-primary"
+            className="admin-btn"
             onClick={saveClassLesson}
             disabled={classLessonSaving || !classLessonForm.publish_date || !classLessonForm.title.trim()}
           >
             {classLessonSaving ? 'Saving…' : editingClassLessonKey ? 'Update Entry' : 'Save Entry'}
           </button>
           {editingClassLessonKey && (
-            <button className="btn btn-ghost" onClick={resetClassLessonForm} type="button">Cancel Edit</button>
+            <button className="admin-btn-ghost" onClick={resetClassLessonForm} type="button">Cancel Edit</button>
           )}
         </div>
 
-        <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid #e8f0f8' }}>
-          <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 10 }}>Recent entries</p>
+        <div className="admin-list">
+          <p className="admin-list-label">Recent entries</p>
           {classLessonListLoading ? (
-            <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>Loading…</p>
+            <p className="admin-empty">Loading…</p>
           ) : classLessonEntries.length === 0 ? (
-            <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>No entries yet.</p>
+            <p className="admin-empty">No entries yet.</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {classLessonEntries.map(entry => {
-                const key = `${entry.class_id}|${entry.level}|${entry.publish_date}`
-                return (
-                  <div
-                    key={key}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '8px 12px',
-                      borderRadius: 8,
-                      background: editingClassLessonKey === key ? 'rgba(9,69,112,0.06)' : '#f5f8fb',
-                      fontSize: '0.85rem',
-                    }}
-                  >
-                    <span>
-                      <strong>{entry.publish_date}</strong> — {entry.class_id} · {entry.level} — {entry.title}
-                      {entry.audio_url && <span style={{ marginLeft: 6 }}>🎧</span>}
-                    </span>
-                    <span style={{ display: 'flex', gap: 8 }}>
-                      <button className="btn btn-ghost" onClick={() => loadClassLessonIntoForm(entry)} type="button">Edit</button>
-                      <button className="btn btn-ghost" onClick={() => deleteClassLesson(entry)} type="button" style={{ color: '#c0392b' }}>Delete</button>
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
+            classLessonEntries.map(entry => {
+              const key = `${entry.class_id}|${entry.level}|${entry.publish_date}`
+              return (
+                <div key={key} className={`admin-list-item ${editingClassLessonKey === key ? 'admin-list-item--active' : ''}`}>
+                  <span className="admin-list-item-text">
+                    <strong>{entry.publish_date}</strong> — {entry.class_id} · {entry.level} — {entry.title}
+                    {entry.audio_url && <span style={{ marginLeft: 6 }}>🎧</span>}
+                  </span>
+                  <span className="admin-list-item-actions">
+                    <button className="admin-btn-ghost" onClick={() => loadClassLessonIntoForm(entry)} type="button">Edit</button>
+                    <button className="admin-btn-ghost admin-btn-danger" onClick={() => deleteClassLesson(entry)} type="button">Delete</button>
+                  </span>
+                </div>
+              )
+            })
           )}
         </div>
       </div>
