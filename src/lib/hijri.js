@@ -68,7 +68,13 @@ export function gregorianToHijri(gYear, gMonth, gDay) {
 
 export function hijriToGregorian(hYear, hMonth, hDay) {
   const jd = hijriToJD(hYear, hMonth, hDay)
-  const l = Math.floor(jd) + 68569
+  // hijriToJD returns a value ending in .5 (HIJRI_EPOCH itself is
+  // X.5), so this needs jd + 0.5 floored to reach the correct whole
+  // Julian day number before the conversion arithmetic below — a
+  // plain floor(jd) silently drops that half-day, landing one
+  // Julian day too low and shifting every date (and the calendar
+  // grid's weekday alignment) a day early.
+  const l = Math.floor(jd + 0.5) + 68569
   const n = Math.floor((4 * l) / 146097)
   const l2 = l - Math.floor((146097 * n + 3) / 4)
   const i = Math.floor((4000 * (l2 + 1)) / 1461001)
