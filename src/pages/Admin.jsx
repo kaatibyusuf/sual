@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import {
+  ResponsiveContainer, LineChart, Line, BarChart, Bar,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+} from 'recharts'
 import { supabase } from '../lib/supabase.js'
 import './Admin.css'
 
@@ -406,13 +410,77 @@ export default function Admin({ user }) {
         </div>
       ) : null}
 
+      {/* User growth — monthly signups since launch, with a running
+          total. Zero-signup months still appear as real zero bars,
+          since the backend builds the full month range rather than
+          only months with data. */}
+      {stats?.userGrowth && stats.userGrowth.length > 0 && (
+        <div className="card" style={{ marginTop: 20, padding: 20 }}>
+          <h3 style={{ marginBottom: 4 }}>User Growth</h3>
+          <p style={{ fontSize: '0.8rem', color: '#6a8090', marginBottom: 16 }}>
+            Monthly signups since launch, with running total.
+          </p>
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={stats.userGrowth}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e8f0f8" />
+              <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+              <YAxis yAxisId="left" tick={{ fontSize: 11 }} allowDecimals={false} />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} allowDecimals={false} />
+              <Tooltip contentStyle={{ fontSize: '0.8rem', borderRadius: 8 }} />
+              <Legend wrapperStyle={{ fontSize: '0.78rem' }} />
+              <Line yAxisId="left" type="monotone" dataKey="newUsers" name="New users" stroke="#e65100" strokeWidth={2} dot={{ r: 3 }} />
+              <Line yAxisId="right" type="monotone" dataKey="cumulativeUsers" name="Total users" stroke="#094570" strokeWidth={2} dot={{ r: 3 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Revenue growth — new subscribers and their first-payment
+          revenue, grouped by signup month. IMPORTANT CAVEAT: since
+          `subscriptions` is upserted per user rather than an
+          append-only payment ledger, a renewal overwrites the same
+          row instead of creating a new one. This chart can only
+          reflect NEW-SUBSCRIBER revenue by signup month, not total
+          revenue actually collected each month once renewals are in
+          play. True monthly recurring revenue would need a real
+          payment_events table the webhook inserts into (never
+          updates) — not built yet. */}
+      {stats?.revenueGrowth && stats.revenueGrowth.length > 0 && (
+        <div className="card" style={{ marginTop: 20, padding: 20 }}>
+          <h3 style={{ marginBottom: 4 }}>Revenue Growth</h3>
+          <p style={{ fontSize: '0.8rem', color: '#6a8090', marginBottom: 4 }}>
+            New Spaces subscribers by signup month, and the revenue their first payment brought in.
+          </p>
+          <p style={{ fontSize: '0.75rem', color: '#c0392b', marginBottom: 16 }}>
+            Note: this reflects new-subscriber revenue by signup month, not total revenue collected
+            each month — renewals overwrite the same subscription row rather than creating a new
+            one, so recurring/renewal revenue isn't separately trackable yet.
+          </p>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={stats.revenueGrowth}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e8f0f8" />
+              <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+              <YAxis yAxisId="left" tick={{ fontSize: 11 }} allowDecimals={false} />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} tickFormatter={v => `₦${v}`} />
+              <Tooltip
+                contentStyle={{ fontSize: '0.8rem', borderRadius: 8 }}
+                formatter={(value, name) => name === 'Revenue (₦)' ? [`₦${value.toLocaleString()}`, name] : [value, name]}
+              />
+              <Legend wrapperStyle={{ fontSize: '0.78rem' }} />
+              <Bar yAxisId="left" dataKey="newSubscribers" name="New subscribers" fill="#2e7d32" radius={[4, 4, 0, 0]} />
+              <Bar yAxisId="right" dataKey="newSubscriberRevenue" name="Revenue (₦)" fill="#094570" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
       {/* Manual Spaces access grant — for members who paid but are
           stuck without access. Writes to `subscriptions` the same
           way the Paystack webhook does on a real successful charge,
           so a manually-granted member is indistinguishable from one
           who paid normally. If the email has no existing Sual
           account, one is created and invited automatically. */}
-      <div className="card" style={{ marginTop: 28, padding: 20 }}>
+      <div className="card" style={{ marginTop: 20, padding: 20 }}>
         <h3 style={{ marginBottom: 6 }}>Grant Spaces Access</h3>
         <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 14 }}>
           For members who paid but can't get into Spaces. If they don't have a Sual

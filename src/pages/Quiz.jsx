@@ -278,6 +278,15 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     if (idx === q.correct) setScore(s => s + 1)
   }
 
+  // FIX: this previously recomputed and added credit for the final
+  // question a second time on top of what selectAnswer() already
+  // added the moment it was answered — score is the single source of
+  // truth for every question by the time this runs, including the
+  // last one, so the finishing branch now just trusts it instead of
+  // adding another point when the last question was correct. That
+  // extra point was exactly why an all-correct run showed 11/10, and
+  // any run showed one more than the true count whenever the final
+  // question specifically was answered correctly.
   const nextQuestion = () => {
     const q = questions[currentIdx]
     const newAnswers = [...answers, {
@@ -290,9 +299,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setAnswers(newAnswers)
 
     if (currentIdx + 1 >= questions.length) {
-      const finalScore = chosen === q.correct ? score + 1 : score
-      saveScore(finalScore, questions.length)
-      setScore(finalScore)
+      saveScore(score, questions.length)
       setPhase('result')
     } else {
       setCurrentIdx(i => i + 1)

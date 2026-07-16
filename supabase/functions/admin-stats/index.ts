@@ -14,6 +14,19 @@
 // fell outside the first 1000 returned. Now counted via a database
 // function (admin_hifdh_active_user_count, see
 // admin_hifdh_count_function.sql) that isn't subject to that cap.
+//
+// ADDED: monthly growth series for the dashboard's charts, since
+// launch. Two honest caveats on the revenue side:
+//   1. `subscriptions` is upserted per user, not an append-only
+//      ledger — a renewal overwrites the same row rather than adding
+//      a new one. That means monthlyRevenue below can only reflect
+//      NEW-SUBSCRIBER revenue by the month they first signed up
+//      (started_at), not total revenue actually collected each month
+//      once renewals are in play. True monthly recurring revenue
+//      needs a real payment_events table the webhook inserts into
+//      (never updates) — not built yet.
+//   2. amount is stored in naira (already divided from kobo at
+//      webhook time), so no further conversion is needed here.
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -38,6 +51,30 @@ function json(body: unknown, status = 200) {
     status,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
+}
+
+function monthKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+}
+
+function monthLabel(key: string) {
+  const [y, m] = key.split('-').map(Number)
+  return new Date(y, m - 1, 1).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
+}
+
+// Builds every month key from `earliest` through the current month —
+// so a month with zero signups/subscriptions still shows as a real
+// zero bar on the chart, rather than silently disappearing from the
+// x-axis.
+function buildMonthRange(earliest: Date) {
+  const months: string[] = []
+  const cursor = new Date(earliest.getFullYear(), earliest.getMonth(), 1)
+  const end = new Date()
+  while (cursor <= end) {
+    months.push(monthKey(cursor))
+    cursor.setMonth(cursor.getMonth() + 1)
+  }
+  return months
 }
 
 serve(async (req) => {
@@ -86,17 +123,63 @@ serve(async (req) => {
     { count: activeSubs },
     { count: totalPosts },
     { count: hifdhRows },
+    { data: allSubscriptions, error: subsError },
   ] = await Promise.all([
     admin.from('quiz_history').select('*', { count: 'exact', head: true }),
     admin.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
     admin.from('spaces_posts').select('*', { count: 'exact', head: true }),
     admin.from('hifdh_progress').select('*', { count: 'exact', head: true }),
+    // Every subscription row, regardless of current status — a
+    // cancelled subscriber still counts toward the month they
+    // originally signed up for the growth chart.
+    admin.from('subscriptions').select('started_at, amount'),
   ])
+
+  if (subsError) {
+    console.error('Failed to load subscriptions for growth chart:', subsError)
+  }
 
   const { data: hifdhActiveUsers, error: hifdhCountError } = await admin.rpc('admin_hifdh_active_user_count')
   if (hifdhCountError) {
     console.error('Failed to get hifdh active user count:', hifdhCountError)
   }
+
+  // ── Monthly growth series, since launch ──────────────────────
+  const earliestUserDate = allUsers.length > 0
+    ? new Date(Math.min(...allUsers.map(u => new Date(u.created_at).getTime())))
+    : new Date()
+  const months = buildMonthRange(earliestUserDate)
+
+  const newUsersByMonth: Record<string, number> = {}
+  months.forEach(m => { newUsersByMonth[m] = 0 })
+  allUsers.forEach(u => {
+    const k = monthKey(new Date(u.created_at))
+    if (k in newUsersByMonth) newUsersByMonth[k]++
+  })
+
+  let cumulative = 0
+  const userGrowth = months.map(m => {
+    cumulative += newUsersByMonth[m]
+    return { month: m, label: monthLabel(m), newUsers: newUsersByMonth[m], cumulativeUsers: cumulative }
+  })
+
+  const newSubsByMonth: Record<string, number> = {}
+  const revenueByMonth: Record<string, number> = {}
+  months.forEach(m => { newSubsByMonth[m] = 0; revenueByMonth[m] = 0 })
+  ;(allSubscriptions || []).forEach(row => {
+    if (!row.started_at) return
+    const k = monthKey(new Date(row.started_at))
+    if (!(k in newSubsByMonth)) return
+    newSubsByMonth[k]++
+    revenueByMonth[k] += Number(row.amount || 0)
+  })
+
+  const revenueGrowth = months.map(m => ({
+    month: m,
+    label: monthLabel(m),
+    newSubscribers: newSubsByMonth[m],
+    newSubscriberRevenue: revenueByMonth[m],
+  }))
 
   return json({
     totalUsers: allUsers.length,
@@ -107,5 +190,7 @@ serve(async (req) => {
     totalSpacesPosts: totalPosts ?? 0,
     hifdhActiveUsers: hifdhActiveUsers ?? 0,
     hifdhTotalProgressRows: hifdhRows ?? 0,
+    userGrowth,
+    revenueGrowth,
   })
 })
