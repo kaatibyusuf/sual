@@ -2,20 +2,17 @@
 // Previously duplicated separately in Calendar.jsx and PrayerTimes.jsx —
 // now a single source of truth so both pages (and Home) always agree.
 //
-// HIJRI_EPOCH is calibrated -2 days from the standard tabular epoch
-// (1948439.5) so the calculated date matches the locally-announced
-// Hijri date. The first calibration attempt (-1 day, 1948438.5)
-// undershot by a day — confirmed wrong on 2 Safar 1448 AH (16 July
-// 2026), when the app was still showing 1 Safar. If your local
-// moon-sighting authority ever shifts again, adjust this constant
-// here — every importer updates together. Note that a sighting-based
-// calendar can genuinely shift by a day month to month depending on
-// visibility conditions, so a future one-day mismatch doesn't
-// necessarily mean this constant needs changing again — check
-// against a trusted moon-sighting source first before assuming it's
-// this file at fault.
+// HIJRI_EPOCH is calibrated -1 day from the standard tabular epoch
+// (1948439.5) to match the Nigerian Sultanate Council's declared
+// dates, the official source Sual follows. Confirmed correct against
+// the Sultan of Sokoto's public declaration that Thursday, 16 July
+// 2026 is 1 Safar 1448 AH (Muharram completed as a 30-day month,
+// crescent not sighted 14 July). If a future date looks off, check
+// the Sultanate Council's current announcement before assuming this
+// constant is wrong — sighting-based months can genuinely start a
+// day later than the tabular calculation predicts.
 
-export const HIJRI_EPOCH = 1948437.5
+export const HIJRI_EPOCH = 1948438.5
 export const GREGORIAN_EPOCH = 1721425.5
 
 export const HIJRI_MONTHS = [
