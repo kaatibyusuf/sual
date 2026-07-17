@@ -12,6 +12,14 @@ const MAX_SCANNED_PAGES = 60 // browser memory/time bound for rendering page ima
 const IMAGES_PER_SECTION = 4
 const IMAGES_PER_UPLOAD_GROUP = 6
 
+// HEIC/HEIF (common default on iPhone camera photos) can't be
+// decoded by FileReader/canvas in the browser, and OpenAI's vision
+// endpoint doesn't accept it directly either — many phones/browsers
+// auto-convert to JPEG on file selection, but not guaranteed on every
+// device. Caught explicitly so it fails with a clear message instead
+// of a silent/garbled transcription.
+const UNSUPPORTED_IMAGE_TYPES = ['image/heic', 'image/heif']
+
 function words(text) {
   return (text || '').split(/\s+/).filter(Boolean)
 }
@@ -72,13 +80,16 @@ function splitIntoSections(fullText) {
   return sections
 }
 
+// Returns { base64, mimeType } — canvas.toDataURL explicitly produces
+// JPEG here, so this path's mimeType is always known and correct.
 async function renderPageToImage(page, scale = 1.5) {
   const viewport = page.getViewport({ scale })
   const canvas = document.createElement('canvas')
   canvas.width = viewport.width
   canvas.height = viewport.height
   await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise
-  return canvas.toDataURL('image/jpeg', 0.85).split(',')[1]
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.85)
+  return { base64: dataUrl.split(',')[1], mimeType: 'image/jpeg' }
 }
 
 // Reads a PDF and decides, per-file, whether it's text-based (normal
@@ -121,18 +132,32 @@ async function processPdf(file) {
   return { kind: 'image', sections, truncated: pdf.numPages > MAX_SCANNED_PAGES }
 }
 
-function fileToBase64(file) {
+// Returns { base64, mimeType } for an uploaded file, preserving its
+// REAL mime type — this is the actual fix. A screenshot (usually
+// PNG), a scanned image saved as PNG/JPEG, or a direct camera photo
+// (usually JPEG) all keep their real encoding instead of being
+// silently relabeled as JPEG, which is what broke every non-JPEG
+// direct image upload before.
+function fileToBase64WithType(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
-    reader.onloadend = () => resolve(String(reader.result).split(',')[1] || '')
+    reader.onloadend = () => {
+      const result = String(reader.result)
+      const base64 = result.split(',')[1] || ''
+      resolve({ base64, mimeType: file.type || 'image/jpeg' })
+    }
     reader.onerror = reject
     reader.readAsDataURL(file)
   })
 }
 
 async function processImageFiles(files) {
+  const unsupported = files.filter(f => UNSUPPORTED_IMAGE_TYPES.includes(f.type))
+  if (unsupported.length > 0) {
+    throw new Error('One or more files are in HEIC/HEIF format (common on iPhone), which can\'t be read directly. Try re-saving/exporting as JPEG or PNG first, or check your camera\'s format setting.')
+  }
   const images = []
-  for (const f of files) images.push(await fileToBase64(f))
+  for (const f of files) images.push(await fileToBase64WithType(f))
   const sections = []
   for (let i = 0; i < images.length; i += IMAGES_PER_UPLOAD_GROUP) {
     const group = images.slice(i, i + IMAGES_PER_UPLOAD_GROUP)
@@ -236,7 +261,7 @@ export default function BookQuiz({ user }) {
       }
     } catch (err) {
       console.error('File processing failed:', err)
-      setExtractError('Could not process this file. Try a different PDF or clearer photos.')
+      setExtractError(err.message || 'Could not process this file. Try a different PDF or clearer photos.')
     } finally {
       setExtracting(false)
     }
@@ -258,6 +283,10 @@ export default function BookQuiz({ user }) {
     setGenerateError(null)
     setPaywallMsg(null)
     try {
+      // section.images is now an array of { base64, mimeType } — the
+      // real fix, so a PNG screenshot or camera photo is sent (and
+      // decoded server-side) using its real format rather than being
+      // mislabeled as JPEG.
       const requestBody = section.type === 'image'
         ? { book_title: bookTitle, section_label: section.pageRange, section_images: section.images }
         : { book_title: bookTitle, section_label: `Section ${section.index + 1}`, section_text: section.text }
@@ -270,10 +299,7 @@ export default function BookQuiz({ user }) {
         // supabase-js treats ANY non-2xx response as `error`, not
         // `data` — including our 402 paywall response — so the
         // paywall case has to be detected here too, not just in the
-        // `data?.error === 'paywall'` check below. Previously this
-        // branch fell straight to "message = errBody.error", which
-        // set the literal string "paywall" as the displayed error
-        // instead of routing to the proper upsell card.
+        // `data?.error === 'paywall'` check below.
         let errBody = null
         try {
           errBody = await error.context.json()
@@ -287,9 +313,6 @@ export default function BookQuiz({ user }) {
           return
         }
 
-        // Any other non-2xx error: use the server's message if it's a
-        // real readable string, otherwise fall back to a friendly
-        // generic message rather than surfacing something raw.
         const message = (errBody?.error && typeof errBody.error === 'string')
           ? errBody.error
           : 'Something went wrong generating this quiz. Try a different section.'
@@ -388,7 +411,7 @@ export default function BookQuiz({ user }) {
           <input
             ref={fileInputRef}
             type="file"
-            accept="application/pdf,image/*"
+            accept="application/pdf,image/jpeg,image/png,image/webp,image/*"
             multiple
             onChange={handleFileChange}
             disabled={extracting}

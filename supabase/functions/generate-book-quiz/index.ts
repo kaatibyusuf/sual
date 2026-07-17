@@ -2,9 +2,19 @@
 //
 // Generates a self-quiz from a section of a book — either plain
 // extracted text, or a set of page images (scanned PDFs / photographed
-// pages) that get transcribed via a vision-capable model first, then
-// fed through the exact same generation and verification pipeline as
-// the text path.
+// pages / direct image uploads) that get transcribed via a
+// vision-capable model first, then fed through the exact same
+// generation and verification pipeline as the text path.
+//
+// Each image arrives as { base64, mimeType } — mimeType is REQUIRED
+// per image and must reflect the image's actual encoding (a PNG
+// screenshot stays PNG, a JPEG camera photo stays JPEG), rather than
+// assuming JPEG for everything. A mismatched mime type on the data
+// URL causes the vision model to fail decoding the image, which is
+// what broke direct image/screenshot uploads — PDF-rendered pages
+// happened to always be real JPEG, so that path worked; uploaded
+// PNGs and other formats did not. A bare string is still accepted
+// for backward compatibility and falls back to image/jpeg.
 //
 // Two question types:
 //   - mcq: standard multiple choice comprehension, deliberately
@@ -81,6 +91,13 @@ const MIN_TEXT_QUALITY_RATIO = 0.7
 const MCQ_OPTION_COUNT = 4
 const OPENAI_MAX_RETRIES = 4
 
+// Only these are ever trusted as the mime type in a constructed data
+// URL — anything else falls back to image/jpeg rather than passing
+// through an arbitrary/unexpected value.
+const ALLOWED_IMAGE_MIME_TYPES = new Set([
+  'image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif',
+])
+
 const supabaseAdmin = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
 
 function corsHeaders() {
@@ -119,6 +136,19 @@ function textQualityRatio(text: string) {
     /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0660-\u0669a-zA-Z0-9.,!?؛،؟\-()'"]/.test(c)
   )
   return recognized.length / chars.length
+}
+
+// Builds the data URL for one image, trusting only a known-safe mime
+// type. If the client sent an old-style plain string (no mimeType),
+// falls back to image/jpeg for backward compatibility — this is the
+// fix: previously EVERY image was hardcoded to image/jpeg regardless
+// of what it actually was.
+function buildImageDataUrl(img: any) {
+  if (typeof img === 'string') {
+    return `data:image/jpeg;base64,${img}`
+  }
+  const mime = ALLOWED_IMAGE_MIME_TYPES.has(img.mimeType) ? img.mimeType : 'image/jpeg'
+  return `data:${mime};base64,${img.base64}`
 }
 
 // ── Shuffle + position cycler ────────────────────────────────
@@ -327,7 +357,7 @@ serve(async (req) => {
             role: 'user',
             content: [
               { type: 'text', text: 'Transcribe ALL Arabic text visible in these page images, exactly as written, in reading order. Output plain transcribed text only, no commentary, no translation, no formatting.' },
-              ...sectionImages.map((img: string) => ({ type: 'image_url', image_url: { url: `data:image/jpeg;base64,${img}` } })),
+              ...sectionImages.map((img: any) => ({ type: 'image_url', image_url: { url: buildImageDataUrl(img) } })),
             ],
           }],
         })
