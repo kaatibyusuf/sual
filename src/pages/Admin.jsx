@@ -3,8 +3,12 @@ import {
   ResponsiveContainer, LineChart, Line, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
+import * as pdfjsLib from 'pdfjs-dist'
+import pdfWorkerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { supabase } from '../lib/supabase.js'
 import './Admin.css'
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerSrc
 
 const EMPTY_ENTRY = {
   publish_date: '',
@@ -61,6 +65,20 @@ export default function Admin({ user }) {
   const [audioFile, setAudioFile] = useState(null)
   const [audioUploading, setAudioUploading] = useState(false)
   const [audioUploadError, setAudioUploadError] = useState(null)
+
+  // ── Exam Prep state ─────────────────────────────────────────
+  const [examTopics, setExamTopics] = useState([])
+  const [examTopicsLoading, setExamTopicsLoading] = useState(false)
+  const [examSelectedTopic, setExamSelectedTopic] = useState(null)
+  const [examNotes, setExamNotes] = useState([])
+  const [examQuestions, setExamQuestions] = useState([])
+  const [examContentLoading, setExamContentLoading] = useState(false)
+  const [examError, setExamError] = useState(null)
+  const [examGenerating, setExamGenerating] = useState(false)
+  const [examNewTopic, setExamNewTopic] = useState({ subject: 'islamic_studies', title: '', syllabus_section: '' })
+  const [examManualNote, setExamManualNote] = useState('')
+  const [examManualQuestion, setExamManualQuestion] = useState({ question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' })
+  const [examParsing, setExamParsing] = useState(false)
 
   const fetchStats = async () => {
     setLoading(true)
@@ -256,10 +274,6 @@ export default function Admin({ user }) {
     setClassLessonForm(f => ({ ...f, lessons: f.lessons.filter((_, i) => i !== idx) }))
   }
 
-  // Uploads directly to Storage via a signed URL scoped to one exact
-  // path — the file's bytes never pass through admin-manage-class-lessons
-  // itself, which matters since edge functions have a request size
-  // limit well below what a full class recording would need.
   const uploadAudio = async () => {
     if (!audioFile) return
     if (!classLessonForm.publish_date) {
@@ -334,18 +348,185 @@ export default function Admin({ user }) {
     }
   }
 
-  // FIX: this previously only ran the fetch inline inside useEffect
-  // with an empty dependency array — meaning it fired once, the very
-  // first time this component ever mounted in the browser session,
-  // and never again. In a router-based single-page app, navigating
-  // away from /admin and back doesn't reload the page, so the numbers
-  // looked permanently frozen even as real subscriptions and Hifdh
-  // activity kept changing underneath. Pulling fetchStats out to its
-  // own function lets a manual refresh call the identical logic.
+  // ── Exam Prep functions ──────────────────────────────────────
+  const fetchExamTopics = async () => {
+    setExamTopicsLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', { body: { action: 'list_topics' } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setExamTopics(data.topics || [])
+    } catch (err) {
+      console.error('Failed to load exam topics:', err)
+    } finally {
+      setExamTopicsLoading(false)
+    }
+  }
+
+  const addExamTopic = async () => {
+    setExamError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', {
+        body: { action: 'add_topic', ...examNewTopic },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setExamNewTopic({ subject: 'islamic_studies', title: '', syllabus_section: '' })
+      fetchExamTopics()
+    } catch (err) {
+      setExamError(err.message)
+    }
+  }
+
+  const openExamTopic = async (topic) => {
+    setExamSelectedTopic(topic)
+    setExamContentLoading(true)
+    setExamError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', {
+        body: { action: 'list_content', topic_id: topic.id },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setExamNotes(data.notes || [])
+      setExamQuestions(data.questions || [])
+    } catch (err) {
+      setExamError(err.message)
+    } finally {
+      setExamContentLoading(false)
+    }
+  }
+
+  const generateExamNotes = async () => {
+    setExamGenerating(true)
+    setExamError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', {
+        body: { action: 'generate_draft_notes', topic: examSelectedTopic },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      openExamTopic(examSelectedTopic)
+    } catch (err) {
+      setExamError(err.message)
+    } finally {
+      setExamGenerating(false)
+    }
+  }
+
+  const generateExamQuestions = async () => {
+    setExamGenerating(true)
+    setExamError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', {
+        body: { action: 'generate_draft_questions', topic: examSelectedTopic },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      openExamTopic(examSelectedTopic)
+    } catch (err) {
+      setExamError(err.message)
+    } finally {
+      setExamGenerating(false)
+    }
+  }
+
+  const addManualExamNote = async () => {
+    if (!examManualNote.trim() || !examSelectedTopic) return
+    setExamError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', {
+        body: { action: 'add_note', topic_id: examSelectedTopic.id, body: examManualNote.trim() },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setExamManualNote('')
+      openExamTopic(examSelectedTopic)
+    } catch (err) {
+      setExamError(err.message)
+    }
+  }
+
+  const addManualExamQuestion = async () => {
+    if (!examManualQuestion.question.trim() || !examSelectedTopic) return
+    setExamError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', {
+        body: { action: 'add_question', topic_id: examSelectedTopic.id, ...examManualQuestion },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setExamManualQuestion({ question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' })
+      openExamTopic(examSelectedTopic)
+    } catch (err) {
+      setExamError(err.message)
+    }
+  }
+
+  // PDF and plain .txt only — Word .docx would need a separate
+  // library (mammoth.js) not currently installed.
+  const handleExamDocUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file || !examSelectedTopic) return
+    setExamParsing(true)
+    setExamError(null)
+    try {
+      let text = ''
+      if (file.type === 'application/pdf') {
+        const buffer = await file.arrayBuffer()
+        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i)
+          const content = await page.getTextContent()
+          text += content.items.map(it => it.str).join(' ') + '\n'
+        }
+      } else {
+        text = await file.text()
+      }
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', {
+        body: { action: 'parse_questions_document', topic_id: examSelectedTopic.id, document_text: text },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      if (data.missingAnswers > 0) {
+        setExamError(`Parsed ${data.questions.length} questions, but ${data.missingAnswers} need a correct answer set manually before they can be published.`)
+      }
+      openExamTopic(examSelectedTopic)
+    } catch (err) {
+      setExamError(err.message)
+    } finally {
+      setExamParsing(false)
+    }
+  }
+
+  const examPublish = async (table, id) => {
+    setExamError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', { body: { action: 'publish', table, id } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      openExamTopic(examSelectedTopic)
+    } catch (err) {
+      setExamError(err.message)
+    }
+  }
+
+  const examUnpublish = async (table, id) => {
+    await supabase.functions.invoke('admin-manage-exam-prep', { body: { action: 'unpublish', table, id } })
+    openExamTopic(examSelectedTopic)
+  }
+
+  const examDelete = async (table, id) => {
+    if (!window.confirm('Delete this permanently?')) return
+    await supabase.functions.invoke('admin-manage-exam-prep', { body: { action: 'delete', table, id } })
+    openExamTopic(examSelectedTopic)
+  }
+
   useEffect(() => {
     fetchStats()
     fetchTafseerList()
     fetchClassLessonList()
+    fetchExamTopics()
   }, [])
 
   if (!user) return null
@@ -410,10 +591,6 @@ export default function Admin({ user }) {
         </div>
       ) : null}
 
-      {/* User growth — monthly signups since launch, with a running
-          total. Zero-signup months still appear as real zero bars,
-          since the backend builds the full month range rather than
-          only months with data. */}
       {stats?.userGrowth && stats.userGrowth.length > 0 && (
         <div className="card" style={{ marginTop: 20, padding: 20 }}>
           <h3 style={{ marginBottom: 4 }}>User Growth</h3>
@@ -435,16 +612,6 @@ export default function Admin({ user }) {
         </div>
       )}
 
-      {/* Revenue growth — new subscribers and their first-payment
-          revenue, grouped by signup month. IMPORTANT CAVEAT: since
-          `subscriptions` is upserted per user rather than an
-          append-only payment ledger, a renewal overwrites the same
-          row instead of creating a new one. This chart can only
-          reflect NEW-SUBSCRIBER revenue by signup month, not total
-          revenue actually collected each month once renewals are in
-          play. True monthly recurring revenue would need a real
-          payment_events table the webhook inserts into (never
-          updates) — not built yet. */}
       {stats?.revenueGrowth && stats.revenueGrowth.length > 0 && (
         <div className="card" style={{ marginTop: 20, padding: 20 }}>
           <h3 style={{ marginBottom: 4 }}>Revenue Growth</h3>
@@ -474,12 +641,7 @@ export default function Admin({ user }) {
         </div>
       )}
 
-      {/* Manual Spaces access grant — for members who paid but are
-          stuck without access. Writes to `subscriptions` the same
-          way the Paystack webhook does on a real successful charge,
-          so a manually-granted member is indistinguishable from one
-          who paid normally. If the email has no existing Sual
-          account, one is created and invited automatically. */}
+      {/* Manual Spaces access grant */}
       <div className="card" style={{ marginTop: 20, padding: 20 }}>
         <h3 style={{ marginBottom: 6 }}>Grant Spaces Access</h3>
         <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 14 }}>
@@ -532,11 +694,7 @@ export default function Admin({ user }) {
         </div>
       </div>
 
-      {/* Daily Tafseer manager — create ahead of time, override a bad
-          automated pick, or add lessons/transliteration the generator
-          doesn't fetch. Upserts on publish_date, so setting a future
-          date here means daily-tafseer-generator will find that row
-          already exists and skip it automatically on its own. */}
+      {/* Daily Tafseer manager */}
       <div className="card" style={{ marginTop: 20, padding: 20 }}>
         <h3 style={{ marginBottom: 6 }}>Daily Tafseer</h3>
         <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
@@ -714,10 +872,7 @@ export default function Admin({ user }) {
         </div>
       </div>
 
-      {/* Daily Class Lesson manager — Arabiyyah + Hadeeth, one entry
-          per (class, level, date), sitting alongside the existing
-          Telegram links rather than replacing them. Now also
-          supports attaching a class audio recording. */}
+      {/* Daily Class Lesson manager */}
       <div className="card" style={{ marginTop: 20, padding: 20 }}>
         <h3 style={{ marginBottom: 6 }}>Daily Class Lesson</h3>
         <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
@@ -935,6 +1090,106 @@ export default function Admin({ user }) {
               })}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* UTME Exam Prep manager */}
+      <div className="card" style={{ marginTop: 20, padding: 20 }}>
+        <h3 style={{ marginBottom: 6 }}>UTME Exam Prep</h3>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
+          Nothing here is visible to students until published. AI can draft notes/questions or parse
+          an uploaded past-question document — review and edit before publishing.
+        </p>
+
+        {examError && <div className="admin-error" style={{ marginBottom: 12 }}>{examError}</div>}
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginBottom: 16 }}>
+          <select value={examNewTopic.subject} onChange={e => setExamNewTopic(t => ({ ...t, subject: e.target.value }))} style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }}>
+            <option value="islamic_studies">Islamic Studies</option>
+            <option value="arabic">Arabic</option>
+          </select>
+          <input type="text" placeholder="New topic title" value={examNewTopic.title} onChange={e => setExamNewTopic(t => ({ ...t, title: e.target.value }))} style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }} />
+          <input type="text" placeholder="Syllabus section (optional)" value={examNewTopic.syllabus_section} onChange={e => setExamNewTopic(t => ({ ...t, syllabus_section: e.target.value }))} style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }} />
+          <button className="btn btn-ghost" onClick={addExamTopic} disabled={!examNewTopic.title.trim()}>+ Add Topic</button>
+        </div>
+
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ flex: '0 0 240px' }}>
+            {examTopicsLoading ? <p>Loading…</p> : examTopics.map(t => (
+              <button key={t.id} onClick={() => openExamTopic(t)} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '8px 10px', marginBottom: 4, borderRadius: 8, border: 'none', background: examSelectedTopic?.id === t.id ? 'rgba(9,69,112,0.08)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem' }}>
+                <strong>{t.subject === 'arabic' ? 'AR' : 'IS'}</strong> — {t.title}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ flex: 1, minWidth: 280 }}>
+            {!examSelectedTopic ? (
+              <p style={{ color: '#8a9ab0' }}>Select a topic on the left.</p>
+            ) : examContentLoading ? (
+              <p>Loading…</p>
+            ) : (
+              <>
+                <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
+                  <button className="btn btn-primary" onClick={generateExamNotes} disabled={examGenerating}>{examGenerating ? '…' : 'AI: Draft Notes'}</button>
+                  <button className="btn btn-primary" onClick={generateExamQuestions} disabled={examGenerating}>{examGenerating ? '…' : 'AI: Draft 10 Questions'}</button>
+                  <label className="btn btn-ghost" style={{ cursor: 'pointer' }}>
+                    {examParsing ? 'Parsing…' : 'Upload Past Questions'}
+                    <input type="file" accept="application/pdf,.txt" onChange={handleExamDocUpload} disabled={examParsing} style={{ display: 'none' }} />
+                  </label>
+                </div>
+
+                <div style={{ marginBottom: 16 }}>
+                  <textarea placeholder="Or type a note directly…" value={examManualNote} onChange={e => setExamManualNote(e.target.value)} rows={3} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <button className="btn btn-ghost" onClick={addManualExamNote} disabled={!examManualNote.trim()}>+ Add Note Manually</button>
+                </div>
+
+                <div style={{ marginBottom: 16, padding: 12, background: '#f5f8fb', borderRadius: 8 }}>
+                  <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 8 }}>Add a question manually</p>
+                  <input type="text" placeholder="Question" value={examManualQuestion.question} onChange={e => setExamManualQuestion(q => ({ ...q, question: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  {examManualQuestion.options.map((opt, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 4 }}>
+                      <input type="radio" checked={examManualQuestion.correct_index === i} onChange={() => setExamManualQuestion(q => ({ ...q, correct_index: i }))} />
+                      <input type="text" placeholder={`Option ${String.fromCharCode(65 + i)}`} value={opt} onChange={e => setExamManualQuestion(q => { const options = [...q.options]; options[i] = e.target.value; return { ...q, options } })} style={{ flex: 1, padding: 6, borderRadius: 6, border: '1px solid #d0e0ec' }} />
+                    </div>
+                  ))}
+                  <input type="text" placeholder="Explanation (optional)" value={examManualQuestion.explanation} onChange={e => setExamManualQuestion(q => ({ ...q, explanation: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginTop: 6, marginBottom: 6 }} />
+                  <button className="btn btn-ghost" onClick={addManualExamQuestion} disabled={!examManualQuestion.question.trim()}>+ Add Question Manually</button>
+                </div>
+
+                <h4 style={{ fontSize: '0.9rem', marginBottom: 8 }}>Notes ({examNotes.length})</h4>
+                {examNotes.map(n => (
+                  <div key={n.id} style={{ padding: '10px 12px', marginBottom: 8, borderRadius: 8, background: n.status === 'published' ? 'rgba(46,125,50,0.06)' : '#f5f8fb' }}>
+                    <p style={{ fontSize: '0.85rem', whiteSpace: 'pre-wrap', marginBottom: 8 }}>{n.body.slice(0, 300)}{n.body.length > 300 ? '…' : ''}</p>
+                    <span style={{ fontSize: '0.75rem', marginRight: 10 }}>{n.status}{n.ai_generated ? ' · AI' : ''}</span>
+                    {n.status === 'published' ? (
+                      <button className="btn btn-ghost" onClick={() => examUnpublish('exam_prep_notes', n.id)}>Unpublish</button>
+                    ) : (
+                      <button className="btn btn-ghost" onClick={() => examPublish('exam_prep_notes', n.id)}>Publish</button>
+                    )}
+                    <button className="btn btn-ghost" onClick={() => examDelete('exam_prep_notes', n.id)} style={{ color: '#c0392b' }}>Delete</button>
+                  </div>
+                ))}
+
+                <h4 style={{ fontSize: '0.9rem', marginTop: 20, marginBottom: 8 }}>Questions ({examQuestions.length})</h4>
+                {examQuestions.map(q => (
+                  <div key={q.id} style={{ padding: '10px 12px', marginBottom: 8, borderRadius: 8, background: q.status === 'published' ? 'rgba(46,125,50,0.06)' : '#f5f8fb' }}>
+                    <p style={{ fontSize: '0.85rem', marginBottom: 6 }}>{q.question}</p>
+                    <ol type="A" style={{ fontSize: '0.8rem', marginBottom: 6, paddingLeft: 20 }}>
+                      {q.options.map((o, i) => <li key={i} style={{ fontWeight: i === q.correct_index ? 700 : 400, color: i === q.correct_index ? '#2e7d32' : 'inherit' }}>{o}</li>)}
+                    </ol>
+                    {q.correct_index === null && <p style={{ color: '#c0392b', fontSize: '0.78rem' }}>⚠ No confirmed answer — cannot publish</p>}
+                    <span style={{ fontSize: '0.75rem', marginRight: 10 }}>{q.status}{q.ai_generated ? ' · AI' : ''}</span>
+                    {q.status === 'published' ? (
+                      <button className="btn btn-ghost" onClick={() => examUnpublish('exam_prep_questions', q.id)}>Unpublish</button>
+                    ) : (
+                      <button className="btn btn-ghost" onClick={() => examPublish('exam_prep_questions', q.id)} disabled={q.correct_index === null}>Publish</button>
+                    )}
+                    <button className="btn btn-ghost" onClick={() => examDelete('exam_prep_questions', q.id)} style={{ color: '#c0392b' }}>Delete</button>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

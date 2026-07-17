@@ -115,6 +115,13 @@ const ICONS = {
       <path d="M12 3a9 9 0 0 1 0 18" fill="none" />
     </svg>
   ),
+  examPrep: (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 3v4a1 1 0 0 1-1 1H4" />
+    <path d="M9 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9l4-7Z" />
+    <path d="M9 13l2 2 4-4" />
+  </svg>
+),
 }
 
 // ── Six-pillar grouping ───────────────────────────────────────
@@ -145,6 +152,12 @@ const NAV_GROUPS = [
       { path: '/quiz', label: 'Quiz', icon: 'quiz' },
       { path: '/flashcards', label: 'Flashcards', icon: 'flashcards' },
       { path: '/book-quiz', label: 'Book Quiz', icon: 'bookQuiz' },
+    ],
+  },
+  {
+    label: 'Exam Prep',
+    items: [
+      { path: '/exam-prep', label: 'Exam Prep', icon: 'examPrep' },
     ],
   },
   {
@@ -179,6 +192,7 @@ const NAV_GROUPS = [
       { path: '/profile', label: 'Profile', icon: 'profile' },
     ],
   },
+
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'

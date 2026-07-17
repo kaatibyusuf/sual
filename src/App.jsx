@@ -27,6 +27,7 @@ import Disciplines from './pages/Disciplines.jsx'
 import Hifdh from './pages/Hifdh.jsx'
 import Admin from './pages/Admin.jsx'
 import BookQuiz from './pages/BookQuiz.jsx'
+import ExamPrep from './pages/ExamPrep.jsx'
 import AddToHomeScreen from './components/AddToHomeScreen.jsx'
 
 export default function App() {
@@ -187,7 +188,7 @@ export default function App() {
             <Route path="/prayer-times" element={<PrayerTimes />} />
             <Route path="/hifdh" element={<Hifdh user={user} />} />
             <Route path="/admin" element={<Admin user={user} />} />
-            <Route path="*" element={<Home user={user} />} />
+            <Route path="/exam-prep" element={<ExamPrep />} />
             <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
           </Routes>
         </main>

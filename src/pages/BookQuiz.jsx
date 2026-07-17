@@ -265,21 +265,37 @@ export default function BookQuiz({ user }) {
       const { data, error } = await supabase.functions.invoke('generate-book-quiz', {
         body: requestBody,
       })
+
       if (error) {
-        // supabase-js doesn't automatically surface the real error
-        // body on a non-2xx response, and the body itself can
-        // occasionally be a raw low-level error rather than a clean
-        // message string — falls back to a friendly generic message
-        // unless the body is genuinely a readable string.
-        let message = 'Something went wrong generating this quiz. Try a different section.'
+        // supabase-js treats ANY non-2xx response as `error`, not
+        // `data` — including our 402 paywall response — so the
+        // paywall case has to be detected here too, not just in the
+        // `data?.error === 'paywall'` check below. Previously this
+        // branch fell straight to "message = errBody.error", which
+        // set the literal string "paywall" as the displayed error
+        // instead of routing to the proper upsell card.
+        let errBody = null
         try {
-          const errBody = await error.context.json()
-          if (errBody?.error && typeof errBody.error === 'string') message = errBody.error
+          errBody = await error.context.json()
         } catch {
-          // Response body wasn't readable/valid JSON — keep fallback.
+          // Response body wasn't readable/valid JSON — errBody stays null.
         }
+
+        if (errBody?.error === 'paywall') {
+          setPaywallMsg(errBody.message || 'You\'ve used your free Book Quiz generations. Subscribe to keep generating quizzes from your books.')
+          setPhase('sections')
+          return
+        }
+
+        // Any other non-2xx error: use the server's message if it's a
+        // real readable string, otherwise fall back to a friendly
+        // generic message rather than surfacing something raw.
+        const message = (errBody?.error && typeof errBody.error === 'string')
+          ? errBody.error
+          : 'Something went wrong generating this quiz. Try a different section.'
         throw new Error(message)
       }
+
       if (data?.error === 'paywall') {
         setPaywallMsg(data.message)
         setPhase('sections')
