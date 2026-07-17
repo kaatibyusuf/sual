@@ -26,6 +26,7 @@ import PrayerTimes from './pages/PrayerTimes.jsx'
 import Disciplines from './pages/Disciplines.jsx'
 import Hifdh from './pages/Hifdh.jsx'
 import Admin from './pages/Admin.jsx'
+import BookQuiz from './pages/BookQuiz.jsx'
 import AddToHomeScreen from './components/AddToHomeScreen.jsx'
 
 export default function App() {
@@ -173,6 +174,7 @@ export default function App() {
             <Route path="/discipline/:id/:level/:qid" element={<DisciplineReader user={user} />} />
             <Route path="/quiz" element={<Quiz user={user} userLevel={userLevel} />} />
             <Route path="/flashcards" element={<Flashcards />} />
+            <Route path="/book-quiz" element={<BookQuiz user={user} />} />
             <Route path="/stories" element={<Stories />} />
             <Route path="/duas" element={<Duas />} />
             <Route path="/calendar" element={<Calendar />} />
