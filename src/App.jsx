@@ -188,7 +188,8 @@ export default function App() {
             <Route path="/prayer-times" element={<PrayerTimes />} />
             <Route path="/hifdh" element={<Hifdh user={user} />} />
             <Route path="/admin" element={<Admin user={user} />} />
-            <Route path="/exam-prep" element={<ExamPrep />} />
+            <Route path="/exam-prep" element={<ExamPrep user={user} />} />
+            <Route path="*" element={<Home user={user} />} />
             <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
           </Routes>
         </main>
