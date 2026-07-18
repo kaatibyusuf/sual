@@ -35,6 +35,11 @@ const EMPTY_CLASS_LESSON = {
   lessons: [''],
 }
 
+const EMPTY_EXAM_TOPIC = { board: 'utme', subject: 'islamic_studies', title: '', syllabus_section: '' }
+
+const EMPTY_MCQ_QUESTION = { question_type: 'mcq', question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' }
+const EMPTY_THEORY_QUESTION = { question_type: 'theory', question: '', model_answer: '' }
+
 export default function Admin({ user }) {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -75,9 +80,10 @@ export default function Admin({ user }) {
   const [examContentLoading, setExamContentLoading] = useState(false)
   const [examError, setExamError] = useState(null)
   const [examGenerating, setExamGenerating] = useState(false)
-  const [examNewTopic, setExamNewTopic] = useState({ subject: 'islamic_studies', title: '', syllabus_section: '' })
+  const [examNewTopic, setExamNewTopic] = useState(EMPTY_EXAM_TOPIC)
   const [examManualNote, setExamManualNote] = useState('')
-  const [examManualQuestion, setExamManualQuestion] = useState({ question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' })
+  const [examQuestionMode, setExamQuestionMode] = useState('mcq') // mcq | theory — governs both manual form and AI generation target
+  const [examManualQuestion, setExamManualQuestion] = useState(EMPTY_MCQ_QUESTION)
   const [examParsing, setExamParsing] = useState(false)
 
   const fetchStats = async () => {
@@ -371,7 +377,7 @@ export default function Admin({ user }) {
       })
       if (error) throw error
       if (data?.error) throw new Error(data.error)
-      setExamNewTopic({ subject: 'islamic_studies', title: '', syllabus_section: '' })
+      setExamNewTopic(f => ({ ...EMPTY_EXAM_TOPIC, board: f.board, subject: f.subject }))
       fetchExamTopics()
     } catch (err) {
       setExamError(err.message)
@@ -414,12 +420,12 @@ export default function Admin({ user }) {
     }
   }
 
-  const generateExamQuestions = async () => {
+  const generateExamQuestions = async (mode) => {
     setExamGenerating(true)
     setExamError(null)
     try {
       const { data, error } = await supabase.functions.invoke('admin-manage-exam-prep', {
-        body: { action: 'generate_draft_questions', topic: examSelectedTopic },
+        body: { action: 'generate_draft_questions', topic: examSelectedTopic, mode },
       })
       if (error) throw error
       if (data?.error) throw new Error(data.error)
@@ -447,6 +453,11 @@ export default function Admin({ user }) {
     }
   }
 
+  const switchExamQuestionMode = (mode) => {
+    setExamQuestionMode(mode)
+    setExamManualQuestion(mode === 'theory' ? EMPTY_THEORY_QUESTION : EMPTY_MCQ_QUESTION)
+  }
+
   const addManualExamQuestion = async () => {
     if (!examManualQuestion.question.trim() || !examSelectedTopic) return
     setExamError(null)
@@ -456,7 +467,7 @@ export default function Admin({ user }) {
       })
       if (error) throw error
       if (data?.error) throw new Error(data.error)
-      setExamManualQuestion({ question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' })
+      setExamManualQuestion(examQuestionMode === 'theory' ? EMPTY_THEORY_QUESTION : EMPTY_MCQ_QUESTION)
       openExamTopic(examSelectedTopic)
     } catch (err) {
       setExamError(err.message)
@@ -464,7 +475,8 @@ export default function Admin({ user }) {
   }
 
   // PDF and plain .txt only — Word .docx would need a separate
-  // library (mammoth.js) not currently installed.
+  // library (mammoth.js) not currently installed. Only produces MCQ
+  // questions — past-question documents are objective by nature.
   const handleExamDocUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file || !examSelectedTopic) return
@@ -1093,17 +1105,21 @@ export default function Admin({ user }) {
         </div>
       </div>
 
-      {/* UTME Exam Prep manager */}
+      {/* Exam Prep manager — UTME + JUPEB, MCQ + theory */}
       <div className="card" style={{ marginTop: 20, padding: 20 }}>
-        <h3 style={{ marginBottom: 6 }}>UTME Exam Prep</h3>
+        <h3 style={{ marginBottom: 6 }}>Exam Prep</h3>
         <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
-          Nothing here is visible to students until published. AI can draft notes/questions or parse
-          an uploaded past-question document — review and edit before publishing.
+          Nothing here is visible to students until published. Theory questions store a model
+          answer only — they are a study aid, never auto-graded.
         </p>
 
         {examError && <div className="admin-error" style={{ marginBottom: 12 }}>{examError}</div>}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginBottom: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 16 }}>
+          <select value={examNewTopic.board} onChange={e => setExamNewTopic(t => ({ ...t, board: e.target.value }))} style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }}>
+            <option value="utme">UTME</option>
+            <option value="jupeb">JUPEB</option>
+          </select>
           <select value={examNewTopic.subject} onChange={e => setExamNewTopic(t => ({ ...t, subject: e.target.value }))} style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }}>
             <option value="islamic_studies">Islamic Studies</option>
             <option value="arabic">Arabic</option>
@@ -1114,10 +1130,10 @@ export default function Admin({ user }) {
         </div>
 
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-          <div style={{ flex: '0 0 240px' }}>
+          <div style={{ flex: '0 0 260px' }}>
             {examTopicsLoading ? <p>Loading…</p> : examTopics.map(t => (
               <button key={t.id} onClick={() => openExamTopic(t)} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '8px 10px', marginBottom: 4, borderRadius: 8, border: 'none', background: examSelectedTopic?.id === t.id ? 'rgba(9,69,112,0.08)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem' }}>
-                <strong>{t.subject === 'arabic' ? 'AR' : 'IS'}</strong> — {t.title}
+                <strong>{(t.board || 'utme').toUpperCase()} · {t.subject === 'arabic' ? 'AR' : 'IS'}</strong> — {t.title}
               </button>
             ))}
           </div>
@@ -1129,11 +1145,16 @@ export default function Admin({ user }) {
               <p>Loading…</p>
             ) : (
               <>
+                <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 10 }}>
+                  {(examSelectedTopic.board || 'utme').toUpperCase()} — {examSelectedTopic.title}
+                </p>
+
                 <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
                   <button className="btn btn-primary" onClick={generateExamNotes} disabled={examGenerating}>{examGenerating ? '…' : 'AI: Draft Notes'}</button>
-                  <button className="btn btn-primary" onClick={generateExamQuestions} disabled={examGenerating}>{examGenerating ? '…' : 'AI: Draft 10 Questions'}</button>
+                  <button className="btn btn-primary" onClick={() => generateExamQuestions('mcq')} disabled={examGenerating}>{examGenerating ? '…' : 'AI: Draft 10 MCQ'}</button>
+                  <button className="btn btn-primary" onClick={() => generateExamQuestions('theory')} disabled={examGenerating}>{examGenerating ? '…' : 'AI: Draft 5 Theory'}</button>
                   <label className="btn btn-ghost" style={{ cursor: 'pointer' }}>
-                    {examParsing ? 'Parsing…' : 'Upload Past Questions'}
+                    {examParsing ? 'Parsing…' : 'Upload Past Questions (MCQ)'}
                     <input type="file" accept="application/pdf,.txt" onChange={handleExamDocUpload} disabled={examParsing} style={{ display: 'none' }} />
                   </label>
                 </div>
@@ -1144,15 +1165,63 @@ export default function Admin({ user }) {
                 </div>
 
                 <div style={{ marginBottom: 16, padding: 12, background: '#f5f8fb', borderRadius: 8 }}>
-                  <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 8 }}>Add a question manually</p>
-                  <input type="text" placeholder="Question" value={examManualQuestion.question} onChange={e => setExamManualQuestion(q => ({ ...q, question: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
-                  {examManualQuestion.options.map((opt, i) => (
-                    <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 4 }}>
-                      <input type="radio" checked={examManualQuestion.correct_index === i} onChange={() => setExamManualQuestion(q => ({ ...q, correct_index: i }))} />
-                      <input type="text" placeholder={`Option ${String.fromCharCode(65 + i)}`} value={opt} onChange={e => setExamManualQuestion(q => { const options = [...q.options]; options[i] = e.target.value; return { ...q, options } })} style={{ flex: 1, padding: 6, borderRadius: 6, border: '1px solid #d0e0ec' }} />
-                    </div>
-                  ))}
-                  <input type="text" placeholder="Explanation (optional)" value={examManualQuestion.explanation} onChange={e => setExamManualQuestion(q => ({ ...q, explanation: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginTop: 6, marginBottom: 6 }} />
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                    <button
+                      className="btn btn-ghost"
+                      style={examQuestionMode === 'mcq' ? { background: 'rgba(9,69,112,0.1)' } : {}}
+                      onClick={() => switchExamQuestionMode('mcq')}
+                    >
+                      MCQ
+                    </button>
+                    <button
+                      className="btn btn-ghost"
+                      style={examQuestionMode === 'theory' ? { background: 'rgba(9,69,112,0.1)' } : {}}
+                      onClick={() => switchExamQuestionMode('theory')}
+                    >
+                      Theory
+                    </button>
+                  </div>
+
+                  <input
+                    type="text"
+                    placeholder="Question"
+                    value={examManualQuestion.question}
+                    onChange={e => setExamManualQuestion(q => ({ ...q, question: e.target.value }))}
+                    style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }}
+                  />
+
+                  {examQuestionMode === 'mcq' ? (
+                    <>
+                      {examManualQuestion.options.map((opt, i) => (
+                        <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 4 }}>
+                          <input type="radio" checked={examManualQuestion.correct_index === i} onChange={() => setExamManualQuestion(q => ({ ...q, correct_index: i }))} />
+                          <input
+                            type="text"
+                            placeholder={`Option ${String.fromCharCode(65 + i)}`}
+                            value={opt}
+                            onChange={e => setExamManualQuestion(q => { const options = [...q.options]; options[i] = e.target.value; return { ...q, options } })}
+                            style={{ flex: 1, padding: 6, borderRadius: 6, border: '1px solid #d0e0ec' }}
+                          />
+                        </div>
+                      ))}
+                      <input
+                        type="text"
+                        placeholder="Explanation (optional)"
+                        value={examManualQuestion.explanation}
+                        onChange={e => setExamManualQuestion(q => ({ ...q, explanation: e.target.value }))}
+                        style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginTop: 6, marginBottom: 6 }}
+                      />
+                    </>
+                  ) : (
+                    <textarea
+                      placeholder="Model answer (a strong sample answer to compare against, not a rigid scoring key)"
+                      value={examManualQuestion.model_answer}
+                      onChange={e => setExamManualQuestion(q => ({ ...q, model_answer: e.target.value }))}
+                      rows={5}
+                      style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }}
+                    />
+                  )}
+
                   <button className="btn btn-ghost" onClick={addManualExamQuestion} disabled={!examManualQuestion.question.trim()}>+ Add Question Manually</button>
                 </div>
 
@@ -1173,16 +1242,35 @@ export default function Admin({ user }) {
                 <h4 style={{ fontSize: '0.9rem', marginTop: 20, marginBottom: 8 }}>Questions ({examQuestions.length})</h4>
                 {examQuestions.map(q => (
                   <div key={q.id} style={{ padding: '10px 12px', marginBottom: 8, borderRadius: 8, background: q.status === 'published' ? 'rgba(46,125,50,0.06)' : '#f5f8fb' }}>
-                    <p style={{ fontSize: '0.85rem', marginBottom: 6 }}>{q.question}</p>
-                    <ol type="A" style={{ fontSize: '0.8rem', marginBottom: 6, paddingLeft: 20 }}>
-                      {q.options.map((o, i) => <li key={i} style={{ fontWeight: i === q.correct_index ? 700 : 400, color: i === q.correct_index ? '#2e7d32' : 'inherit' }}>{o}</li>)}
-                    </ol>
-                    {q.correct_index === null && <p style={{ color: '#c0392b', fontSize: '0.78rem' }}>⚠ No confirmed answer — cannot publish</p>}
+                    <p style={{ fontSize: '0.85rem', marginBottom: 6 }}>
+                      <span style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: 4, background: q.question_type === 'theory' ? '#6a1b9a' : '#094570', color: '#fff', marginRight: 6 }}>
+                        {q.question_type === 'theory' ? 'THEORY' : 'MCQ'}
+                      </span>
+                      {q.question}
+                    </p>
+                    {q.question_type === 'theory' ? (
+                      <p style={{ fontSize: '0.8rem', color: '#6a8090', marginBottom: 6, whiteSpace: 'pre-wrap' }}>
+                        <strong>Model answer:</strong> {q.model_answer ? q.model_answer.slice(0, 200) + (q.model_answer.length > 200 ? '…' : '') : '(none yet)'}
+                      </p>
+                    ) : (
+                      <>
+                        <ol type="A" style={{ fontSize: '0.8rem', marginBottom: 6, paddingLeft: 20 }}>
+                          {(q.options || []).map((o, i) => <li key={i} style={{ fontWeight: i === q.correct_index ? 700 : 400, color: i === q.correct_index ? '#2e7d32' : 'inherit' }}>{o}</li>)}
+                        </ol>
+                        {q.correct_index === null && <p style={{ color: '#c0392b', fontSize: '0.78rem' }}>⚠ No confirmed answer — cannot publish</p>}
+                      </>
+                    )}
                     <span style={{ fontSize: '0.75rem', marginRight: 10 }}>{q.status}{q.ai_generated ? ' · AI' : ''}</span>
                     {q.status === 'published' ? (
                       <button className="btn btn-ghost" onClick={() => examUnpublish('exam_prep_questions', q.id)}>Unpublish</button>
                     ) : (
-                      <button className="btn btn-ghost" onClick={() => examPublish('exam_prep_questions', q.id)} disabled={q.correct_index === null}>Publish</button>
+                      <button
+                        className="btn btn-ghost"
+                        onClick={() => examPublish('exam_prep_questions', q.id)}
+                        disabled={q.question_type === 'mcq' ? q.correct_index === null : !q.model_answer}
+                      >
+                        Publish
+                      </button>
                     )}
                     <button className="btn btn-ghost" onClick={() => examDelete('exam_prep_questions', q.id)} style={{ color: '#c0392b' }}>Delete</button>
                   </div>
