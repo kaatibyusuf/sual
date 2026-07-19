@@ -48,8 +48,6 @@ function NotificationToggle({ user }) {
   )
 }
 
-export default NotificationToggle
-
 const LEVELS = [
   { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
   { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100' },
