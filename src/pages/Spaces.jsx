@@ -260,12 +260,26 @@ export default function Spaces({ user }) {
   const [tafseerAlreadyDone, setTafseerAlreadyDone] = useState(false)
   const [tafseerPastScore, setTafseerPastScore] = useState('')
 
+  // Daily Tafseer archive — browse past entries read-only, separate
+  // from today's quiz flow, which stays specifically tied to today's
+  // entry since its distractors are built from recent history.
+  const [tafseerArchive, setTafseerArchive] = useState([])
+  const [tafseerArchiveLoading, setTafseerArchiveLoading] = useState(false)
+  const [showTafseerArchive, setShowTafseerArchive] = useState(false)
+  const [selectedArchiveTafseer, setSelectedArchiveTafseer] = useState(null)
+
   // Daily Class Lesson — Arabiyyah + Hadeeth, one entry per class,
   // level, and date. Refires automatically whenever the person
   // switches level, since classLevel is a dependency of the effect
   // that calls this.
   const [classLesson, setClassLesson] = useState(null)
   const [classLessonLoading, setClassLessonLoading] = useState(false)
+
+  // Class Lesson archive — same read-only browse pattern as tafseer.
+  const [classLessonArchive, setClassLessonArchive] = useState([])
+  const [classLessonArchiveLoading, setClassLessonArchiveLoading] = useState(false)
+  const [showClassLessonArchive, setShowClassLessonArchive] = useState(false)
+  const [selectedArchiveLesson, setSelectedArchiveLesson] = useState(null)
 
   const [, setClock] = useState(new Date())
   useEffect(() => {
@@ -311,11 +325,6 @@ export default function Spaces({ user }) {
 
       const rows = data || []
 
-      // Badges are fetched separately rather than via an embedded
-      // join — spaces_posts.user_id and profiles.id both reference
-      // auth.users independently, with no direct FK between the two
-      // tables themselves, so PostgREST has no relationship to embed
-      // through. A manual lookup avoids needing a schema change.
       const userIds = [...new Set(rows.map(p => p.user_id).filter(Boolean))]
       const badgeMap = {}
       if (userIds.length > 0) {
@@ -324,7 +333,6 @@ export default function Spaces({ user }) {
           .select('id, badge_ids')
           .in('id', userIds)
         if (profileError) {
-          // Non-fatal — badges are cosmetic, posts should still show.
           console.error('Failed to load author badges:', profileError)
         } else {
           (profileRows || []).forEach(p => { badgeMap[p.id] = p.badge_ids || [] })
@@ -367,9 +375,6 @@ export default function Spaces({ user }) {
     }
   }, [])
 
-  // Community-wide member count — subscriptions is RLS-locked to each
-  // user's own row, so a SECURITY DEFINER function is needed to count
-  // everyone, same pattern as get_accountability_roster().
   const fetchMemberCount = useCallback(async () => {
     try {
       const { data, error } = await supabase.rpc('get_spaces_member_count')
@@ -519,10 +524,6 @@ export default function Spaces({ user }) {
     setJoiningCircle(true)
     setCirclesError(null)
     try {
-      // Remove the existing membership first, then join the new one —
-      // done as two calls rather than an update, since we don't know
-      // whether user_id carries a uniqueness constraint this could
-      // rely on instead.
       const { error: delError } = await supabase
         .from('circle_memberships')
         .delete()
@@ -614,6 +615,28 @@ export default function Spaces({ user }) {
     }
   }, [user])
 
+  // Daily Tafseer archive — read-only, no quiz attached, since the
+  // quiz's distractors are built specifically from recent history
+  // around today's entry; mixing archive browsing into that logic
+  // would tangle two different things for no real benefit.
+  const fetchTafseerArchive = useCallback(async () => {
+    setTafseerArchiveLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('daily_tafseer')
+        .select('*')
+        .order('publish_date', { ascending: false })
+        .limit(60)
+      if (error) throw error
+      setTafseerArchive(data || [])
+    } catch (err) {
+      console.error('Failed to load tafseer archive:', err)
+      setTafseerArchive([])
+    } finally {
+      setTafseerArchiveLoading(false)
+    }
+  }, [])
+
   const startTafseerQuiz = () => {
     setTafseerPhase('quiz')
     setTafseerQIndex(0)
@@ -652,9 +675,6 @@ export default function Spaces({ user }) {
   }
 
   // ── Daily Class Lesson (Arabiyyah + Hadeeth) ─────────────────
-  // Sits alongside the existing Telegram group links in renderClass,
-  // it does not replace them. One row per (class_id, level,
-  // publish_date), so each level's rotation is independent.
   const fetchClassLesson = useCallback(async (classId, level) => {
     setClassLessonLoading(true)
     try {
@@ -676,14 +696,28 @@ export default function Spaces({ user }) {
     }
   }, [])
 
+  // Class Lesson archive — same read-only browse pattern as tafseer.
+  const fetchClassLessonArchive = useCallback(async (classId, level) => {
+    setClassLessonArchiveLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('class_daily_lessons')
+        .select('*')
+        .eq('class_id', classId)
+        .eq('level', level)
+        .order('publish_date', { ascending: false })
+        .limit(60)
+      if (error) throw error
+      setClassLessonArchive(data || [])
+    } catch (err) {
+      console.error('Failed to load class lesson archive:', err)
+      setClassLessonArchive([])
+    } finally {
+      setClassLessonArchiveLoading(false)
+    }
+  }, [])
+
   // ── Payment return handling ──────────────────────────────────
-  // Paystack redirects the browser back here after checkout, but the
-  // ONLY trustworthy signal that a payment actually succeeded is the
-  // server-to-server webhook (see supabase/functions/paystack-webhook),
-  // which activates the subscriptions row directly. This effect does
-  // NOT grant access itself — it just clears the URL and briefly
-  // polls for the webhook having landed, since the webhook can take a
-  // few seconds longer than the browser redirect.
   useEffect(() => {
     if (!user) return
     checkSubscription()
@@ -706,10 +740,6 @@ export default function Spaces({ user }) {
           setJustJoined(true)
           clearInterval(poll)
         } else if (attempts >= 8) {
-          // ~40s of polling — stop trying; the webhook may simply be
-          // delayed further, or something needs manual attention. The
-          // email_log / subscriptions tables are the source of truth
-          // for support to check from here, not this browser tab.
           setConfirmingPayment(false)
           clearInterval(poll)
         }
@@ -726,11 +756,6 @@ export default function Spaces({ user }) {
     }
   }, [subscription, fetchPosts, fetchFeatured, fetchMemberCount])
 
-  // Fires once, right when a fresh subscription is detected by the
-  // payment poll above — drops the new member straight into the
-  // community tab with the new-post modal open and a starter message
-  // pre-filled, so the first thing they do with their new access is
-  // introduce themselves rather than land on an empty feed.
   useEffect(() => {
     if (justJoined && subscription?.status === 'active') {
       setActiveTab('community')
@@ -749,18 +774,11 @@ export default function Spaces({ user }) {
     if (subscription?.status !== 'active') return
     if (activeTab === 'accountability') fetchAccountability()
     if (activeTab === 'circles') fetchCircles()
-    if (activeTab === 'tafseer') fetchTafseer()
-    if (activeTab === 'arabiyyah') fetchClassLesson('arabiyyah', classLevel.arabiyyah)
-    if (activeTab === 'hadeeth') fetchClassLesson('hadeeth', classLevel.hadeeth)
-  }, [activeTab, subscription, fetchAccountability, fetchCircles, fetchTafseer, fetchClassLesson, classLevel])
+    if (activeTab === 'tafseer') { fetchTafseer(); fetchTafseerArchive() }
+    if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', classLevel.arabiyyah); fetchClassLessonArchive('arabiyyah', classLevel.arabiyyah) }
+    if (activeTab === 'hadeeth') { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
+  }, [activeTab, subscription, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, classLevel])
 
-  // Deep-link from a notification: /spaces?post=<id> opens that post
-  // directly. Gated on an ACTIVE subscription specifically (not just
-  // "user is logged in") — the post-detail view renders before the
-  // paywall check further down in this component, so without this
-  // guard a bare link could let a non-member jump straight to a
-  // post's content, which defeats the paywall's own intent even
-  // though the underlying row is already readable via RLS.
   useEffect(() => {
     if (subLoading || subscription?.status !== 'active') return
     const postId = searchParams.get('post')
@@ -870,10 +888,6 @@ export default function Spaces({ user }) {
     }
   }
 
-  // ── Checkout ─────────────────────────────────────────────────
-  // The reference embeds the FULL Supabase user id (not truncated),
-  // wrapped in a delimiter that never appears inside a uuid, so the
-  // webhook can extract it with zero ambiguity: sual_<uuid>_<epoch ms>
   const handlePaystack = () => {
     const ref = 'sual_' + user.id + '_' + Date.now()
     window.location.href = 'https://paystack.com/buy/sual-spaces-vcvfks?email=' +
@@ -964,10 +978,6 @@ export default function Spaces({ user }) {
             <p className="spaces-pair-since">Paired since {formatDate(myPair.paired_at)}</p>
           </div>
 
-          {/* Private thread, just the two of you — this is the actual
-              answer to "how do partners contact each other," since
-              nothing beyond a truncated member id was ever exchanged
-              before this existed. */}
           <div className="spaces-circle-messages">
             {pairMessages.length === 0 ? (
               <div className="spaces-no-replies">No messages yet. Say salaam and set your first check-in.</div>
@@ -1049,8 +1059,6 @@ export default function Spaces({ user }) {
         </>
       )}
 
-      {/* Community roster — everyone's status, not just what's
-          relevant to the current viewer's own pairing state. */}
       <div className="spaces-section-intro card" style={{ marginTop: 24 }}>
         <h3 className="spaces-section-intro-title">📋 Who's Paired, Who's Seeking</h3>
       </div>
@@ -1228,6 +1236,71 @@ export default function Spaces({ user }) {
     </div>
   )
 
+  // Shared read-only render for one class lesson (today's or an
+  // archive entry), so the JSX isn't duplicated between the two.
+  const renderLessonContent = (lesson) => (
+    <div className="spaces-tafseer-card card">
+      <h4 className="spaces-class-section-title">📖 {lesson.title}</h4>
+      {lesson.arabic_text && <p className="spaces-tafseer-arabic arabic-lg">{lesson.arabic_text}</p>}
+      {lesson.transliteration && (
+        <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
+          {lesson.transliteration}
+        </p>
+      )}
+      {lesson.translation && <p className="spaces-tafseer-translation">"{lesson.translation}"</p>}
+      {lesson.commentary && (
+        <p className="spaces-tafseer-body" style={{ marginTop: 12 }}>{lesson.commentary}</p>
+      )}
+      {lesson.audio_url && (
+        <audio controls src={lesson.audio_url} style={{ width: '100%', marginTop: 12 }} />
+      )}
+      {Array.isArray(lesson.lessons) && lesson.lessons.length > 0 && (
+        <ul className="spaces-class-curriculum" style={{ marginTop: 12 }}>
+          {lesson.lessons.map((l, i) => (
+            <li key={i} className="spaces-class-curriculum-item">
+              <span className="spaces-class-curriculum-num">{i + 1}</span>
+              <span>{l}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+
+  // Shared read-only render for one tafseer entry (today's or an
+  // archive entry) — no quiz attached, see note above fetchTafseerArchive.
+  const renderTafseerReadOnly = (entry) => (
+    <>
+      <div className="spaces-tafseer-card card">
+        <p className="spaces-tafseer-ref">{entry.surah_name} · {entry.surah_num}:{entry.ayah_num}</p>
+        <p className="spaces-tafseer-arabic arabic-lg">{entry.arabic_text}</p>
+        {entry.transliteration && (
+          <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
+            {entry.transliteration}
+          </p>
+        )}
+        <p className="spaces-tafseer-translation">"{entry.translation}"</p>
+      </div>
+      <div className="spaces-tafseer-card card">
+        <h4 className="spaces-class-section-title">📖 Tafseer</h4>
+        <p className="spaces-tafseer-body">{entry.tafseer_body}</p>
+      </div>
+      {Array.isArray(entry.lessons) && entry.lessons.length > 0 && (
+        <div className="spaces-tafseer-card card">
+          <h4 className="spaces-class-section-title">💡 Lessons</h4>
+          <ul className="spaces-class-curriculum">
+            {entry.lessons.map((l, i) => (
+              <li key={i} className="spaces-class-curriculum-item">
+                <span className="spaces-class-curriculum-num">{i + 1}</span>
+                <span>{l}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </>
+  )
+
   const renderTafseer = () => {
     if (tafseerLoading) {
       return <div className="spaces-loading"><div className="spaces-spinner" /></div>
@@ -1302,35 +1375,7 @@ export default function Spaces({ user }) {
 
     return (
       <div className="spaces-tafseer-view">
-        <div className="spaces-tafseer-card card">
-          <p className="spaces-tafseer-ref">{todayTafseer.surah_name} · {todayTafseer.surah_num}:{todayTafseer.ayah_num}</p>
-          <p className="spaces-tafseer-arabic arabic-lg">{todayTafseer.arabic_text}</p>
-          {todayTafseer.transliteration && (
-            <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
-              {todayTafseer.transliteration}
-            </p>
-          )}
-          <p className="spaces-tafseer-translation">"{todayTafseer.translation}"</p>
-        </div>
-
-        <div className="spaces-tafseer-card card">
-          <h4 className="spaces-class-section-title">📖 Tafseer</h4>
-          <p className="spaces-tafseer-body">{todayTafseer.tafseer_body}</p>
-        </div>
-
-        {Array.isArray(todayTafseer.lessons) && todayTafseer.lessons.length > 0 && (
-          <div className="spaces-tafseer-card card">
-            <h4 className="spaces-class-section-title">💡 Lessons</h4>
-            <ul className="spaces-class-curriculum">
-              {todayTafseer.lessons.map((l, i) => (
-                <li key={i} className="spaces-class-curriculum-item">
-                  <span className="spaces-class-curriculum-num">{i + 1}</span>
-                  <span>{l}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {renderTafseerReadOnly(todayTafseer)}
 
         {tafseerAlreadyDone ? (
           <div className="spaces-alldone card">✅ You've completed today's test — {tafseerPastScore}</div>
@@ -1340,6 +1385,42 @@ export default function Spaces({ user }) {
           </button>
         ) : (
           <p className="spaces-tafseer-note">A test will be available once there's enough tafseer history to build one.</p>
+        )}
+
+        <button
+          className="btn btn-ghost"
+          style={{ marginTop: 16 }}
+          onClick={() => { setShowTafseerArchive(v => !v); setSelectedArchiveTafseer(null) }}
+        >
+          📚 {showTafseerArchive ? 'Hide' : 'Browse'} Past Tafseer Entries
+        </button>
+
+        {showTafseerArchive && (
+          <div className="card" style={{ padding: 16, marginTop: 12 }}>
+            {tafseerArchiveLoading ? (
+              <p>Loading…</p>
+            ) : tafseerArchive.length === 0 ? (
+              <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No past entries yet.</p>
+            ) : selectedArchiveTafseer ? (
+              <>
+                <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setSelectedArchiveTafseer(null)}>← Back to list</button>
+                {renderTafseerReadOnly(selectedArchiveTafseer)}
+              </>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {tafseerArchive.map(t => (
+                  <button
+                    key={t.publish_date}
+                    className="spaces-disc-btn"
+                    style={{ textAlign: 'left', padding: '10px 14px' }}
+                    onClick={() => setSelectedArchiveTafseer(t)}
+                  >
+                    <strong>{t.publish_date}</strong> — {t.surah_name} {t.surah_num}:{t.ayah_num}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
     )
@@ -1545,44 +1626,51 @@ export default function Spaces({ user }) {
               <p className="spaces-class-content-desc">{currentLevel.description}</p>
             </div>
 
-            {/* Daily Class Lesson — sits alongside the Telegram CTA
-                below, does not replace it. */}
             {classLessonLoading ? (
               <div className="spaces-loading"><div className="spaces-spinner" /></div>
             ) : classLesson ? (
-              <div className="spaces-tafseer-card card">
-                <h4 className="spaces-class-section-title">📖 Today's Lesson — {classLesson.title}</h4>
-                {classLesson.arabic_text && <p className="spaces-tafseer-arabic arabic-lg">{classLesson.arabic_text}</p>}
-                {classLesson.transliteration && (
-                  <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
-                    {classLesson.transliteration}
-                  </p>
-                )}
-                {classLesson.translation && <p className="spaces-tafseer-translation">"{classLesson.translation}"</p>}
-                {classLesson.commentary && (
-                  <>
-                    <p className="spaces-tafseer-body" style={{ marginTop: 12 }}>{classLesson.commentary}</p>
-                    {classLesson.audio_url && (
-                      <audio controls src={classLesson.audio_url} style={{ width: '100%', marginTop: 12 }} />
-                    )}
-                  </>
-                )}
-                {Array.isArray(classLesson.lessons) && classLesson.lessons.length > 0 && (
-                  <ul className="spaces-class-curriculum" style={{ marginTop: 12 }}>
-                    {classLesson.lessons.map((l, i) => (
-                      <li key={i} className="spaces-class-curriculum-item">
-                        <span className="spaces-class-curriculum-num">{i + 1}</span>
-                        <span>{l}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              renderLessonContent(classLesson)
             ) : (
               <div className="spaces-empty card">
                 <p className="spaces-empty-icon">📖</p>
                 <p className="spaces-empty-text">No lesson posted yet today for this level</p>
                 <p className="spaces-empty-sub">The curriculum and Telegram group below are still there in the meantime.</p>
+              </div>
+            )}
+
+            <button
+              className="btn btn-ghost"
+              style={{ marginBottom: 16 }}
+              onClick={() => { setShowClassLessonArchive(v => !v); setSelectedArchiveLesson(null) }}
+            >
+              📚 {showClassLessonArchive ? 'Hide' : 'Browse'} Past Lessons
+            </button>
+
+            {showClassLessonArchive && (
+              <div className="card" style={{ padding: 16, marginBottom: 16 }}>
+                {classLessonArchiveLoading ? (
+                  <p>Loading…</p>
+                ) : classLessonArchive.length === 0 ? (
+                  <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No past lessons yet for this level.</p>
+                ) : selectedArchiveLesson ? (
+                  <>
+                    <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setSelectedArchiveLesson(null)}>← Back to list</button>
+                    {renderLessonContent(selectedArchiveLesson)}
+                  </>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {classLessonArchive.map(l => (
+                      <button
+                        key={l.publish_date}
+                        className="spaces-disc-btn"
+                        style={{ textAlign: 'left', padding: '10px 14px' }}
+                        onClick={() => setSelectedArchiveLesson(l)}
+                      >
+                        <strong>{l.publish_date}</strong> — {l.title}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
