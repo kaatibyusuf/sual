@@ -1436,9 +1436,10 @@
 }
 
 .spaces-tafseer-body {
-  font-size: 0.9rem;
-  color: #0d1b2a;
-  line-height: 1.85;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre-wrap;
 }
 
 .spaces-tafseer-start {
