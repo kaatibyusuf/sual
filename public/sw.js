@@ -54,7 +54,41 @@ self.addEventListener('fetch', (event) => {
     )
     return
   }
+self.addEventListener('push', (event) => {
+  let data = { title: 'Sual', body: 'You have something waiting for you today.', url: '/' }
+  try {
+    if (event.data) data = { ...data, ...event.data.json() }
+  } catch {
+    // Payload wasn't JSON — fall back to the defaults above rather
+    // than letting a malformed push crash silently with no
+    // notification shown at all.
+  }
 
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      data: { url: data.url },
+    })
+  )
+})
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const url = event.notification.data?.url || '/'
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window' }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.navigate(url)
+          return client.focus()
+        }
+      }
+      return self.clients.openWindow(url)
+    })
+  )
+})
   event.respondWith(
     fetch(event.request)
       .then((response) => {

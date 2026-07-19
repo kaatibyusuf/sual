@@ -3,6 +3,53 @@ import { supabase } from '../lib/supabase.js'
 import './Profile.css'
 import { BadgesSection } from '../components/Badges.jsx'
 
+import { useState, useEffect } from 'react'
+import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from '../lib/pushNotifications.js'
+
+function NotificationToggle({ user }) {
+  const [supported, setSupported] = useState(true)
+  const [permission, setPermission] = useState('default')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    setSupported(isPushSupported())
+    getPushPermissionState().then(setPermission)
+  }, [])
+
+  const handleToggle = async () => {
+    setLoading(true)
+    setError(null)
+    if (permission === 'granted') {
+      await unsubscribeFromPush(user)
+      setPermission('default')
+    } else {
+      const result = await subscribeToPush(user)
+      if (result.ok) {
+        setPermission('granted')
+      } else {
+        setError(result.error)
+      }
+    }
+    setLoading(false)
+  }
+
+  if (!supported) {
+    return <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>Notifications aren't supported in this browser. On iPhone, make sure Sual is added to your Home Screen first.</p>
+  }
+
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <button className="btn btn-primary" onClick={handleToggle} disabled={loading}>
+        {loading ? '…' : permission === 'granted' ? '🔔 Notifications on — tap to turn off' : '🔕 Turn on daily reminders'}
+      </button>
+      {error && <p style={{ color: '#c0392b', fontSize: '0.82rem', marginTop: 6 }}>{error}</p>}
+    </div>
+  )
+}
+
+export default NotificationToggle
+
 const LEVELS = [
   { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
   { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100' },
