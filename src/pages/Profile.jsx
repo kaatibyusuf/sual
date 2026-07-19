@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './Profile.css'
 import { BadgesSection } from '../components/Badges.jsx'
-
-import { useState, useEffect } from 'react'
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from '../lib/pushNotifications.js'
 
 function NotificationToggle({ user }) {
