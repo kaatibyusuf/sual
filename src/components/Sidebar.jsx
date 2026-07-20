@@ -175,6 +175,12 @@ const NAV_GROUPS = [
     ],
   },
   {
+  label: 'My Courses',
+  items: [
+    { path: '/lms', label: 'Courses', icon: 'flashcards' }, // reuse an existing icon key for now
+  ],
+},
+  {
     label: 'Community',
     items: [
       { path: '/spaces', label: 'Spaces', icon: 'spaces' },

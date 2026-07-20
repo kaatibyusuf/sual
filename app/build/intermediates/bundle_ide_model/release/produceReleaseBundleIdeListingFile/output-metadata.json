@@ -4,7 +4,7 @@
     "type": "BUNDLE",
     "kind": "RegularFile"
   },
-  "applicationId": "com.usesual.app.twa",
+  "applicationId": "com.usesual.app",
   "variantName": "release",
   "elements": [
     {

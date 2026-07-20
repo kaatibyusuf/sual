@@ -29,6 +29,8 @@ import Admin from './pages/Admin.jsx'
 import BookQuiz from './pages/BookQuiz.jsx'
 import ExamPrep from './pages/ExamPrep.jsx'
 import AddToHomeScreen from './components/AddToHomeScreen.jsx'
+import LmsDashboard from './pages/LmsDashboard.jsx'
+import LmsCourseDetail from './pages/LmsCourseDetail.jsx'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -191,6 +193,8 @@ export default function App() {
             <Route path="/exam-prep" element={<ExamPrep user={user} />} />
             <Route path="*" element={<Home user={user} />} />
             <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
+            <Route path="/lms-dashboard" element={<LmsDashboard />} />
+            <Route path="/lms-course/:id" element={<LmsCourseDetail />} />
           </Routes>
         </main>
       </div>

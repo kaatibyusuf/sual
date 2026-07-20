@@ -22,9 +22,9 @@
      the abbreviated format.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.usesual.app.twa"
-    android:versionCode="2"
-    android:versionName="2" >
+    package="com.usesual.app"
+    android:versionCode="1"
+    android:versionName="1" >
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -45,13 +45,13 @@
     </queries>
 
     <permission
-        android:name="com.usesual.app.twa.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:name="com.usesual.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.usesual.app.twa.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+    <uses-permission android:name="com.usesual.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 
     <application
-        android:name="com.usesual.app.twa.Application"
+        android:name="com.usesual.app.Application"
         android:allowBackup="true"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:extractNativeLibs="true"
@@ -86,7 +86,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.usesual.app.twa.LauncherActivity"
+            android:name="com.usesual.app.LauncherActivity"
             android:alwaysRetainTaskState="true"
             android:exported="true"
             android:label="@string/launcherName" >
@@ -165,7 +165,7 @@
         </provider>
 
         <service
-            android:name="com.usesual.app.twa.DelegationService"
+            android:name="com.usesual.app.DelegationService"
             android:enabled="@bool/enableNotification"
             android:exported="@bool/enableNotification" >
             <meta-data
@@ -192,7 +192,7 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="com.usesual.app.twa.androidx-startup"
+            android:authorities="com.usesual.app.androidx-startup"
             android:exported="false" >
             <meta-data
                 android:name="androidx.emoji2.text.EmojiCompatInitializer"

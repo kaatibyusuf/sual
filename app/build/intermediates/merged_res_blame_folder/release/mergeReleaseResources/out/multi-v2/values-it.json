@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.usesual.app.twa.app-mergeReleaseResources-25:/values-it/values-it.xml",
+            "outputFile": "com.usesual.app-mergeReleaseResources-25:/values-it/values-it.xml",
             "map": [
                 {
                     "source": "C:\\Users\\owner\\.gradle\\caches\\8.11.1\\transforms\\be57bd43967b699c12a0f6b8bd2f21c6\\transformed\\browser-1.9.0-alpha04\\res\\values-it\\values-it.xml",

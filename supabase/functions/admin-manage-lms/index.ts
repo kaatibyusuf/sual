@@ -1,26 +1,18 @@
 // supabase/functions/admin-manage-lms/index.ts
 //
-// Manages structured, self-paced courses (LMS) — a course per book,
-// chapters in a fixed sequence rather than tied to a calendar date,
-// each chapter carrying a teacher's recorded audio, written notes,
-// the source text, and a short quiz. Separate from and unrelated to
-// the existing date-based Class Daily Lesson feature, which stays as
-// the live-class companion; this is the self-paced course library
-// sitting alongside it, included in an existing Spaces subscription.
+// Manages structured courses under the new section → item model:
+// a course has ordered sections (e.g. "Chapter 1"), each section
+// holds multiple independently-trackable items (audio, reading,
+// quiz, discussion), replacing the earlier flat chapter model where
+// everything was bundled into one blob. Matches the granularity of
+// Miva's Moodle-based LMS (multiple discrete, separately-completable
+// pieces per week) without attempting to replicate Moodle-specific
+// features (grade books, office-hour scheduling) that aren't
+// relevant here.
 //
-// Reuses proven patterns rather than reinventing them:
-//   - Audio upload: same signed-URL-to-Storage pattern as
-//     admin-manage-class-lessons (class-audio bucket)
-//   - Question generation: same dedup + position-cycler safeguards
-//     as admin-manage-exam-prep, so correct answers don't cluster on
-//     one letter and a regeneration round can't duplicate an
-//     existing question or option set
-//   - Draft-then-publish: nothing reaches a student until an admin
-//     explicitly publishes it, same as every other content type
-//     built this session
-//
-// SECURITY: same caller-verification pattern as the other admin
-// functions.
+// Draft-then-publish discipline, same as every other content type
+// this session — nothing reaches a student until explicitly
+// published.
 //
 // Deploy:  supabase functions deploy admin-manage-lms
 // Uses the same ADMIN_EMAILS and OPENAI_API_KEY secrets already set.
@@ -71,9 +63,9 @@ function sanitizeFilename(name: string) {
   return name.replace(/[^a-zA-Z0-9._-]/g, '_')
 }
 
-const NOTES_PROMPT = `You are drafting written study notes for one chapter of an Islamic Arabiyyah/Hadeeth course, to accompany a teacher's recorded audio lesson. You will be given the chapter's title and its Arabic text/translation. Write clear notes covering the key points, vocabulary, and grammatical or hadith-related concepts a student should take from this chapter. Do not include questions. This is a DRAFT a qualified reviewer will check before publishing — note uncertainty rather than inventing a precise-sounding but unverified detail.`
+const NOTES_PROMPT = `You are drafting written study notes for one item in an Islamic Arabiyyah/Hadeeth course, to accompany a teacher's recorded audio lesson. You will be given the item's title and its Arabic text/translation. Write clear notes covering the key points, vocabulary, and grammatical or hadith-related concepts a student should take from this item. Do not include questions. This is a DRAFT a qualified reviewer will check before publishing — note uncertainty rather than inventing a precise-sounding but unverified detail.`
 
-const QUESTIONS_PROMPT = `You are drafting 5 multiple-choice comprehension questions for one chapter of an Islamic Arabiyyah/Hadeeth course, based ONLY on the chapter's given text and notes. All 4 options per question must be the same grammatical form and plausible category as the correct answer — no "all/none of the above," no option that's obviously the odd one out. No two questions may share the same 4 options. Respond with ONLY JSON: {"questions": [{"question": "...", "options": ["...","...","...","..."], "correctIndex": 0, "explanation": "..."}]}. This is a DRAFT a qualified reviewer will check before publishing.`
+const QUESTIONS_PROMPT = `You are drafting 5 multiple-choice comprehension questions for one item in an Islamic Arabiyyah/Hadeeth course, based ONLY on the item's given text and notes. All 4 options per question must be the same grammatical form and plausible category as the correct answer — no "all/none of the above," no option that's obviously the odd one out. No two questions may share the same 4 options. Respond with ONLY JSON: {"questions": [{"question": "...", "options": ["...","...","...","..."], "correctIndex": 0, "explanation": "..."}]}. This is a DRAFT a qualified reviewer will check before publishing.`
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders() })
@@ -105,13 +97,12 @@ serve(async (req) => {
 
   const action = body.action
 
+  // ── Courses ──────────────────────────────────────────────────
   if (action === 'list_courses') {
     const { data, error } = await supabaseAdmin
       .from('lms_courses')
       .select('*')
-      .order('class_id')
-      .order('level')
-      .order('sort_order')
+      .order('class_id').order('level').order('sort_order')
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
     return new Response(JSON.stringify({ ok: true, courses: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
   }
@@ -129,92 +120,98 @@ serve(async (req) => {
     return new Response(JSON.stringify({ ok: true, course: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
   }
 
-  if (action === 'list_chapters') {
+  // ── Sections ─────────────────────────────────────────────────
+  if (action === 'list_sections') {
     const courseId = body.course_id
     if (!courseId) return new Response(JSON.stringify({ error: 'course_id is required' }), { status: 400, headers: corsHeaders() })
-    const { data, error } = await supabaseAdmin
-      .from('lms_chapters')
-      .select('*')
-      .eq('course_id', courseId)
-      .order('chapter_number')
+    const { data, error } = await supabaseAdmin.from('lms_sections').select('*').eq('course_id', courseId).order('section_number')
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
-    return new Response(JSON.stringify({ ok: true, chapters: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
+    return new Response(JSON.stringify({ ok: true, sections: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
   }
 
-  if (action === 'add_chapter') {
-    const { course_id, chapter_number, title, arabic_text, transliteration, translation, notes } = body
-    if (!course_id || !chapter_number || !title) {
-      return new Response(JSON.stringify({ error: 'course_id, chapter_number, and title are required' }), { status: 400, headers: corsHeaders() })
+  if (action === 'add_section') {
+    const { course_id, section_number, title } = body
+    if (!course_id || !section_number || !title) {
+      return new Response(JSON.stringify({ error: 'course_id, section_number, and title are required' }), { status: 400, headers: corsHeaders() })
+    }
+    const { data, error } = await supabaseAdmin.from('lms_sections').insert({ course_id, section_number, title, status: 'draft' }).select().maybeSingle()
+    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
+    return new Response(JSON.stringify({ ok: true, section: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
+  }
+
+  // ── Items ────────────────────────────────────────────────────
+  if (action === 'list_items') {
+    const sectionId = body.section_id
+    if (!sectionId) return new Response(JSON.stringify({ error: 'section_id is required' }), { status: 400, headers: corsHeaders() })
+    const { data, error } = await supabaseAdmin.from('lms_items').select('*').eq('section_id', sectionId).order('item_number')
+    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
+    return new Response(JSON.stringify({ ok: true, items: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
+  }
+
+  if (action === 'add_item') {
+    const { section_id, item_number, item_type, title, arabic_text, transliteration, translation, notes } = body
+    if (!section_id || !item_number || !item_type || !title) {
+      return new Response(JSON.stringify({ error: 'section_id, item_number, item_type, and title are required' }), { status: 400, headers: corsHeaders() })
+    }
+    if (!['audio', 'reading', 'quiz', 'discussion'].includes(item_type)) {
+      return new Response(JSON.stringify({ error: 'invalid item_type' }), { status: 400, headers: corsHeaders() })
     }
     const { data, error } = await supabaseAdmin
-      .from('lms_chapters')
-      .insert({
-        course_id, chapter_number, title,
-        arabic_text: arabic_text || null,
-        transliteration: transliteration || null,
-        translation: translation || null,
-        notes: notes || null,
-        status: 'draft', ai_generated: false,
-      })
+      .from('lms_items')
+      .insert({ section_id, item_number, item_type, title, arabic_text: arabic_text || null, transliteration: transliteration || null, translation: translation || null, notes: notes || null, status: 'draft', ai_generated: false })
       .select().maybeSingle()
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
-    return new Response(JSON.stringify({ ok: true, chapter: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
+    return new Response(JSON.stringify({ ok: true, item: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
   }
 
-  if (action === 'update_chapter') {
+  if (action === 'update_item') {
     const { id, ...fields } = body
     if (!id) return new Response(JSON.stringify({ error: 'id is required' }), { status: 400, headers: corsHeaders() })
-    const { error } = await supabaseAdmin.from('lms_chapters').update(fields).eq('id', id)
+    const { error } = await supabaseAdmin.from('lms_items').update(fields).eq('id', id)
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
     return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
   }
-  if (action === 'list_chapter_questions') {
-    const chapterId = body.chapter_id
-    if (!chapterId) return new Response(JSON.stringify({ error: 'chapter_id is required' }), { status: 400, headers: corsHeaders() })
-    const { data, error } = await supabaseAdmin
-      .from('lms_chapter_questions')
-      .select('*')
-      .eq('chapter_id', chapterId)
-      .order('created_at', { ascending: false })
-    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
-    return new Response(JSON.stringify({ ok: true, questions: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
-  }
-  // Signed upload URL for chapter audio — same pattern as
-  // admin-manage-class-lessons, so a full recording (large file)
-  // never passes through this function's own request/response size
-  // limit, only the browser talks directly to Storage.
+
   if (action === 'get_upload_url') {
-    const { course_id, chapter_number, filename } = body
-    if (!course_id || !chapter_number) {
-      return new Response(JSON.stringify({ error: 'course_id and chapter_number are required' }), { status: 400, headers: corsHeaders() })
+    const { section_id, item_number, filename } = body
+    if (!section_id || !item_number) {
+      return new Response(JSON.stringify({ error: 'section_id and item_number are required' }), { status: 400, headers: corsHeaders() })
     }
-    const path = `lms/${course_id}/chapter-${chapter_number}-${Date.now()}-${sanitizeFilename(filename || 'audio.mp3')}`
+    const path = `lms/${section_id}/item-${item_number}-${Date.now()}-${sanitizeFilename(filename || 'audio.mp3')}`
     const { data: signed, error: signError } = await supabaseAdmin.storage.from(AUDIO_BUCKET).createSignedUploadUrl(path)
     if (signError) return new Response(JSON.stringify({ error: signError.message }), { status: 500, headers: corsHeaders() })
     const { data: publicUrlData } = supabaseAdmin.storage.from(AUDIO_BUCKET).getPublicUrl(path)
     return new Response(JSON.stringify({ ok: true, path, token: signed.token, audioUrl: publicUrlData.publicUrl }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
   }
 
+  // ── Item questions (quiz items only) ────────────────────────
+  if (action === 'list_item_questions') {
+    const itemId = body.item_id
+    if (!itemId) return new Response(JSON.stringify({ error: 'item_id is required' }), { status: 400, headers: corsHeaders() })
+    const { data, error } = await supabaseAdmin.from('lms_item_questions').select('*').eq('item_id', itemId).order('created_at', { ascending: false })
+    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
+    return new Response(JSON.stringify({ ok: true, questions: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
+  }
+
   if (action === 'generate_draft_notes') {
-    const chapter = body.chapter
-    if (!chapter?.title) return new Response(JSON.stringify({ error: 'chapter is required' }), { status: 400, headers: corsHeaders() })
+    const item = body.item
+    if (!item?.title) return new Response(JSON.stringify({ error: 'item is required' }), { status: 400, headers: corsHeaders() })
     try {
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          temperature: 0.3,
+          model: 'gpt-4o-mini', temperature: 0.3,
           messages: [
             { role: 'system', content: NOTES_PROMPT },
-            { role: 'user', content: `Chapter: ${chapter.title}\n\nArabic text: ${chapter.arabic_text || '(none provided)'}\nTranslation: ${chapter.translation || '(none provided)'}` },
+            { role: 'user', content: `Item: ${item.title}\n\nArabic text: ${item.arabic_text || '(none provided)'}\nTranslation: ${item.translation || '(none provided)'}` },
           ],
         }),
       })
       const resBody = await res.json()
       if (!res.ok) throw new Error(resBody?.error?.message || 'Draft generation failed')
       const draftText = resBody.choices[0].message.content.trim()
-      const { error } = await supabaseAdmin.from('lms_chapters').update({ notes: draftText, ai_generated: true }).eq('id', chapter.id)
+      const { error } = await supabaseAdmin.from('lms_items').update({ notes: draftText, ai_generated: true }).eq('id', item.id)
       if (error) throw error
       return new Response(JSON.stringify({ ok: true, notes: draftText }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
     } catch (err) {
@@ -223,13 +220,10 @@ serve(async (req) => {
   }
 
   if (action === 'generate_draft_questions') {
-    const chapter = body.chapter
-    if (!chapter?.title) return new Response(JSON.stringify({ error: 'chapter is required' }), { status: 400, headers: corsHeaders() })
+    const item = body.item
+    if (!item?.title) return new Response(JSON.stringify({ error: 'item is required' }), { status: 400, headers: corsHeaders() })
     try {
-      const { data: existingQuestions } = await supabaseAdmin
-        .from('lms_chapter_questions')
-        .select('question, options')
-        .eq('chapter_id', chapter.id)
+      const { data: existingQuestions } = await supabaseAdmin.from('lms_item_questions').select('question, options').eq('item_id', item.id)
       const seenQuestionText = new Set((existingQuestions || []).map((q: any) => q.question.trim().toLowerCase()))
       const seenOptionSets = new Set((existingQuestions || []).map((q: any) => optionSetKey(q.options)))
 
@@ -237,12 +231,10 @@ serve(async (req) => {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          temperature: 0.4,
-          response_format: { type: 'json_object' },
+          model: 'gpt-4o-mini', temperature: 0.4, response_format: { type: 'json_object' },
           messages: [
             { role: 'system', content: QUESTIONS_PROMPT },
-            { role: 'user', content: `Chapter: ${chapter.title}\n\nArabic text: ${chapter.arabic_text || '(none)'}\nTranslation: ${chapter.translation || '(none)'}\nNotes: ${chapter.notes || '(none)'}` },
+            { role: 'user', content: `Item: ${item.title}\n\nArabic text: ${item.arabic_text || '(none)'}\nTranslation: ${item.translation || '(none)'}\nNotes: ${item.notes || '(none)'}` },
           ],
         }),
       })
@@ -252,7 +244,6 @@ serve(async (req) => {
       let parsed
       try { parsed = JSON.parse(resBody.choices[0].message.content) } catch { throw new Error('Model returned invalid JSON') }
       const rawQuestions = Array.isArray(parsed.questions) ? parsed.questions : []
-
       const valid = rawQuestions.filter((q: any) =>
         typeof q.question === 'string' && Array.isArray(q.options) && q.options.length === 4
         && Number.isInteger(q.correctIndex) && q.correctIndex >= 0 && q.correctIndex <= 3
@@ -264,8 +255,7 @@ serve(async (req) => {
         const qKey = q.question.trim().toLowerCase()
         const oKey = optionSetKey(q.options)
         if (seenQuestionText.has(qKey) || seenOptionSets.has(oKey) || batchQuestionText.has(qKey) || batchOptionSets.has(oKey)) return false
-        batchQuestionText.add(qKey)
-        batchOptionSets.add(oKey)
+        batchQuestionText.add(qKey); batchOptionSets.add(oKey)
         return true
       })
 
@@ -280,15 +270,11 @@ serve(async (req) => {
         const options = new Array(4)
         options[position] = correctText
         let d = 0
-        for (let i = 0; i < 4; i++) {
-          if (i === position) continue
-          options[i] = shuffledDistractors[d]
-          d++
-        }
-        return { chapter_id: chapter.id, question: q.question, options, correct_index: position, explanation: q.explanation || null, status: 'draft', ai_generated: true }
+        for (let i = 0; i < 4; i++) { if (i === position) continue; options[i] = shuffledDistractors[d]; d++ }
+        return { item_id: item.id, question: q.question, options, correct_index: position, explanation: q.explanation || null, status: 'draft', ai_generated: true }
       })
-    
-      const { data, error } = await supabaseAdmin.from('lms_chapter_questions').insert(rows).select()
+
+      const { data, error } = await supabaseAdmin.from('lms_item_questions').insert(rows).select()
       if (error) throw error
       return new Response(JSON.stringify({ ok: true, questions: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
     } catch (err) {
@@ -296,13 +282,14 @@ serve(async (req) => {
     }
   }
 
+  // ── Publish / unpublish / delete (shared across tables) ─────
   if (action === 'publish' || action === 'unpublish') {
     const { table, id } = body
-    if (!['lms_chapters', 'lms_chapter_questions'].includes(table) || !id) {
+    if (!['lms_sections', 'lms_items', 'lms_item_questions'].includes(table) || !id) {
       return new Response(JSON.stringify({ error: 'valid table and id are required' }), { status: 400, headers: corsHeaders() })
     }
-    if (action === 'publish' && table === 'lms_chapter_questions') {
-      const { data: existing } = await supabaseAdmin.from('lms_chapter_questions').select('correct_index, options').eq('id', id).maybeSingle()
+    if (action === 'publish' && table === 'lms_item_questions') {
+      const { data: existing } = await supabaseAdmin.from('lms_item_questions').select('correct_index, options').eq('id', id).maybeSingle()
       if (!existing || existing.correct_index === null || !Array.isArray(existing.options) || existing.options.length !== 4) {
         return new Response(JSON.stringify({ error: 'This question is missing a confirmed correct answer — fix it before publishing.' }), { status: 400, headers: corsHeaders() })
       }
@@ -317,7 +304,7 @@ serve(async (req) => {
 
   if (action === 'delete') {
     const { table, id } = body
-    if (!['lms_courses', 'lms_chapters', 'lms_chapter_questions'].includes(table) || !id) {
+    if (!['lms_courses', 'lms_sections', 'lms_items', 'lms_item_questions'].includes(table) || !id) {
       return new Response(JSON.stringify({ error: 'valid table and id are required' }), { status: 400, headers: corsHeaders() })
     }
     const { error } = await supabaseAdmin.from(table).delete().eq('id', id)

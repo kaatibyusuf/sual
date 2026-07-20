@@ -3,8 +3,8 @@
 # min_api: 21
 # common_typos_disable
 # {"id":"com.android.tools.r8.mapping","version":"2.2"}
-# pg_map_id: 887b341
-# pg_map_hash: SHA-256 887b34168baede2e63121834145740dcb8f4777538238a6b60553cf45c159cdb
+# pg_map_id: 9150253
+# pg_map_hash: SHA-256 9150253ae3859d107ab02ed170f66d0b951b67053c86775eb9e7c400a37155d1
 android.support.customtabs.ICustomTabsCallback -> a.a:
 # {"id":"sourceFile","fileName":"ICustomTabsCallback.java"}
     java.lang.String DESCRIPTOR -> a
@@ -36635,16 +36635,16 @@ com.google.common.collect.UnmodifiableListIterator -> m0.s:
     1:4:void <init>():34:34 -> <init>
     1:6:void add(java.lang.Object):46:46 -> add
     1:6:void set(java.lang.Object):59:59 -> set
-com.usesual.app.twa.Application -> com.usesual.app.twa.Application:
+com.usesual.app.Application -> com.usesual.app.Application:
 # {"id":"sourceFile","fileName":"Application.java"}
     1:4:void <init>():20:20 -> <init>
     1:4:void onCreate():26:26 -> onCreate
-com.usesual.app.twa.DelegationService -> com.usesual.app.twa.DelegationService:
+com.usesual.app.DelegationService -> com.usesual.app.DelegationService:
 # {"id":"sourceFile","fileName":"DelegationService.java"}
     1:4:void <init>():7:7 -> <init>
     1:3:void onCreate():11:11 -> onCreate
     4:12:void onCreate():14:14 -> onCreate
-com.usesual.app.twa.LauncherActivity -> com.usesual.app.twa.LauncherActivity:
+com.usesual.app.LauncherActivity -> com.usesual.app.LauncherActivity:
 # {"id":"sourceFile","fileName":"LauncherActivity.java"}
     1:4:void <init>():25:25 -> <init>
     1:5:android.net.Uri getLaunchingUrl():48:48 -> i

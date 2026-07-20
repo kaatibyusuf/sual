@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.usesual.app.twa.app-mergeReleaseResources-25:/values-am/values-am.xml",
+            "outputFile": "com.usesual.app-mergeReleaseResources-25:/values-am/values-am.xml",
             "map": [
                 {
                     "source": "C:\\Users\\owner\\.gradle\\caches\\8.11.1\\transforms\\d176d6696a4772b4ce2a6021c61f9202\\transformed\\play-services-basement-18.1.0\\res\\values-am\\values.xml",

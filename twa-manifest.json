@@ -1,7 +1,7 @@
 {
-  "packageId": "com.usesual.app.twa",
+  "packageId": "com.usesual.app",
   "host": "app.usesual.com",
-  "name": "Sual - Islamic Knowledge Platform",
+  "name": "Sual",
   "launcherName": "Sual",
   "display": "standalone",
   "themeColor": "#094570",
@@ -18,18 +18,15 @@
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "C:\\Users\\owner\\sual\\android.keystore",
-    "alias": "Sual"
+    "alias": "sual"
   },
-  "appVersionName": "2",
-  "appVersionCode": 2,
+  "appVersionName": "1",
+  "appVersionCode": 1,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://app.usesual.com/manifest.json",
   "fallbackType": "customtabs",
   "features": {
-    "playBilling": {
-      "enabled": false
-    },
     "locationDelegation": {
       "enabled": true
     }
@@ -50,5 +47,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "2"
+  "appVersion": "1"
 }
