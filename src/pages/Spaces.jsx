@@ -2,6 +2,7 @@ import { BadgeStrip } from '../components/Badges.jsx'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
+import LmsCourse from '../components/LmsCourse.jsx'
 import './Spaces.css'
 
 const CATEGORIES = [
@@ -260,22 +261,14 @@ export default function Spaces({ user }) {
   const [tafseerAlreadyDone, setTafseerAlreadyDone] = useState(false)
   const [tafseerPastScore, setTafseerPastScore] = useState('')
 
-  // Daily Tafseer archive — browse past entries read-only, separate
-  // from today's quiz flow, which stays specifically tied to today's
-  // entry since its distractors are built from recent history.
   const [tafseerArchive, setTafseerArchive] = useState([])
   const [tafseerArchiveLoading, setTafseerArchiveLoading] = useState(false)
   const [showTafseerArchive, setShowTafseerArchive] = useState(false)
   const [selectedArchiveTafseer, setSelectedArchiveTafseer] = useState(null)
 
-  // Daily Class Lesson — Arabiyyah + Hadeeth, one entry per class,
-  // level, and date. Refires automatically whenever the person
-  // switches level, since classLevel is a dependency of the effect
-  // that calls this.
   const [classLesson, setClassLesson] = useState(null)
   const [classLessonLoading, setClassLessonLoading] = useState(false)
 
-  // Class Lesson archive — same read-only browse pattern as tafseer.
   const [classLessonArchive, setClassLessonArchive] = useState([])
   const [classLessonArchiveLoading, setClassLessonArchiveLoading] = useState(false)
   const [showClassLessonArchive, setShowClassLessonArchive] = useState(false)
@@ -615,10 +608,6 @@ export default function Spaces({ user }) {
     }
   }, [user])
 
-  // Daily Tafseer archive — read-only, no quiz attached, since the
-  // quiz's distractors are built specifically from recent history
-  // around today's entry; mixing archive browsing into that logic
-  // would tangle two different things for no real benefit.
   const fetchTafseerArchive = useCallback(async () => {
     setTafseerArchiveLoading(true)
     try {
@@ -674,7 +663,6 @@ export default function Spaces({ user }) {
     }
   }
 
-  // ── Daily Class Lesson (Arabiyyah + Hadeeth) ─────────────────
   const fetchClassLesson = useCallback(async (classId, level) => {
     setClassLessonLoading(true)
     try {
@@ -696,7 +684,6 @@ export default function Spaces({ user }) {
     }
   }, [])
 
-  // Class Lesson archive — same read-only browse pattern as tafseer.
   const fetchClassLessonArchive = useCallback(async (classId, level) => {
     setClassLessonArchiveLoading(true)
     try {
@@ -717,7 +704,6 @@ export default function Spaces({ user }) {
     }
   }, [])
 
-  // ── Payment return handling ──────────────────────────────────
   useEffect(() => {
     if (!user) return
     checkSubscription()
@@ -1236,8 +1222,6 @@ export default function Spaces({ user }) {
     </div>
   )
 
-  // Shared read-only render for one class lesson (today's or an
-  // archive entry), so the JSX isn't duplicated between the two.
   const renderLessonContent = (lesson) => (
     <div className="spaces-tafseer-card card">
       <h4 className="spaces-class-section-title">📖 {lesson.title}</h4>
@@ -1267,8 +1251,6 @@ export default function Spaces({ user }) {
     </div>
   )
 
-  // Shared read-only render for one tafseer entry (today's or an
-  // archive entry) — no quiz attached, see note above fetchTafseerArchive.
   const renderTafseerReadOnly = (entry) => (
     <>
       <div className="spaces-tafseer-card card">
@@ -1542,13 +1524,13 @@ export default function Spaces({ user }) {
           <h2 className="spaces-paywall-title">Members Only</h2>
           <p className="spaces-paywall-desc">
             Spaces is an exclusive community for paid members. Ask questions, share knowledge,
-            get scholar answers, and join structured Arabic and Hadeeth classes.
+            get scholar answers, and take structured Arabic and Hadeeth courses.
           </p>
           <div className="spaces-features">
             {[
               { icon: '🎓', text: 'Direct answers from a qualified scholar' },
-              { icon: '✍️', text: 'Structured Arabiyyah class — Beginner to Advanced' },
-              { icon: '📜', text: 'Structured Hadeeth class — An-Nawawi to Sahih Al-Bukhari' },
+              { icon: '✍️', text: 'Structured Arabiyyah courses — Beginner to Advanced' },
+              { icon: '📜', text: 'Structured Hadeeth courses — An-Nawawi to Sahih Al-Bukhari' },
               { icon: '💬', text: 'Threaded community discussions' },
               { icon: '🤝', text: 'Accountability partners and Sahaabah circles' },
               { icon: '📖', text: 'A new tafseer verse and short test every day' },
@@ -1634,7 +1616,7 @@ export default function Spaces({ user }) {
               <div className="spaces-empty card">
                 <p className="spaces-empty-icon">📖</p>
                 <p className="spaces-empty-text">No lesson posted yet today for this level</p>
-                <p className="spaces-empty-sub">The curriculum and Telegram group below are still there in the meantime.</p>
+                <p className="spaces-empty-sub">Check the course below for structured, self-paced chapters in the meantime.</p>
               </div>
             )}
 
@@ -1711,32 +1693,12 @@ export default function Spaces({ user }) {
               </div>
             )}
 
-            <div className="spaces-class-cta card">
-              <p className="spaces-class-cta-text">
-                Ready to join the {currentLevel.label} {cls.title}?
-                Click the button below to join the dedicated Telegram group for your level.
-                All classes are conducted and coordinated through Telegram.
-              </p>
+            {/* Structured, self-paced course library — replaces the
+                previous Telegram-group CTA entirely. Courses,
+                chapters, quizzes, progress, and course-scoped
+                discussion all live here now. */}
+            <LmsCourse classId={cls.id} level={currentLevelKey} user={user} />
 
-              <a
-                className="spaces-submit-btn spaces-telegram-btn"
-                href={
-                  currentLevel.key === 'beginner'
-                    ? 'https://t.me/+mCqRMQQ4qmA5ZjI0'
-                    : currentLevel.key === 'intermediate'
-                    ? 'https://t.me/+E_jr7Ojha9RiNzc0'
-                    : 'https://t.me/+IuJuOAz3FkUyNGQ8'
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                📲 Join {currentLevel.label} Telegram Group →
-              </a>
-              <p className="spaces-class-cta-note">
-                The same Telegram group serves both the Arabiyyah Class and the Hadeeth Class at each level.
-                Introduce yourself when you join and mention which class you are enrolling in.
-              </p>
-            </div>
           </div>
         )}
       </div>
