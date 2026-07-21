@@ -57,7 +57,6 @@ const ICONS = {
       <circle cx="15" cy="15" r="5" />
     </svg>
   ),
-
   hifdh: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 3a4.5 4.5 0 0 0-4.5 4.5c0 1.2.5 2.3 1.2 3.1A4.5 4.5 0 0 0 7.5 14a4.5 4.5 0 0 0 9 0 4.5 4.5 0 0 0-1.2-3.4c.7-.8 1.2-1.9 1.2-3.1A4.5 4.5 0 0 0 12 3z" />
@@ -162,7 +161,7 @@ const ACTIONS = [
     desc: 'Memorization',
   },
   {
-    to: '/journey',
+    to: '/dashboard',
     icon: 'journey',
     color: '#C9B7E8',
     iconColor: '#2E1F4A',

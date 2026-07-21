@@ -12304,9 +12304,6 @@ com.usesual.app.R$raw
 com.usesual.app.R$string
 com.usesual.app.R$xml
 com.usesual.app.R
-com.usesual.app.twa.Application
-com.usesual.app.twa.DelegationService
-com.usesual.app.twa.LauncherActivity
 kotlin.ArrayIntrinsicsKt
 kotlin.BuilderInference
 kotlin.CharCodeJVMKt

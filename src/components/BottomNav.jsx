@@ -163,7 +163,7 @@ export default function BottomNav() {
             <p className="bottom-nav-sheet-title">More</p>
             <div className="bottom-nav-sheet-grid">
               {MORE_ITEMS.map(item => (
-                <button key={item.to} className="bottom-nav-sheet-item" onClick={() => goTo(item.to)}>
+                <button key={item.label} className="bottom-nav-sheet-item" onClick={() => goTo(item.to)}>
                   <span className="bottom-nav-sheet-icon">{ICONS[item.icon]}</span>
                   <span className="bottom-nav-sheet-label">{item.label}</span>
                 </button>
@@ -172,7 +172,6 @@ export default function BottomNav() {
           </div>
         </div>
       )}
-
       <nav className="bottom-nav" aria-label="Primary">
         {PRIMARY_ITEMS.map(item => (
           <NavLink
