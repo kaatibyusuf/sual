@@ -156,13 +156,12 @@ export default function Journey({ user }) {
               <p>Quiz analytics couldn't be loaded right now — milestones and Hifdh data below are still accurate.</p>
             </div>
           )}
-        return (
+  
   <div className="page-content">
     <h1 className="page-title">Journey</h1>
     <ReferralProgress user={user} />
     {/* stats, charts, quiz history, etc. */}
   </div>
-)
           {/* Milestones */}
           <section className="journey-section">
             <h2 className="journey-section-title">Milestones</h2>

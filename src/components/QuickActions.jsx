@@ -161,7 +161,7 @@ const ACTIONS = [
     desc: 'Memorization',
   },
   {
-    to: '/journey',
+    to: '/dashboard',
     icon: 'journey',
     color: '#C9B7E8',
     iconColor: '#2E1F4A',
