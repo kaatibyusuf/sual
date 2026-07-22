@@ -1,3 +1,4 @@
+import { captureReferralFromUrl, redeemStoredReferral } from './lib/referral.js'
 import React, { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { supabase } from './lib/supabase.js'
@@ -61,6 +62,15 @@ export default function App() {
     document.documentElement.setAttribute('data-fontsize', fontSize)
   }, [fontSize])
 
+  // Capture a ?ref=CODE from the URL as early as possible, so it
+  // survives whatever redirect happens between clicking a referral
+  // link and finishing signup — stored in localStorage, redeemed
+  // later, once, only for a brand-new account (see !levelSelected
+  // below).
+  useEffect(() => {
+    captureReferralFromUrl()
+  }, [])
+
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       const u = session?.user ?? null
@@ -89,11 +99,9 @@ export default function App() {
       }
       setAuthLoading(false)
     })
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
     })
-
     return () => subscription.unsubscribe()
   }, [])
 
@@ -153,6 +161,13 @@ export default function App() {
         onLevelSelected={(level) => {
           setUserLevel(level)
           setLevelSelected(true)
+          // This branch only ever renders for an account that hasn't
+          // finished onboarding — for all practical purposes, a brand
+          // new signup. Redeeming here, once, is what credits the
+          // referrer without any risk of a returning user re-triggering
+          // it on a later login (this component simply never renders
+          // again for them once levelSelected is true).
+          redeemStoredReferral()
         }}
       />
     )
@@ -191,10 +206,10 @@ export default function App() {
             <Route path="/hifdh" element={<Hifdh user={user} />} />
             <Route path="/admin" element={<Admin user={user} />} />
             <Route path="/exam-prep" element={<ExamPrep user={user} />} />
-            <Route path="*" element={<Home user={user} />} />
             <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
-            <Route path="/lms-dashboard" element={<LmsDashboard />} />
-            <Route path="/lms-course/:id" element={<LmsCourseDetail />} />
+            <Route path="/lms" element={<LmsDashboard user={user} />} />
+            <Route path="/lms/:courseId" element={<LmsCourseDetail user={user} />} />
+            <Route path="*" element={<Home user={user} />} />
           </Routes>
         </main>
       </div>

@@ -1,3 +1,4 @@
+import ReferralProgress from '../components/ReferralProgress.jsx'
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './Profile.css'
@@ -45,7 +46,6 @@ function NotificationToggle({ user }) {
     </div>
   )
 }
-
 const LEVELS = [
   { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
   { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100' },
@@ -294,7 +294,7 @@ export default function Profile({ user, userLevel, setUserLevel }) {
             {isPaid ? 'Subscribed' : 'Not Subscribed'}
           </div>
         </div>
-
+<ReferralProgress user={user} />
         {isPaid && !subLoading && (
           <div className="profile-sub-details">
             <div className="profile-sub-detail-item">

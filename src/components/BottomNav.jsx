@@ -119,6 +119,12 @@ const ICONS = {
       <circle cx="19" cy="8" r="1.4" fill="currentColor" stroke="none" />
     </svg>
   ),
+  lms: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 14l9-9-9-9-9 9 9 9z" />
+      <path d="M12 14l6.16-6.16a2 2 0 0 0-2.828-2.828l-8.837 8.837L3.5 14.5M12 14l6.16-6.16a2 2 0 0 0-2.828-2.828l-8.837 8.837L3.5 14.5" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -143,6 +149,7 @@ const MORE_ITEMS = [
   { to: '/spaces', icon: 'spaces', label: 'Spaces' },
   { to: '/hifdh', icon: 'hifdh', label: 'Hifdh' },
   { to: '/journey', icon: 'journey', label: 'Journey' },
+  { to: '/lms', icon: 'lms', label: 'My Courses' },
 ]
 
 export default function BottomNav() {

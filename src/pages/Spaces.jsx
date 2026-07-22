@@ -1,5 +1,5 @@
 import { BadgeStrip } from '../components/Badges.jsx'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import LmsCourse from '../components/LmsCourse.jsx'
@@ -202,6 +202,7 @@ function buildTafseerQuestions(entry, historyPool) {
 }
 
 export default function Spaces({ user }) {
+  const [hasReferralAccess, setHasReferralAccess] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
   const [subscription,   setSubscription]   = useState(null)
   const [subLoading,     setSubLoading]     = useState(true)
@@ -296,6 +297,21 @@ export default function Spaces({ user }) {
       setSubLoading(false)
     }
   }, [user])
+const [hasReferralAccess, setHasReferralAccess] = useState(false)
+
+// alongside the existing checkSubscription function:
+const checkReferralAccess = useCallback(async () => {
+  if (!user) return
+  const { data } = await supabase
+    .from('referral_free_access')
+    .select('expires_at')
+    .eq('user_id', user.id)
+    .gt('expires_at', new Date().toISOString())
+    .order('expires_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  setHasReferralAccess(!!data)
+}, [user])
 
   const fetchPosts = useCallback(async () => {
     if (!user) return
@@ -735,35 +751,35 @@ export default function Spaces({ user }) {
   }, [user, checkSubscription])
 
   useEffect(() => {
-    if (subscription?.status === 'active') {
-      fetchPosts()
-      fetchFeatured()
-      fetchMemberCount()
-    }
-  }, [subscription, fetchPosts, fetchFeatured, fetchMemberCount])
+  if (isPaid) {
+    fetchPosts()
+    fetchFeatured()
+    fetchMemberCount()
+  }
+}, [isPaid, fetchPosts, fetchFeatured, fetchMemberCount])
 
-  useEffect(() => {
-    if (justJoined && subscription?.status === 'active') {
-      setActiveTab('community')
-      setNewPost({
-        title: "Assalamu alaikum, I'm new here",
-        body: "Assalamu alaikum everyone, I'm new here. ",
-        category: 'general',
-      })
-      setShowNewPost(true)
-      setShowWelcomePrompt(true)
-      setJustJoined(false)
-    }
-  }, [justJoined, subscription])
+useEffect(() => {
+  if (justJoined && isPaid) {
+    setActiveTab('community')
+    setNewPost({
+      title: "Assalamu alaikum, I'm new here",
+      body: "Assalamu alaikum everyone, I'm new here. ",
+      category: 'general',
+    })
+    setShowNewPost(true)
+    setShowWelcomePrompt(true)
+    setJustJoined(false)
+  }
+}, [justJoined, isPaid])
 
-  useEffect(() => {
-    if (subscription?.status !== 'active') return
-    if (activeTab === 'accountability') fetchAccountability()
-    if (activeTab === 'circles') fetchCircles()
-    if (activeTab === 'tafseer') { fetchTafseer(); fetchTafseerArchive() }
-    if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', classLevel.arabiyyah); fetchClassLessonArchive('arabiyyah', classLevel.arabiyyah) }
-    if (activeTab === 'hadeeth') { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
-  }, [activeTab, subscription, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, classLevel])
+useEffect(() => {
+  if (!isPaid) return
+  if (activeTab === 'accountability') fetchAccountability()
+  if (activeTab === 'circles') fetchCircles()
+  if (activeTab === 'tafseer') { fetchTafseer(); fetchTafseerArchive() }
+  if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', classLevel.arabiyyah); fetchClassLessonArchive('arabiyyah', classLevel.arabiyyah) }
+  if (activeTab === 'hadeeth') { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
+}, [activeTab, isPaid, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, classLevel])
 
   useEffect(() => {
     if (subLoading || subscription?.status !== 'active') return
@@ -885,7 +901,10 @@ export default function Spaces({ user }) {
   })
 
   const getInitials = (str) => str ? str[0].toUpperCase() : 'U'
-  const isPaid = subscription?.status === 'active'
+  const isPaid = useMemo(
+  () => subscription?.status === 'active' || hasReferralAccess,
+  [subscription, hasReferralAccess]
+)
   const catOf = (key) => CATEGORIES.find(c => c.key === key)
 
   const renderSchedule = () => (
