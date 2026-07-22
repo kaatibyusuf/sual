@@ -297,7 +297,6 @@ export default function Spaces({ user }) {
       setSubLoading(false)
     }
   }, [user])
-const [hasReferralAccess, setHasReferralAccess] = useState(false)
 
 // alongside the existing checkSubscription function:
 const checkReferralAccess = useCallback(async () => {
