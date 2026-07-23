@@ -116,12 +116,12 @@ const ICONS = {
     </svg>
   ),
   examPrep: (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 3v4a1 1 0 0 1-1 1H4" />
-    <path d="M9 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9l4-7Z" />
-    <path d="M9 13l2 2 4-4" />
-  </svg>
-),
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 3v4a1 1 0 0 1-1 1H4" />
+      <path d="M9 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9l4-7Z" />
+      <path d="M9 13l2 2 4-4" />
+    </svg>
+  ),
 }
 
 // ── Six-pillar grouping ───────────────────────────────────────
@@ -133,7 +133,6 @@ const ICONS = {
 // Disciplines (Fiqh, Tawheed, etc. from DISCIPLINES data) are
 // appended to the Learn group below, right after Stories, so all
 // "things to read and study" live in one place.
-
 const HOME_ITEM = { path: '/', label: 'Home', icon: 'home' }
 
 const NAV_GROUPS = [
@@ -175,11 +174,11 @@ const NAV_GROUPS = [
     ],
   },
   {
-  label: 'My Courses',
-  items: [
-    { path: '/lms', label: 'Courses', icon: 'flashcards' }, // reuse an existing icon key for now
-  ],
-},
+    label: 'My Courses',
+    items: [
+      { path: '/lms', label: 'Courses', icon: 'flashcards' }, // reuse an existing icon key for now
+    ],
+  },
   {
     label: 'Community',
     items: [
@@ -198,7 +197,6 @@ const NAV_GROUPS = [
       { path: '/profile', label: 'Profile', icon: 'profile' },
     ],
   },
-
 ]
 
 const WA_LINK = 'https://whatsapp.com/channel/0029Vb8gbnB5PO0ysEFozQ46'
@@ -210,7 +208,7 @@ function NavItem({ item }) {
       end={item.path === '/'}
       className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-link--active' : ''}`}
     >
-      <span className="sidebar-link-icon">{ICONS[item.icon]}</span>
+      <span className="sidebar-link-icon" aria-hidden="true">{ICONS[item.icon]}</span>
       <span className="sidebar-link-text">
         <span className="sidebar-link-latin">{item.label}</span>
       </span>
@@ -225,13 +223,17 @@ export default function Sidebar({ onSignOut, user }) {
         <span className="sidebar-logo-arabic">سُؤَال</span>
         <span className="sidebar-logo-latin">Sual</span>
       </div>
-
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav" aria-label="Primary">
         <NavItem item={HOME_ITEM} />
-
         {NAV_GROUPS.map(group => (
           <React.Fragment key={group.label}>
-            <p className="sidebar-section-label" style={{ marginTop: '20px' }}>{group.label}</p>
+            {/* role="heading" lets a screen-reader user navigate the
+                sidebar by section (VoiceOver/TalkBack both support
+                jumping between headings) without changing how this
+                looks — still a plain <p>, visually identical. */}
+            <p className="sidebar-section-label" role="heading" aria-level="2" style={{ marginTop: '20px' }}>
+              {group.label}
+            </p>
             {group.items.map(item => (
               <NavItem key={item.path} item={item} />
             ))}
@@ -241,7 +243,7 @@ export default function Sidebar({ onSignOut, user }) {
                 to={`/discipline/${d.id}`}
                 className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-link--active' : ''}`}
               >
-                <span className="sidebar-link-icon">{DISCIPLINE_ICONS[d.icon]}</span>
+                <span className="sidebar-link-icon" aria-hidden="true">{DISCIPLINE_ICONS[d.icon]}</span>
                 <span className="sidebar-link-text">
                   <span className="sidebar-link-latin">{d.name}</span>
                 </span>
@@ -250,15 +252,15 @@ export default function Sidebar({ onSignOut, user }) {
           </React.Fragment>
         ))}
       </nav>
-
       <div className="sidebar-footer">
         <a
           href={WA_LINK}
           target="_blank"
           rel="noopener noreferrer"
           className="sidebar-wa-btn"
+          aria-label="Join Community on WhatsApp (opens in a new tab)"
         >
-          <span className="sidebar-wa-icon">{ICONS.chat}</span>
+          <span className="sidebar-wa-icon" aria-hidden="true">{ICONS.chat}</span>
           <span>Join Community</span>
         </a>
         {user && (

@@ -281,6 +281,18 @@ export default function Spaces({ user }) {
     return () => clearInterval(interval)
   }, [])
 
+  // ── FIX: isPaid is derived here, immediately after the state it depends
+  // on (subscription, hasReferralAccess) is declared, and BEFORE any of
+  // the useEffect hooks below that read it in their dependency arrays.
+  // It previously lived much further down the file (right before catOf),
+  // which caused "Cannot access 'isPaid' before initialization" — a
+  // temporal dead zone crash, since those earlier effects run during the
+  // very first render, before a later-declared const has been assigned.
+  const isPaid = useMemo(
+    () => subscription?.status === 'active' || hasReferralAccess,
+    [subscription, hasReferralAccess]
+  )
+
   const checkSubscription = useCallback(async () => {
     if (!user) return
     setSubLoading(true)
@@ -900,10 +912,6 @@ useEffect(() => {
   })
 
   const getInitials = (str) => str ? str[0].toUpperCase() : 'U'
-  const isPaid = useMemo(
-  () => subscription?.status === 'active' || hasReferralAccess,
-  [subscription, hasReferralAccess]
-)
   const catOf = (key) => CATEGORIES.find(c => c.key === key)
 
   const renderSchedule = () => (

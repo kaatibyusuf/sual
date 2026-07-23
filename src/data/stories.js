@@ -1,4 +1,11 @@
+import { PROPHET_STORIES } from './stories_of_the_prophets.js'
+import { PROPHET_STORIES_2 } from './stories_of_the_prophets_part2.js'
+import { PROPHET_STORIES_3 } from './stories_of_the_prophets_part3.js'
+
 export const STORIES = [
+  ...PROPHET_STORIES,
+  ...PROPHET_STORIES_2,
+  ...PROPHET_STORIES_3,
   {
     id: 's1',
     name: 'Abu Bakr as-Siddiq',

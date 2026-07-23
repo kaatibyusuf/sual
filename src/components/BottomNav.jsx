@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import './BottomNav.css'
 
@@ -155,23 +155,53 @@ const MORE_ITEMS = [
 export default function BottomNav() {
   const [moreOpen, setMoreOpen] = useState(false)
   const navigate = useNavigate()
+  const firstItemRef = useRef(null)
 
   const goTo = (path) => {
     setMoreOpen(false)
     navigate(path)
   }
 
+  // Accessibility: move focus into the sheet the instant it opens,
+  // and let Escape close it — without this, a keyboard or screen-
+  // reader user who opens "More" has no signal a new panel appeared,
+  // and no quick way back out of it.
+  useEffect(() => {
+    if (moreOpen && firstItemRef.current) {
+      firstItemRef.current.focus()
+    }
+  }, [moreOpen])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && moreOpen) setMoreOpen(false)
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [moreOpen])
+
   return (
     <>
       {moreOpen && (
-        <div className="bottom-nav-overlay" onClick={() => setMoreOpen(false)}>
-          <div className="bottom-nav-sheet" onClick={e => e.stopPropagation()}>
-            <div className="bottom-nav-sheet-handle" />
-            <p className="bottom-nav-sheet-title">More</p>
+        <div className="bottom-nav-overlay" onClick={() => setMoreOpen(false)} role="presentation">
+          <div
+            className="bottom-nav-sheet"
+            onClick={e => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="more-sheet-title"
+          >
+            <div className="bottom-nav-sheet-handle" aria-hidden="true" />
+            <p className="bottom-nav-sheet-title" id="more-sheet-title">More</p>
             <div className="bottom-nav-sheet-grid">
-              {MORE_ITEMS.map(item => (
-                <button key={item.label} className="bottom-nav-sheet-item" onClick={() => goTo(item.to)}>
-                  <span className="bottom-nav-sheet-icon">{ICONS[item.icon]}</span>
+              {MORE_ITEMS.map((item, i) => (
+                <button
+                  key={item.label}
+                  ref={i === 0 ? firstItemRef : null}
+                  className="bottom-nav-sheet-item"
+                  onClick={() => goTo(item.to)}
+                >
+                  <span className="bottom-nav-sheet-icon" aria-hidden="true">{ICONS[item.icon]}</span>
                   <span className="bottom-nav-sheet-label">{item.label}</span>
                 </button>
               ))}
@@ -189,16 +219,18 @@ export default function BottomNav() {
               `bottom-nav-card${isActive ? ' bottom-nav-card--active' : ''}`
             }
           >
-            <span className="bottom-nav-icon">{ICONS[item.icon]}</span>
+            <span className="bottom-nav-icon" aria-hidden="true">{ICONS[item.icon]}</span>
             <span className="bottom-nav-label">{item.label}</span>
           </NavLink>
         ))}
         <button
           className={`bottom-nav-card ${moreOpen ? 'bottom-nav-card--active' : ''}`}
           onClick={() => setMoreOpen(true)}
+          aria-expanded={moreOpen}
+          aria-controls="more-sheet-title"
           aria-label="More"
         >
-          <span className="bottom-nav-icon">{ICONS.menu}</span>
+          <span className="bottom-nav-icon" aria-hidden="true">{ICONS.menu}</span>
           <span className="bottom-nav-label">More</span>
         </button>
       </nav>
