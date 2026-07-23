@@ -5,6 +5,7 @@ import './Stories.css'
 // Filter buttons correspond directly to a story's `era` field.
 const FILTERS = [
   { key: 'all', label: 'All' },
+  { key: 'prophets', label: 'Prophets' },
   { key: 'sahabah', label: 'Sahabah' },
   { key: 'tabieen', label: "Tabii'een" },
   { key: 'tabi-tabieen', label: "Tabi' Tabi'een" },
@@ -13,6 +14,7 @@ const FILTERS = [
 ]
 
 const ERA_BADGE_LABEL = {
+  prophets: 'Prophets',
   sahabah: 'Sahabah',
   tabieen: "Tabii'een",
   'tabi-tabieen': "Tabi' Tabi'een",
@@ -98,7 +100,7 @@ export default function Stories() {
   return (
     <div className="page-content stories-page">
       <h1 className="page-title">Stories of the Salaf</h1>
-      <p className="page-subtitle">سِيَر السَّلَف الصَّالِح — The lives of the Companions and their Successors</p>
+      <p className="page-subtitle">سِيَر السَّلَف الصَّالِح — The lives of the Prophets, the Companions, and their Successors</p>
 
       {/* Filters */}
       <div className="stories-filters">

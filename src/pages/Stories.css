@@ -119,6 +119,11 @@
   text-transform: uppercase;
 }
 
+.badge-prophets {
+  background: #1f6b4a;
+  color: #b8e8cf;
+}
+
 .badge-sahabah {
   background: #094570;
   color: #85CCFF;
