@@ -40,6 +40,14 @@ const EMPTY_EXAM_TOPIC = { board: 'utme', subject: 'islamic_studies', title: '',
 const EMPTY_MCQ_QUESTION = { question_type: 'mcq', question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' }
 const EMPTY_THEORY_QUESTION = { question_type: 'theory', question: '', model_answer: '' }
 
+// LMS now uses a two-level structure under each course: sections (ordered
+// chapters) contain items (audio | reading | quiz | discussion), each
+// individually trackable and publishable. This replaces the old flat
+// "chapter" model — see admin-manage-lms edge function for the matching
+// action set (list_sections, add_section, list_items, add_item, update_item,
+// list_item_questions, generate_draft_notes/questions on { item }).
+const EMPTY_LMS_ITEM = { item_number: '', item_type: 'reading', title: '', arabic_text: '', transliteration: '', translation: '', notes: '' }
+
 export default function Admin({ user }) {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -70,24 +78,29 @@ export default function Admin({ user }) {
   const [audioFile, setAudioFile] = useState(null)
   const [audioUploading, setAudioUploading] = useState(false)
   const [audioUploadError, setAudioUploadError] = useState(null)
-  
+
+  // ── LMS state ─────────────────────────────────────────────────
   const [lmsCourses, setLmsCourses] = useState([])
-const [lmsCoursesLoading, setLmsCoursesLoading] = useState(false)
-const [lmsSelectedCourse, setLmsSelectedCourse] = useState(null)
-const [lmsChapters, setLmsChapters] = useState([])
-const [lmsChaptersLoading, setLmsChaptersLoading] = useState(false)
-const [lmsSelectedChapter, setLmsSelectedChapter] = useState(null)
-const [lmsChapterQuestions, setLmsChapterQuestions] = useState([])
-const [lmsError, setLmsError] = useState(null)
-const [lmsGenerating, setLmsGenerating] = useState(false)
+  const [lmsCoursesLoading, setLmsCoursesLoading] = useState(false)
+  const [lmsSelectedCourse, setLmsSelectedCourse] = useState(null)
+  const [lmsSections, setLmsSections] = useState([])
+  const [lmsSectionsLoading, setLmsSectionsLoading] = useState(false)
+  const [lmsSelectedSection, setLmsSelectedSection] = useState(null)
+  const [lmsItems, setLmsItems] = useState([])
+  const [lmsItemsLoading, setLmsItemsLoading] = useState(false)
+  const [lmsSelectedItem, setLmsSelectedItem] = useState(null)
+  const [lmsItemQuestions, setLmsItemQuestions] = useState([])
+  const [lmsError, setLmsError] = useState(null)
+  const [lmsGenerating, setLmsGenerating] = useState(false)
 
-const [lmsNewCourse, setLmsNewCourse] = useState({ class_id: 'arabiyyah', level: 'beginner', title: '', arabic_title: '', description: '', teacher_name: '' })
-const [lmsChapterForm, setLmsChapterForm] = useState({ chapter_number: '', title: '', arabic_text: '', transliteration: '', translation: '', notes: '' })
-const [lmsEditingChapterId, setLmsEditingChapterId] = useState(null)
+  const [lmsNewCourse, setLmsNewCourse] = useState({ class_id: 'arabiyyah', level: 'beginner', title: '', arabic_title: '', description: '', teacher_name: '' })
+  const [lmsSectionForm, setLmsSectionForm] = useState({ section_number: '', title: '' })
+  const [lmsItemForm, setLmsItemForm] = useState(EMPTY_LMS_ITEM)
+  const [lmsEditingItemId, setLmsEditingItemId] = useState(null)
 
-const [lmsAudioFile, setLmsAudioFile] = useState(null)
-const [lmsAudioUploading, setLmsAudioUploading] = useState(false)
-const [lmsAudioUploadError, setLmsAudioUploadError] = useState(null)
+  const [lmsAudioFile, setLmsAudioFile] = useState(null)
+  const [lmsAudioUploading, setLmsAudioUploading] = useState(false)
+  const [lmsAudioUploadError, setLmsAudioUploadError] = useState(null)
 
   // ── Exam Prep state ─────────────────────────────────────────
   const [examTopics, setExamTopics] = useState([])
@@ -491,188 +504,228 @@ const [lmsAudioUploadError, setLmsAudioUploadError] = useState(null)
       setExamError(err.message)
     }
   }
+
+  // ── LMS functions ─────────────────────────────────────────────
   const fetchLmsCourses = async () => {
-  setLmsCoursesLoading(true)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'list_courses' } })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    setLmsCourses(data.courses || [])
-  } catch (err) {
-    console.error('Failed to load LMS courses:', err)
-  } finally {
-    setLmsCoursesLoading(false)
+    setLmsCoursesLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'list_courses' } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setLmsCourses(data.courses || [])
+    } catch (err) {
+      console.error('Failed to load LMS courses:', err)
+    } finally {
+      setLmsCoursesLoading(false)
+    }
   }
-}
 
-const addLmsCourse = async () => {
-  setLmsError(null)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'add_course', ...lmsNewCourse } })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    setLmsNewCourse(c => ({ ...c, title: '', arabic_title: '', description: '', teacher_name: '' }))
-    fetchLmsCourses()
-  } catch (err) {
-    setLmsError(err.message)
+  const addLmsCourse = async () => {
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'add_course', ...lmsNewCourse } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setLmsNewCourse(c => ({ ...c, title: '', arabic_title: '', description: '', teacher_name: '' }))
+      fetchLmsCourses()
+    } catch (err) {
+      setLmsError(err.message)
+    }
   }
-}
 
-const openLmsCourse = async (course) => {
-  setLmsSelectedCourse(course)
-  setLmsSelectedChapter(null)
-  setLmsChaptersLoading(true)
-  setLmsError(null)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'list_chapters', course_id: course.id } })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    setLmsChapters(data.chapters || [])
-  } catch (err) {
-    setLmsError(err.message)
-  } finally {
-    setLmsChaptersLoading(false)
+  const openLmsCourse = async (course) => {
+    setLmsSelectedCourse(course)
+    setLmsSelectedSection(null)
+    setLmsSelectedItem(null)
+    setLmsSectionsLoading(true)
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'list_sections', course_id: course.id } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setLmsSections(data.sections || [])
+    } catch (err) {
+      setLmsError(err.message)
+    } finally {
+      setLmsSectionsLoading(false)
+    }
   }
-}
 
-const openLmsChapter = async (chapter) => {
-  setLmsSelectedChapter(chapter)
-  setLmsError(null)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'list_chapter_questions', chapter_id: chapter.id } })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    setLmsChapterQuestions(data.questions || [])
-  } catch (err) {
-    setLmsError(err.message)
+  const addLmsSection = async () => {
+    if (!lmsSelectedCourse || !lmsSectionForm.section_number || !lmsSectionForm.title.trim()) return
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', {
+        body: { action: 'add_section', course_id: lmsSelectedCourse.id, section_number: Number(lmsSectionForm.section_number), title: lmsSectionForm.title },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setLmsSectionForm({ section_number: '', title: '' })
+      openLmsCourse(lmsSelectedCourse)
+    } catch (err) {
+      setLmsError(err.message)
+    }
   }
-}
 
-const addLmsChapter = async () => {
-  if (!lmsSelectedCourse || !lmsChapterForm.chapter_number || !lmsChapterForm.title.trim()) return
-  setLmsError(null)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', {
-      body: { action: 'add_chapter', course_id: lmsSelectedCourse.id, ...lmsChapterForm, chapter_number: Number(lmsChapterForm.chapter_number) },
+  const openLmsSection = async (section) => {
+    setLmsSelectedSection(section)
+    setLmsSelectedItem(null)
+    setLmsItemsLoading(true)
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'list_items', section_id: section.id } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setLmsItems(data.items || [])
+    } catch (err) {
+      setLmsError(err.message)
+    } finally {
+      setLmsItemsLoading(false)
+    }
+  }
+
+  const addLmsItem = async () => {
+    if (!lmsSelectedSection || !lmsItemForm.item_number || !lmsItemForm.item_type || !lmsItemForm.title.trim()) return
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', {
+        body: { action: 'add_item', section_id: lmsSelectedSection.id, ...lmsItemForm, item_number: Number(lmsItemForm.item_number) },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setLmsItemForm(EMPTY_LMS_ITEM)
+      openLmsSection(lmsSelectedSection)
+    } catch (err) {
+      setLmsError(err.message)
+    }
+  }
+
+  const loadItemIntoForm = (item) => {
+    setLmsEditingItemId(item.id)
+    setLmsItemForm({
+      item_number: item.item_number,
+      item_type: item.item_type || 'reading',
+      title: item.title || '',
+      arabic_text: item.arabic_text || '',
+      transliteration: item.transliteration || '',
+      translation: item.translation || '',
+      notes: item.notes || '',
     })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    setLmsChapterForm({ chapter_number: '', title: '', arabic_text: '', transliteration: '', translation: '', notes: '' })
-    openLmsCourse(lmsSelectedCourse)
-  } catch (err) {
-    setLmsError(err.message)
   }
-}
 
-const loadChapterIntoForm = (ch) => {
-  setLmsEditingChapterId(ch.id)
-  setLmsChapterForm({
-    chapter_number: ch.chapter_number,
-    title: ch.title || '',
-    arabic_text: ch.arabic_text || '',
-    transliteration: ch.transliteration || '',
-    translation: ch.translation || '',
-    notes: ch.notes || '',
-  })
-}
-
-const saveEditedChapter = async () => {
-  if (!lmsEditingChapterId) return
-  setLmsError(null)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', {
-      body: { action: 'update_chapter', id: lmsEditingChapterId, ...lmsChapterForm, chapter_number: Number(lmsChapterForm.chapter_number) },
-    })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    setLmsEditingChapterId(null)
-    setLmsChapterForm({ chapter_number: '', title: '', arabic_text: '', transliteration: '', translation: '', notes: '' })
-    openLmsCourse(lmsSelectedCourse)
-  } catch (err) {
-    setLmsError(err.message)
+  const saveEditedItem = async () => {
+    if (!lmsEditingItemId) return
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', {
+        body: { action: 'update_item', id: lmsEditingItemId, ...lmsItemForm, item_number: Number(lmsItemForm.item_number) },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setLmsEditingItemId(null)
+      setLmsItemForm(EMPTY_LMS_ITEM)
+      openLmsSection(lmsSelectedSection)
+    } catch (err) {
+      setLmsError(err.message)
+    }
   }
-}
 
-const generateLmsNotes = async (chapter) => {
-  setLmsGenerating(true)
-  setLmsError(null)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'generate_draft_notes', chapter } })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    openLmsCourse(lmsSelectedCourse)
-  } catch (err) {
-    setLmsError(err.message)
-  } finally {
-    setLmsGenerating(false)
+  const openLmsItem = async (item) => {
+    setLmsSelectedItem(item)
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'list_item_questions', item_id: item.id } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setLmsItemQuestions(data.questions || [])
+    } catch (err) {
+      setLmsError(err.message)
+    }
   }
-}
 
-const generateLmsQuestions = async (chapter) => {
-  setLmsGenerating(true)
-  setLmsError(null)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'generate_draft_questions', chapter } })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    openLmsChapter(chapter)
-  } catch (err) {
-    setLmsError(err.message)
-  } finally {
-    setLmsGenerating(false)
+  const generateLmsNotes = async (item) => {
+    setLmsGenerating(true)
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'generate_draft_notes', item } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      openLmsSection(lmsSelectedSection)
+    } catch (err) {
+      setLmsError(err.message)
+    } finally {
+      setLmsGenerating(false)
+    }
   }
-}
 
-const uploadLmsAudio = async (chapter) => {
-  if (!lmsAudioFile) return
-  setLmsAudioUploading(true)
-  setLmsAudioUploadError(null)
-  try {
-    const { data: urlData, error: urlError } = await supabase.functions.invoke('admin-manage-lms', {
-      body: { action: 'get_upload_url', course_id: lmsSelectedCourse.id, chapter_number: chapter.chapter_number, filename: lmsAudioFile.name },
-    })
-    if (urlError) throw urlError
-    if (urlData?.error) throw new Error(urlData.error)
-
-    const { error: uploadError } = await supabase.storage.from('class-audio').uploadToSignedUrl(urlData.path, urlData.token, lmsAudioFile)
-    if (uploadError) throw uploadError
-
-    await supabase.functions.invoke('admin-manage-lms', { body: { action: 'update_chapter', id: chapter.id, audio_url: urlData.audioUrl } })
-    setLmsAudioFile(null)
-    openLmsCourse(lmsSelectedCourse)
-  } catch (err) {
-    setLmsAudioUploadError(err.message)
-  } finally {
-    setLmsAudioUploading(false)
+  const generateLmsQuestions = async (item) => {
+    setLmsGenerating(true)
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'generate_draft_questions', item } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      openLmsItem(item)
+    } catch (err) {
+      setLmsError(err.message)
+    } finally {
+      setLmsGenerating(false)
+    }
   }
-}
 
-const lmsPublish = async (table, id) => {
-  setLmsError(null)
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'publish', table, id } })
-    if (error) throw error
-    if (data?.error) throw new Error(data.error)
-    if (table === 'lms_chapters') openLmsCourse(lmsSelectedCourse)
-    else openLmsChapter(lmsSelectedChapter)
-  } catch (err) {
-    setLmsError(err.message)
+  const uploadLmsAudio = async (item) => {
+    if (!lmsAudioFile || !lmsSelectedSection) return
+    setLmsAudioUploading(true)
+    setLmsAudioUploadError(null)
+    try {
+      const { data: urlData, error: urlError } = await supabase.functions.invoke('admin-manage-lms', {
+        body: { action: 'get_upload_url', section_id: lmsSelectedSection.id, item_number: item.item_number, filename: lmsAudioFile.name },
+      })
+      if (urlError) throw urlError
+      if (urlData?.error) throw new Error(urlData.error)
+
+      const { error: uploadError } = await supabase.storage.from('class-audio').uploadToSignedUrl(urlData.path, urlData.token, lmsAudioFile)
+      if (uploadError) throw uploadError
+
+      await supabase.functions.invoke('admin-manage-lms', { body: { action: 'update_item', id: item.id, audio_url: urlData.audioUrl } })
+      setLmsAudioFile(null)
+      openLmsSection(lmsSelectedSection)
+    } catch (err) {
+      setLmsAudioUploadError(err.message)
+    } finally {
+      setLmsAudioUploading(false)
+    }
   }
-}
 
-const lmsUnpublish = async (table, id) => {
-  await supabase.functions.invoke('admin-manage-lms', { body: { action: 'unpublish', table, id } })
-  if (table === 'lms_chapters') openLmsCourse(lmsSelectedCourse)
-  else openLmsChapter(lmsSelectedChapter)
-}
+  const lmsPublish = async (table, id) => {
+    setLmsError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-lms', { body: { action: 'publish', table, id } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      if (table === 'lms_sections') openLmsCourse(lmsSelectedCourse)
+      else if (table === 'lms_items') openLmsSection(lmsSelectedSection)
+      else openLmsItem(lmsSelectedItem)
+    } catch (err) {
+      setLmsError(err.message)
+    }
+  }
 
-const lmsDelete = async (table, id) => {
-  if (!window.confirm('Delete this permanently?')) return
-  await supabase.functions.invoke('admin-manage-lms', { body: { action: 'delete', table, id } })
-  if (table === 'lms_courses') { setLmsSelectedCourse(null); fetchLmsCourses() }
-  else if (table === 'lms_chapters') openLmsCourse(lmsSelectedCourse)
-  else openLmsChapter(lmsSelectedChapter)
-}
+  const lmsUnpublish = async (table, id) => {
+    await supabase.functions.invoke('admin-manage-lms', { body: { action: 'unpublish', table, id } })
+    if (table === 'lms_sections') openLmsCourse(lmsSelectedCourse)
+    else if (table === 'lms_items') openLmsSection(lmsSelectedSection)
+    else openLmsItem(lmsSelectedItem)
+  }
+
+  const lmsDelete = async (table, id) => {
+    if (!window.confirm('Delete this permanently?')) return
+    await supabase.functions.invoke('admin-manage-lms', { body: { action: 'delete', table, id } })
+    if (table === 'lms_courses') { setLmsSelectedCourse(null); fetchLmsCourses() }
+    else if (table === 'lms_sections') openLmsCourse(lmsSelectedCourse)
+    else if (table === 'lms_items') openLmsSection(lmsSelectedSection)
+    else openLmsItem(lmsSelectedItem)
+  }
 
   // PDF and plain .txt only — Word .docx would need a separate
   // library (mammoth.js) not currently installed. Only produces MCQ
@@ -1485,7 +1538,8 @@ const lmsDelete = async (table, id) => {
       <div className="card" style={{ marginTop: 20, padding: 20 }}>
         <h3 style={{ marginBottom: 6 }}>LMS — Structured Courses</h3>
         <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
-          Nothing here is visible to students until published. Self-paced, chapter-by-chapter courses replacing the Telegram groups.
+          Nothing here is visible to students until published. Each course has ordered sections;
+          each section holds individually-trackable items — audio, reading, quiz, or discussion.
         </p>
 
         {lmsError && <div className="admin-error" style={{ marginBottom: 12 }}>{lmsError}</div>}
@@ -1518,7 +1572,7 @@ const lmsDelete = async (table, id) => {
           <div style={{ flex: 1, minWidth: 280 }}>
             {!lmsSelectedCourse ? (
               <p style={{ color: '#8a9ab0' }}>Select a course on the left.</p>
-            ) : !lmsSelectedChapter ? (
+            ) : !lmsSelectedSection ? (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                   <p style={{ fontSize: '0.85rem', fontWeight: 700 }}>{lmsSelectedCourse.title}</p>
@@ -1526,62 +1580,98 @@ const lmsDelete = async (table, id) => {
                 </div>
 
                 <div style={{ padding: 12, background: '#f5f8fb', borderRadius: 8, marginBottom: 16 }}>
-                  <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 8 }}>{lmsEditingChapterId ? 'Edit chapter' : 'Add a chapter'}</p>
-                  <input type="number" placeholder="Chapter #" value={lmsChapterForm.chapter_number} onChange={e => setLmsChapterForm(f => ({ ...f, chapter_number: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
-                  <input type="text" placeholder="Title" value={lmsChapterForm.title} onChange={e => setLmsChapterForm(f => ({ ...f, title: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
-                  <textarea dir="rtl" placeholder="Arabic text" value={lmsChapterForm.arabic_text} onChange={e => setLmsChapterForm(f => ({ ...f, arabic_text: e.target.value }))} rows={2} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
-                  <input type="text" placeholder="Transliteration" value={lmsChapterForm.transliteration} onChange={e => setLmsChapterForm(f => ({ ...f, transliteration: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
-                  <textarea placeholder="Translation" value={lmsChapterForm.translation} onChange={e => setLmsChapterForm(f => ({ ...f, translation: e.target.value }))} rows={2} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
-                  <textarea placeholder="Notes / commentary" value={lmsChapterForm.notes} onChange={e => setLmsChapterForm(f => ({ ...f, notes: e.target.value }))} rows={4} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="btn btn-ghost" onClick={lmsEditingChapterId ? saveEditedChapter : addLmsChapter}>
-                      {lmsEditingChapterId ? 'Save Changes' : '+ Add Chapter'}
-                    </button>
-                    {lmsEditingChapterId && (
-                      <button className="btn btn-ghost" onClick={() => { setLmsEditingChapterId(null); setLmsChapterForm({ chapter_number: '', title: '', arabic_text: '', transliteration: '', translation: '', notes: '' }) }}>Cancel</button>
-                    )}
-                  </div>
+                  <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 8 }}>Add a section</p>
+                  <input type="number" placeholder="Section #" value={lmsSectionForm.section_number} onChange={e => setLmsSectionForm(f => ({ ...f, section_number: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <input type="text" placeholder="Title (e.g. Chapter 1)" value={lmsSectionForm.title} onChange={e => setLmsSectionForm(f => ({ ...f, title: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <button className="btn btn-ghost" onClick={addLmsSection}>+ Add Section</button>
                 </div>
 
-                <h4 style={{ fontSize: '0.9rem', marginBottom: 8 }}>Chapters ({lmsChapters.length})</h4>
-                {lmsChaptersLoading ? <p>Loading…</p> : lmsChapters.map(ch => (
-                  <div key={ch.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', marginBottom: 6, borderRadius: 8, background: ch.status === 'published' ? 'rgba(46,125,50,0.06)' : '#f5f8fb' }}>
+                <h4 style={{ fontSize: '0.9rem', marginBottom: 8 }}>Sections ({lmsSections.length})</h4>
+                {lmsSectionsLoading ? <p>Loading…</p> : lmsSections.map(s => (
+                  <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', marginBottom: 6, borderRadius: 8, background: s.status === 'published' ? 'rgba(46,125,50,0.06)' : '#f5f8fb' }}>
                     <span style={{ fontSize: '0.85rem' }}>
-                      <strong>Ch. {ch.chapter_number}</strong> — {ch.title} {ch.audio_url && '🎧'} <span style={{ fontSize: '0.72rem', color: '#8a9ab0' }}>({ch.status})</span>
+                      <strong>Section {s.section_number}</strong> — {s.title} <span style={{ fontSize: '0.72rem', color: '#8a9ab0' }}>({s.status})</span>
                     </span>
                     <span style={{ display: 'flex', gap: 6 }}>
-                      <button className="btn btn-ghost" onClick={() => openLmsChapter(ch)}>Manage</button>
-                      <button className="btn btn-ghost" onClick={() => loadChapterIntoForm(ch)}>Edit</button>
-                      <button className="btn btn-ghost" onClick={() => lmsDelete('lms_chapters', ch.id)} style={{ color: '#c0392b' }}>Delete</button>
+                      <button className="btn btn-ghost" onClick={() => openLmsSection(s)}>Manage Items</button>
+                      {s.status === 'published' ? (
+                        <button className="btn btn-ghost" onClick={() => lmsUnpublish('lms_sections', s.id)}>Unpublish</button>
+                      ) : (
+                        <button className="btn btn-ghost" onClick={() => lmsPublish('lms_sections', s.id)}>Publish</button>
+                      )}
+                      <button className="btn btn-ghost" onClick={() => lmsDelete('lms_sections', s.id)} style={{ color: '#c0392b' }}>Delete</button>
                     </span>
                   </div>
                 ))}
               </>
+            ) : !lmsSelectedItem ? (
+              <>
+                <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setLmsSelectedSection(null)}>← Back to sections</button>
+                <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: 12 }}>Section {lmsSelectedSection.section_number} — {lmsSelectedSection.title}</p>
+
+                <div style={{ padding: 12, background: '#f5f8fb', borderRadius: 8, marginBottom: 16 }}>
+                  <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 8 }}>{lmsEditingItemId ? 'Edit item' : 'Add an item'}</p>
+                  <input type="number" placeholder="Item #" value={lmsItemForm.item_number} onChange={e => setLmsItemForm(f => ({ ...f, item_number: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <select value={lmsItemForm.item_type} onChange={e => setLmsItemForm(f => ({ ...f, item_type: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }}>
+                    <option value="reading">Reading</option>
+                    <option value="audio">Audio</option>
+                    <option value="quiz">Quiz</option>
+                    <option value="discussion">Discussion</option>
+                  </select>
+                  <input type="text" placeholder="Title" value={lmsItemForm.title} onChange={e => setLmsItemForm(f => ({ ...f, title: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <textarea dir="rtl" placeholder="Arabic text" value={lmsItemForm.arabic_text} onChange={e => setLmsItemForm(f => ({ ...f, arabic_text: e.target.value }))} rows={2} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <input type="text" placeholder="Transliteration" value={lmsItemForm.transliteration} onChange={e => setLmsItemForm(f => ({ ...f, transliteration: e.target.value }))} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <textarea placeholder="Translation" value={lmsItemForm.translation} onChange={e => setLmsItemForm(f => ({ ...f, translation: e.target.value }))} rows={2} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <textarea placeholder="Notes / commentary" value={lmsItemForm.notes} onChange={e => setLmsItemForm(f => ({ ...f, notes: e.target.value }))} rows={4} style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }} />
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button className="btn btn-ghost" onClick={lmsEditingItemId ? saveEditedItem : addLmsItem}>
+                      {lmsEditingItemId ? 'Save Changes' : '+ Add Item'}
+                    </button>
+                    {lmsEditingItemId && (
+                      <button className="btn btn-ghost" onClick={() => { setLmsEditingItemId(null); setLmsItemForm(EMPTY_LMS_ITEM) }}>Cancel</button>
+                    )}
+                  </div>
+                </div>
+
+                <h4 style={{ fontSize: '0.9rem', marginBottom: 8 }}>Items ({lmsItems.length})</h4>
+                {lmsItemsLoading ? <p>Loading…</p> : lmsItems.map(it => (
+                  <div key={it.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', marginBottom: 6, borderRadius: 8, background: it.status === 'published' ? 'rgba(46,125,50,0.06)' : '#f5f8fb', flexWrap: 'wrap', gap: 6 }}>
+                    <span style={{ fontSize: '0.85rem' }}>
+                      <span style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: 4, background: '#094570', color: '#fff', marginRight: 6 }}>{it.item_type.toUpperCase()}</span>
+                      <strong>Item {it.item_number}</strong> — {it.title} {it.audio_url && '🎧'} <span style={{ fontSize: '0.72rem', color: '#8a9ab0' }}>({it.status})</span>
+                    </span>
+                    <span style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+                      {it.item_type === 'quiz' && <button className="btn btn-ghost" onClick={() => openLmsItem(it)}>Manage Questions</button>}
+                      {it.item_type === 'audio' && (
+                        <>
+                          <input type="file" accept="audio/*" onChange={e => setLmsAudioFile(e.target.files?.[0] || null)} style={{ fontSize: '0.78rem', width: 120 }} />
+                          <button className="btn btn-ghost" onClick={() => uploadLmsAudio(it)} disabled={!lmsAudioFile || lmsAudioUploading}>{lmsAudioUploading ? '…' : 'Upload Audio'}</button>
+                        </>
+                      )}
+                      <button className="btn btn-ghost" onClick={() => generateLmsNotes(it)} disabled={lmsGenerating}>{lmsGenerating ? '…' : 'AI: Notes'}</button>
+                      <button className="btn btn-ghost" onClick={() => loadItemIntoForm(it)}>Edit</button>
+                      {it.status === 'published' ? (
+                        <button className="btn btn-ghost" onClick={() => lmsUnpublish('lms_items', it.id)}>Unpublish</button>
+                      ) : (
+                        <button className="btn btn-ghost" onClick={() => lmsPublish('lms_items', it.id)}>Publish</button>
+                      )}
+                      <button className="btn btn-ghost" onClick={() => lmsDelete('lms_items', it.id)} style={{ color: '#c0392b' }}>Delete</button>
+                    </span>
+                  </div>
+                ))}
+                {lmsAudioUploadError && <div className="admin-error" style={{ marginTop: 8 }}>{lmsAudioUploadError}</div>}
+              </>
             ) : (
               <>
-                <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setLmsSelectedChapter(null)}>← Back to chapters</button>
-                <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: 12 }}>Chapter {lmsSelectedChapter.chapter_number} — {lmsSelectedChapter.title}</p>
+                <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setLmsSelectedItem(null)}>← Back to items</button>
+                <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: 12 }}>Item {lmsSelectedItem.item_number} — {lmsSelectedItem.title} (Quiz)</p>
 
                 <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-                  <button className="btn btn-primary" onClick={() => generateLmsNotes(lmsSelectedChapter)} disabled={lmsGenerating}>{lmsGenerating ? '…' : 'AI: Draft Notes'}</button>
-                  <button className="btn btn-primary" onClick={() => generateLmsQuestions(lmsSelectedChapter)} disabled={lmsGenerating}>{lmsGenerating ? '…' : 'AI: Draft 5 Questions'}</button>
-                  <button className="btn btn-ghost" onClick={() => lmsPublish('lms_chapters', lmsSelectedChapter.id)} disabled={lmsSelectedChapter.status === 'published'}>Publish Chapter</button>
-                  {lmsSelectedChapter.status === 'published' && (
-                    <button className="btn btn-ghost" onClick={() => lmsUnpublish('lms_chapters', lmsSelectedChapter.id)}>Unpublish Chapter</button>
-                  )}
+                  <button className="btn btn-primary" onClick={() => generateLmsQuestions(lmsSelectedItem)} disabled={lmsGenerating}>{lmsGenerating ? '…' : 'AI: Draft 5 Questions'}</button>
                 </div>
 
-                <div style={{ marginBottom: 16 }}>
-                  {lmsSelectedChapter.audio_url && <audio controls src={lmsSelectedChapter.audio_url} style={{ width: '100%', marginBottom: 8 }} />}
-                  {lmsAudioUploadError && <div className="admin-error" style={{ marginBottom: 8 }}>{lmsAudioUploadError}</div>}
-                  <input type="file" accept="audio/*" onChange={e => setLmsAudioFile(e.target.files?.[0] || null)} style={{ marginRight: 8 }} />
-                  <button className="btn btn-ghost" onClick={() => uploadLmsAudio(lmsSelectedChapter)} disabled={!lmsAudioFile || lmsAudioUploading}>
-                    {lmsAudioUploading ? 'Uploading…' : 'Upload Audio'}
-                  </button>
-                </div>
-
-                <h4 style={{ fontSize: '0.9rem', marginBottom: 8 }}>Questions ({lmsChapterQuestions.length})</h4>
-                {lmsChapterQuestions.map(q => (
+                <h4 style={{ fontSize: '0.9rem', marginBottom: 8 }}>Questions ({lmsItemQuestions.length})</h4>
+                {lmsItemQuestions.map(q => (
                   <div key={q.id} style={{ padding: '10px 12px', marginBottom: 8, borderRadius: 8, background: q.status === 'published' ? 'rgba(46,125,50,0.06)' : '#f5f8fb' }}>
                     <p style={{ fontSize: '0.85rem', marginBottom: 6 }}>{q.question}</p>
                     <ol type="A" style={{ fontSize: '0.8rem', marginBottom: 6, paddingLeft: 20 }}>
@@ -1589,11 +1679,11 @@ const lmsDelete = async (table, id) => {
                     </ol>
                     <span style={{ fontSize: '0.75rem', marginRight: 10 }}>{q.status}{q.ai_generated ? ' · AI' : ''}</span>
                     {q.status === 'published' ? (
-                      <button className="btn btn-ghost" onClick={() => lmsUnpublish('lms_chapter_questions', q.id)}>Unpublish</button>
+                      <button className="btn btn-ghost" onClick={() => lmsUnpublish('lms_item_questions', q.id)}>Unpublish</button>
                     ) : (
-                      <button className="btn btn-ghost" onClick={() => lmsPublish('lms_chapter_questions', q.id)}>Publish</button>
+                      <button className="btn btn-ghost" onClick={() => lmsPublish('lms_item_questions', q.id)}>Publish</button>
                     )}
-                    <button className="btn btn-ghost" onClick={() => lmsDelete('lms_chapter_questions', q.id)} style={{ color: '#c0392b' }}>Delete</button>
+                    <button className="btn btn-ghost" onClick={() => lmsDelete('lms_item_questions', q.id)} style={{ color: '#c0392b' }}>Delete</button>
                   </div>
                 ))}
               </>

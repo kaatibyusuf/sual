@@ -86,7 +86,7 @@
 .cal-nav-btn {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 10px;
   border: 1.5px solid #c8d8e8;
   background: #f5f8fb;
   color: var(--cal-navy);
@@ -145,17 +145,21 @@
 }
 
 /* Days Grid — tighter gap than before so the grid reads as one
-   cohesive block instead of a loose scatter of circles */
+   cohesive block instead of a loose scatter of tiles */
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
+  gap: 4px;
   margin-bottom: 20px;
 }
 
+/* Cube / rounded-square cells (previously perfect circles via
+   border-radius: 50%). aspect-ratio: 1 keeps them square; the smaller
+   corner radius gives a "cube" feel while still reading as soft/friendly
+   rather than sharp. */
 .cal-cell {
   aspect-ratio: 1;
-  border-radius: 50%;
+  border-radius: 8px;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -175,7 +179,7 @@
 
 .cal-cell:not(.cal-cell--empty):hover {
   background: #f0f7ff;
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .cal-cell-day {
@@ -198,7 +202,7 @@
   transform: translateX(-50%);
   width: 4px;
   height: 4px;
-  border-radius: 50%;
+  border-radius: 2px;
 }
 
 /* Today — solid fill, unmistakable */
@@ -212,12 +216,15 @@
 }
 
 .cal-cell--today:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 /* Event day — softer tint + a light ring in the event color,
    tuned down from the previous 10%/30% mix so the fill reads as a
-   quiet highlight rather than competing with the "today" fill */
+   quiet highlight rather than competing with the "today" fill.
+   Ayyam al-Bid (the White Days) now pass --event-color: #1a6fa8
+   (blue) instead of the old mustard/gold, and their day number
+   inherits the same bold weight as every other event day below. */
 .cal-cell--event {
   background: color-mix(in srgb, var(--event-color) 12%, transparent);
   border: 1.5px solid color-mix(in srgb, var(--event-color) 45%, transparent);
@@ -266,10 +273,12 @@
   color: var(--cal-muted);
 }
 
+/* Legend swatches now match the cube cells — small rounded squares
+   instead of circles, so the legend and the grid read as one system. */
 .cal-legend-dot {
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: 3px;
 }
 
 .cal-legend-dot--today {

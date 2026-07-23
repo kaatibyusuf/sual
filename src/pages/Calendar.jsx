@@ -8,6 +8,12 @@ import {
 } from '../lib/hijri.js'
 import './Calendar.css'
 
+// Ayyam al-Bid ("The White Days") use --cal-navy-light (#1a6fa8) as their
+// event color throughout this file — previously mustard/gold (#b7950b).
+// Six occurrences total: three in ISLAMIC_EVENTS (the Muharram-specific
+// 13th/14th/15th, which take priority over ALWAYS_CIRCLED via getEvent's
+// specificKey check) and three in ALWAYS_CIRCLED (every other month).
+
 const ISLAMIC_EVENTS = {
   '1-1': {
     name: 'Islamic New Year',
@@ -26,21 +32,21 @@ const ISLAMIC_EVENTS = {
   '1-13': {
     name: 'Ayyamul-Bid',
     arabic: 'أَيَّامُ البِيض',
-    color: '#b7950b',
+    color: '#1a6fa8',
     icon: '🌕',
     description: 'The thirteenth of each Hijri month is one of the Ayyamul-Bid — the White Days — named because the moon is full and the night is illuminated. The Prophet said: "Fasting three days of every month is like fasting the whole year." (Sahih al-Bukhari 1979) These are the thirteenth, fourteenth, and fifteenth of every lunar month. The Prophet regularly fasted these days and strongly encouraged the Companions to do so. These three days together constitute one of the most established voluntary fasting practices in the Sunnah.',
   },
   '1-14': {
     name: 'Ayyamul-Bid',
     arabic: 'أَيَّامُ البِيض',
-    color: '#b7950b',
+    color: '#1a6fa8',
     icon: '🌕',
     description: 'The fourteenth of each Hijri month is the second of the Ayyam al-Bid — the White Days. At this point the moon is at or near its fullest, illuminating the night completely. The Prophet said to Abu Dharr: "O Abu Dharr, when you fast three days of the month, fast the thirteenth, fourteenth, and fifteenth." (Sunan al-Nasai 2424 — Sahih) Fasting these three days every month was a consistent practice of the Prophet and the righteous early Muslims.',
   },
   '1-15': {
     name: 'Ayyamul-Bid',
     arabic: 'أَيَّامُ البِيض',
-    color: '#b7950b',
+    color: '#1a6fa8',
     icon: '🌕',
     description: 'The fifteenth of each Hijri month is the third and last of the Ayyam al-Bid — the White Days. The wisdom of fasting these three days is that fasting one day is equivalent to ten days in reward (Quran 6:160), so fasting three days per month equals thirty days — equivalent to a full year of fasting. This is one of the most accessible yet most rewarding voluntary acts a Muslim can perform consistently throughout the year.',
   },
@@ -122,9 +128,9 @@ const ISLAMIC_EVENTS = {
 }
 
 const ALWAYS_CIRCLED = {
-  13: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The thirteenth of each Hijri month is one of the Ayyam al-Bid — the White Days — named because the moon is full and the night is illuminated. The Prophet said: "Fasting three days of every month is like fasting the whole year." (Sahih al-Bukhari 1979) These are the thirteenth, fourteenth, and fifteenth of every lunar month. The Prophet regularly fasted these days and strongly encouraged the Companions to do so.' },
-  14: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The fourteenth of each Hijri month is the second of the Ayyam al-Bid — the White Days. At this point the moon is at or near its fullest, illuminating the night completely. The Prophet said to Abu Dharr: "O Abu Dharr, when you fast three days of the month, fast the thirteenth, fourteenth, and fifteenth." (Sunan al-Nasai 2424 — Sahih)' },
-  15: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#b7950b', icon: '🌕', description: 'The fifteenth of each Hijri month is the third and last of the Ayyam al-Bid — the White Days. The wisdom of fasting these three days is that fasting one day is equivalent to ten days in reward (Quran 6:160), so fasting three days per month equals thirty days — equivalent to a full year of fasting.' },
+  13: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#1a6fa8', icon: '🌕', description: 'The thirteenth of each Hijri month is one of the Ayyam al-Bid — the White Days — named because the moon is full and the night is illuminated. The Prophet said: "Fasting three days of every month is like fasting the whole year." (Sahih al-Bukhari 1979) These are the thirteenth, fourteenth, and fifteenth of every lunar month. The Prophet regularly fasted these days and strongly encouraged the Companions to do so.' },
+  14: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#1a6fa8', icon: '🌕', description: 'The fourteenth of each Hijri month is the second of the Ayyam al-Bid — the White Days. At this point the moon is at or near its fullest, illuminating the night completely. The Prophet said to Abu Dharr: "O Abu Dharr, when you fast three days of the month, fast the thirteenth, fourteenth, and fifteenth." (Sunan al-Nasai 2424 — Sahih)' },
+  15: { name: 'Ayyamul-Bid', arabic: 'أَيَّامُ البِيض', color: '#1a6fa8', icon: '🌕', description: 'The fifteenth of each Hijri month is the third and last of the Ayyam al-Bid — the White Days. The wisdom of fasting these three days is that fasting one day is equivalent to ten days in reward (Quran 6:160), so fasting three days per month equals thirty days — equivalent to a full year of fasting.' },
 }
 
 const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -273,7 +279,7 @@ export default function Calendar() {
             <span>Islamic Event</span>
           </div>
           <div className="cal-legend-item">
-            <div className="cal-legend-dot" style={{ background: '#b7950b' }} />
+            <div className="cal-legend-dot" style={{ background: '#1a6fa8' }} />
             <span>Ayyam al-Bid</span>
           </div>
           <div className="cal-legend-item">
