@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase.js'
 import './Profile.css'
 import { BadgesSection } from '../components/Badges.jsx'
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from '../lib/pushNotifications.js'
+import AccountabilityProfileEditor from '../components/AccountabilityProfileEditor.jsx'
 
 function NotificationToggle({ user }) {
   const [supported, setSupported] = useState(true)
@@ -509,6 +510,7 @@ export default function Profile({ user, userLevel, setUserLevel }) {
           </button>
         </div>
       )}
+      <AccountabilityProfileEditor user={user} />
     </div>
   )
 }

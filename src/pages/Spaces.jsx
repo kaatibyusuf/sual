@@ -1101,32 +1101,42 @@ export default function Spaces({ user }) {
             </div>
           ) : (
             <div className="spaces-available-list">
-              {availableMembers.map(m => (
-                <div key={m.user_id} className="spaces-available-item card">
-                  <div className="spaces-pair-member">
-                    <div className="spaces-post-avatar">{getInitials('M')}</div>
-                    <div>
-                      <p className="spaces-pair-name">
-                        Member {String(m.user_id).slice(0, 8)}
-                        {m.gender && (
-                          <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
-                            {m.gender === 'male' ? '♂' : '♀'} {m.gender}
-                          </span>
-                        )}
-                      </p>
-                      <BadgeStrip earnedIds={m.badge_ids || []} />
-                    </div>
-                  </div>
-                  <button
-                    className="spaces-submit-btn"
-                    onClick={() => pairWith(m.user_id)}
-                    disabled={pairing}
-                  >
-                    {pairing ? 'Pairing...' : 'Pair Up →'}
-                  </button>
-                </div>
-              ))}
-            </div>
+  {availableMembers.map(m => (
+    <div key={m.user_id} className="spaces-available-item card" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+      <div className="spaces-pair-member">
+        <div className="spaces-post-avatar">{getInitials('M')}</div>
+        <div>
+          <p className="spaces-pair-name">
+            Member {String(m.user_id).slice(0, 8)}
+            {m.gender && (
+              <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
+                {m.gender === 'male' ? '♂' : '♀'} {m.gender}
+              </span>
+            )}
+          </p>
+          <BadgeStrip earnedIds={m.badge_ids || []} />
+        </div>
+      </div>
+
+      {(m.accountability_about || m.accountability_focus || m.accountability_interests || m.accountability_hobbies) && (
+        <div style={{ background: '#f7fafc', borderRadius: 10, padding: '12px 14px', margin: '10px 0', fontSize: '0.85rem', color: '#3a4a5a' }}>
+          {m.accountability_about && <p style={{ marginBottom: 6 }}>{m.accountability_about}</p>}
+          {m.accountability_focus && <p style={{ marginBottom: 4 }}><strong>Focus:</strong> {m.accountability_focus}</p>}
+          {m.accountability_interests && <p style={{ marginBottom: 4 }}><strong>Interests:</strong> {m.accountability_interests}</p>}
+          {m.accountability_hobbies && <p><strong>Hobbies:</strong> {m.accountability_hobbies}</p>}
+        </div>
+      )}
+
+      <button
+        className="spaces-submit-btn"
+        onClick={() => pairWith(m.user_id)}
+        disabled={pairing}
+      >
+        {pairing ? 'Pairing...' : 'Pair Up →'}
+      </button>
+    </div>
+  ))}
+</div>
           )}
         </>
       )}
