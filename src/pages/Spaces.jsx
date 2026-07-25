@@ -955,11 +955,17 @@ export default function Spaces({ user }) {
     }
   }
 
-  const handlePaystack = () => {
-    const ref = 'sual_' + user.id + '_' + Date.now()
-    window.location.href = 'https://paystack.com/buy/sual-spaces-vcvfks?email=' +
-      encodeURIComponent(user.email) + '&ref=' + ref
+  const handlePaystack = async () => {
+  try {
+    const { data, error } = await supabase.functions.invoke('initialize-payment', {
+      body: { product: 'spaces' },
+    })
+    if (error || data?.error) throw new Error(data?.error || error.message)
+    window.location.href = data.authorization_url
+  } catch (err) {
+    setError(err.message)
   }
+}
 
   const formatDate = (d) => new Date(d).toLocaleDateString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric'
