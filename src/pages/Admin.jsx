@@ -78,6 +78,10 @@ export default function Admin({ user }) {
   const [audioFile, setAudioFile] = useState(null)
   const [audioUploading, setAudioUploading] = useState(false)
   const [audioUploadError, setAudioUploadError] = useState(null)
+ 
+  const [majlisTitle, setMajlisTitle] = useState('')
+  const [majlisBody, setMajlisBody] = useState('')
+  const [postingMajlis, setPostingMajlis] = useState(false)
 
   // ── LMS state ─────────────────────────────────────────────────
   const [lmsCourses, setLmsCourses] = useState([])
@@ -155,6 +159,24 @@ export default function Admin({ user }) {
       setGranting(false)
     }
   }
+  
+  const postMajlisAnnouncement = async () => {
+  if (!majlisTitle.trim() || !majlisBody.trim()) return
+  setPostingMajlis(true)
+  try {
+    const { data, error } = await supabase.functions.invoke('admin-manage-majlis', {
+      body: { action: 'create_post', title: majlisTitle.trim(), body: majlisBody.trim() },
+    })
+    if (error) throw error
+    if (data?.error) throw new Error(data.error)
+    setMajlisTitle('')
+    setMajlisBody('')
+  } catch (err) {
+    console.error('Failed to post Majlis announcement:', err)
+  } finally {
+    setPostingMajlis(false)
+  }
+}
 
   const fetchTafseerList = async () => {
     setTafseerListLoading(true)
@@ -855,7 +877,29 @@ export default function Admin({ user }) {
           </div>
         </div>
       ) : null}
-
+      <div className="card" style={{ marginTop: 20, padding: 20 }}>
+  <h3 style={{ marginBottom: 6 }}>Majlis — Post an Announcement</h3>
+  <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
+    Posts here go straight to every Spaces subscriber's Majlis tab. Members can reply and ask questions directly on it.
+  </p>
+  <input
+    type="text"
+    placeholder="Title"
+    value={majlisTitle}
+    onChange={e => setMajlisTitle(e.target.value)}
+    style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', marginBottom: 10, fontSize: '0.9rem' }}
+  />
+  <textarea
+    placeholder="Announcement body..."
+    value={majlisBody}
+    onChange={e => setMajlisBody(e.target.value)}
+    rows={5}
+    style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec', marginBottom: 10, fontSize: '0.9rem', fontFamily: 'inherit' }}
+  />
+  <button className="btn btn-primary" onClick={postMajlisAnnouncement} disabled={postingMajlis || !majlisTitle.trim() || !majlisBody.trim()}>
+    {postingMajlis ? 'Posting…' : 'Post to Majlis'}
+  </button>
+</div>
       {stats?.userGrowth && stats.userGrowth.length > 0 && (
         <div className="card" style={{ marginTop: 20, padding: 20 }}>
           <h3 style={{ marginBottom: 4 }}>User Growth</h3>

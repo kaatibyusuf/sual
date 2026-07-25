@@ -1,8 +1,7 @@
 import { BadgeStrip } from '../components/Badges.jsx'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
-import LmsCourse from '../components/LmsCourse.jsx'
 import './Spaces.css'
 
 const CATEGORIES = [
@@ -202,8 +201,8 @@ function buildTafseerQuestions(entry, historyPool) {
 }
 
 export default function Spaces({ user }) {
-  const [hasReferralAccess, setHasReferralAccess] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [subscription,   setSubscription]   = useState(null)
   const [subLoading,     setSubLoading]     = useState(true)
   const [confirmingPayment, setConfirmingPayment] = useState(false)
@@ -224,6 +223,7 @@ export default function Spaces({ user }) {
   const [featured,       setFeatured]       = useState(null)
   const [memberCount,    setMemberCount]    = useState(null)
   const [justJoined,     setJustJoined]     = useState(false)
+  const [hasReferralAccess, setHasReferralAccess] = useState(false)
   const [lastVisit]                          = useState(() => {
     const prev = localStorage.getItem('sual-spaces-last-visit')
     localStorage.setItem('sual-spaces-last-visit', new Date().toISOString())
@@ -275,23 +275,18 @@ export default function Spaces({ user }) {
   const [showClassLessonArchive, setShowClassLessonArchive] = useState(false)
   const [selectedArchiveLesson, setSelectedArchiveLesson] = useState(null)
 
+  const [majlisPosts, setMajlisPosts] = useState([])
+  const [majlisLoading, setMajlisLoading] = useState(false)
+  const [activeMajlisPost, setActiveMajlisPost] = useState(null)
+  const [majlisReplies, setMajlisReplies] = useState([])
+  const [newMajlisReply, setNewMajlisReply] = useState('')
+  const [postingMajlisReply, setPostingMajlisReply] = useState(false)
+
   const [, setClock] = useState(new Date())
   useEffect(() => {
     const interval = setInterval(() => setClock(new Date()), 60000)
     return () => clearInterval(interval)
   }, [])
-
-  // ── FIX: isPaid is derived here, immediately after the state it depends
-  // on (subscription, hasReferralAccess) is declared, and BEFORE any of
-  // the useEffect hooks below that read it in their dependency arrays.
-  // It previously lived much further down the file (right before catOf),
-  // which caused "Cannot access 'isPaid' before initialization" — a
-  // temporal dead zone crash, since those earlier effects run during the
-  // very first render, before a later-declared const has been assigned.
-  const isPaid = useMemo(
-    () => subscription?.status === 'active' || hasReferralAccess,
-    [subscription, hasReferralAccess]
-  )
 
   const checkSubscription = useCallback(async () => {
     if (!user) return
@@ -310,19 +305,18 @@ export default function Spaces({ user }) {
     }
   }, [user])
 
-// alongside the existing checkSubscription function:
-const checkReferralAccess = useCallback(async () => {
-  if (!user) return
-  const { data } = await supabase
-    .from('referral_free_access')
-    .select('expires_at')
-    .eq('user_id', user.id)
-    .gt('expires_at', new Date().toISOString())
-    .order('expires_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
-  setHasReferralAccess(!!data)
-}, [user])
+  const checkReferralAccess = useCallback(async () => {
+    if (!user) return
+    const { data } = await supabase
+      .from('referral_free_access')
+      .select('expires_at')
+      .eq('user_id', user.id)
+      .gt('expires_at', new Date().toISOString())
+      .order('expires_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    setHasReferralAccess(!!data)
+  }, [user])
 
   const fetchPosts = useCallback(async () => {
     if (!user) return
@@ -731,9 +725,63 @@ const checkReferralAccess = useCallback(async () => {
     }
   }, [])
 
+  const fetchMajlisPosts = useCallback(async () => {
+    setMajlisLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('majlis_posts')
+        .select('*')
+        .order('pinned', { ascending: false })
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      setMajlisPosts(data || [])
+    } catch (err) {
+      console.error('Failed to load Majlis posts:', err)
+      setMajlisPosts([])
+    } finally {
+      setMajlisLoading(false)
+    }
+  }, [])
+
+  const openMajlisPost = async (post) => {
+    setActiveMajlisPost(post)
+    try {
+      const { data, error } = await supabase
+        .from('majlis_replies')
+        .select('*')
+        .eq('post_id', post.id)
+        .order('created_at', { ascending: true })
+      if (error) throw error
+      setMajlisReplies(data || [])
+    } catch (err) {
+      console.error('Failed to load Majlis replies:', err)
+      setMajlisReplies([])
+    }
+  }
+
+  const submitMajlisReply = async () => {
+    if (!newMajlisReply.trim() || !user) return
+    setPostingMajlisReply(true)
+    try {
+      const { error } = await supabase.from('majlis_replies').insert({
+        post_id: activeMajlisPost.id,
+        user_id: user.id,
+        body: newMajlisReply.trim(),
+      })
+      if (error) throw error
+      setNewMajlisReply('')
+      openMajlisPost(activeMajlisPost)
+    } catch (err) {
+      console.error('Failed to post Majlis reply:', err)
+    } finally {
+      setPostingMajlisReply(false)
+    }
+  }
+
   useEffect(() => {
     if (!user) return
     checkSubscription()
+    checkReferralAccess()
 
     const params = new URLSearchParams(window.location.search)
     if (params.get('payment') === 'success') {
@@ -759,41 +807,47 @@ const checkReferralAccess = useCallback(async () => {
       }, 5000)
       return () => clearInterval(poll)
     }
-  }, [user, checkSubscription])
+  }, [user, checkSubscription, checkReferralAccess])
+
+  const isPaid = useMemo(
+    () => subscription?.status === 'active' || hasReferralAccess,
+    [subscription, hasReferralAccess]
+  )
 
   useEffect(() => {
-  if (isPaid) {
-    fetchPosts()
-    fetchFeatured()
-    fetchMemberCount()
-  }
-}, [isPaid, fetchPosts, fetchFeatured, fetchMemberCount])
-
-useEffect(() => {
-  if (justJoined && isPaid) {
-    setActiveTab('community')
-    setNewPost({
-      title: "Assalamu alaikum, I'm new here",
-      body: "Assalamu alaikum everyone, I'm new here. ",
-      category: 'general',
-    })
-    setShowNewPost(true)
-    setShowWelcomePrompt(true)
-    setJustJoined(false)
-  }
-}, [justJoined, isPaid])
-
-useEffect(() => {
-  if (!isPaid) return
-  if (activeTab === 'accountability') fetchAccountability()
-  if (activeTab === 'circles') fetchCircles()
-  if (activeTab === 'tafseer') { fetchTafseer(); fetchTafseerArchive() }
-  if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', classLevel.arabiyyah); fetchClassLessonArchive('arabiyyah', classLevel.arabiyyah) }
-  if (activeTab === 'hadeeth') { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
-}, [activeTab, isPaid, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, classLevel])
+    if (isPaid) {
+      fetchPosts()
+      fetchFeatured()
+      fetchMemberCount()
+    }
+  }, [isPaid, fetchPosts, fetchFeatured, fetchMemberCount])
 
   useEffect(() => {
-    if (subLoading || subscription?.status !== 'active') return
+    if (justJoined && isPaid) {
+      setActiveTab('community')
+      setNewPost({
+        title: "Assalamu alaikum, I'm new here",
+        body: "Assalamu alaikum everyone, I'm new here. ",
+        category: 'general',
+      })
+      setShowNewPost(true)
+      setShowWelcomePrompt(true)
+      setJustJoined(false)
+    }
+  }, [justJoined, isPaid])
+
+  useEffect(() => {
+    if (!isPaid) return
+    if (activeTab === 'accountability') fetchAccountability()
+    if (activeTab === 'circles') fetchCircles()
+    if (activeTab === 'tafseer') { fetchTafseer(); fetchTafseerArchive() }
+    if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', classLevel.arabiyyah); fetchClassLessonArchive('arabiyyah', classLevel.arabiyyah) }
+    if (activeTab === 'hadeeth') { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
+    if (activeTab === 'majlis') fetchMajlisPosts()
+  }, [activeTab, isPaid, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, fetchMajlisPosts, classLevel])
+
+  useEffect(() => {
+    if (subLoading || !isPaid) return
     const postId = searchParams.get('post')
     if (!postId) return
     openPostById(postId)
@@ -801,7 +855,7 @@ useEffect(() => {
     next.delete('post')
     setSearchParams(next, { replace: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subLoading, subscription, searchParams])
+  }, [subLoading, isPaid, searchParams])
 
   if (!user) return null
 
@@ -1434,6 +1488,79 @@ useEffect(() => {
     )
   }
 
+  const renderMajlis = () => {
+    if (activeMajlisPost) {
+      return (
+        <div className="spaces-class-section card">
+          <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => { setActiveMajlisPost(null); setMajlisReplies([]) }}>← Back to Majlis</button>
+          {activeMajlisPost.pinned && <span className="spaces-cat-badge" style={{ marginBottom: 10 }}>📌 Pinned</span>}
+          <h3 style={{ color: '#094570', marginBottom: 6 }}>{activeMajlisPost.title}</h3>
+          <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginBottom: 16 }}>{formatDate(activeMajlisPost.created_at)}</p>
+          <p style={{ whiteSpace: 'pre-wrap', marginBottom: 24 }}>{activeMajlisPost.body}</p>
+
+          <h4 style={{ fontSize: '0.95rem', marginBottom: 12 }}>Questions &amp; Discussion ({majlisReplies.length})</h4>
+          {majlisReplies.length === 0 ? (
+            <p style={{ color: '#8a9ab0', fontSize: '0.85rem', marginBottom: 16 }}>No questions yet. Ask below if anything's unclear.</p>
+          ) : majlisReplies.map(r => (
+            <div key={r.id} className={`spaces-reply card ${r.is_admin_reply ? 'spaces-reply--scholar' : ''}`} style={{ marginBottom: 10 }}>
+              {r.is_admin_reply && <span className="spaces-scholar-badge">Admin</span>}
+              <p className="spaces-reply-body" style={{ whiteSpace: 'pre-wrap' }}>{r.body}</p>
+            </div>
+          ))}
+
+          <textarea
+            className="spaces-textarea"
+            placeholder="Ask a question about this announcement..."
+            value={newMajlisReply}
+            onChange={e => setNewMajlisReply(e.target.value)}
+            rows={3}
+            style={{ marginTop: 16 }}
+          />
+          <button className="spaces-submit-btn" onClick={submitMajlisReply} disabled={postingMajlisReply || !newMajlisReply.trim()}>
+            {postingMajlisReply ? 'Posting...' : 'Ask →'}
+          </button>
+        </div>
+      )
+    }
+
+    return (
+      <div className="spaces-class-section card">
+        <div className="spaces-section-intro card" style={{ marginBottom: 20 }}>
+          <h3 className="spaces-section-intro-title">🕌 Majlis</h3>
+          <p className="spaces-section-intro-text">
+            The general meeting hall, updates, announcements, and important things from the Sual team.
+            Ask a question on anything that isn't clear, right on the post itself.
+          </p>
+        </div>
+
+        {majlisLoading ? (
+          <div className="spaces-loading"><div className="spaces-spinner" /></div>
+        ) : majlisPosts.length === 0 ? (
+          <div className="spaces-empty card">
+            <p className="spaces-empty-icon">🕌</p>
+            <p className="spaces-empty-text">No announcements yet.</p>
+          </div>
+        ) : (
+          <div className="spaces-posts">
+            {majlisPosts.map(post => (
+              <button key={post.id} className="spaces-post-card card" onClick={() => openMajlisPost(post)}>
+                <div className="spaces-post-top">
+                  {post.pinned && <span className="spaces-cat-badge">📌 Pinned</span>}
+                  <span className="spaces-post-date">{timeAgo(post.created_at)}</span>
+                </div>
+                <h3 className="spaces-post-title">{post.title}</h3>
+                <p className="spaces-post-preview">
+                  {post.body.length > 140 ? post.body.slice(0, 140) + '...' : post.body}
+                </p>
+                <span className="spaces-post-read">Read &amp; Ask →</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   if (subLoading) {
     return (
       <div className="page-content spaces-page">
@@ -1558,6 +1685,7 @@ useEffect(() => {
               { icon: '✍️', text: 'Structured Arabiyyah courses — Beginner to Advanced' },
               { icon: '📜', text: 'Structured Hadeeth courses — An-Nawawi to Sahih Al-Bukhari' },
               { icon: '💬', text: 'Threaded community discussions' },
+              { icon: '🕌', text: 'Majlis — announcements and updates from the Sual team' },
               { icon: '🤝', text: 'Accountability partners and Sahaabah circles' },
               { icon: '📖', text: 'A new tafseer verse and short test every day' },
             ].map((f, i) => (
@@ -1642,7 +1770,7 @@ useEffect(() => {
               <div className="spaces-empty card">
                 <p className="spaces-empty-icon">📖</p>
                 <p className="spaces-empty-text">No lesson posted yet today for this level</p>
-                <p className="spaces-empty-sub">Check the course below for structured, self-paced chapters in the meantime.</p>
+                <p className="spaces-empty-sub">Check My Courses for structured, self-paced chapters in the meantime.</p>
               </div>
             )}
 
@@ -1719,12 +1847,14 @@ useEffect(() => {
               </div>
             )}
 
-            {/* Structured, self-paced course library — replaces the
-                previous Telegram-group CTA entirely. Courses,
-                chapters, quizzes, progress, and course-scoped
-                discussion all live here now. */}
-            <LmsCourse classId={cls.id} level={currentLevelKey} user={user} />
-
+            <div className="spaces-class-cta card">
+              <p className="spaces-class-cta-text">
+                Want to work through this level at your own pace, chapter by chapter, with progress tracked automatically?
+              </p>
+              <button className="spaces-submit-btn" onClick={() => navigate('/lms')}>
+                Go to My Courses →
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -1754,6 +1884,7 @@ useEffect(() => {
       <div className="spaces-main-tabs">
         {[
           { key: 'community',      label: 'Community',      icon: '💬' },
+          { key: 'majlis',         label: 'Majlis',         icon: '🕌' },
           { key: 'arabiyyah',      label: 'Arabiyyah Class', icon: '✍️' },
           { key: 'hadeeth',        label: 'Hadeeth Class',   icon: '📜' },
           { key: 'accountability', label: 'Accountability',  icon: '🤝' },
@@ -1770,6 +1901,7 @@ useEffect(() => {
         ))}
       </div>
 
+      {activeTab === 'majlis' && renderMajlis()}
       {activeTab === 'arabiyyah' && renderClass(CLASSES[0])}
       {activeTab === 'hadeeth' && renderClass(CLASSES[1])}
       {activeTab === 'accountability' && renderAccountability()}
