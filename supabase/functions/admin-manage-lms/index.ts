@@ -1,22 +1,3 @@
-// supabase/functions/admin-manage-lms/index.ts
-//
-// Manages structured courses under the new section → item model:
-// a course has ordered sections (e.g. "Chapter 1"), each section
-// holds multiple independently-trackable items (audio, reading,
-// quiz, discussion), replacing the earlier flat chapter model where
-// everything was bundled into one blob. Matches the granularity of
-// Miva's Moodle-based LMS (multiple discrete, separately-completable
-// pieces per week) without attempting to replicate Moodle-specific
-// features (grade books, office-hour scheduling) that aren't
-// relevant here.
-//
-// Draft-then-publish discipline, same as every other content type
-// this session — nothing reaches a student until explicitly
-// published.
-//
-// Deploy:  supabase functions deploy admin-manage-lms
-// Uses the same ADMIN_EMAILS and OPENAI_API_KEY secrets already set.
-
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -27,6 +8,7 @@ const ADMIN_EMAILS = (Deno.env.get('ADMIN_EMAILS') ?? '')
   .split(',').map(e => e.trim().toLowerCase()).filter(Boolean)
 
 const supabaseAdmin = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+
 const AUDIO_BUCKET = 'class-audio'
 
 function corsHeaders() {
@@ -65,7 +47,7 @@ function sanitizeFilename(name: string) {
 
 const NOTES_PROMPT = `You are drafting written study notes for one item in an Islamic Arabiyyah/Hadeeth course, to accompany a teacher's recorded audio lesson. You will be given the item's title and its Arabic text/translation. Write clear notes covering the key points, vocabulary, and grammatical or hadith-related concepts a student should take from this item. Do not include questions. This is a DRAFT a qualified reviewer will check before publishing — note uncertainty rather than inventing a precise-sounding but unverified detail.`
 
-const QUESTIONS_PROMPT = `You are drafting 5 multiple-choice comprehension questions for one item in an Islamic Arabiyyah/Hadeeth course, based ONLY on the item's given text and notes. All 4 options per question must be the same grammatical form and plausible category as the correct answer — no "all/none of the above," no option that's obviously the odd one out. No two questions may share the same 4 options. Respond with ONLY JSON: {"questions": [{"question": "...", "options": ["...","...","...","..."], "correctIndex": 0, "explanation": "..."}]}. This is a DRAFT a qualified reviewer will check before publishing.`
+const QUESTIONS_PROMPT = `You are drafting 20 multiple-choice comprehension questions for one item in an Islamic Arabiyyah/Hadeeth course, based ONLY on the item's given text and notes. All 4 options per question must be the same grammatical form and plausible category as the correct answer — no "all/none of the above," no option that's obviously the odd one out. No two questions may share the same 4 options. Respond with ONLY JSON: {"questions": [{"question": "...", "options": ["...","...","...","..."], "correctIndex": 0, "explanation": "..."}]}. This is a DRAFT a qualified reviewer will check before publishing.`
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders() })
@@ -149,7 +131,7 @@ serve(async (req) => {
   }
 
   if (action === 'add_item') {
-    const { section_id, item_number, item_type, title, arabic_text, transliteration, translation, notes } = body
+    const { section_id, item_number, item_type, title, audio_url, arabic_text, transliteration, translation, notes } = body
     if (!section_id || !item_number || !item_type || !title) {
       return new Response(JSON.stringify({ error: 'section_id, item_number, item_type, and title are required' }), { status: 400, headers: corsHeaders() })
     }
@@ -158,7 +140,19 @@ serve(async (req) => {
     }
     const { data, error } = await supabaseAdmin
       .from('lms_items')
-      .insert({ section_id, item_number, item_type, title, arabic_text: arabic_text || null, transliteration: transliteration || null, translation: translation || null, notes: notes || null, status: 'draft', ai_generated: false })
+      .insert({
+        section_id,
+        item_number,
+        item_type,
+        title,
+        audio_url: audio_url || null,
+        arabic_text: arabic_text || null,
+        transliteration: transliteration || null,
+        translation: translation || null,
+        notes: notes || null,
+        status: 'draft',
+        ai_generated: false,
+      })
       .select().maybeSingle()
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
     return new Response(JSON.stringify({ ok: true, item: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
@@ -243,6 +237,7 @@ serve(async (req) => {
 
       let parsed
       try { parsed = JSON.parse(resBody.choices[0].message.content) } catch { throw new Error('Model returned invalid JSON') }
+
       const rawQuestions = Array.isArray(parsed.questions) ? parsed.questions : []
       const valid = rawQuestions.filter((q: any) =>
         typeof q.question === 'string' && Array.isArray(q.options) && q.options.length === 4

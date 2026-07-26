@@ -141,32 +141,39 @@ function shuffleArr(arr) {
   return a
 }
 
-function buildTafseerQuestions(entry, historyPool) {
-  const others = historyPool.filter(e => e.id !== entry.id)
+function buildTafseerQuestions(recentEntries, distractorPool) {
   const raw = []
 
-  if (others.length >= 3) {
-    const wrongLabels = shuffleArr(others).slice(0, 3).map(e => `${e.surah_name} ${e.surah_num}:${e.ayah_num}`)
-    raw.push({
-      question: "Which surah and ayah is today's verse from?",
-      optionPool: [`${entry.surah_name} ${entry.surah_num}:${entry.ayah_num}`, ...wrongLabels],
-      correctText: `${entry.surah_name} ${entry.surah_num}:${entry.ayah_num}`,
-    })
-  }
+  recentEntries.forEach(entry => {
+    const others = distractorPool.filter(e => e.id !== entry.id)
 
-  const allOtherLessons = others.flatMap(e => Array.isArray(e.lessons) ? e.lessons : [])
-  const lessons = Array.isArray(entry.lessons) ? entry.lessons : []
-  lessons.slice(0, 3).forEach(lesson => {
-    const wrong = shuffleArr(allOtherLessons.filter(l => l !== lesson)).slice(0, 3)
-    if (wrong.length < 3) return
-    raw.push({
-      question: "Which of these is a lesson drawn from today's ayah?",
-      optionPool: [lesson, ...wrong],
-      correctText: lesson,
-    })
-  })
+    // Surah/ayah identification — quotes a snippet of the translation
+    // so it's clear which day's verse is being asked about, now that
+    // a single test can span several different days' entries.
+    if (others.length >= 3) {
+      const wrongLabels = shuffleArr(others).slice(0, 3).map(e => `${e.surah_name} ${e.surah_num}:${e.ayah_num}`)
+      raw.push({
+        question: `Which surah and ayah is this verse from: "${(entry.translation || '').slice(0, 70)}..."?`,
+        optionPool: [`${entry.surah_name} ${entry.surah_num}:${entry.ayah_num}`, ...wrongLabels],
+        correctText: `${entry.surah_name} ${entry.surah_num}:${entry.ayah_num}`,
+      })
+    }
 
-  if (raw.length < 2) {
+    // Lesson-based questions, one per lesson in this entry
+    const allOtherLessons = others.flatMap(e => Array.isArray(e.lessons) ? e.lessons : [])
+    const lessons = Array.isArray(entry.lessons) ? entry.lessons : []
+    lessons.forEach(lesson => {
+      const wrong = shuffleArr(allOtherLessons.filter(l => l !== lesson)).slice(0, 3)
+      if (wrong.length < 3) return
+      raw.push({
+        question: `Which of these is a lesson drawn from ${entry.surah_name} ${entry.surah_num}:${entry.ayah_num}?`,
+        optionPool: [lesson, ...wrong],
+        correctText: lesson,
+      })
+    })
+
+    // Fallback fill-in-the-blank if this entry didn't yield enough
+    // lesson-based questions on its own
     const sentences = (entry.tafseer_body || '').split(/(?<=[.!?])\s+/).filter(s => tfWords(s).length >= 5)
     if (sentences.length > 0) {
       const sentence = sentences[Math.floor(Math.random() * sentences.length)]
@@ -179,7 +186,7 @@ function buildTafseerQuestions(entry, historyPool) {
         const distractors = [...new Set(shuffleArr(otherWords))].slice(0, 3)
         if (distractors.length === 3) {
           raw.push({
-            question: "Which word completes this line from today's tafseer?",
+            question: `Which word completes this line from ${entry.surah_name} ${entry.surah_num}:${entry.ayah_num}?`,
             context: blanked,
             optionPool: [target.w, ...distractors],
             correctText: target.w,
@@ -187,9 +194,12 @@ function buildTafseerQuestions(entry, historyPool) {
         }
       }
     }
-  }
+  })
 
-  return raw.slice(0, 4).map(q => {
+  // Shuffle across ALL days' candidate questions together, then cap
+  // at 20 — this is what makes it a genuine mixed review rather than
+  // just today's entry repeated in different phrasings.
+  return shuffleArr(raw).slice(0, 20).map(q => {
     const options = shuffleArr(q.optionPool)
     return {
       question: q.question,
@@ -602,7 +612,9 @@ export default function Spaces({ user }) {
       setTafseerScore(0)
 
       if (entry) {
-        const built = buildTafseerQuestions(entry, history || [])
+        const RECENT_WINDOW = 7
+        const recentEntries = (history || []).slice(0, RECENT_WINDOW)
+        const built = buildTafseerQuestions(recentEntries, history || [])
         setTafseerQuestions(built)
 
         const { data: prog } = await supabase
