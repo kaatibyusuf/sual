@@ -3,6 +3,7 @@ import { fetchReferralStatus, markCongratsSeen } from '../lib/referralStatus.js'
 
 export default function ReferralProgress({ user }) {
   const [status, setStatus] = useState(null)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -12,6 +13,30 @@ export default function ReferralProgress({ user }) {
   const dismissCongrats = async () => {
     await markCongratsSeen(user.id)
     setStatus(s => ({ ...s, shouldShowCongrats: false }))
+  }
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(referralLink)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      const textarea = document.createElement('textarea')
+      textarea.value = referralLink
+      textarea.style.position = 'fixed'
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.focus()
+      textarea.select()
+      try {
+        document.execCommand('copy')
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      } catch {
+        alert('Could not copy automatically — please select and copy the link manually.')
+      }
+      document.body.removeChild(textarea)
+    }
   }
 
   if (!status) return null
@@ -47,10 +72,10 @@ export default function ReferralProgress({ user }) {
         <div style={{ display: 'flex', gap: 8 }}>
           <input readOnly value={referralLink} style={{ flex: 1, padding: '8px 12px', borderRadius: 8, border: '1px solid #dceafb', fontSize: '0.82rem', color: '#56728a' }} />
           <button
-            onClick={() => navigator.clipboard.writeText(referralLink)}
-            style={{ background: '#094570', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
+            onClick={copyLink}
+            style={{ background: copied ? '#2e7d32' : '#094570', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
           >
-            Copy
+            {copied ? '✓ Copied' : 'Copy'}
           </button>
         </div>
       )}

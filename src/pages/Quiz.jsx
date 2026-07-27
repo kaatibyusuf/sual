@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DISCIPLINES, QUIZ_QUESTIONS } from '../data/knowledge.js'
 import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
@@ -92,8 +92,47 @@ const ADVANCED_QUIZ_ALL = {
   tafseer:   ADVANCED_TAFSEER_QUIZ || [],
 }
 
-
 const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced']
+
+// ── LocalStorage progress persistence (defense-in-depth against
+// pull-to-refresh / accidental reload wiping an in-progress quiz) ──
+// This complements the overscroll-behavior CSS fix and the touch
+// fallback — it's a second line of defense in case a reload still
+// slips through despite those. Saves the full resumable state
+// (including the already-shuffled questions, since a fresh call to
+// buildQuizPool/randomizeSession would reshuffle order and option
+// positions, making "resume" show different questions than the user
+// was mid-way through).
+const saveProgress = (quizKey, state) => {
+  try {
+    localStorage.setItem(`sual-quiz-progress-${quizKey}`, JSON.stringify({
+      ...state, savedAt: Date.now(),
+    }))
+  } catch {
+    // localStorage can fail (private browsing, storage full) — this
+    // is defense-in-depth, not a hard requirement, so fail silently.
+  }
+}
+
+const loadSavedProgress = (quizKey) => {
+  try {
+    const raw = localStorage.getItem(`sual-quiz-progress-${quizKey}`)
+    if (!raw) return null
+    const saved = JSON.parse(raw)
+    // Expire anything older than a few hours — a stale, half-finished
+    // attempt from days ago is more confusing to resume than useful.
+    if (Date.now() - saved.savedAt > 6 * 60 * 60 * 1000) return null
+    return saved
+  } catch {
+    return null
+  }
+}
+
+const clearProgress = (quizKey) => {
+  try {
+    localStorage.removeItem(`sual-quiz-progress-${quizKey}`)
+  } catch {}
+}
 
 // ── Answer-position shuffling ─────────────────────────────────
 // The question data has a fixed `correct` index baked in per
@@ -191,6 +230,22 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   const [unlockMsg,          setUnlockMsg]          = useState(null)
 
   const [noQuestionsMsg, setNoQuestionsMsg] = useState(null)
+  const [savedProgress,  setSavedProgress]  = useState(null)
+
+  // Check for a resumable attempt whenever the discipline/level
+  // selection changes on the select screen.
+  useEffect(() => {
+    if (phase !== 'select') return
+    const quizKey = `${selectedDiscipline}-${selectedLevel}`
+    setSavedProgress(loadSavedProgress(quizKey))
+  }, [phase, selectedDiscipline, selectedLevel])
+
+  // Autosave on every relevant change while a quiz is active.
+  useEffect(() => {
+    if (phase !== 'active' || questions.length === 0) return
+    const quizKey = `${selectedDiscipline}-${selectedLevel}`
+    saveProgress(quizKey, { questionIndex: currentIdx, answers, questions, score, chosen, revealed })
+  }, [phase, currentIdx, answers, score, chosen, revealed, questions, selectedDiscipline, selectedLevel])
 
   const startQuiz = useCallback(() => {
     const pool = buildQuizPool(selectedDiscipline, selectedLevel)
@@ -211,6 +266,25 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setRevealed(false)
     setUnlockMsg(null)
     setPhase('active')
+  }, [selectedDiscipline, selectedLevel])
+
+  const resumeQuiz = useCallback(() => {
+    if (!savedProgress) return
+    setQuestions(savedProgress.questions)
+    setCurrentIdx(savedProgress.questionIndex)
+    setAnswers(savedProgress.answers)
+    setScore(savedProgress.score)
+    setChosen(savedProgress.chosen)
+    setRevealed(savedProgress.revealed)
+    setUnlockMsg(null)
+    setNoQuestionsMsg(null)
+    setPhase('active')
+  }, [savedProgress])
+
+  const discardSavedProgress = useCallback(() => {
+    const quizKey = `${selectedDiscipline}-${selectedLevel}`
+    clearProgress(quizKey)
+    setSavedProgress(null)
   }, [selectedDiscipline, selectedLevel])
 
   const saveScore = async (finalScore, total) => {
@@ -300,6 +374,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
     if (currentIdx + 1 >= questions.length) {
       saveScore(score, questions.length)
+      clearProgress(`${selectedDiscipline}-${selectedLevel}`)
       setPhase('result')
     } else {
       setCurrentIdx(i => i + 1)
@@ -372,6 +447,28 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
               </button>
             ))}
           </div>
+
+          {savedProgress && (
+            <div className="quiz-select-error" style={{
+              padding: '10px 14px',
+              marginBottom: 12,
+              background: 'rgba(46,125,50,0.08)',
+              border: '1px solid rgba(46,125,50,0.25)',
+              borderRadius: 10,
+              fontSize: '0.85rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: 10,
+              flexWrap: 'wrap',
+            }}>
+              <span>You have an unfinished attempt at question {savedProgress.questionIndex + 1} of {savedProgress.questions.length}.</span>
+              <span style={{ display: 'flex', gap: 8 }}>
+                <button className="btn btn-primary" onClick={resumeQuiz}>Resume</button>
+                <button className="btn btn-ghost" onClick={discardSavedProgress}>Discard</button>
+              </span>
+            </div>
+          )}
 
           {noQuestionsMsg && (
             <div className="quiz-select-error" style={{

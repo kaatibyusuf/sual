@@ -77,6 +77,11 @@ const ICONS = {
       <circle cx="19" cy="8" r="1.4" fill="currentColor" stroke="none" />
     </svg>
   ),
+  puzzle: (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2a4 4 0 0 0-4 4c0 1 .4 1.9 1 2.6-.7.3-1.3.8-1.7 1.4H4a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h3.3c.4.6 1 1.1 1.7 1.4-.6.7-1 1.6-1 2.6a4 4 0 0 0 8 0c0-1-.4-1.9-1-2.6.7-.3 1.3-.8 1.7-1.4H20a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-3.3c-.4-.6-1-1.1-1.7-1.4.6-.7 1-1.6 1-2.6a4 4 0 0 0-4-4z" />
+  </svg>
+),
 }
 
 const ACTIONS = [
@@ -167,7 +172,15 @@ const ACTIONS = [
     iconColor: '#2E1F4A',
     title: 'Journey',
     desc: 'Your path',
-  }
+  },
+  {
+  to: '/puzzle',
+  icon: 'puzzle',
+  color: '#E8B4B8',
+  iconColor: '#4A1A1D',
+  title: 'Term Puzzle',
+  desc: 'Very tough',
+}
 ]
 
 export default function QuickActions() {

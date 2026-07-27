@@ -4,6 +4,21 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
 
+// Prevent pull-to-refresh from wiping in-progress app state (e.g. a
+// quiz mid-attempt) when a user accidentally scrolls down at the top
+// of the page. The CSS overscroll-behavior fix handles this on most
+// Android browsers; this covers Safari/iOS, where that CSS property
+// isn't reliably supported.
+let touchStartY = 0
+document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY }, { passive: true })
+document.addEventListener('touchmove', e => {
+  const touchY = e.touches[0].clientY
+  const scrollTop = document.scrollingElement.scrollTop
+  if (scrollTop === 0 && touchY > touchStartY) {
+    e.preventDefault()
+  }
+}, { passive: false })
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -15,25 +30,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then((registration) => {
-      // Browsers only check for a new sw.js on navigation, and by
-      // spec at most once every 24 hours even then — a PWA left open
-      // for days never triggers that check on its own. Re-checking
-      // whenever the tab/app becomes visible again catches the case
-      // that matters most: someone switching back to Sual after it's
-      // been sitting in the background.
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') registration.update()
       })
-
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing
         if (!newWorker) return
         newWorker.addEventListener('statechange', () => {
-          // "installed" + an existing controller means a new version
-          // finished installing while an old one is still actively
-          // running the page — this is the moment to prompt, rather
-          // than swapping silently, which can leave the page in a
-          // half-old-half-new state until it's reloaded anyway.
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
             if (window.confirm('A new version of Sual is available. Reload now?')) {
               window.location.reload()

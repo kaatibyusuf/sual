@@ -1,3 +1,4 @@
+import Puzzle from './pages/Puzzle.jsx'
 import { captureReferralFromUrl, redeemStoredReferral } from './lib/referral.js'
 import React, { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
@@ -210,6 +211,7 @@ export default function App() {
             <Route path="/lms" element={<LmsDashboard user={user} />} />
             <Route path="/lms/:courseId" element={<LmsCourseDetail user={user} />} />
             <Route path="*" element={<Home user={user} />} />
+            <Route path="/puzzle" element={<Puzzle />} />
           </Routes>
         </main>
       </div>

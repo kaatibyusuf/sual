@@ -157,6 +157,10 @@ html[data-theme="dark"] body {
   color: #e8eaf6;
 }
 
+html, body {
+  overscroll-behavior-y: contain;
+}
+
 html[data-theme="dark"] .sidebar {
   background: #0d1b2a;
 }
