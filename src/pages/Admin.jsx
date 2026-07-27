@@ -33,6 +33,7 @@ const EMPTY_CLASS_LESSON = {
   commentary: '',
   audio_url: '',
   add_to_lms: false,
+  publish_immediately: false,
   lessons: [''],
 }
 
@@ -303,6 +304,7 @@ export default function Admin({ user }) {
       commentary: entry.commentary || '',
       audio_url: entry.audio_url || '',
       add_to_lms: !!entry.lms_section_id,
+      publish_immediately: false,
       lessons: Array.isArray(entry.lessons) && entry.lessons.length > 0 ? entry.lessons : [''],
     })
     setClassLessonSaved(null)
@@ -388,9 +390,11 @@ export default function Admin({ user }) {
       setClassLessonSaved(data.entry)
       if (classLessonForm.add_to_lms) {
         if (data.lms?.ok) {
-          setClassLessonLmsMsg(data.lms.created
-            ? 'Also added to LMS as a new section.'
-            : 'Also synced to the existing LMS section.')
+          setClassLessonLmsMsg(
+            data.lms.created
+              ? (data.lms.published ? 'Added to LMS and published.' : 'Also added to LMS as a new section (draft — publish it in the LMS manager below).')
+              : (data.lms.published ? 'Synced to the existing LMS section and published.' : 'Also synced to the existing LMS section (still draft).')
+          )
         } else if (data.lms) {
           setClassLessonLmsMsg(`Daily lesson saved, but LMS sync failed: ${data.lms.error}`)
         }
@@ -1366,10 +1370,21 @@ export default function Admin({ user }) {
             <input
               type="checkbox"
               checked={classLessonForm.add_to_lms}
-              onChange={e => setClassLessonForm(f => ({ ...f, add_to_lms: e.target.checked }))}
+              onChange={e => setClassLessonForm(f => ({ ...f, add_to_lms: e.target.checked, publish_immediately: e.target.checked ? f.publish_immediately : false }))}
             />
             Also add this to the LMS course library
           </label>
+
+          {classLessonForm.add_to_lms && (
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', color: '#3a4a5a', marginTop: 8, marginLeft: 24 }}>
+              <input
+                type="checkbox"
+                checked={classLessonForm.publish_immediately}
+                onChange={e => setClassLessonForm(f => ({ ...f, publish_immediately: e.target.checked }))}
+              />
+              Publish immediately (skip the manual review/publish step in LMS)
+            </label>
+          )}
         </div>
 
         <div style={{ marginBottom: 16 }}>

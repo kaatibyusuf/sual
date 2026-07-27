@@ -10,6 +10,9 @@
 // Optionally, on upsert, can auto-create/update a matching LMS
 // section+item so the same content posted as "today's lesson" also
 // lands in the self-paced course library — see addOrUpdateLmsEntry().
+// By default the created section+item stay draft, same as any manual
+// LMS entry — entry.publish_immediately skips that manual review step
+// when the admin already knows the content reads fine standalone.
 //
 // SECURITY: same caller-verification pattern as the other admin
 // functions — re-checks the caller's own auth token against
@@ -52,9 +55,13 @@ function sanitizeFilename(name: string) {
 // section+item that mirrors this daily lesson's content. Only called
 // when the admin explicitly ticks entry.add_to_lms — never automatic —
 // so out-of-sequence or review-day posts can simply skip this.
-// Returns { ok: true, section_id, created: boolean } on success, or
-// { ok: false, error } on failure — a failure here never fails the
-// daily lesson save itself, since the two are independent concerns.
+// publishImmediately controls whether the section+item land as
+// 'published' right away instead of the usual 'draft' — still opt-in
+// per post, defaulting to false (draft) unless explicitly requested.
+// Returns { ok: true, section_id, created: boolean, published: boolean }
+// on success, or { ok: false, error } on failure — a failure here
+// never fails the daily lesson save itself, since the two are
+// independent concerns.
 async function addOrUpdateLmsEntry(row: {
   class_id: string
   level: string
@@ -64,8 +71,11 @@ async function addOrUpdateLmsEntry(row: {
   translation: string | null
   commentary: string | null
   audio_url: string | null
-}, existingSectionId: string | null) {
+}, existingSectionId: string | null, publishImmediately: boolean) {
   try {
+    const status = publishImmediately ? 'published' : 'draft'
+    const publishedAt = publishImmediately ? new Date().toISOString() : null
+
     // ── Already synced once: update the existing item in place ──
     if (existingSectionId) {
       const { data: section, error: sectionErr } = await supabaseAdmin
@@ -79,6 +89,16 @@ async function addOrUpdateLmsEntry(row: {
         // to creating a fresh one rather than failing silently.
         existingSectionId = null
       } else {
+        // If asked to publish immediately, also publish the section
+        // itself — an item can't help a student if its parent
+        // section is still draft (this bit us with a real student
+        // report earlier: item published, section not, nothing showed).
+        if (publishImmediately) {
+          await supabaseAdmin
+            .from('lms_sections')
+            .update({ status: 'published', published_at: publishedAt })
+            .eq('id', existingSectionId)
+        }
         const { error: itemErr } = await supabaseAdmin
           .from('lms_items')
           .update({
@@ -88,10 +108,12 @@ async function addOrUpdateLmsEntry(row: {
             transliteration: row.transliteration,
             translation: row.translation,
             notes: row.commentary,
+            status,
+            published_at: publishedAt,
           })
           .eq('section_id', existingSectionId)
         if (itemErr) return { ok: false, error: itemErr.message }
-        return { ok: true, section_id: existingSectionId, created: false }
+        return { ok: true, section_id: existingSectionId, created: false, published: publishImmediately }
       }
     }
 
@@ -116,7 +138,7 @@ async function addOrUpdateLmsEntry(row: {
 
     const { data: section, error: sectionErr } = await supabaseAdmin
       .from('lms_sections')
-      .insert({ course_id: course.id, section_number: nextSectionNumber, title: row.title, status: 'draft' })
+      .insert({ course_id: course.id, section_number: nextSectionNumber, title: row.title, status, published_at: publishedAt })
       .select()
       .maybeSingle()
     if (sectionErr) return { ok: false, error: sectionErr.message }
@@ -133,12 +155,13 @@ async function addOrUpdateLmsEntry(row: {
         transliteration: row.transliteration,
         translation: row.translation,
         notes: row.commentary,
-        status: 'draft',
+        status,
+        published_at: publishedAt,
         ai_generated: false,
       })
     if (itemErr) return { ok: false, error: itemErr.message }
 
-    return { ok: true, section_id: section.id, created: true }
+    return { ok: true, section_id: section.id, created: true, published: publishImmediately }
   } catch (err) {
     return { ok: false, error: err.message }
   }
@@ -271,7 +294,7 @@ serve(async (req) => {
 
     let lms = null
     if (entry.add_to_lms) {
-      lms = await addOrUpdateLmsEntry(row, data?.lms_section_id ?? null)
+      lms = await addOrUpdateLmsEntry(row, data?.lms_section_id ?? null, !!entry.publish_immediately)
       // Only write the link back on first-time creation — on update,
       // the existing link is already correct and untouched.
       if (lms.ok && lms.created && data?.id) {
