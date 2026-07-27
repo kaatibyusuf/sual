@@ -159,7 +159,13 @@ serve(async (req) => {
   }
 
   if (action === 'update_item') {
-    const { id, ...fields } = body
+    // FIX: previously `const { id, ...fields } = body` left `action`
+    // (e.g. "update_item") inside `fields`, which then got spread into
+    // .update(fields) and sent to Postgres as a column to write —
+    // causing "Could not find the 'action' column of 'lms_items' in
+    // the schema cache" on every single item edit. Destructuring
+    // `action` out alongside `id` keeps fields to real columns only.
+    const { id, action: _omit, ...fields } = body
     if (!id) return new Response(JSON.stringify({ error: 'id is required' }), { status: 400, headers: corsHeaders() })
     const { error } = await supabaseAdmin.from('lms_items').update(fields).eq('id', id)
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })

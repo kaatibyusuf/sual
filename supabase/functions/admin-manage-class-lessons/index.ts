@@ -7,6 +7,10 @@
 // directly from the browser to Storage rather than through this
 // function's own request body, which has a much lower size limit.
 //
+// Optionally, on upsert, can auto-create/update a matching LMS
+// section+item so the same content posted as "today's lesson" also
+// lands in the self-paced course library — see addOrUpdateLmsEntry().
+//
 // SECURITY: same caller-verification pattern as the other admin
 // functions — re-checks the caller's own auth token against
 // ADMIN_EMAILS on every call, never trusts client-side route gating.
@@ -15,6 +19,7 @@
 //
 // Deploy:  supabase functions deploy admin-manage-class-lessons
 // Uses the same ADMIN_EMAILS secret already set for the other admin functions.
+// Requires: ALTER TABLE class_daily_lessons ADD COLUMN lms_section_id uuid REFERENCES lms_sections(id);
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -41,6 +46,102 @@ function corsHeaders() {
 
 function sanitizeFilename(name: string) {
   return name.replace(/[^a-zA-Z0-9._-]/g, '_')
+}
+
+// Creates (first save) or updates (subsequent saves) the LMS
+// section+item that mirrors this daily lesson's content. Only called
+// when the admin explicitly ticks entry.add_to_lms — never automatic —
+// so out-of-sequence or review-day posts can simply skip this.
+// Returns { ok: true, section_id, created: boolean } on success, or
+// { ok: false, error } on failure — a failure here never fails the
+// daily lesson save itself, since the two are independent concerns.
+async function addOrUpdateLmsEntry(row: {
+  class_id: string
+  level: string
+  title: string
+  arabic_text: string | null
+  transliteration: string | null
+  translation: string | null
+  commentary: string | null
+  audio_url: string | null
+}, existingSectionId: string | null) {
+  try {
+    // ── Already synced once: update the existing item in place ──
+    if (existingSectionId) {
+      const { data: section, error: sectionErr } = await supabaseAdmin
+        .from('lms_sections')
+        .select('id')
+        .eq('id', existingSectionId)
+        .maybeSingle()
+      if (sectionErr) return { ok: false, error: sectionErr.message }
+      if (!section) {
+        // The linked section was deleted separately — fall through
+        // to creating a fresh one rather than failing silently.
+        existingSectionId = null
+      } else {
+        const { error: itemErr } = await supabaseAdmin
+          .from('lms_items')
+          .update({
+            title: row.title,
+            audio_url: row.audio_url,
+            arabic_text: row.arabic_text,
+            transliteration: row.transliteration,
+            translation: row.translation,
+            notes: row.commentary,
+          })
+          .eq('section_id', existingSectionId)
+        if (itemErr) return { ok: false, error: itemErr.message }
+        return { ok: true, section_id: existingSectionId, created: false }
+      }
+    }
+
+    // ── First time syncing this daily lesson: find the matching course ──
+    const { data: course, error: courseErr } = await supabaseAdmin
+      .from('lms_courses')
+      .select('id')
+      .eq('class_id', row.class_id)
+      .eq('level', row.level)
+      .maybeSingle()
+    if (courseErr) return { ok: false, error: courseErr.message }
+    if (!course) {
+      return { ok: false, error: `No LMS course exists for ${row.class_id}/${row.level} yet — create the course in LMS first, or skip auto-adding for this entry.` }
+    }
+
+    const { count, error: countErr } = await supabaseAdmin
+      .from('lms_sections')
+      .select('id', { count: 'exact', head: true })
+      .eq('course_id', course.id)
+    if (countErr) return { ok: false, error: countErr.message }
+    const nextSectionNumber = (count ?? 0) + 1
+
+    const { data: section, error: sectionErr } = await supabaseAdmin
+      .from('lms_sections')
+      .insert({ course_id: course.id, section_number: nextSectionNumber, title: row.title, status: 'draft' })
+      .select()
+      .maybeSingle()
+    if (sectionErr) return { ok: false, error: sectionErr.message }
+
+    const { error: itemErr } = await supabaseAdmin
+      .from('lms_items')
+      .insert({
+        section_id: section.id,
+        item_number: 1,
+        item_type: 'reading',
+        title: row.title,
+        audio_url: row.audio_url,
+        arabic_text: row.arabic_text,
+        transliteration: row.transliteration,
+        translation: row.translation,
+        notes: row.commentary,
+        status: 'draft',
+        ai_generated: false,
+      })
+    if (itemErr) return { ok: false, error: itemErr.message }
+
+    return { ok: true, section_id: section.id, created: true }
+  } catch (err) {
+    return { ok: false, error: err.message }
+  }
 }
 
 serve(async (req) => {
@@ -167,7 +268,21 @@ serve(async (req) => {
       .maybeSingle()
 
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders() })
-    return new Response(JSON.stringify({ ok: true, entry: data }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
+
+    let lms = null
+    if (entry.add_to_lms) {
+      lms = await addOrUpdateLmsEntry(row, data?.lms_section_id ?? null)
+      // Only write the link back on first-time creation — on update,
+      // the existing link is already correct and untouched.
+      if (lms.ok && lms.created && data?.id) {
+        await supabaseAdmin
+          .from('class_daily_lessons')
+          .update({ lms_section_id: lms.section_id })
+          .eq('id', data.id)
+      }
+    }
+
+    return new Response(JSON.stringify({ ok: true, entry: data, lms }), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } })
   }
 
   if (action === 'delete') {

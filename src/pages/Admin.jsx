@@ -32,6 +32,7 @@ const EMPTY_CLASS_LESSON = {
   translation: '',
   commentary: '',
   audio_url: '',
+  add_to_lms: false,
   lessons: [''],
 }
 
@@ -73,6 +74,7 @@ export default function Admin({ user }) {
   const [classLessonSaving, setClassLessonSaving] = useState(false)
   const [classLessonError, setClassLessonError] = useState(null)
   const [classLessonSaved, setClassLessonSaved] = useState(null)
+  const [classLessonLmsMsg, setClassLessonLmsMsg] = useState(null)
   const [editingClassLessonKey, setEditingClassLessonKey] = useState(null)
 
   const [audioFile, setAudioFile] = useState(null)
@@ -300,10 +302,12 @@ export default function Admin({ user }) {
       translation: entry.translation || '',
       commentary: entry.commentary || '',
       audio_url: entry.audio_url || '',
+      add_to_lms: !!entry.lms_section_id,
       lessons: Array.isArray(entry.lessons) && entry.lessons.length > 0 ? entry.lessons : [''],
     })
     setClassLessonSaved(null)
     setClassLessonError(null)
+    setClassLessonLmsMsg(null)
     setAudioFile(null)
     setAudioUploadError(null)
   }
@@ -313,6 +317,7 @@ export default function Admin({ user }) {
     setClassLessonForm(EMPTY_CLASS_LESSON)
     setClassLessonSaved(null)
     setClassLessonError(null)
+    setClassLessonLmsMsg(null)
     setAudioFile(null)
     setAudioUploadError(null)
   }
@@ -373,6 +378,7 @@ export default function Admin({ user }) {
     setClassLessonSaving(true)
     setClassLessonError(null)
     setClassLessonSaved(null)
+    setClassLessonLmsMsg(null)
     try {
       const { data, error } = await supabase.functions.invoke('admin-manage-class-lessons', {
         body: { action: 'upsert', entry: classLessonForm },
@@ -380,6 +386,15 @@ export default function Admin({ user }) {
       if (error) throw error
       if (data?.error) throw new Error(data.error)
       setClassLessonSaved(data.entry)
+      if (classLessonForm.add_to_lms) {
+        if (data.lms?.ok) {
+          setClassLessonLmsMsg(data.lms.created
+            ? 'Also added to LMS as a new section.'
+            : 'Also synced to the existing LMS section.')
+        } else if (data.lms) {
+          setClassLessonLmsMsg(`Daily lesson saved, but LMS sync failed: ${data.lms.error}`)
+        }
+      }
       resetClassLessonForm()
       fetchClassLessonList()
     } catch (err) {
@@ -1206,6 +1221,21 @@ export default function Admin({ user }) {
             Saved {classLessonSaved.class_id} ({classLessonSaved.level}) entry for {classLessonSaved.publish_date}.
           </div>
         )}
+        {classLessonLmsMsg && (
+          <div
+            className="card"
+            style={{
+              marginBottom: 14,
+              padding: '12px 16px',
+              background: 'rgba(9,69,112,0.06)',
+              border: '1px solid rgba(9,69,112,0.2)',
+              color: '#094570',
+              fontSize: '0.85rem',
+            }}
+          >
+            {classLessonLmsMsg}
+          </div>
+        )}
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 12 }}>
           <div>
@@ -1332,6 +1362,17 @@ export default function Admin({ user }) {
         </div>
 
         <div style={{ marginBottom: 16 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', color: '#3a4a5a' }}>
+            <input
+              type="checkbox"
+              checked={classLessonForm.add_to_lms}
+              onChange={e => setClassLessonForm(f => ({ ...f, add_to_lms: e.target.checked }))}
+            />
+            Also add this to the LMS course library
+          </label>
+        </div>
+
+        <div style={{ marginBottom: 16 }}>
           <label style={{ fontSize: '0.78rem', color: '#6a8090', display: 'block', marginBottom: 6 }}>Lessons</label>
           {classLessonForm.lessons.map((lesson, idx) => (
             <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
@@ -1389,6 +1430,7 @@ export default function Admin({ user }) {
                     <span>
                       <strong>{entry.publish_date}</strong> — {entry.class_id} · {entry.level} — {entry.title}
                       {entry.audio_url && <span style={{ marginLeft: 6 }}>🎧</span>}
+                      {entry.lms_section_id && <span style={{ marginLeft: 6, fontSize: '0.72rem', color: '#8a9ab0' }}>· synced to LMS</span>}
                     </span>
                     <span style={{ display: 'flex', gap: 8 }}>
                       <button className="btn btn-ghost" onClick={() => loadClassLessonIntoForm(entry)} type="button">Edit</button>

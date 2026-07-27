@@ -1,3 +1,4 @@
+import AdminClassLessons from './pages/AdminClassLessons.jsx'
 import { captureReferralFromUrl, redeemStoredReferral } from './lib/referral.js'
 import React, { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
@@ -205,6 +206,7 @@ export default function App() {
             <Route path="/prayer-times" element={<PrayerTimes />} />
             <Route path="/hifdh" element={<Hifdh user={user} />} />
             <Route path="/admin" element={<Admin user={user} />} />
+            <Route path="/admin/class-lessons" element={<AdminClassLessons user={user} />} />
             <Route path="/exam-prep" element={<ExamPrep user={user} />} />
             <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
             <Route path="/lms" element={<LmsDashboard user={user} />} />
