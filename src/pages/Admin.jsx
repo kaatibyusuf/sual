@@ -50,6 +50,14 @@ const EMPTY_THEORY_QUESTION = { question_type: 'theory', question: '', model_ans
 // list_item_questions, generate_draft_notes/questions on { item }).
 const EMPTY_LMS_ITEM = { item_number: '', item_type: 'reading', title: '', arabic_text: '', transliteration: '', translation: '', notes: '' }
 
+// ── Weekly Spaces Tests (Arabiyyah / Tafseer / Hadeeth) ─────────
+// Separate content model from Exam Prep (UTME/JUPEB) — these are
+// weekly tests for Spaces members, one per track per week, created
+// and published the same way Daily Class Lessons are.
+const EMPTY_WEEKLY_TEST = { track: 'arabiyyah', publish_date: '', title: '', description: '' }
+const EMPTY_WEEKLY_MCQ = { question_type: 'mcq', question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' }
+const EMPTY_WEEKLY_THEORY = { question_type: 'theory', question: '', model_answer: '' }
+
 export default function Admin({ user }) {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -123,6 +131,18 @@ export default function Admin({ user }) {
   const [examQuestionMode, setExamQuestionMode] = useState('mcq') // mcq | theory — governs both manual form and AI generation target
   const [examManualQuestion, setExamManualQuestion] = useState(EMPTY_MCQ_QUESTION)
   const [examParsing, setExamParsing] = useState(false)
+
+  // ── Weekly Spaces Tests state ────────────────────────────────
+  const [weeklyTests, setWeeklyTests] = useState([])
+  const [weeklyTestsLoading, setWeeklyTestsLoading] = useState(false)
+  const [weeklyTestForm, setWeeklyTestForm] = useState(EMPTY_WEEKLY_TEST)
+  const [weeklyTestSaving, setWeeklyTestSaving] = useState(false)
+  const [weeklyTestError, setWeeklyTestError] = useState(null)
+  const [weeklySelectedTest, setWeeklySelectedTest] = useState(null)
+  const [weeklyQuestions, setWeeklyQuestions] = useState([])
+  const [weeklyQuestionsLoading, setWeeklyQuestionsLoading] = useState(false)
+  const [weeklyQuestionMode, setWeeklyQuestionMode] = useState('mcq')
+  const [weeklyManualQuestion, setWeeklyManualQuestion] = useState(EMPTY_WEEKLY_MCQ)
 
   const fetchStats = async () => {
     setLoading(true)
@@ -379,7 +399,6 @@ export default function Admin({ user }) {
   const saveClassLesson = async () => {
     setClassLessonSaving(true)
     setClassLessonError(null)
-    setClassLessonSaved(null)
     setClassLessonLmsMsg(null)
     try {
       const { data, error } = await supabase.functions.invoke('admin-manage-class-lessons', {
@@ -828,11 +847,126 @@ export default function Admin({ user }) {
     openExamTopic(examSelectedTopic)
   }
 
+  // ── Weekly Spaces Tests functions ─────────────────────────────
+  const fetchWeeklyTests = async () => {
+    setWeeklyTestsLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-weekly-tests', { body: { action: 'list' } })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setWeeklyTests(data.tests || [])
+    } catch (err) {
+      console.error('Failed to load weekly tests:', err)
+    } finally {
+      setWeeklyTestsLoading(false)
+    }
+  }
+
+  const saveWeeklyTest = async () => {
+    setWeeklyTestSaving(true)
+    setWeeklyTestError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-weekly-tests', {
+        body: { action: 'upsert_test', test: weeklyTestForm },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setWeeklyTestForm(EMPTY_WEEKLY_TEST)
+      fetchWeeklyTests()
+    } catch (err) {
+      setWeeklyTestError(err.message)
+    } finally {
+      setWeeklyTestSaving(false)
+    }
+  }
+
+  const openWeeklyTest = async (test) => {
+    setWeeklySelectedTest(test)
+    setWeeklyQuestionsLoading(true)
+    setWeeklyTestError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-weekly-tests', {
+        body: { action: 'list_questions', test_id: test.id },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setWeeklyQuestions(data.questions || [])
+    } catch (err) {
+      setWeeklyTestError(err.message)
+    } finally {
+      setWeeklyQuestionsLoading(false)
+    }
+  }
+
+  const switchWeeklyQuestionMode = (mode) => {
+    setWeeklyQuestionMode(mode)
+    setWeeklyManualQuestion(mode === 'theory' ? EMPTY_WEEKLY_THEORY : EMPTY_WEEKLY_MCQ)
+  }
+
+  const addWeeklyQuestion = async () => {
+    if (!weeklyManualQuestion.question.trim() || !weeklySelectedTest) return
+    setWeeklyTestError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-weekly-tests', {
+        body: { action: 'add_question', question: { test_id: weeklySelectedTest.id, ...weeklyManualQuestion } },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setWeeklyManualQuestion(weeklyQuestionMode === 'theory' ? EMPTY_WEEKLY_THEORY : EMPTY_WEEKLY_MCQ)
+      openWeeklyTest(weeklySelectedTest)
+      fetchWeeklyTests()
+    } catch (err) {
+      setWeeklyTestError(err.message)
+    }
+  }
+
+  const deleteWeeklyQuestion = async (id) => {
+    try {
+      await supabase.functions.invoke('admin-manage-weekly-tests', { body: { action: 'delete_question', id } })
+      openWeeklyTest(weeklySelectedTest)
+      fetchWeeklyTests()
+    } catch (err) {
+      setWeeklyTestError(err.message)
+    }
+  }
+
+  const weeklyTestPublish = async (test) => {
+    try {
+      await supabase.functions.invoke('admin-manage-weekly-tests', { body: { action: 'publish_test', test_id: test.id } })
+      fetchWeeklyTests()
+      if (weeklySelectedTest?.id === test.id) setWeeklySelectedTest(t => ({ ...t, status: 'published' }))
+    } catch (err) {
+      setWeeklyTestError(err.message)
+    }
+  }
+
+  const weeklyTestUnpublish = async (test) => {
+    try {
+      await supabase.functions.invoke('admin-manage-weekly-tests', { body: { action: 'unpublish_test', test_id: test.id } })
+      fetchWeeklyTests()
+      if (weeklySelectedTest?.id === test.id) setWeeklySelectedTest(t => ({ ...t, status: 'draft' }))
+    } catch (err) {
+      setWeeklyTestError(err.message)
+    }
+  }
+
+  const deleteWeeklyTest = async (test) => {
+    if (!window.confirm(`Delete the ${test.track} test for ${test.publish_date}? This deletes all its questions too.`)) return
+    try {
+      await supabase.functions.invoke('admin-manage-weekly-tests', { body: { action: 'delete_test', test_id: test.id } })
+      if (weeklySelectedTest?.id === test.id) setWeeklySelectedTest(null)
+      fetchWeeklyTests()
+    } catch (err) {
+      setWeeklyTestError(err.message)
+    }
+  }
+
   useEffect(() => {
     fetchStats()
     fetchTafseerList()
     fetchClassLessonList()
     fetchExamTopics()
+    fetchWeeklyTests()
   }, [])
 
   if (!user) return null
@@ -1456,6 +1590,170 @@ export default function Admin({ user }) {
               })}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Weekly Spaces Tests manager */}
+      <div className="card" style={{ marginTop: 20, padding: 20 }}>
+        <h3 style={{ marginBottom: 6 }}>Weekly Spaces Tests</h3>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
+          One test per track per week — Arabiyyah, Tafseer, Hadeeth. Target is 30 MCQ + 5 theory each,
+          but this is a guide, not a requirement — publish whenever the test is ready.
+        </p>
+
+        {weeklyTestError && <div className="admin-error" style={{ marginBottom: 12 }}>{weeklyTestError}</div>}
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginBottom: 16 }}>
+          <select
+            value={weeklyTestForm.track}
+            onChange={e => setWeeklyTestForm(f => ({ ...f, track: e.target.value }))}
+            style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }}
+          >
+            <option value="arabiyyah">Arabiyyah</option>
+            <option value="tafseer">Tafseer</option>
+            <option value="hadeeth">Hadeeth</option>
+          </select>
+          <input
+            type="date"
+            value={weeklyTestForm.publish_date}
+            onChange={e => setWeeklyTestForm(f => ({ ...f, publish_date: e.target.value }))}
+            style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }}
+          />
+          <input
+            type="text" placeholder="Test title"
+            value={weeklyTestForm.title}
+            onChange={e => setWeeklyTestForm(f => ({ ...f, title: e.target.value }))}
+            style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }}
+          />
+          <input
+            type="text" placeholder="Description (optional)"
+            value={weeklyTestForm.description}
+            onChange={e => setWeeklyTestForm(f => ({ ...f, description: e.target.value }))}
+            style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }}
+          />
+          <button className="btn btn-primary" onClick={saveWeeklyTest} disabled={weeklyTestSaving || !weeklyTestForm.publish_date || !weeklyTestForm.title.trim()}>
+            {weeklyTestSaving ? 'Saving…' : '+ Create Test'}
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ flex: '0 0 260px' }}>
+            {weeklyTestsLoading ? <p>Loading…</p> : weeklyTests.map(t => (
+              <button
+                key={t.id}
+                onClick={() => openWeeklyTest(t)}
+                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '8px 10px', marginBottom: 4, borderRadius: 8, border: 'none', background: weeklySelectedTest?.id === t.id ? 'rgba(9,69,112,0.08)' : 'transparent', cursor: 'pointer', fontSize: '0.82rem' }}
+              >
+                <strong>{t.track}</strong> — {t.publish_date} — {t.title}
+                <br />
+                <span style={{ fontSize: '0.72rem', color: '#8a9ab0' }}>
+                  {t.status} · MCQ {t.mcq_count}/30 · Theory {t.theory_count}/5
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ flex: 1, minWidth: 280 }}>
+            {!weeklySelectedTest ? (
+              <p style={{ color: '#8a9ab0' }}>Select a test on the left to manage its questions.</p>
+            ) : (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <p style={{ fontSize: '0.85rem', fontWeight: 700 }}>
+                    {weeklySelectedTest.track} — {weeklySelectedTest.publish_date} — {weeklySelectedTest.title}
+                  </p>
+                  <span style={{ display: 'flex', gap: 6 }}>
+                    {weeklySelectedTest.status === 'published' ? (
+                      <button className="btn btn-ghost" onClick={() => weeklyTestUnpublish(weeklySelectedTest)}>Unpublish</button>
+                    ) : (
+                      <button className="btn btn-primary" onClick={() => weeklyTestPublish(weeklySelectedTest)}>Publish</button>
+                    )}
+                    <button className="btn btn-ghost" onClick={() => deleteWeeklyTest(weeklySelectedTest)} style={{ color: '#c0392b' }}>Delete Test</button>
+                  </span>
+                </div>
+
+                <div style={{ marginBottom: 16, padding: 12, background: '#f5f8fb', borderRadius: 8 }}>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                    <button
+                      className="btn btn-ghost"
+                      style={weeklyQuestionMode === 'mcq' ? { background: 'rgba(9,69,112,0.1)' } : {}}
+                      onClick={() => switchWeeklyQuestionMode('mcq')}
+                    >
+                      MCQ
+                    </button>
+                    <button
+                      className="btn btn-ghost"
+                      style={weeklyQuestionMode === 'theory' ? { background: 'rgba(9,69,112,0.1)' } : {}}
+                      onClick={() => switchWeeklyQuestionMode('theory')}
+                    >
+                      Theory
+                    </button>
+                  </div>
+
+                  <input
+                    type="text" placeholder="Question"
+                    value={weeklyManualQuestion.question}
+                    onChange={e => setWeeklyManualQuestion(q => ({ ...q, question: e.target.value }))}
+                    style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }}
+                  />
+
+                  {weeklyQuestionMode === 'mcq' ? (
+                    <>
+                      {weeklyManualQuestion.options.map((opt, i) => (
+                        <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 4 }}>
+                          <input type="radio" checked={weeklyManualQuestion.correct_index === i} onChange={() => setWeeklyManualQuestion(q => ({ ...q, correct_index: i }))} />
+                          <input
+                            type="text" placeholder={`Option ${String.fromCharCode(65 + i)}`}
+                            value={opt}
+                            onChange={e => setWeeklyManualQuestion(q => { const options = [...q.options]; options[i] = e.target.value; return { ...q, options } })}
+                            style={{ flex: 1, padding: 6, borderRadius: 6, border: '1px solid #d0e0ec' }}
+                          />
+                        </div>
+                      ))}
+                      <input
+                        type="text" placeholder="Explanation (optional)"
+                        value={weeklyManualQuestion.explanation}
+                        onChange={e => setWeeklyManualQuestion(q => ({ ...q, explanation: e.target.value }))}
+                        style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginTop: 6, marginBottom: 6 }}
+                      />
+                    </>
+                  ) : (
+                    <textarea
+                      placeholder="Model answer"
+                      value={weeklyManualQuestion.model_answer}
+                      onChange={e => setWeeklyManualQuestion(q => ({ ...q, model_answer: e.target.value }))}
+                      rows={5}
+                      style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d0e0ec', marginBottom: 6 }}
+                    />
+                  )}
+
+                  <button className="btn btn-ghost" onClick={addWeeklyQuestion} disabled={!weeklyManualQuestion.question.trim()}>+ Add Question</button>
+                </div>
+
+                <h4 style={{ fontSize: '0.9rem', marginBottom: 8 }}>Questions ({weeklyQuestions.length})</h4>
+                {weeklyQuestionsLoading ? <p>Loading…</p> : weeklyQuestions.map(q => (
+                  <div key={q.id} style={{ padding: '10px 12px', marginBottom: 8, borderRadius: 8, background: '#f5f8fb' }}>
+                    <p style={{ fontSize: '0.85rem', marginBottom: 6 }}>
+                      <span style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: 4, background: q.question_type === 'theory' ? '#6a1b9a' : '#094570', color: '#fff', marginRight: 6 }}>
+                        {q.question_type === 'theory' ? 'THEORY' : 'MCQ'}
+                      </span>
+                      {q.question}
+                    </p>
+                    {q.question_type === 'theory' ? (
+                      <p style={{ fontSize: '0.8rem', color: '#6a8090', marginBottom: 6 }}>
+                        <strong>Model answer:</strong> {q.model_answer ? q.model_answer.slice(0, 150) + (q.model_answer.length > 150 ? '…' : '') : '(none)'}
+                      </p>
+                    ) : (
+                      <ol type="A" style={{ fontSize: '0.8rem', marginBottom: 6, paddingLeft: 20 }}>
+                        {(q.options || []).map((o, i) => <li key={i} style={{ fontWeight: i === q.correct_index ? 700 : 400, color: i === q.correct_index ? '#2e7d32' : 'inherit' }}>{o}</li>)}
+                      </ol>
+                    )}
+                    <button className="btn btn-ghost" onClick={() => deleteWeeklyQuestion(q.id)} style={{ color: '#c0392b' }}>Delete</button>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
         </div>
       </div>
 

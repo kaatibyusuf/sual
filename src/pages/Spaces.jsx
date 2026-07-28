@@ -292,6 +292,19 @@ export default function Spaces({ user }) {
   const [newMajlisReply, setNewMajlisReply] = useState('')
   const [postingMajlisReply, setPostingMajlisReply] = useState(false)
 
+  // ── Weekly Tests state (Arabiyyah / Tafseer / Hadeeth) ────────
+  const [weeklyTrack, setWeeklyTrack] = useState('arabiyyah')
+  const [weeklyTests, setWeeklyTests] = useState([])
+  const [weeklyTestsLoading, setWeeklyTestsLoading] = useState(false)
+  const [weeklySelectedTest, setWeeklySelectedTest] = useState(null)
+  const [weeklyPhase, setWeeklyPhase] = useState('select') // select | active | grading | result
+  const [weeklyAttemptId, setWeeklyAttemptId] = useState(null)
+  const [weeklyQuestions, setWeeklyQuestions] = useState([])
+  const [weeklyAnswers, setWeeklyAnswers] = useState({})
+  const [weeklyStarting, setWeeklyStarting] = useState(false)
+  const [weeklyError, setWeeklyError] = useState(null)
+  const [weeklyResult, setWeeklyResult] = useState(null)
+
   const [, setClock] = useState(new Date())
   useEffect(() => {
     const interval = setInterval(() => setClock(new Date()), 60000)
@@ -790,6 +803,71 @@ export default function Spaces({ user }) {
     }
   }
 
+  // ── Weekly Tests functions ────────────────────────────────────
+  const weeklyCallFn = useCallback(async (payload) => {
+    const { data, error } = await supabase.functions.invoke('exam-portal', { body: payload })
+    if (error) throw error
+    if (data?.error) throw new Error(data.error)
+    return data
+  }, [])
+
+  const fetchWeeklyTests = useCallback(async () => {
+    setWeeklyTestsLoading(true)
+    setWeeklyError(null)
+    try {
+      const data = await weeklyCallFn({ action: 'list_tests' })
+      setWeeklyTests((data.tests || []).filter(t => t.track === weeklyTrack))
+    } catch (err) {
+      setWeeklyError(err.message)
+    } finally {
+      setWeeklyTestsLoading(false)
+    }
+  }, [weeklyCallFn, weeklyTrack])
+
+  const startWeeklyTest = async (test) => {
+    setWeeklyStarting(true)
+    setWeeklyError(null)
+    try {
+      const data = await weeklyCallFn({ action: 'start_attempt', test_id: test.id })
+      setWeeklySelectedTest(test)
+      setWeeklyAttemptId(data.attempt_id)
+      setWeeklyQuestions(data.questions)
+      setWeeklyAnswers({})
+      setWeeklyPhase('active')
+    } catch (err) {
+      setWeeklyError(err.message)
+    } finally {
+      setWeeklyStarting(false)
+    }
+  }
+
+  const setWeeklyAnswer = (questionId, value) => {
+    setWeeklyAnswers(a => ({ ...a, [questionId]: value }))
+  }
+
+  const submitWeeklyTest = async () => {
+    setWeeklyPhase('grading')
+    setWeeklyError(null)
+    try {
+      const payload = weeklyQuestions.map(q => ({
+        question_id: q.id,
+        chosen_index: q.question_type === 'mcq' ? weeklyAnswers[q.id] : undefined,
+        answer_text: q.question_type === 'theory' ? (weeklyAnswers[q.id] || '') : undefined,
+      }))
+      const data = await weeklyCallFn({ action: 'submit_attempt', attempt_id: weeklyAttemptId, answers: payload })
+      setWeeklyResult(data)
+      setWeeklyPhase('result')
+    } catch (err) {
+      setWeeklyError(err.message)
+      setWeeklyPhase('active')
+    }
+  }
+
+  const weeklyAllAnswered = weeklyQuestions.every(q => {
+    const a = weeklyAnswers[q.id]
+    return q.question_type === 'mcq' ? a !== undefined : (a && a.trim())
+  })
+
   useEffect(() => {
     if (!user) return
     checkSubscription()
@@ -856,7 +934,13 @@ export default function Spaces({ user }) {
     if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', classLevel.arabiyyah); fetchClassLessonArchive('arabiyyah', classLevel.arabiyyah) }
     if (activeTab === 'hadeeth') { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
     if (activeTab === 'majlis') fetchMajlisPosts()
-  }, [activeTab, isPaid, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, fetchMajlisPosts, classLevel])
+    if (activeTab === 'examportal' && weeklyPhase === 'select') fetchWeeklyTests()
+  }, [activeTab, isPaid, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, fetchMajlisPosts, classLevel, weeklyPhase, fetchWeeklyTests])
+
+  // Refetch when the track switches while on the select screen
+  useEffect(() => {
+    if (activeTab === 'examportal' && isPaid && weeklyPhase === 'select') fetchWeeklyTests()
+  }, [weeklyTrack, activeTab, isPaid, weeklyPhase, fetchWeeklyTests])
 
   useEffect(() => {
     if (subLoading || !isPaid) return
@@ -1589,6 +1673,171 @@ export default function Spaces({ user }) {
     )
   }
 
+  const TRACK_LABELS = { arabiyyah: '✍️ Arabiyyah', tafseer: '📖 Tafseer', hadeeth: '📜 Hadeeth' }
+
+  const renderExamPortal = () => {
+    if (weeklyPhase === 'select') {
+      return (
+        <div className="spaces-class-section card">
+          <div className="spaces-section-intro card" style={{ marginBottom: 20 }}>
+            <h3 className="spaces-section-intro-title">📝 Weekly Tests</h3>
+            <p className="spaces-section-intro-text">
+              One test per track per week. MCQ is graded instantly; theory answers are graded
+              automatically against a model answer with feedback.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+            {Object.keys(TRACK_LABELS).map(t => (
+              <button
+                key={t}
+                className={`spaces-class-level-btn ${weeklyTrack === t ? 'spaces-class-level-btn--active' : ''}`}
+                onClick={() => setWeeklyTrack(t)}
+              >
+                {TRACK_LABELS[t]}
+              </button>
+            ))}
+          </div>
+
+          {weeklyError && <div className="spaces-error">{weeklyError}</div>}
+
+          {weeklyTestsLoading ? (
+            <div className="spaces-loading"><div className="spaces-spinner" /></div>
+          ) : weeklyTests.length === 0 ? (
+            <div className="spaces-empty card">
+              <p className="spaces-empty-icon">📝</p>
+              <p className="spaces-empty-text">No {TRACK_LABELS[weeklyTrack]} test posted yet</p>
+              <p className="spaces-empty-sub">Check back once this week's test is published.</p>
+            </div>
+          ) : (
+            <div className="spaces-posts">
+              {weeklyTests.map(t => (
+                <button
+                  key={t.id}
+                  className="spaces-post-card card"
+                  onClick={() => t.my_attempt?.status !== 'completed' && startWeeklyTest(t)}
+                  disabled={weeklyStarting || t.my_attempt?.status === 'completed'}
+                >
+                  <div className="spaces-post-top">
+                    <span className="spaces-post-date">{t.publish_date}</span>
+                  </div>
+                  <h3 className="spaces-post-title">{t.title}</h3>
+                  {t.description && <p className="spaces-post-preview">{t.description}</p>}
+                  {t.my_attempt?.status === 'completed' ? (
+                    <span className="spaces-post-read">
+                      ✅ Completed — MCQ {t.my_attempt.mcq_score}/{t.my_attempt.mcq_total}
+                      {t.my_attempt.theory_total > 0 && `, Theory ${t.my_attempt.theory_score}%`}
+                    </span>
+                  ) : t.my_attempt?.status === 'in_progress' ? (
+                    <span className="spaces-post-read">{weeklyStarting ? 'Resuming…' : 'Resume Test →'}</span>
+                  ) : (
+                    <span className="spaces-post-read">{weeklyStarting ? 'Starting…' : 'Start Test →'}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    if (weeklyPhase === 'active' || weeklyPhase === 'grading') {
+      return (
+        <div className="spaces-class-section card">
+          <h3 style={{ color: '#094570', marginBottom: 6 }}>{weeklySelectedTest.title}</h3>
+          <p style={{ fontSize: '0.85rem', color: '#8a9ab0', marginBottom: 20 }}>
+            {weeklyQuestions.length} questions — answer all before submitting
+          </p>
+
+          {weeklyError && <div className="spaces-error" style={{ marginBottom: 16 }}>{weeklyError}</div>}
+
+          {weeklyQuestions.map((q, idx) => (
+            <div key={q.id} className="quiz-question-card card" style={{ marginBottom: 16 }}>
+              <p className="quiz-question-text">
+                {idx + 1}. {q.question} {q.question_type === 'theory' && <span style={{ fontSize: '0.75rem', color: '#8a9ab0' }}>(Theory)</span>}
+              </p>
+              {q.question_type === 'mcq' ? (
+                <div className="quiz-options">
+                  {q.options.map((opt, i) => (
+                    <button
+                      key={i}
+                      className={`quiz-option ${weeklyAnswers[q.id] === i ? 'quiz-option--selected' : ''}`}
+                      onClick={() => setWeeklyAnswer(q.id, i)}
+                      disabled={weeklyPhase === 'grading'}
+                    >
+                      <span className="quiz-option-letter">{String.fromCharCode(65 + i)}</span>
+                      <span>{opt}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <textarea
+                  className="spaces-textarea"
+                  placeholder="Write your answer..."
+                  value={weeklyAnswers[q.id] || ''}
+                  onChange={e => setWeeklyAnswer(q.id, e.target.value)}
+                  rows={5}
+                  disabled={weeklyPhase === 'grading'}
+                  style={{ marginTop: 10 }}
+                />
+              )}
+            </div>
+          ))}
+
+          <button className="spaces-submit-btn" onClick={submitWeeklyTest} disabled={!weeklyAllAnswered || weeklyPhase === 'grading'}>
+            {weeklyPhase === 'grading' ? 'Grading…' : 'Submit Test →'}
+          </button>
+        </div>
+      )
+    }
+
+    // ── result ─────────────────────────────────────────────────
+    const mcqPercent = weeklyResult.mcq_total > 0 ? Math.round((weeklyResult.mcq_score / weeklyResult.mcq_total) * 100) : null
+
+    return (
+      <div className="quiz-result-card card">
+        <h2 className="quiz-result-title">Test Complete — {weeklySelectedTest.title}</h2>
+
+        {weeklyResult.mcq_total > 0 && (
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontWeight: 700 }}>MCQ: {weeklyResult.mcq_score} / {weeklyResult.mcq_total} ({mcqPercent}%)</p>
+          </div>
+        )}
+        {weeklyResult.theory_total > 0 && (
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontWeight: 700 }}>
+              Theory: {weeklyResult.theory_score_percent !== null ? `${weeklyResult.theory_score_percent}%` : 'Some answers need manual review'}
+            </p>
+          </div>
+        )}
+
+        <div className="quiz-review">
+          <h3 className="quiz-review-title">Review</h3>
+          {weeklyResult.results.map((r, i) => (
+            <div key={i} className={`quiz-review-item ${r.question_type === 'mcq' ? (r.is_correct ? 'quiz-review-item--correct' : 'quiz-review-item--wrong') : ''}`}>
+              <div className="quiz-review-q"><strong>Q{i + 1}</strong> ({r.question_type === 'mcq' ? 'MCQ' : 'Theory'})</div>
+              {r.question_type === 'mcq' ? (
+                <>
+                  <div className="quiz-review-ans">{r.is_correct ? '✅ Correct' : '❌ Incorrect'}</div>
+                  {r.explanation && <div className="quiz-review-exp">{r.explanation}</div>}
+                </>
+              ) : (
+                <>
+                  <div className="quiz-review-ans">Score: {r.ai_score !== null ? `${r.ai_score}/100` : 'Needs manual review'}</div>
+                  <div className="quiz-review-exp">{r.ai_feedback}</div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={() => { setWeeklyPhase('select'); setWeeklySelectedTest(null); fetchWeeklyTests() }}>
+          Back to Weekly Tests
+        </button>
+      </div>
+    )
+  }
+
   if (subLoading) {
     return (
       <div className="page-content spaces-page">
@@ -1716,6 +1965,7 @@ export default function Spaces({ user }) {
               { icon: '🕌', text: 'Majlis — announcements and updates from the Sual team' },
               { icon: '🤝', text: 'Accountability partners and Sahaabah circles' },
               { icon: '📖', text: 'A new tafseer verse and short test every day' },
+              { icon: '📝', text: 'Weekly tests for Arabiyyah, Tafseer, and Hadeeth — graded automatically' },
             ].map((f, i) => (
               <div key={i} className="spaces-feature-item">
                 <span>{f.icon}</span>
@@ -1918,6 +2168,7 @@ export default function Spaces({ user }) {
           { key: 'accountability', label: 'Accountability',  icon: '🤝' },
           { key: 'circles',        label: 'Circles',         icon: '🕌' },
           { key: 'tafseer',        label: 'Daily Tafseer',   icon: '📖' },
+          { key: 'examportal',     label: 'Weekly Tests',    icon: '📝' },
         ].map(t => (
           <button
             key={t.key}
@@ -1935,6 +2186,7 @@ export default function Spaces({ user }) {
       {activeTab === 'accountability' && renderAccountability()}
       {activeTab === 'circles' && renderCircles()}
       {activeTab === 'tafseer' && renderTafseer()}
+      {activeTab === 'examportal' && renderExamPortal()}
 
       {activeTab === 'community' && (
         <>
