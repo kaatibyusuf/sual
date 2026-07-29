@@ -250,6 +250,14 @@ export default function Spaces({ user }) {
   const [accountabilityLoading, setAccountabilityLoading] = useState(false)
   const [accountabilityError, setAccountabilityError] = useState(null)
   const [pairing, setPairing] = useState(false)
+  const [unpairing, setUnpairing] = useState(false)
+
+  // ── Match request state ──────────────────────────────────────
+  const [myMatchRequest, setMyMatchRequest] = useState(null)
+  const [matchRequests, setMatchRequests] = useState([])
+  const [matchRequestForm, setMatchRequestForm] = useState({ interests: '', improve_on: '', seeking: '' })
+  const [postingMatchRequest, setPostingMatchRequest] = useState(false)
+  const [showMatchRequestForm, setShowMatchRequestForm] = useState(false)
 
   const [myCircle, setMyCircle] = useState(null)
   const [circleCounts, setCircleCounts] = useState({})
@@ -422,6 +430,17 @@ export default function Spaces({ user }) {
     }
   }, [])
 
+  const fetchMatchRequests = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc('list_accountability_match_requests')
+      if (error) throw error
+      setMatchRequests(data || [])
+    } catch (err) {
+      console.error('Failed to load match requests:', err)
+      setMatchRequests([])
+    }
+  }, [])
+
   const fetchAccountability = useCallback(async () => {
     setAccountabilityLoading(true)
     setAccountabilityError(null)
@@ -455,12 +474,14 @@ export default function Spaces({ user }) {
       } else {
         setRoster(rosterData || [])
       }
+
+      await fetchMatchRequests()
     } catch (err) {
       setAccountabilityError(err.message)
     } finally {
       setAccountabilityLoading(false)
     }
-  }, [user])
+  }, [user, fetchMatchRequests])
 
   const fetchPairMessages = async (pairId) => {
     try {
@@ -507,6 +528,52 @@ export default function Spaces({ user }) {
       setAccountabilityError(err.message)
     } finally {
       setPairing(false)
+    }
+  }
+
+  const unpair = async () => {
+    if (!window.confirm('Unpair from your accountability partner? This cannot be undone from here.')) return
+    setUnpairing(true)
+    setAccountabilityError(null)
+    try {
+      const { error } = await supabase.rpc('unpair_accountability_partners')
+      if (error) throw error
+      setMyPair(null)
+      fetchAccountability()
+    } catch (err) {
+      setAccountabilityError(err.message)
+    } finally {
+      setUnpairing(false)
+    }
+  }
+
+  const postMatchRequest = async () => {
+    setPostingMatchRequest(true)
+    setAccountabilityError(null)
+    try {
+      const { error } = await supabase.rpc('post_accountability_match_request', {
+        p_interests: matchRequestForm.interests.trim(),
+        p_improve_on: matchRequestForm.improve_on.trim(),
+        p_seeking: matchRequestForm.seeking.trim(),
+      })
+      if (error) throw error
+      setMyMatchRequest({ ...matchRequestForm })
+      setShowMatchRequestForm(false)
+    } catch (err) {
+      setAccountabilityError(err.message)
+    } finally {
+      setPostingMatchRequest(false)
+    }
+  }
+
+  const withdrawMatchRequest = async () => {
+    try {
+      const { error } = await supabase.rpc('withdraw_accountability_match_request')
+      if (error) throw error
+      setMyMatchRequest(null)
+      setMatchRequestForm({ interests: '', improve_on: '', seeking: '' })
+    } catch (err) {
+      setAccountabilityError(err.message)
     }
   }
 
@@ -1106,9 +1173,8 @@ export default function Spaces({ user }) {
         <h3 className="spaces-section-intro-title">🤝 Accountability Partners</h3>
         <p className="spaces-section-intro-text">
           Pair up with another member to keep each other accountable in your learning.
-          Once paired, you get a private message thread right here to actually coordinate —
-          nothing else about your identity is shared beyond that. A pair stays together
-          unless a partner's subscription lapses without renewal; you can't unpair yourselves.
+          Once paired, you get a private message thread right here to actually coordinate.
+          You can unpair at any time if it's no longer working out.
         </p>
       </div>
 
@@ -1130,10 +1196,10 @@ export default function Spaces({ user }) {
           <div className="spaces-pair-card card">
             <span className="spaces-pair-badge">✅ Paired</span>
             <div className="spaces-pair-member">
-              <div className="spaces-post-avatar">{getInitials('M')}</div>
+              <div className="spaces-post-avatar">{getInitials(myPair.full_name || 'M')}</div>
               <div>
                 <p className="spaces-pair-name">
-                  Member {String(myPair.partner_id).slice(0, 8)}
+                  {myPair.full_name || 'A member'}
                   {myPair.gender && (
                     <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
                       {myPair.gender === 'male' ? '♂' : '♀'} {myPair.gender}
@@ -1144,6 +1210,9 @@ export default function Spaces({ user }) {
               </div>
             </div>
             <p className="spaces-pair-since">Paired since {formatDate(myPair.paired_at)}</p>
+            <button className="btn btn-ghost" onClick={unpair} disabled={unpairing} style={{ marginTop: 10, color: '#c0392b' }}>
+              {unpairing ? 'Unpairing…' : 'Unpair'}
+            </button>
           </div>
 
           <div className="spaces-circle-messages">
@@ -1200,10 +1269,10 @@ export default function Spaces({ user }) {
   {availableMembers.map(m => (
     <div key={m.user_id} className="spaces-available-item card" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
       <div className="spaces-pair-member">
-        <div className="spaces-post-avatar">{getInitials('M')}</div>
+        <div className="spaces-post-avatar">{getInitials(m.full_name || 'M')}</div>
         <div>
           <p className="spaces-pair-name">
-            Member {String(m.user_id).slice(0, 8)}
+            {m.full_name || 'A member'}
             {m.gender && (
               <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
                 {m.gender === 'male' ? '♂' : '♀'} {m.gender}
@@ -1238,6 +1307,75 @@ export default function Spaces({ user }) {
       )}
 
       <div className="spaces-section-intro card" style={{ marginTop: 24 }}>
+        <h3 className="spaces-section-intro-title">📢 Match Requests</h3>
+        <p className="spaces-section-intro-text">
+          Post what you're looking for in a partner, or browse others' requests directly.
+        </p>
+        {myMatchRequest ? (
+          <button className="btn btn-ghost" onClick={withdrawMatchRequest} style={{ color: '#c0392b' }}>
+            Withdraw My Request
+          </button>
+        ) : (
+          <button className="btn btn-primary" onClick={() => setShowMatchRequestForm(v => !v)}>
+            {showMatchRequestForm ? 'Cancel' : '+ Post a Match Request'}
+          </button>
+        )}
+      </div>
+
+      {showMatchRequestForm && !myMatchRequest && (
+        <div className="card" style={{ padding: 16, marginBottom: 16 }}>
+          <textarea
+            className="spaces-textarea"
+            placeholder="Your interests..."
+            rows={2}
+            value={matchRequestForm.interests}
+            onChange={e => setMatchRequestForm(f => ({ ...f, interests: e.target.value }))}
+          />
+          <textarea
+            className="spaces-textarea"
+            placeholder="What you want to improve..."
+            rows={2}
+            style={{ marginTop: 8 }}
+            value={matchRequestForm.improve_on}
+            onChange={e => setMatchRequestForm(f => ({ ...f, improve_on: e.target.value }))}
+          />
+          <textarea
+            className="spaces-textarea"
+            placeholder="What you're looking for in a partner..."
+            rows={2}
+            style={{ marginTop: 8 }}
+            value={matchRequestForm.seeking}
+            onChange={e => setMatchRequestForm(f => ({ ...f, seeking: e.target.value }))}
+          />
+          <button className="spaces-submit-btn" onClick={postMatchRequest} disabled={postingMatchRequest} style={{ marginTop: 10 }}>
+            {postingMatchRequest ? 'Posting…' : 'Post Request →'}
+          </button>
+        </div>
+      )}
+
+      {matchRequests.length === 0 ? (
+        <div className="spaces-empty card">
+          <p className="spaces-empty-text">No match requests posted yet.</p>
+        </div>
+      ) : (
+        <div className="spaces-available-list">
+          {matchRequests.map(r => (
+            <div key={r.user_id} className="spaces-available-item card" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+              <p className="spaces-pair-name">{r.full_name || 'A member'}</p>
+              {r.interests && <p style={{ fontSize: '0.85rem', marginTop: 4 }}><strong>Interests:</strong> {r.interests}</p>}
+              {r.improve_on && <p style={{ fontSize: '0.85rem', marginTop: 4 }}><strong>Working on:</strong> {r.improve_on}</p>}
+              {r.seeking && <p style={{ fontSize: '0.85rem', marginTop: 4 }}><strong>Looking for:</strong> {r.seeking}</p>}
+              {!myPair && (
+                <button className="spaces-submit-btn" onClick={() => pairWith(r.user_id)} disabled={pairing} style={{ marginTop: 8 }}>
+                  {pairing ? 'Pairing...' : 'Pair Up →'}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="spaces-section-intro card" style={{ marginTop: 24 }}>
         <h3 className="spaces-section-intro-title">📋 Who's Paired, Who's Seeking</h3>
       </div>
 
@@ -1269,7 +1407,7 @@ export default function Spaces({ user }) {
                   {rosterPairs.map(r => (
                     <div key={r.member_id} className="spaces-available-item card">
                       <p className="spaces-pair-name">
-                        Member {String(r.member_id).slice(0, 8)} ↔ Member {String(r.partner_id).slice(0, 8)}
+                        {r.full_name || 'A member'}
                         {r.gender && (
                           <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
                             {r.gender === 'male' ? '♂' : '♀'} {r.gender} pair
@@ -1290,7 +1428,7 @@ export default function Spaces({ user }) {
                   {seekingMembers.map(r => (
                     <div key={r.member_id} className="spaces-available-item card">
                       <p className="spaces-pair-name">
-                        Member {String(r.member_id).slice(0, 8)}
+                        {r.full_name || 'A member'}
                         {r.gender && (
                           <span style={{ marginLeft: 8, fontSize: '0.78rem', fontWeight: 600, color: '#6a8090', textTransform: 'capitalize' }}>
                             {r.gender === 'male' ? '♂' : '♀'} {r.gender}

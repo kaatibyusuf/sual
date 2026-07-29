@@ -1,38 +1,58 @@
-import AdminClassLessons from './pages/AdminClassLessons.jsx'
-import { captureReferralFromUrl, redeemStoredReferral } from './lib/referral.js'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { captureReferralFromUrl, redeemStoredReferral } from './lib/referral.js'
 import { supabase } from './lib/supabase.js'
 import Sidebar from './components/Sidebar.jsx'
 import Toolbar from './components/Toolbar.jsx'
 import BottomNav from './components/BottomNav.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
-import Auth from './pages/Auth.jsx'
-import LevelSelect from './pages/LevelSelect.jsx'
-import Home from './pages/Home.jsx'
-import Discipline from './pages/Discipline.jsx'
-import DisciplineReader from './pages/DisciplineReader.jsx'
-import Quiz from './pages/Quiz.jsx'
-import Flashcards from './pages/Flashcards.jsx'
-import Stories from './pages/Stories.jsx'
-import Duas from './pages/Duas.jsx'
-import Calendar from './pages/Calendar.jsx'
-import Tajweed from './pages/Tajweed.jsx'
-import Fiqh from './pages/fiqh.jsx'
-import Tawheed from './pages/Tawheed.jsx'
-import Profile from './pages/Profile.jsx'
-import Journey from './pages/Journey.jsx'
 import NotificationBell from './components/NotificationBell.jsx'
-import Spaces from './pages/Spaces.jsx'
-import PrayerTimes from './pages/PrayerTimes.jsx'
-import Disciplines from './pages/Disciplines.jsx'
-import Hifdh from './pages/Hifdh.jsx'
-import Admin from './pages/Admin.jsx'
-import BookQuiz from './pages/BookQuiz.jsx'
-import ExamPrep from './pages/ExamPrep.jsx'
-import AddToHomeScreen from './components/AddToHomeScreen.jsx'
-import LmsDashboard from './pages/LmsDashboard.jsx'
-import LmsCourseDetail from './pages/LmsCourseDetail.jsx'
+
+// Every route below is lazy-loaded: only the code for the page a
+// user actually visits gets downloaded, instead of the entire app's
+// JS on first load. Auth, LevelSelect, Home and the shell components
+// above stay eager since they're needed immediately on every visit.
+const Auth               = lazy(() => import('./pages/Auth.jsx'))
+const LevelSelect         = lazy(() => import('./pages/LevelSelect.jsx'))
+const Home                = lazy(() => import('./pages/Home.jsx'))
+const Discipline          = lazy(() => import('./pages/Discipline.jsx'))
+const DisciplineReader    = lazy(() => import('./pages/DisciplineReader.jsx'))
+const Quiz                = lazy(() => import('./pages/Quiz.jsx'))
+const Flashcards          = lazy(() => import('./pages/Flashcards.jsx'))
+const Stories             = lazy(() => import('./pages/Stories.jsx'))
+const Duas                = lazy(() => import('./pages/Duas.jsx'))
+const Calendar            = lazy(() => import('./pages/Calendar.jsx'))
+const Tajweed             = lazy(() => import('./pages/Tajweed.jsx'))
+const Fiqh                = lazy(() => import('./pages/fiqh.jsx'))
+const Tawheed              = lazy(() => import('./pages/Tawheed.jsx'))
+const Profile              = lazy(() => import('./pages/Profile.jsx'))
+const Journey              = lazy(() => import('./pages/Journey.jsx'))
+const Spaces               = lazy(() => import('./pages/Spaces.jsx'))
+const PrayerTimes          = lazy(() => import('./pages/PrayerTimes.jsx'))
+const Disciplines          = lazy(() => import('./pages/Disciplines.jsx'))
+const Hifdh                = lazy(() => import('./pages/Hifdh.jsx'))
+const Admin                = lazy(() => import('./pages/Admin.jsx'))
+const AdminClassLessons    = lazy(() => import('./pages/AdminClassLessons.jsx'))
+const BookQuiz             = lazy(() => import('./pages/BookQuiz.jsx'))
+const ExamPrep             = lazy(() => import('./pages/ExamPrep.jsx'))
+const AddToHomeScreen      = lazy(() => import('./components/AddToHomeScreen.jsx'))
+const LmsDashboard         = lazy(() => import('./pages/LmsDashboard.jsx'))
+const LmsCourseDetail      = lazy(() => import('./pages/LmsCourseDetail.jsx'))
+
+function RouteFallback() {
+  return (
+    <div style={{
+      minHeight: '60vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
+      <div style={{ fontFamily: 'Amiri, serif', fontSize: '2rem', color: '#094570', opacity: 0.5 }}>
+        سُؤَال
+      </div>
+    </div>
+  )
+}
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -136,7 +156,11 @@ export default function App() {
   }
 
   if (!user) {
-    return <Auth onAuth={setUser} />
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <Auth onAuth={setUser} />
+      </Suspense>
+    )
   }
 
   if (levelLoading) {
@@ -157,20 +181,22 @@ export default function App() {
 
   if (!levelSelected) {
     return (
-      <LevelSelect
-        user={user}
-        onLevelSelected={(level) => {
-          setUserLevel(level)
-          setLevelSelected(true)
-          // This branch only ever renders for an account that hasn't
-          // finished onboarding — for all practical purposes, a brand
-          // new signup. Redeeming here, once, is what credits the
-          // referrer without any risk of a returning user re-triggering
-          // it on a later login (this component simply never renders
-          // again for them once levelSelected is true).
-          redeemStoredReferral()
-        }}
-      />
+      <Suspense fallback={<RouteFallback />}>
+        <LevelSelect
+          user={user}
+          onLevelSelected={(level) => {
+            setUserLevel(level)
+            setLevelSelected(true)
+            // This branch only ever renders for an account that hasn't
+            // finished onboarding — for all practical purposes, a brand
+            // new signup. Redeeming here, once, is what credits the
+            // referrer without any risk of a returning user re-triggering
+            // it on a later login (this component simply never renders
+            // again for them once levelSelected is true).
+            redeemStoredReferral()
+          }}
+        />
+      </Suspense>
     )
   }
 
@@ -186,33 +212,35 @@ export default function App() {
           setFontSize={setFontSize}
         />
         <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home user={user} />} />
-            <Route path="/disciplines" element={<Disciplines />} />
-            <Route path="/discipline/:id" element={<Discipline userLevel={userLevel} user={user} />} />
-            <Route path="/discipline/:id/:level/:qid" element={<DisciplineReader user={user} />} />
-            <Route path="/quiz" element={<Quiz user={user} userLevel={userLevel} />} />
-            <Route path="/flashcards" element={<Flashcards />} />
-            <Route path="/book-quiz" element={<BookQuiz user={user} />} />
-            <Route path="/stories" element={<Stories />} />
-            <Route path="/duas" element={<Duas />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/tajweed" element={<Tajweed />} />
-            <Route path="/fiqh" element={<Fiqh />} />
-            <Route path="/tawheed" element={<Tawheed />} />
-            <Route path="/profile" element={<Profile user={user} userLevel={userLevel} setUserLevel={setUserLevel} />} />
-            <Route path="/dashboard" element={<Journey user={user} />} />
-            <Route path="/spaces" element={<Spaces user={user} />} />
-            <Route path="/prayer-times" element={<PrayerTimes />} />
-            <Route path="/hifdh" element={<Hifdh user={user} />} />
-            <Route path="/admin" element={<Admin user={user} />} />
-            <Route path="/admin/class-lessons" element={<AdminClassLessons user={user} />} />
-            <Route path="/exam-prep" element={<ExamPrep user={user} />} />
-            <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
-            <Route path="/lms" element={<LmsDashboard user={user} />} />
-            <Route path="/lms/:courseId" element={<LmsCourseDetail user={user} />} />
-            <Route path="*" element={<Home user={user} />} />
-          </Routes>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/" element={<Home user={user} />} />
+              <Route path="/disciplines" element={<Disciplines />} />
+              <Route path="/discipline/:id" element={<Discipline userLevel={userLevel} user={user} />} />
+              <Route path="/discipline/:id/:level/:qid" element={<DisciplineReader user={user} />} />
+              <Route path="/quiz" element={<Quiz user={user} userLevel={userLevel} />} />
+              <Route path="/flashcards" element={<Flashcards />} />
+              <Route path="/book-quiz" element={<BookQuiz user={user} />} />
+              <Route path="/stories" element={<Stories />} />
+              <Route path="/duas" element={<Duas />} />
+              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/tajweed" element={<Tajweed />} />
+              <Route path="/fiqh" element={<Fiqh />} />
+              <Route path="/tawheed" element={<Tawheed />} />
+              <Route path="/profile" element={<Profile user={user} userLevel={userLevel} setUserLevel={setUserLevel} />} />
+              <Route path="/dashboard" element={<Journey user={user} />} />
+              <Route path="/spaces" element={<Spaces user={user} />} />
+              <Route path="/prayer-times" element={<PrayerTimes />} />
+              <Route path="/hifdh" element={<Hifdh user={user} />} />
+              <Route path="/admin" element={<Admin user={user} />} />
+              <Route path="/admin/class-lessons" element={<AdminClassLessons user={user} />} />
+              <Route path="/exam-prep" element={<ExamPrep user={user} />} />
+              <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
+              <Route path="/lms" element={<LmsDashboard user={user} />} />
+              <Route path="/lms/:courseId" element={<LmsCourseDetail user={user} />} />
+              <Route path="*" element={<Home user={user} />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
       <BottomNav />
