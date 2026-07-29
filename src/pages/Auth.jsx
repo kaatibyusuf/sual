@@ -2,6 +2,21 @@ import React, { useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './Auth.css'
 
+// Raw browser-level network errors (offline, DNS failure, CORS block,
+// blocked by an extension, server unreachable) all surface from fetch()
+// as the literal string "Failed to fetch" — not a Supabase error at
+// all. Showing that verbatim to a user is confusing and looks broken
+// even when it's just their connection. This maps it to something
+// they can actually act on, while leaving every other error message
+// (wrong password, rate limited, etc.) exactly as Supabase sends it.
+function friendlyAuthError(err) {
+  const msg = err?.message || ''
+  if (msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('fetch failed')) {
+    return "Couldn't reach the server. Check your internet connection and try again."
+  }
+  return msg || 'Something went wrong. Please try again.'
+}
+
 export default function Auth({ onAuth }) {
   const [mode, setMode] = useState('signin')
   const [email, setEmail] = useState('')
@@ -21,7 +36,7 @@ export default function Auth({ onAuth }) {
       if (error) throw error
       onAuth(data.user)
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.')
+      setError(friendlyAuthError(err))
     } finally {
       setLoading(false)
     }
@@ -45,7 +60,7 @@ export default function Auth({ onAuth }) {
         onAuth(data.user)
       }
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.')
+      setError(friendlyAuthError(err))
     } finally {
       setLoading(false)
     }
@@ -66,7 +81,7 @@ export default function Auth({ onAuth }) {
       // A real message here, instead of an empty {}, is what turns
       // Supabase's recover 500 from a dead end into something
       // actually diagnosable.
-      setError(err.message || 'Something went wrong. Please try again.')
+      setError(friendlyAuthError(err))
     } finally {
       setLoading(false)
     }
