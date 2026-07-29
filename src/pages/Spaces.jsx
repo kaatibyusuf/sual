@@ -1581,162 +1581,131 @@ export default function Spaces({ user }) {
     </div>
   )
 
-  const renderTafseerReadOnly = (entry) => (
-    <>
-      <div className="spaces-tafseer-card card">
-        <p className="spaces-tafseer-ref">{entry.surah_name} · {entry.surah_num}:{entry.ayah_num}</p>
-        <p className="spaces-tafseer-arabic arabic-lg">{entry.arabic_text}</p>
-        {entry.transliteration && (
-          <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
-            {entry.transliteration}
-          </p>
-        )}
-        <p className="spaces-tafseer-translation">"{entry.translation}"</p>
-      </div>
-      <div className="spaces-tafseer-card card">
-        <h4 className="spaces-class-section-title">📖 Tafseer</h4>
-        <p className="spaces-tafseer-body">{entry.tafseer_body}</p>
-      </div>
-      {Array.isArray(entry.lessons) && entry.lessons.length > 0 && (
-        <div className="spaces-tafseer-card card">
-          <h4 className="spaces-class-section-title">💡 Lessons</h4>
-          <ul className="spaces-class-curriculum">
-            {entry.lessons.map((l, i) => (
-              <li key={i} className="spaces-class-curriculum-item">
-                <span className="spaces-class-curriculum-num">{i + 1}</span>
-                <span>{l}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </>
-  )
-
   const renderTafseer = () => {
-    if (tafseerLoading) {
-      return <div className="spaces-loading"><div className="spaces-spinner" /></div>
-    }
+  if (tafseerLoading) {
+    return <div className="spaces-loading"><div className="spaces-spinner" /></div>
+  }
 
-    if (!todayTafseer) {
-      return (
-        <div className="spaces-empty card">
-          <p className="spaces-empty-icon">📖</p>
-          <p className="spaces-empty-text">No tafseer posted yet today</p>
-          <p className="spaces-empty-sub">Check back later — a new verse is shared daily.</p>
-        </div>
-      )
-    }
-
-    if (tafseerPhase === 'quiz' && tafseerQuestions.length > 0) {
-      const q = tafseerQuestions[tafseerQIndex]
-      return (
-        <div className="spaces-tafseer-quiz">
-          <div className="quiz-progress-header">
-            <span className="quiz-progress-label">Question {tafseerQIndex + 1} of {tafseerQuestions.length}</span>
-            <span className="quiz-score-badge badge badge-regal">Score: {tafseerScore}</span>
-          </div>
-          <div className="quiz-question-card card">
-            {q.context && <p className="spaces-tafseer-quiz-context arabic">{q.context}</p>}
-            <p className="quiz-question-text">{q.question}</p>
-            <div className="quiz-options">
-              {q.options.map((opt, idx) => {
-                let cls = 'quiz-option'
-                if (tafseerRevealed) {
-                  if (idx === q.correct) cls += ' quiz-option--correct'
-                  else if (idx === tafseerChosen && idx !== q.correct) cls += ' quiz-option--wrong'
-                } else if (tafseerChosen === idx) {
-                  cls += ' quiz-option--selected'
-                }
-                return (
-                  <button key={idx} className={cls} onClick={() => selectTafseerAnswer(idx)} disabled={tafseerRevealed}>
-                    <span className="quiz-option-letter">{String.fromCharCode(65 + idx)}</span>
-                    <span>{opt}</span>
-                  </button>
-                )
-              })}
-            </div>
-            {tafseerRevealed && (
-              <div className="quiz-next-row">
-                <button className="btn btn-primary" onClick={nextTafseerQuestion}>
-                  {tafseerQIndex + 1 < tafseerQuestions.length ? 'Next Question →' : 'See Result →'}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )
-    }
-
-    if (tafseerPhase === 'result') {
-      const pct = Math.round((tafseerScore / tafseerQuestions.length) * 100)
-      return (
-        <div className="quiz-result-card card">
-          <div className="quiz-result-header">
-            <span className="quiz-result-icon">🎯</span>
-            <h2 className="quiz-result-title">Today's Tafseer Test Complete</h2>
-            <div className="quiz-result-score">{tafseerScore} / {tafseerQuestions.length}</div>
-            <div className="quiz-result-percent">{pct}%</div>
-          </div>
-          <div className="spaces-result-actions">
-            <button className="btn btn-ghost" onClick={() => setTafseerPhase('view')}>Back to Verse</button>
-          </div>
-        </div>
-      )
-    }
-
+  if (tafseerPhase === 'quiz' && tafseerQuestions.length > 0) {
+    const q = tafseerQuestions[tafseerQIndex]
     return (
-      <div className="spaces-tafseer-view">
-        {renderTafseerReadOnly(todayTafseer)}
-
-        {tafseerAlreadyDone ? (
-          <div className="spaces-alldone card">✅ You've completed today's test — {tafseerPastScore}</div>
-        ) : tafseerQuestions.length > 0 ? (
-          <button className="spaces-submit-btn spaces-tafseer-start" onClick={startTafseerQuiz}>
-            Take Today's Test →
-          </button>
-        ) : (
-          <p className="spaces-tafseer-note">A test will be available once there's enough tafseer history to build one.</p>
-        )}
-
-        <button
-          className="btn btn-ghost"
-          style={{ marginTop: 16 }}
-          onClick={() => { setShowTafseerArchive(v => !v); setSelectedArchiveTafseer(null) }}
-        >
-          📚 {showTafseerArchive ? 'Hide' : 'Browse'} Past Tafseer Entries
-        </button>
-
-        {showTafseerArchive && (
-          <div className="card" style={{ padding: 16, marginTop: 12 }}>
-            {tafseerArchiveLoading ? (
-              <p>Loading…</p>
-            ) : tafseerArchive.length === 0 ? (
-              <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No past entries yet.</p>
-            ) : selectedArchiveTafseer ? (
-              <>
-                <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setSelectedArchiveTafseer(null)}>← Back to list</button>
-                {renderTafseerReadOnly(selectedArchiveTafseer)}
-              </>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {tafseerArchive.map(t => (
-                  <button
-                    key={t.publish_date}
-                    className="spaces-disc-btn"
-                    style={{ textAlign: 'left', padding: '10px 14px' }}
-                    onClick={() => setSelectedArchiveTafseer(t)}
-                  >
-                    <strong>{t.publish_date}</strong> — {t.surah_name} {t.surah_num}:{t.ayah_num}
-                  </button>
-                ))}
-              </div>
-            )}
+      <div className="spaces-tafseer-quiz">
+        <div className="quiz-progress-header">
+          <span className="quiz-progress-label">Question {tafseerQIndex + 1} of {tafseerQuestions.length}</span>
+          <span className="quiz-score-badge badge badge-regal">Score: {tafseerScore}</span>
+        </div>
+        <div className="quiz-question-card card">
+          {q.context && <p className="spaces-tafseer-quiz-context arabic">{q.context}</p>}
+          <p className="quiz-question-text">{q.question}</p>
+          <div className="quiz-options">
+            {q.options.map((opt, idx) => {
+              let cls = 'quiz-option'
+              if (tafseerRevealed) {
+                if (idx === q.correct) cls += ' quiz-option--correct'
+                else if (idx === tafseerChosen && idx !== q.correct) cls += ' quiz-option--wrong'
+              } else if (tafseerChosen === idx) {
+                cls += ' quiz-option--selected'
+              }
+              return (
+                <button key={idx} className={cls} onClick={() => selectTafseerAnswer(idx)} disabled={tafseerRevealed}>
+                  <span className="quiz-option-letter">{String.fromCharCode(65 + idx)}</span>
+                  <span>{opt}</span>
+                </button>
+              )
+            })}
           </div>
-        )}
+          {tafseerRevealed && (
+            <div className="quiz-next-row">
+              <button className="btn btn-primary" onClick={nextTafseerQuestion}>
+                {tafseerQIndex + 1 < tafseerQuestions.length ? 'Next Question →' : 'See Result →'}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     )
   }
+
+  if (tafseerPhase === 'result') {
+    const pct = Math.round((tafseerScore / tafseerQuestions.length) * 100)
+    return (
+      <div className="quiz-result-card card">
+        <div className="quiz-result-header">
+          <span className="quiz-result-icon">🎯</span>
+          <h2 className="quiz-result-title">Today's Tafseer Test Complete</h2>
+          <div className="quiz-result-score">{tafseerScore} / {tafseerQuestions.length}</div>
+          <div className="quiz-result-percent">{pct}%</div>
+        </div>
+        <div className="spaces-result-actions">
+          <button className="btn btn-ghost" onClick={() => setTafseerPhase('view')}>Back to Verse</button>
+        </div>
+      </div>
+    )
+  }
+
+  // ── "view" phase from here on — today's entry (if any) + archive ──
+  return (
+    <div className="spaces-tafseer-view">
+      {todayTafseer ? (
+        <>
+          {renderTafseerReadOnly(todayTafseer)}
+
+          {tafseerAlreadyDone ? (
+            <div className="spaces-alldone card">✅ You've completed today's test — {tafseerPastScore}</div>
+          ) : tafseerQuestions.length > 0 ? (
+            <button className="spaces-submit-btn spaces-tafseer-start" onClick={startTafseerQuiz}>
+              Take Today's Test →
+            </button>
+          ) : (
+            <p className="spaces-tafseer-note">A test will be available once there's enough tafseer history to build one.</p>
+          )}
+        </>
+      ) : (
+        <div className="spaces-empty card">
+          <p className="spaces-empty-icon">📖</p>
+          <p className="spaces-empty-text">No tafseer posted yet today</p>
+          <p className="spaces-empty-sub">Check back later — a new verse is shared daily. In the meantime, browse past entries below.</p>
+        </div>
+      )}
+
+      <button
+        className="btn btn-ghost"
+        style={{ marginTop: 16 }}
+        onClick={() => { setShowTafseerArchive(v => !v); setSelectedArchiveTafseer(null) }}
+      >
+        📚 {showTafseerArchive ? 'Hide' : 'Browse'} Past Tafseer Entries
+      </button>
+
+      {showTafseerArchive && (
+        <div className="card" style={{ padding: 16, marginTop: 12 }}>
+          {tafseerArchiveLoading ? (
+            <p>Loading…</p>
+          ) : tafseerArchive.length === 0 ? (
+            <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No past entries yet.</p>
+          ) : selectedArchiveTafseer ? (
+            <>
+              <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setSelectedArchiveTafseer(null)}>← Back to list</button>
+              {renderTafseerReadOnly(selectedArchiveTafseer)}
+            </>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {tafseerArchive.map(t => (
+                <button
+                  key={t.publish_date}
+                  className="spaces-disc-btn"
+                  style={{ textAlign: 'left', padding: '10px 14px' }}
+                  onClick={() => setSelectedArchiveTafseer(t)}
+                >
+                  <strong>{t.publish_date}</strong> — {t.surah_name} {t.surah_num}:{t.ayah_num}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
 
   const renderMajlis = () => {
     if (activeMajlisPost) {
