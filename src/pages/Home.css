@@ -191,4 +191,46 @@
   .home-today-strip {
     grid-template-columns: 1fr;
   }
+  .home-hero--compact {
+  padding: 18px 24px;
+  gap: 16px;
+}
+
+.home-hero-mark--small {
+  font-size: 2.2rem;
+}
+
+.home-hero-greeting {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+
+.home-hero-nudge {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.home-today-gregorian {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #5c7186;
+  margin-top: 2px;
+}
+
+[data-theme="dark"] .home-today-gregorian {
+  color: #7d93a6;
+}
+
+.home-stat-value--empty {
+  color: #a0b0c0;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .home-stat-value--empty {
+  color: #5c7186;
+}
+
 }
