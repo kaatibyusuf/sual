@@ -173,14 +173,6 @@ const ACTIONS = [
     title: 'Journey',
     desc: 'Your path',
   },
-  {
-  to: '/puzzle',
-  icon: 'puzzle',
-  color: '#E8B4B8',
-  iconColor: '#4A1A1D',
-  title: 'Term Puzzle',
-  desc: 'Very tough',
-}
 ]
 
 export default function QuickActions() {
