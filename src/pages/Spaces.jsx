@@ -1028,10 +1028,13 @@ export default function Spaces({ user }) {
     }
   }, [user, checkSubscription, checkReferralAccess])
 
-  const isPaid = useMemo(
-    () => subscription?.status === 'active' || hasReferralAccess,
-    [subscription, hasReferralAccess]
-  )
+  const isPaid = useMemo(() => {
+  const subActive =
+    subscription?.status === 'active' &&
+    subscription?.expires_at &&
+    new Date(subscription.expires_at) > new Date()
+  return subActive || hasReferralAccess
+}, [subscription, hasReferralAccess])
 
   useEffect(() => {
     if (isPaid) {
