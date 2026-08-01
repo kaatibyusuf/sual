@@ -8,7 +8,9 @@ import './Spaces.css'
 // Used for the main tab bar and schedule cards — the two spots where
 // emoji were sitting right alongside the sidebar's clean stroke icons
 // and looked visually inconsistent. Extended below to cover the rest
-// of the functional/UI emoji scattered through this file.
+// of the functional/UI emoji scattered through this file, including
+// the category pills (which were rendering as broken monochrome
+// fallback glyphs on systems without a color-emoji font).
 const ICONS = {
   chat: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -114,18 +116,51 @@ const ICONS = {
       <line x1="10" y1="12" x2="14" y2="12" />
     </svg>
   ),
+  globe: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z" />
+    </svg>
+  ),
+  scale: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="3" x2="12" y2="21" />
+      <path d="M5 7h14" />
+      <path d="M5 7l-3 7a3 3 0 0 0 6 0z" />
+      <path d="M19 7l-3 7a3 3 0 0 0 6 0z" />
+    </svg>
+  ),
+  moon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+    </svg>
+  ),
+  mic: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="2" width="6" height="12" rx="3" />
+      <path d="M5 10a7 7 0 0 0 14 0" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="8" y1="22" x2="16" y2="22" />
+    </svg>
+  ),
+  star: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 14.6 9 22 9.3 16 14 18 21.5 12 17.3 6 21.5 8 14 2 9.3 9.4 9" />
+    </svg>
+  ),
 }
 
 const TabIcon = ({ name }) => <span className="spaces-tab-icon" aria-hidden="true">{ICONS[name]}</span>
 
 const CATEGORIES = [
-  { key: 'all',       label: 'All',       arabic: 'الكُلّ',      icon: '🌐', color: '#094570' },
-  { key: 'fiqh',      label: 'Fiqh',      arabic: 'الفِقْه',     icon: '⚖️', color: '#5DCAA5' },
-  { key: 'seerah',    label: 'Seerah',    arabic: 'السِّيرَة',    icon: '🌙', color: '#AFA9EC' },
-  { key: 'arabiyyah', label: 'Arabiyyah', arabic: 'العَرَبِيَّة', icon: '✍️', color: '#85B7EB' },
-  { key: 'tajweed',   label: 'Tajweed',   arabic: 'التَّجْوِيد',  icon: '🎙️', color: '#F0997B' },
-  { key: 'aqeedah',   label: 'Aqeedah',   arabic: 'العَقِيدَة',   icon: '☪️', color: '#FAC775' },
-  { key: 'general',   label: 'General',   arabic: 'عَامّ',        icon: '💬', color: '#8FD9C4' },
+  { key: 'all',       label: 'All',       arabic: 'الكُلّ',      icon: 'globe',     color: '#094570' },
+  { key: 'fiqh',      label: 'Fiqh',      arabic: 'الفِقْه',     icon: 'scale',     color: '#5DCAA5' },
+  { key: 'seerah',    label: 'Seerah',    arabic: 'السِّيرَة',    icon: 'moon',      color: '#AFA9EC' },
+  { key: 'arabiyyah', label: 'Arabiyyah', arabic: 'العَرَبِيَّة', icon: 'arabiyyah', color: '#85B7EB' },
+  { key: 'tajweed',   label: 'Tajweed',   arabic: 'التَّجْوِيد',  icon: 'mic',       color: '#F0997B' },
+  { key: 'aqeedah',   label: 'Aqeedah',   arabic: 'العَقِيدَة',   icon: 'star',      color: '#FAC775' },
+  { key: 'general',   label: 'General',   arabic: 'عَامّ',        icon: 'chat',      color: '#8FD9C4' },
 ]
 
 const CLASS_SCHEDULE = [
@@ -2114,7 +2149,7 @@ export default function Spaces({ user }) {
           <div className="spaces-post-top">
             <span className="spaces-cat-badge">
               <span className="spaces-cat-dot" style={{ background: cat?.color }} />
-              {cat?.icon} {activePost.category}
+              <TabIcon name={cat?.icon} /> {activePost.category}
             </span>
             <span className="spaces-post-date">{formatDate(activePost.created_at)}</span>
           </div>
@@ -2478,7 +2513,7 @@ export default function Spaces({ user }) {
                     onChange={e => setNewPost({ ...newPost, category: e.target.value })}
                   >
                     {CATEGORIES.filter(c => c.key !== 'all').map(c => (
-                      <option key={c.key} value={c.key}>{c.icon} {c.label}</option>
+                      <option key={c.key} value={c.key}>{c.label}</option>
                     ))}
                   </select>
                 </div>
@@ -2520,7 +2555,7 @@ export default function Spaces({ user }) {
                 onClick={() => setCategory(c.key)}
               >
                 <span className="spaces-cat-dot" style={{ background: c.color }} />
-                {c.icon} {c.label}
+                <TabIcon name={c.icon} /> {c.label}
               </button>
             ))}
           </div>
@@ -2546,7 +2581,7 @@ export default function Spaces({ user }) {
                     <div className="spaces-post-top">
                       <span className="spaces-cat-badge">
                         <span className="spaces-cat-dot" style={{ background: cat?.color }} />
-                        {cat?.icon} {post.category}
+                        <TabIcon name={cat?.icon} /> {post.category}
                       </span>
                       <span className="spaces-post-date">
                         {isNew && <span className="spaces-new-dot" title="New since your last visit" />}
@@ -2559,7 +2594,7 @@ export default function Spaces({ user }) {
                     </p>
                     <div className="spaces-post-footer">
                       <span className="spaces-post-replies">
-                        💬 {post.reply_count} {post.reply_count === 1 ? 'reply' : 'replies'}
+                        <TabIcon name="chat" /> {post.reply_count} {post.reply_count === 1 ? 'reply' : 'replies'}
                       </span>
                       <span className="spaces-post-read">Read Discussion →</span>
                     </div>
