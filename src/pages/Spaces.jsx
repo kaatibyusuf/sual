@@ -7,7 +7,8 @@ import './Spaces.css'
 // ── Line-art icons, matching Sidebar's icon style ────────────────
 // Used for the main tab bar and schedule cards — the two spots where
 // emoji were sitting right alongside the sidebar's clean stroke icons
-// and looked visually inconsistent.
+// and looked visually inconsistent. Extended below to cover the rest
+// of the functional/UI emoji scattered through this file.
 const ICONS = {
   chat: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -62,6 +63,57 @@ const ICONS = {
       <path d="M9 13l2 2 4-4" />
     </svg>
   ),
+  check: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  ),
+  cross: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  ),
+  pin: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z" />
+      <circle cx="12" cy="11" r="2" />
+    </svg>
+  ),
+  award: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="6" />
+      <path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5" />
+    </svg>
+  ),
+  scroll: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 4h11a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H6a2 2 0 0 1 0-4h11" />
+      <path d="M6 4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2" />
+    </svg>
+  ),
+  target: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  people: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  ),
+  archive: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="5" rx="1" />
+      <path d="M4 8v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V8" />
+      <line x1="10" y1="12" x2="14" y2="12" />
+    </svg>
+  ),
 }
 
 const TabIcon = ({ name }) => <span className="spaces-tab-icon" aria-hidden="true">{ICONS[name]}</span>
@@ -82,30 +134,30 @@ const CLASS_SCHEDULE = [
 ]
 
 const CIRCLES = [
-  { id: 'abu_bakr', name: 'Halaqah Abi Bakr', arabicName: 'حَلَقَةُ أَبِي بَكْر', icon: '🕊️', blurb: 'Named after Abu Bakr As-Siddiq, the first Caliph and the Prophet\'s closest companion — known for his unwavering trust in Allah.' },
-  { id: 'umar', name: 'Halaqah Umar', arabicName: 'حَلَقَةُ عُمَر', icon: '⚔️', blurb: 'Named after Umar ibn Al-Khattab, the second Caliph — known for his justice and strength in upholding the truth.' },
-  { id: 'uthman', name: 'Halaqah Uthman', arabicName: 'حَلَقَةُ عُثْمَان', icon: '📖', blurb: 'Named after Uthman ibn Affan, the third Caliph — known for his generosity and compiling the Quran into a single mushaf.' },
-  { id: 'ali', name: 'Halaqah Ali', arabicName: 'حَلَقَةُ عَلِيّ', icon: '🗡️', blurb: 'Named after Ali ibn Abi Talib, the fourth Caliph — known for his knowledge and closeness to the Prophet ﷺ.' },
-  { id: 'talhah', name: 'Halaqah Talhah', arabicName: 'حَلَقَةُ طَلْحَة', icon: '🌿', blurb: 'Named after Talhah ibn Ubaydillah, one of the ten promised Paradise — known for his generosity and bravery at Uhud.' },
+  { id: 'abu_bakr', name: 'Halaqah Abi Bakr', arabicName: 'حَلَقَةُ أَبِي بَكْر', icon: 'award', blurb: 'Named after Abu Bakr As-Siddiq, the first Caliph and the Prophet\'s closest companion — known for his unwavering trust in Allah.' },
+  { id: 'umar', name: 'Halaqah Umar', arabicName: 'حَلَقَةُ عُمَر', icon: 'award', blurb: 'Named after Umar ibn Al-Khattab, the second Caliph — known for his justice and strength in upholding the truth.' },
+  { id: 'uthman', name: 'Halaqah Uthman', arabicName: 'حَلَقَةُ عُثْمَان', icon: 'tafseer', blurb: 'Named after Uthman ibn Affan, the third Caliph — known for his generosity and compiling the Quran into a single mushaf.' },
+  { id: 'ali', name: 'Halaqah Ali', arabicName: 'حَلَقَةُ عَلِيّ', icon: 'award', blurb: 'Named after Ali ibn Abi Talib, the fourth Caliph — known for his knowledge and closeness to the Prophet ﷺ.' },
+  { id: 'talhah', name: 'Halaqah Talhah', arabicName: 'حَلَقَةُ طَلْحَة', icon: 'award', blurb: 'Named after Talhah ibn Ubaydillah, one of the ten promised Paradise — known for his generosity and bravery at Uhud.' },
 ]
 
 const CLASSES = [
   {
-    id: 'arabiyyah', title: 'Arabiyyah Class', arabicTitle: 'فَصْلُ العَرَبِيَّة', icon: '✍️',
+    id: 'arabiyyah', title: 'Arabiyyah Class', arabicTitle: 'فَصْلُ العَرَبِيَّة', icon: 'arabiyyah',
     description: 'A structured Arabic language programme from absolute beginner to mastery of the classical sciences.',
     color: '#094570',
     levels: [
-      { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32', icon: '🌱',
+      { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32', icon: 'chat',
         title: 'Duruus Lughahtil-Arabiyyah', arabicTitle: 'دُرُوسُ اللُّغَةِ العَرَبِيَّة',
         description: 'Complete study of the three volumes of Duruus Al-Lughah Al-Arabiyyah by Dr V. Abdur Raheem — the gold standard for learning Arabic from scratch. Covers reading, writing, vocabulary, basic grammar, and simple conversation.',
         curriculum: ['Volume 1 — Arabic alphabet, vowels, basic nouns and verbs, simple sentences', 'Volume 2 — Expanded grammar, verb conjugation, common expressions', 'Volume 3 — Intermediate grammar, reading comprehension, composition', 'Weekly vocabulary memorization and dictation tests', 'Simple Arabic composition exercises from Week 8'],
         outcome: 'Read Arabic text with vowels fluently, understand basic Quranic vocabulary, and write simple Arabic sentences.', duration: '6 months', commitment: '5 hours per week' },
-      { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', icon: '📖',
+      { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', icon: 'scroll',
         title: 'Nahw, Sarf and Insha', arabicTitle: 'النَّحْو وَالصَّرْف وَالإِنْشَاء',
         description: 'Systematic study of Arabic grammar (Nahw), morphology (Sarf), and Arabic composition (Insha). Students move from passive reading to active command of the language structures used in Islamic scholarship.',
         curriculum: ["Nahw — Al-Ajrumiyyah with full i'rab practice on Quranic verses", 'Nahw — Qatr An-Nada by Ibn Hisham with commentary', 'Sarf — Shudha Al-Urf by Al-Hamlawi, all verb forms and patterns', 'Insha — Guided Arabic composition, letter writing, and paragraph construction', "Weekly i'rab exercises on selected Quranic passages", 'Monthly composition assignments reviewed and corrected'],
         outcome: "Perform full i'rab of Quranic verses, understand the morphological structure of any Arabic word, and write correct Arabic prose.", duration: '8 months', commitment: '7 hours per week' },
-      { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', icon: '🏛️',
+      { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', icon: 'award',
         title: 'Classical Sciences — Alfiyyah, Sarf, Balaghah', arabicTitle: 'الأَلْفِيَّة وَالصَّرْف وَالبَلَاغَة',
         description: 'Study of the classical Arabic sciences at the level of the traditional Madrasah curriculum. This level produces scholars capable of reading unvowelled classical texts independently.',
         curriculum: ['Alfiyyah Ibn Malik — the 1,000-line poem covering all of Arabic grammar with commentary of Ibn Aqil', 'Advanced Sarf — Maqsud fi Al-Sarf and Al-Kaylani with all derived forms', 'Balaghah — Al-Balaghatul-Wadihah', 'Reading of classical unvowelled texts', 'Weekly memorization of Alfiyyah verses with i\'rab', 'Independent reading and translation of classical Arabic texts'],
@@ -113,11 +165,11 @@ const CLASSES = [
     ],
   },
   {
-    id: 'hadeeth', title: 'Hadeeth Class', arabicTitle: 'فَصْلُ الحَدِيث', icon: '📜',
+    id: 'hadeeth', title: 'Hadeeth Class', arabicTitle: 'فَصْلُ الحَدِيث', icon: 'hadeeth',
     description: 'A structured Hadeeth memorization and study programme — from the Forty of An-Nawawi to the great collections of the Sunnah.',
     color: '#7b3f00',
     levels: [
-      { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32', icon: '🌱',
+      { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32', icon: 'chat',
         title: "Al-Arba'oon An-Nawawiyyah", arabicTitle: 'الأَرْبَعُونَ النَّوَوِيَّة',
         description: 'Complete memorization and study of the Forty Hadith of Imam An-Nawawi — the foundational text of Islamic learning for over seven centuries. Every hadith is memorized in Arabic with its chain, studied for its meanings, and applied to daily life.',
         curriculum: ['Memorization of all 42 hadith with Arabic text and sanad', "Study of Imam An-Nawawi's commentary on each hadith", 'Understanding the fiqh and aqeedah derived from each hadith', 'Weekly recitation test — 2 hadith per week minimum', 'Final examination — recite all 42 from memory'],
@@ -134,12 +186,12 @@ const CLASSES = [
           { num: 9,  text: 'مَا نَهَيْتُكُمْ عَنْهُ فَاجْتَنِبُوه', translation: 'Whatever I have forbidden you, avoid it' },
           { num: 10, text: 'إِنَّ اللَّهَ طَيِّبٌ لَا يَقْبَلُ إِلَّا طَيِّبًا', translation: 'Allah is pure and accepts only what is pure' },
         ] },
-      { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', icon: '📖',
+      { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', icon: 'scroll',
         title: 'Bulugh Al-Maram and Umdat Al-Ahkam', arabicTitle: 'بُلُوغُ المَرَام وَعُمْدَةُ الأَحْكَام',
         description: 'Memorization and study of the two greatest collections of legal hadith — Bulugh Al-Maram by Ibn Hajar Al-Asqalani and Umdatul-Ahkam by Ibn Qudamah. These books form the backbone of fiqh al-hadith study in traditional Islamic scholarship.',
         curriculum: ['Umdatul-Ahkam — 414 hadith on acts of worship and transactions, memorization and study', 'Bulughul-Maram — systematic study of all chapters', 'Weekly memorization target — 5 hadith per week minimum', 'Monthly written examination on chapters covered'],
         outcome: "Memorize core legal hadith from both texts, understand how scholars derive fiqh rulings from hadith, and read Ibn Hajar's Arabic commentary.", duration: '10 months', commitment: '6 hours per week' },
-      { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', icon: '🏛️',
+      { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', icon: 'award',
         title: 'Sahih Bukhari Memorization', arabicTitle: 'حِفْظُ صَحِيح البُخَارِي',
         description: 'The pinnacle of hadith study — systematic memorization and deep study of Sahih Al-Bukhari, the most authentic book after the Quran. Students study with Fath Al-Bari, the greatest commentary on Al-Bukhari by Ibn Hajar Al-Asqalani.',
         curriculum: ["Memorization of selected hadith from each chapter of Sahih Bukhari (Kitab Al-Iman through Kitab Al-Jami')", 'Study of Fath Al-Bari by Ibn Hajar Al-Asqalani — chapter by chapter', 'Hadith sciences (Mustalahul-Hadith) — understanding chains, narrators, and authentication', 'Independent research assignments on specific hadith and their commentaries'],
@@ -1029,12 +1081,12 @@ export default function Spaces({ user }) {
   }, [user, checkSubscription, checkReferralAccess])
 
   const isPaid = useMemo(() => {
-  const subActive =
-    subscription?.status === 'active' &&
-    subscription?.expires_at &&
-    new Date(subscription.expires_at) > new Date()
-  return subActive || hasReferralAccess
-}, [subscription, hasReferralAccess])
+    const subActive =
+      subscription?.status === 'active' &&
+      subscription?.expires_at &&
+      new Date(subscription.expires_at) > new Date()
+    return subActive || hasReferralAccess
+  }, [subscription, hasReferralAccess])
 
   useEffect(() => {
     if (isPaid) {
@@ -1235,7 +1287,7 @@ export default function Spaces({ user }) {
   const renderAccountability = () => (
     <div className="spaces-accountability">
       <div className="spaces-section-intro card">
-        <h3 className="spaces-section-intro-title">🤝 Accountability Partners</h3>
+        <h3 className="spaces-section-intro-title">Accountability Partners</h3>
         <p className="spaces-section-intro-text">
           Pair up with another member to keep each other accountable in your learning.
           Once paired, you get a private message thread right here to actually coordinate.
@@ -1249,7 +1301,6 @@ export default function Spaces({ user }) {
         <div className="spaces-loading"><div className="spaces-spinner" /></div>
       ) : !myGender && !myPair ? (
         <div className="spaces-empty card">
-          <p className="spaces-empty-icon">🤝</p>
           <p className="spaces-empty-text">Set your gender in Profile first</p>
           <p className="spaces-empty-sub">
             Accountability pairing only ever matches members of the same gender —
@@ -1259,7 +1310,7 @@ export default function Spaces({ user }) {
       ) : myPair ? (
         <>
           <div className="spaces-pair-card card">
-            <span className="spaces-pair-badge">✅ Paired</span>
+            <span className="spaces-pair-badge"><TabIcon name="check" /> Paired</span>
             <div className="spaces-pair-member">
               <div className="spaces-post-avatar">{getInitials(myPair.full_name || 'M')}</div>
               <div>
@@ -1325,7 +1376,6 @@ export default function Spaces({ user }) {
           <p className="spaces-available-label">Members without a partner — choose one to pair up</p>
           {availableMembers.length === 0 ? (
             <div className="spaces-empty card">
-              <p className="spaces-empty-icon">🤝</p>
               <p className="spaces-empty-text">No unpaired members right now</p>
               <p className="spaces-empty-sub">Check back soon.</p>
             </div>
@@ -1372,7 +1422,7 @@ export default function Spaces({ user }) {
       )}
 
       <div className="spaces-section-intro card" style={{ marginTop: 24 }}>
-        <h3 className="spaces-section-intro-title">📢 Match Requests</h3>
+        <h3 className="spaces-section-intro-title">Match Requests</h3>
         <p className="spaces-section-intro-text">
           Post what you're looking for in a partner, or browse others' requests directly.
         </p>
@@ -1441,7 +1491,7 @@ export default function Spaces({ user }) {
       )}
 
       <div className="spaces-section-intro card" style={{ marginTop: 24 }}>
-        <h3 className="spaces-section-intro-title">📋 Who's Paired, Who's Seeking</h3>
+        <h3 className="spaces-section-intro-title">Who's Paired, Who's Seeking</h3>
       </div>
 
       {(() => {
@@ -1514,7 +1564,7 @@ export default function Spaces({ user }) {
   const renderCircles = () => (
     <div className="spaces-circles">
       <div className="spaces-section-intro card">
-        <h3 className="spaces-section-intro-title">🕌 Sahaabah Circles</h3>
+        <h3 className="spaces-section-intro-title">Sahaabah Circles</h3>
         <p className="spaces-section-intro-text">
           Join one of five circles named after prominent companions of the Prophet ﷺ —
           a small group discussion thread to boost your accountability. You may join
@@ -1541,7 +1591,7 @@ export default function Spaces({ user }) {
                 onClick={() => switchingCircleMode ? switchCircle(c.id) : joinCircle(c.id)}
                 disabled={joiningCircle || c.id === myCircle}
               >
-                <span className="spaces-circle-icon">{c.icon}</span>
+                <span className="spaces-circle-icon"><TabIcon name={c.icon} /></span>
                 <h4 className="spaces-circle-name">{c.name}</h4>
                 <p className="spaces-circle-arabic arabic">{c.arabicName}</p>
                 <p className="spaces-circle-blurb">{c.blurb}</p>
@@ -1564,7 +1614,7 @@ export default function Spaces({ user }) {
       ) : (
         <>
           <div className="spaces-circle-header card">
-            <span className="spaces-circle-icon">{CIRCLES.find(c => c.id === myCircle)?.icon}</span>
+            <span className="spaces-circle-icon"><TabIcon name={CIRCLES.find(c => c.id === myCircle)?.icon} /></span>
             <div style={{ flex: 1 }}>
               <h3 className="spaces-circle-name">{CIRCLES.find(c => c.id === myCircle)?.name}</h3>
               <p className="spaces-circle-arabic arabic">{CIRCLES.find(c => c.id === myCircle)?.arabicName}</p>
@@ -1619,7 +1669,7 @@ export default function Spaces({ user }) {
 
   const renderLessonContent = (lesson) => (
     <div className="spaces-tafseer-card card">
-      <h4 className="spaces-class-section-title">📖 {lesson.title}</h4>
+      <h4 className="spaces-class-section-title">{lesson.title}</h4>
       {lesson.arabic_text && <p className="spaces-tafseer-arabic arabic-lg">{lesson.arabic_text}</p>}
       {lesson.transliteration && (
         <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
@@ -1659,12 +1709,12 @@ export default function Spaces({ user }) {
         <p className="spaces-tafseer-translation">"{entry.translation}"</p>
       </div>
       <div className="spaces-tafseer-card card">
-        <h4 className="spaces-class-section-title">📖 Tafseer</h4>
+        <h4 className="spaces-class-section-title">Tafseer</h4>
         <p className="spaces-tafseer-body">{entry.tafseer_body}</p>
       </div>
       {Array.isArray(entry.lessons) && entry.lessons.length > 0 && (
         <div className="spaces-tafseer-card card">
-          <h4 className="spaces-class-section-title">💡 Lessons</h4>
+          <h4 className="spaces-class-section-title">Lessons</h4>
           <ul className="spaces-class-curriculum">
             {entry.lessons.map((l, i) => (
               <li key={i} className="spaces-class-curriculum-item">
@@ -1728,7 +1778,7 @@ export default function Spaces({ user }) {
       return (
         <div className="quiz-result-card card">
           <div className="quiz-result-header">
-            <span className="quiz-result-icon">🎯</span>
+            <span className="quiz-result-icon"><TabIcon name="target" /></span>
             <h2 className="quiz-result-title">Today's Tafseer Test Complete</h2>
             <div className="quiz-result-score">{tafseerScore} / {tafseerQuestions.length}</div>
             <div className="quiz-result-percent">{pct}%</div>
@@ -1748,7 +1798,7 @@ export default function Spaces({ user }) {
             {renderTafseerReadOnly(todayTafseer)}
 
             {tafseerAlreadyDone ? (
-              <div className="spaces-alldone card">✅ You've completed today's test — {tafseerPastScore}</div>
+              <div className="spaces-alldone card"><TabIcon name="check" /> You've completed today's test — {tafseerPastScore}</div>
             ) : tafseerQuestions.length > 0 ? (
               <button className="spaces-submit-btn spaces-tafseer-start" onClick={startTafseerQuiz}>
                 Take Today's Test →
@@ -1759,7 +1809,6 @@ export default function Spaces({ user }) {
           </>
         ) : (
           <div className="spaces-empty card">
-            <p className="spaces-empty-icon">📖</p>
             <p className="spaces-empty-text">No tafseer posted yet today</p>
             <p className="spaces-empty-sub">Check back later — a new verse is shared daily. In the meantime, browse past entries below.</p>
           </div>
@@ -1770,7 +1819,7 @@ export default function Spaces({ user }) {
           style={{ marginTop: 16 }}
           onClick={() => { setShowTafseerArchive(v => !v); setSelectedArchiveTafseer(null) }}
         >
-          📚 {showTafseerArchive ? 'Hide' : 'Browse'} Past Tafseer Entries
+          <TabIcon name="archive" /> {showTafseerArchive ? 'Hide' : 'Browse'} Past Tafseer Entries
         </button>
 
         {showTafseerArchive && (
@@ -1809,7 +1858,7 @@ export default function Spaces({ user }) {
       return (
         <div className="spaces-class-section card">
           <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => { setActiveMajlisPost(null); setMajlisReplies([]) }}>← Back to Majlis</button>
-          {activeMajlisPost.pinned && <span className="spaces-cat-badge" style={{ marginBottom: 10 }}>📌 Pinned</span>}
+          {activeMajlisPost.pinned && <span className="spaces-cat-badge" style={{ marginBottom: 10 }}><TabIcon name="pin" /> Pinned</span>}
           <h3 style={{ color: '#094570', marginBottom: 6 }}>{activeMajlisPost.title}</h3>
           <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginBottom: 16 }}>{formatDate(activeMajlisPost.created_at)}</p>
           <p style={{ whiteSpace: 'pre-wrap', marginBottom: 24 }}>{activeMajlisPost.body}</p>
@@ -1842,7 +1891,7 @@ export default function Spaces({ user }) {
     return (
       <div className="spaces-class-section card">
         <div className="spaces-section-intro card" style={{ marginBottom: 20 }}>
-          <h3 className="spaces-section-intro-title">🕌 Majlis</h3>
+          <h3 className="spaces-section-intro-title">Majlis</h3>
           <p className="spaces-section-intro-text">
             The general meeting hall, updates, announcements, and important things from the Sual team.
             Ask a question on anything that isn't clear, right on the post itself.
@@ -1853,7 +1902,6 @@ export default function Spaces({ user }) {
           <div className="spaces-loading"><div className="spaces-spinner" /></div>
         ) : majlisPosts.length === 0 ? (
           <div className="spaces-empty card">
-            <p className="spaces-empty-icon">🕌</p>
             <p className="spaces-empty-text">No announcements yet.</p>
           </div>
         ) : (
@@ -1861,7 +1909,7 @@ export default function Spaces({ user }) {
             {majlisPosts.map(post => (
               <button key={post.id} className="spaces-post-card card" onClick={() => openMajlisPost(post)}>
                 <div className="spaces-post-top">
-                  {post.pinned && <span className="spaces-cat-badge">📌 Pinned</span>}
+                  {post.pinned && <span className="spaces-cat-badge"><TabIcon name="pin" /> Pinned</span>}
                   <span className="spaces-post-date">{timeAgo(post.created_at)}</span>
                 </div>
                 <h3 className="spaces-post-title">{post.title}</h3>
@@ -1877,14 +1925,14 @@ export default function Spaces({ user }) {
     )
   }
 
-  const TRACK_LABELS = { arabiyyah: '✍️ Arabiyyah', tafseer: '📖 Tafseer', hadeeth: '📜 Hadeeth' }
+  const TRACK_LABELS = { arabiyyah: 'Arabiyyah', tafseer: 'Tafseer', hadeeth: 'Hadeeth' }
 
   const renderExamPortal = () => {
     if (weeklyPhase === 'select') {
       return (
         <div className="spaces-class-section card">
           <div className="spaces-section-intro card" style={{ marginBottom: 20 }}>
-            <h3 className="spaces-section-intro-title">📝 Weekly Tests</h3>
+            <h3 className="spaces-section-intro-title">Weekly Tests</h3>
             <p className="spaces-section-intro-text">
               One test per track per week. MCQ is graded instantly; theory answers are graded
               automatically against a model answer with feedback.
@@ -1909,7 +1957,6 @@ export default function Spaces({ user }) {
             <div className="spaces-loading"><div className="spaces-spinner" /></div>
           ) : weeklyTests.length === 0 ? (
             <div className="spaces-empty card">
-              <p className="spaces-empty-icon">📝</p>
               <p className="spaces-empty-text">No {TRACK_LABELS[weeklyTrack]} test posted yet</p>
               <p className="spaces-empty-sub">Check back once this week's test is published.</p>
             </div>
@@ -1929,7 +1976,7 @@ export default function Spaces({ user }) {
                   {t.description && <p className="spaces-post-preview">{t.description}</p>}
                   {t.my_attempt?.status === 'completed' ? (
                     <span className="spaces-post-read">
-                      ✅ Completed — MCQ {t.my_attempt.mcq_score}/{t.my_attempt.mcq_total}
+                      <TabIcon name="check" /> Completed — MCQ {t.my_attempt.mcq_score}/{t.my_attempt.mcq_total}
                       {t.my_attempt.theory_total > 0 && `, Theory ${t.my_attempt.theory_score}%`}
                     </span>
                   ) : t.my_attempt?.status === 'in_progress' ? (
@@ -2022,7 +2069,9 @@ export default function Spaces({ user }) {
               <div className="quiz-review-q"><strong>Q{i + 1}</strong> ({r.question_type === 'mcq' ? 'MCQ' : 'Theory'})</div>
               {r.question_type === 'mcq' ? (
                 <>
-                  <div className="quiz-review-ans">{r.is_correct ? '✅ Correct' : '❌ Incorrect'}</div>
+                  <div className="quiz-review-ans">
+                    {r.is_correct ? <><TabIcon name="check" /> Correct</> : <><TabIcon name="cross" /> Incorrect</>}
+                  </div>
                   {r.explanation && <div className="quiz-review-exp">{r.explanation}</div>}
                 </>
               ) : (
@@ -2091,7 +2140,7 @@ export default function Spaces({ user }) {
               <div className="spaces-reply-header">
                 <div className="spaces-reply-avatar" style={{ background: r.is_scholar_answer ? '#094570' : '#e8f0f8' }}>
                   <span style={{ color: r.is_scholar_answer ? '#ffffff' : '#094570' }}>
-                    {r.is_scholar_answer ? '🎓' : getInitials(r.user_id)}
+                    {r.is_scholar_answer ? <TabIcon name="award" /> : getInitials(r.user_id)}
                   </span>
                 </div>
                 <div>
@@ -2132,7 +2181,7 @@ export default function Spaces({ user }) {
         <p className="page-subtitle">فَضَاءَات — A community for serious students of Islamic knowledge</p>
         {memberCount !== null && (
           <p style={{ fontSize: '0.85rem', color: '#6a8090', marginTop: -8, marginBottom: 16 }}>
-            👥 {memberCount.toLocaleString()} members
+            <TabIcon name="people" /> {memberCount.toLocaleString()} members
           </p>
         )}
 
@@ -2154,7 +2203,7 @@ export default function Spaces({ user }) {
         {renderSchedule()}
 
         <div className="spaces-paywall">
-          <div className="spaces-paywall-icon">🕌</div>
+          <div className="spaces-paywall-icon"><TabIcon name="majlis" /></div>
           <h2 className="spaces-paywall-title">Members Only</h2>
           <p className="spaces-paywall-desc">
             Spaces is an exclusive community for paid members. Ask questions, share knowledge,
@@ -2162,17 +2211,17 @@ export default function Spaces({ user }) {
           </p>
           <div className="spaces-features">
             {[
-              { icon: '🎓', text: 'Direct answers from a qualified scholar' },
-              { icon: '✍️', text: 'Structured Arabiyyah courses — Beginner to Advanced' },
-              { icon: '📜', text: 'Structured Hadeeth courses — An-Nawawi to Sahih Al-Bukhari' },
-              { icon: '💬', text: 'Threaded community discussions' },
-              { icon: '🕌', text: 'Majlis — announcements and updates from the Sual team' },
-              { icon: '🤝', text: 'Accountability partners and Sahaabah circles' },
-              { icon: '📖', text: 'A new tafseer verse and short test every day' },
-              { icon: '📝', text: 'Weekly tests for Arabiyyah, Tafseer, and Hadeeth — graded automatically' },
+              { icon: 'award', text: 'Direct answers from a qualified scholar' },
+              { icon: 'arabiyyah', text: 'Structured Arabiyyah courses — Beginner to Advanced' },
+              { icon: 'hadeeth', text: 'Structured Hadeeth courses — An-Nawawi to Sahih Al-Bukhari' },
+              { icon: 'chat', text: 'Threaded community discussions' },
+              { icon: 'majlis', text: 'Majlis — announcements and updates from the Sual team' },
+              { icon: 'accountability', text: 'Accountability partners and Sahaabah circles' },
+              { icon: 'tafseer', text: 'A new tafseer verse and short test every day' },
+              { icon: 'weeklyTests', text: 'Weekly tests for Arabiyyah, Tafseer, and Hadeeth — graded automatically' },
             ].map((f, i) => (
               <div key={i} className="spaces-feature-item">
-                <span>{f.icon}</span>
+                <span><TabIcon name={f.icon} /></span>
                 <span>{f.text}</span>
               </div>
             ))}
@@ -2206,7 +2255,7 @@ export default function Spaces({ user }) {
       <div className="spaces-class-page">
 
         <div className="spaces-class-header" style={{ borderColor: cls.color }}>
-          <span className="spaces-class-icon">{cls.icon}</span>
+          <span className="spaces-class-icon"><TabIcon name={cls.icon} /></span>
           <div>
             <h2 className="spaces-class-title">{cls.title}</h2>
             <p className="spaces-class-arabic arabic">{cls.arabicTitle}</p>
@@ -2222,7 +2271,7 @@ export default function Spaces({ user }) {
               style={currentLevelKey === lv.key ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
               onClick={() => setClassLevel(prev => ({ ...prev, [cls.id]: lv.key }))}
             >
-              {lv.icon} {lv.label}
+              <TabIcon name={lv.icon} /> {lv.label}
               <span className="spaces-class-level-arabic arabic">{lv.arabic}</span>
             </button>
           ))}
@@ -2234,7 +2283,7 @@ export default function Spaces({ user }) {
             <div className="spaces-class-content-header card" style={{ borderLeft: `4px solid ${currentLevel.color}` }}>
               <div className="spaces-class-content-meta">
                 <span className="spaces-class-level-badge" style={{ background: currentLevel.color }}>
-                  {currentLevel.icon} {currentLevel.label}
+                  <TabIcon name={currentLevel.icon} /> {currentLevel.label}
                 </span>
                 <span className="spaces-class-duration">⏱ {currentLevel.duration}</span>
                 <span className="spaces-class-commitment">📅 {currentLevel.commitment}</span>
@@ -2250,7 +2299,6 @@ export default function Spaces({ user }) {
               renderLessonContent(classLesson)
             ) : (
               <div className="spaces-empty card">
-                <p className="spaces-empty-icon">📖</p>
                 <p className="spaces-empty-text">No lesson posted yet today for this level</p>
                 <p className="spaces-empty-sub">Check My Courses for structured, self-paced chapters in the meantime.</p>
               </div>
@@ -2261,7 +2309,7 @@ export default function Spaces({ user }) {
               style={{ marginBottom: 16 }}
               onClick={() => { setShowClassLessonArchive(v => !v); setSelectedArchiveLesson(null) }}
             >
-              📚 {showClassLessonArchive ? 'Hide' : 'Browse'} Past Lessons
+              <TabIcon name="archive" /> {showClassLessonArchive ? 'Hide' : 'Browse'} Past Lessons
             </button>
 
             {showClassLessonArchive && (
@@ -2352,7 +2400,7 @@ export default function Spaces({ user }) {
           <p className="page-subtitle">فَضَاءَات — Community for serious students</p>
           {memberCount !== null && (
             <p style={{ fontSize: '0.85rem', color: '#6a8090', marginTop: 4 }}>
-              👥 {memberCount.toLocaleString()} members
+              <TabIcon name="people" /> {memberCount.toLocaleString()} members
             </p>
           )}
         </div>
@@ -2399,7 +2447,7 @@ export default function Spaces({ user }) {
           {featured && (
             <button className="spaces-featured card" onClick={() => openPostById(featured.post.id)}>
               <div className="spaces-featured-head">
-                <span className="spaces-featured-tag">🎓 Scholar Answered</span>
+                <span className="spaces-featured-tag"><TabIcon name="award" /> Scholar Answered</span>
                 <span className="spaces-post-date">{timeAgo(featured.reply.created_at)}</span>
               </div>
               <h3 className="spaces-featured-title">{featured.post.title}</h3>
@@ -2485,7 +2533,6 @@ export default function Spaces({ user }) {
             </div>
           ) : posts.length === 0 ? (
             <div className="spaces-empty card">
-              <p className="spaces-empty-icon">💬</p>
               <p className="spaces-empty-text">No posts yet in this category.</p>
               <p className="spaces-empty-sub">Be the first to start a discussion.</p>
             </div>
