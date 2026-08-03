@@ -5,6 +5,13 @@
 // first time a subscription becomes active — sends a welcome email
 // via Resend and logs that send in email_log.
 //
+// Each row also tracks renewal_count (incremented on every
+// charge.success after the first activation, so it reflects how many
+// times a user has renewed — i.e. whether they're a recurring
+// subscriber) and renewal_reminder_sent_at (cleared on every renewal
+// so the subscription-renewal-reminder function can send a fresh
+// reminder ahead of the new expiry date).
+//
 // Two products share this one webhook, since Paystack only supports
 // one registered webhook URL per account:
 //   - Spaces subscriptions: reference sual_<uuid>_<epoch ms>
@@ -190,7 +197,7 @@ serve(async (req) => {
     if (parsed.product === 'spaces') {
       const { data: existing } = await supabaseAdmin
         .from('subscriptions')
-        .select('welcome_email_sent_at, started_at')
+        .select('welcome_email_sent_at, started_at, renewal_count')
         .eq('user_id', userId)
         .maybeSingle()
 
@@ -199,6 +206,12 @@ serve(async (req) => {
       const expiresAt = nextPaymentDate
         ? nextPaymentDate
         : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+
+      // A user only counts as "recurring" once they've completed at
+      // least one renewal after their original activation — the very
+      // first charge.success (before welcome_email_sent_at exists)
+      // isn't itself a renewal.
+      const renewalCount = isFirstActivation ? 0 : (existing?.renewal_count ?? 0) + 1
 
       const { error: upsertError } = await supabaseAdmin
         .from('subscriptions')
@@ -211,6 +224,10 @@ serve(async (req) => {
           amount: data.amount ? Math.round(data.amount / 100) : 2500,
           started_at: existing?.started_at ?? new Date().toISOString(),
           expires_at: expiresAt,
+          renewal_count: renewalCount,
+          // New cycle just started — clear so the reminder function
+          // can send a fresh one ahead of this new expiry date.
+          renewal_reminder_sent_at: null,
         }, { onConflict: 'user_id' })
 
       if (upsertError) {
@@ -226,7 +243,7 @@ serve(async (req) => {
         }
       }
 
-      return new Response(JSON.stringify({ ok: true, product: 'spaces', welcomeEmailSent: isFirstActivation }), {
+      return new Response(JSON.stringify({ ok: true, product: 'spaces', welcomeEmailSent: isFirstActivation, renewalCount }), {
         headers: { 'Content-Type': 'application/json' },
       })
     }
@@ -237,12 +254,14 @@ serve(async (req) => {
 
       const { data: existing } = await supabaseAdmin
         .from('book_quiz_subscriptions')
-        .select('welcome_email_sent_at, started_at')
+        .select('welcome_email_sent_at, started_at, renewal_count')
         .eq('user_id', userId)
         .maybeSingle()
 
       const isFirstActivation = !existing?.welcome_email_sent_at
       const expiresAt = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString()
+
+      const renewalCount = isFirstActivation ? 0 : (existing?.renewal_count ?? 0) + 1
 
       const { error: upsertError } = await supabaseAdmin
         .from('book_quiz_subscriptions')
@@ -255,6 +274,8 @@ serve(async (req) => {
           amount: data.amount ? Math.round(data.amount / 100) : (parsed.plan === 'annual' ? 20000 : 2000),
           started_at: existing?.started_at ?? new Date().toISOString(),
           expires_at: expiresAt,
+          renewal_count: renewalCount,
+          renewal_reminder_sent_at: null,
         }, { onConflict: 'user_id' })
 
       if (upsertError) {
@@ -270,7 +291,7 @@ serve(async (req) => {
         }
       }
 
-      return new Response(JSON.stringify({ ok: true, product: 'bookquiz', plan, welcomeEmailSent: isFirstActivation }), {
+      return new Response(JSON.stringify({ ok: true, product: 'bookquiz', plan, welcomeEmailSent: isFirstActivation, renewalCount }), {
         headers: { 'Content-Type': 'application/json' },
       })
     }

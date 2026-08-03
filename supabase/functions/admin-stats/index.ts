@@ -16,17 +16,24 @@
 // admin_hifdh_count_function.sql) that isn't subject to that cap.
 //
 // ADDED: monthly growth series for the dashboard's charts, since
-// launch. Two honest caveats on the revenue side:
-//   1. `subscriptions` is upserted per user, not an append-only
-//      ledger — a renewal overwrites the same row rather than adding
-//      a new one. That means monthlyRevenue below can only reflect
-//      NEW-SUBSCRIBER revenue by the month they first signed up
-//      (started_at), not total revenue actually collected each month
-//      once renewals are in play. True monthly recurring revenue
-//      needs a real payment_events table the webhook inserts into
-//      (never updates) — not built yet.
-//   2. amount is stored in naira (already divided from kobo at
-//      webhook time), so no further conversion is needed here.
+// launch. One remaining honest caveat on the revenue side:
+//   `subscriptions` is upserted per user, not an append-only ledger —
+//   a renewal overwrites the same row rather than adding a new one.
+//   That means monthlyRevenue below can only reflect NEW-SUBSCRIBER
+//   revenue by the month they first signed up (started_at), not total
+//   revenue actually collected each month once renewals are in play.
+//   True monthly recurring revenue still needs a real payment_events
+//   table the webhook inserts into (never updates) — not built yet.
+//   amount is stored in naira (already divided from kobo at webhook
+//   time), so no further conversion is needed here.
+//
+// ADDED: recurringSubscriptions count + recurringSubscribers list.
+// The webhook now increments subscriptions.renewal_count on every
+// charge.success after a user's first activation, so a subscriber
+// with renewal_count >= 1 has renewed at least once and counts as
+// "recurring." This finally makes the revenue-caveat above partially
+// answerable — we can now tell *who* has renewed, even though total
+// recurring revenue collected per month still isn't (see caveat).
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -103,15 +110,16 @@ serve(async (req) => {
     return json({ error: 'Not an admin' }, 403)
   }
 
-  const allUsers: { id: string; created_at: string }[] = []
+  const allUsers: { id: string; email: string | null; created_at: string }[] = []
   let page = 1
   while (true) {
     const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 })
     if (error) return json({ error: error.message }, 500)
-    allUsers.push(...data.users.map(u => ({ id: u.id, created_at: u.created_at })))
+    allUsers.push(...data.users.map(u => ({ id: u.id, email: u.email ?? null, created_at: u.created_at })))
     if (data.users.length < 1000) break
     page++
   }
+  const emailById = new Map(allUsers.map(u => [u.id, u.email]))
 
   const now = Date.now()
   const DAY = 24 * 60 * 60 * 1000
@@ -124,6 +132,8 @@ serve(async (req) => {
     { count: totalPosts },
     { count: hifdhRows },
     { data: allSubscriptions, error: subsError },
+    { count: recurringSubsCount },
+    { data: recurringSubsRows, error: recurringSubsError },
   ] = await Promise.all([
     admin.from('quiz_history').select('*', { count: 'exact', head: true }),
     admin.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
@@ -133,10 +143,19 @@ serve(async (req) => {
     // cancelled subscriber still counts toward the month they
     // originally signed up for the growth chart.
     admin.from('subscriptions').select('started_at, amount'),
+    admin.from('subscriptions').select('*', { count: 'exact', head: true }).gte('renewal_count', 1),
+    admin
+      .from('subscriptions')
+      .select('user_id, renewal_count, status, started_at, expires_at')
+      .gte('renewal_count', 1)
+      .order('renewal_count', { ascending: false }),
   ])
 
   if (subsError) {
     console.error('Failed to load subscriptions for growth chart:', subsError)
+  }
+  if (recurringSubsError) {
+    console.error('Failed to load recurring subscribers:', recurringSubsError)
   }
 
   const { data: hifdhActiveUsers, error: hifdhCountError } = await admin.rpc('admin_hifdh_active_user_count')
@@ -181,6 +200,15 @@ serve(async (req) => {
     newSubscriberRevenue: revenueByMonth[m],
   }))
 
+  const recurringSubscribers = (recurringSubsRows || []).map(r => ({
+    user_id: r.user_id,
+    email: emailById.get(r.user_id) ?? '(unknown)',
+    renewal_count: r.renewal_count,
+    status: r.status,
+    started_at: r.started_at,
+    expires_at: r.expires_at,
+  }))
+
   return json({
     totalUsers: allUsers.length,
     newLast7,
@@ -192,5 +220,7 @@ serve(async (req) => {
     hifdhTotalProgressRows: hifdhRows ?? 0,
     userGrowth,
     revenueGrowth,
+    recurringSubscriptions: recurringSubsCount ?? 0,
+    recurringSubscribers,
   })
 })

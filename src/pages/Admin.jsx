@@ -1013,6 +1013,10 @@ export default function Admin({ user }) {
             <span className="admin-stat-label">Active Spaces subscriptions</span>
           </div>
           <div className="admin-stat card">
+            <span className="admin-stat-value" style={{ color: '#7b3f00' }}>{stats.recurringSubscriptions}</span>
+            <span className="admin-stat-label">Recurring subscribers (renewed ≥1x)</span>
+          </div>
+          <div className="admin-stat card">
             <span className="admin-stat-value">{stats.totalQuizzesTaken}</span>
             <span className="admin-stat-label">Quizzes taken (all time)</span>
           </div>
@@ -1053,6 +1057,64 @@ export default function Admin({ user }) {
     {postingMajlis ? 'Posting…' : 'Post to Majlis'}
   </button>
 </div>
+
+      {/* Recurring subscribers */}
+      {stats?.recurringSubscribers && (
+        <div className="card" style={{ marginTop: 20, padding: 20 }}>
+          <h3 style={{ marginBottom: 6 }}>Recurring Subscribers</h3>
+          <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
+            Members who have renewed at least once, sorted by number of renewals.
+          </p>
+
+          {stats.recurringSubscribers.length === 0 ? (
+            <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No recurring subscribers yet.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {stats.recurringSubscribers.map(s => (
+                <div
+                  key={s.user_id}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    background: '#f5f8fb',
+                    fontSize: '0.85rem',
+                    flexWrap: 'wrap',
+                    gap: 8,
+                  }}
+                >
+                  <span>
+                    <strong>{s.email}</strong>
+                    {s.status !== 'active' && (
+                      <span style={{ marginLeft: 8, fontSize: '0.72rem', color: '#c0392b' }}>({s.status})</span>
+                    )}
+                  </span>
+                  <span style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+                    <span
+                      style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        color: '#fff',
+                        background: '#2e7d32',
+                        padding: '3px 10px',
+                        borderRadius: 100,
+                      }}
+                    >
+                      {s.renewal_count} renewal{s.renewal_count === 1 ? '' : 's'}
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: '#8a9ab0' }}>
+                      expires {new Date(s.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {stats?.userGrowth && stats.userGrowth.length > 0 && (
         <div className="card" style={{ marginTop: 20, padding: 20 }}>
           <h3 style={{ marginBottom: 4 }}>User Growth</h3>
@@ -1083,7 +1145,8 @@ export default function Admin({ user }) {
           <p style={{ fontSize: '0.75rem', color: '#c0392b', marginBottom: 16 }}>
             Note: this reflects new-subscriber revenue by signup month, not total revenue collected
             each month — renewals overwrite the same subscription row rather than creating a new
-            one, so recurring/renewal revenue isn't separately trackable yet.
+            one, so total recurring revenue collected per month isn't separately trackable yet
+            (though you can now see who has renewed, and how many times, above).
           </p>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={stats.revenueGrowth}>
