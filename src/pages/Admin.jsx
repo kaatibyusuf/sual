@@ -58,6 +58,25 @@ const EMPTY_WEEKLY_TEST = { track: 'arabiyyah', publish_date: '', title: '', des
 const EMPTY_WEEKLY_MCQ = { question_type: 'mcq', question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' }
 const EMPTY_WEEKLY_THEORY = { question_type: 'theory', question: '', model_answer: '' }
 
+// ── Subscriptions table helpers ──────────────────────────────────
+// Days-remaining badge for the admin-facing "when does each
+// subscription end" table. Colour bands: expired (grey), <=3 days
+// (critical/red), <=7 days (warning/orange), otherwise fine (green).
+function daysUntil(expiresAt) {
+  if (!expiresAt) return null
+  const diff = new Date(expiresAt).getTime() - Date.now()
+  return Math.ceil(diff / (1000 * 60 * 60 * 24))
+}
+
+function ExpiryBadge({ expiresAt }) {
+  const days = daysUntil(expiresAt)
+  if (days === null) return <span className="expiry-badge none">No date</span>
+  if (days < 0) return <span className="expiry-badge expired">Expired {Math.abs(days)}d ago</span>
+  if (days <= 3) return <span className="expiry-badge critical">{days}d left</span>
+  if (days <= 7) return <span className="expiry-badge warning">{days}d left</span>
+  return <span className="expiry-badge ok">{days}d left</span>
+}
+
 export default function Admin({ user }) {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -143,6 +162,9 @@ export default function Admin({ user }) {
   const [weeklyQuestionsLoading, setWeeklyQuestionsLoading] = useState(false)
   const [weeklyQuestionMode, setWeeklyQuestionMode] = useState('mcq')
   const [weeklyManualQuestion, setWeeklyManualQuestion] = useState(EMPTY_WEEKLY_MCQ)
+
+  // ── Subscriptions table state ────────────────────────────────
+  const [subscriberSearch, setSubscriberSearch] = useState('')
 
   const fetchStats = async () => {
     setLoading(true)
@@ -971,6 +993,10 @@ export default function Admin({ user }) {
 
   if (!user) return null
 
+  const filteredSubscribers = (stats?.allSubscribers || []).filter(s =>
+    !subscriberSearch.trim() || s.email?.toLowerCase().includes(subscriberSearch.trim().toLowerCase())
+  )
+
   return (
     <div className="page-content admin-page">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
@@ -1110,6 +1136,56 @@ export default function Admin({ user }) {
                   </span>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Subscriptions — every Spaces subscriber, soonest-to-expire first */}
+      {stats?.allSubscribers && (
+        <div className="card" style={{ marginTop: 20, padding: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 6 }}>
+            <h3>Subscriptions</h3>
+            <input
+              type="text"
+              placeholder="Search by email…"
+              value={subscriberSearch}
+              onChange={e => setSubscriberSearch(e.target.value)}
+              style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.82rem', minWidth: 200 }}
+            />
+          </div>
+          <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
+            Every Spaces subscriber, sorted by soonest expiry first — Book Quiz subscribers aren't included here yet.
+          </p>
+
+          {filteredSubscribers.length === 0 ? (
+            <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>
+              {stats.allSubscribers.length === 0 ? 'No subscribers yet.' : 'No subscribers match that search.'}
+            </p>
+          ) : (
+            <div className="admin-table-wrap">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Renewals</th>
+                    <th>Expires</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSubscribers.map(s => (
+                    <tr key={s.user_id}>
+                      <td>{s.email}</td>
+                      <td>{s.status}</td>
+                      <td>{s.renewal_count ?? 0}</td>
+                      <td>{s.expires_at ? new Date(s.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</td>
+                      <td><ExpiryBadge expiresAt={s.expires_at} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

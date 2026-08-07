@@ -34,6 +34,13 @@
 // "recurring." This finally makes the revenue-caveat above partially
 // answerable — we can now tell *who* has renewed, even though total
 // recurring revenue collected per month still isn't (see caveat).
+//
+// ADDED: allSubscribers — every Spaces subscriber (any status), with
+// resolved email and expires_at, sorted soonest-to-expire first. Lets
+// admin see at a glance who's about to lapse rather than only who's
+// already recurring. Scoped to Spaces subscriptions only for now —
+// book_quiz_subscriptions can be folded in the same way later if
+// that visibility is wanted too.
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -134,6 +141,7 @@ serve(async (req) => {
     { data: allSubscriptions, error: subsError },
     { count: recurringSubsCount },
     { data: recurringSubsRows, error: recurringSubsError },
+    { data: allSubsWithExpiry, error: allSubsExpiryError },
   ] = await Promise.all([
     admin.from('quiz_history').select('*', { count: 'exact', head: true }),
     admin.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
@@ -149,6 +157,14 @@ serve(async (req) => {
       .select('user_id, renewal_count, status, started_at, expires_at')
       .gte('renewal_count', 1)
       .order('renewal_count', { ascending: false }),
+    // Every Spaces subscriber, any status, for the admin-facing
+    // "when does each subscription end" table. Soonest-to-expire
+    // first, so lapsing subscribers surface at the top rather than
+    // requiring a scroll to find.
+    admin
+      .from('subscriptions')
+      .select('user_id, status, expires_at, renewal_count, started_at')
+      .order('expires_at', { ascending: true, nullsFirst: false }),
   ])
 
   if (subsError) {
@@ -156,6 +172,9 @@ serve(async (req) => {
   }
   if (recurringSubsError) {
     console.error('Failed to load recurring subscribers:', recurringSubsError)
+  }
+  if (allSubsExpiryError) {
+    console.error('Failed to load subscriber expiry list:', allSubsExpiryError)
   }
 
   const { data: hifdhActiveUsers, error: hifdhCountError } = await admin.rpc('admin_hifdh_active_user_count')
@@ -209,6 +228,15 @@ serve(async (req) => {
     expires_at: r.expires_at,
   }))
 
+  const allSubscribers = (allSubsWithExpiry || []).map(r => ({
+    user_id: r.user_id,
+    email: emailById.get(r.user_id) ?? '(unknown)',
+    status: r.status,
+    renewal_count: r.renewal_count,
+    started_at: r.started_at,
+    expires_at: r.expires_at,
+  }))
+
   return json({
     totalUsers: allUsers.length,
     newLast7,
@@ -222,5 +250,6 @@ serve(async (req) => {
     revenueGrowth,
     recurringSubscriptions: recurringSubsCount ?? 0,
     recurringSubscribers,
+    allSubscribers,
   })
 })

@@ -23,12 +23,12 @@
 23-->
 24<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 25    package="com.usesual.app"
-26    android:versionCode="4"
-27    android:versionName="1.0.1" >
+26    android:versionCode="6"
+27    android:versionName="1.0.0" >
 28
 29    <uses-sdk
 30        android:minSdkVersion="21"
-31        android:targetSdkVersion="36" />
+31        android:targetSdkVersion="35" />
 32
 33    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 33-->C:\Users\owner\sual\app\src\main\AndroidManifest.xml:26:9-80
