@@ -1924,3 +1924,175 @@
   border-color: rgba(46,125,50,0.4);
   color: #7fc98a;
 }
+
+/* ═══════════════════════════════════════════════
+   WhatsApp-style chat bubbles — used for the
+   Accountability DM thread, Circle group chat, and
+   Majlis reply threads. Replaces the old plain-card
+   message list for those three spots only; Community
+   post replies and Exam Prep review stay card-style
+   since those are genuinely threaded discussion, not
+   a live back-and-forth chat.
+   ═══════════════════════════════════════════════ */
+
+.spaces-chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 4px 2px;
+}
+
+.spaces-chat-row {
+  display: flex;
+}
+
+.spaces-chat-row.own { justify-content: flex-end; }
+.spaces-chat-row.other { justify-content: flex-start; }
+
+.spaces-chat-bubble {
+  max-width: 76%;
+  padding: 9px 13px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.spaces-chat-bubble.own {
+  background: #094570;
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.spaces-chat-bubble.other {
+  background: #ffffff;
+  color: #0d1b2a;
+  border: 1px solid #dde8f2;
+  border-bottom-left-radius: 4px;
+}
+
+/* Small sender label — only shown on "other" bubbles in group/thread
+   contexts where the sender isn't implicitly known (Circles, Majlis).
+   Own bubbles never show it; the pair DM never shows it since there's
+   only one possible "other" sender. */
+.spaces-chat-bubble-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+  opacity: 0.85;
+}
+
+.spaces-chat-bubble.own .spaces-chat-bubble-label { color: rgba(255,255,255,0.75); }
+.spaces-chat-bubble.other .spaces-chat-bubble-label { color: #094570; }
+
+/* Admin replies in a Majlis thread get their own treatment — same
+   warm accent already used for "live now" / countdown chips
+   elsewhere in Spaces, so it reads as "official" without introducing
+   a new color. */
+.spaces-chat-bubble--admin {
+  background: #fdf3dd;
+  border: 1px solid #ecd9a8;
+  color: #7a5a13;
+}
+
+.spaces-chat-bubble--admin .spaces-chat-bubble-label { color: #7a5a13; }
+
+.spaces-chat-bubble-text {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.spaces-chat-bubble-time {
+  display: block;
+  font-size: 0.65rem;
+  margin-top: 3px;
+  opacity: 0.7;
+  text-align: right;
+}
+
+/* ── Pill-style chat input bar ── */
+.spaces-chat-input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 24px;
+  margin-bottom: 40px;
+}
+
+.spaces-chat-textarea {
+  flex: 1;
+  resize: none;
+  border: none;
+  padding: 6px 8px;
+  font-size: 0.88rem;
+  font-family: var(--font-ui);
+  max-height: 100px;
+  outline: none;
+  background: transparent;
+  color: #0d1b2a;
+}
+
+.spaces-chat-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #094570;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.spaces-chat-send-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.spaces-chat-send-btn:disabled {
+  background: #c8d8e8;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .spaces-chat-bubble.own {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .spaces-chat-bubble.other {
+  background: #0f1f2e;
+  color: #c8e0f5;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-chat-bubble--admin {
+  background: rgba(200,149,47,0.14);
+  border-color: rgba(200,149,47,0.35);
+  color: #f0d089;
+}
+
+[data-theme="dark"] .spaces-chat-bubble--admin .spaces-chat-bubble-label {
+  color: #f0d089;
+}
+
+[data-theme="dark"] .spaces-chat-input-bar {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-chat-textarea {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .spaces-chat-send-btn {
+  background: #85CCFF;
+  color: #0a1825;
+}

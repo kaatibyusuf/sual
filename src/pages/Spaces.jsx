@@ -153,6 +153,17 @@ const ICONS = {
 
 const TabIcon = ({ name }) => <span className="spaces-tab-icon" aria-hidden="true">{ICONS[name]}</span>
 
+// Paper-plane send icon, used inline in the three WhatsApp-style chat
+// input bars (Accountability, Circles, Majlis replies) — kept as its
+// own small component rather than folded into ICONS/TabIcon since it
+// has no left margin and only ever sits inside a circular button.
+const SendIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="22" y1="2" x2="11" y2="13" />
+    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+  </svg>
+)
+
 const CATEGORIES = [
   { key: 'all',       label: 'All',       arabic: 'الكُلّ',      icon: 'globe',     color: '#094570' },
   { key: 'fiqh',      label: 'Fiqh',      arabic: 'الفِقْه',     icon: 'scale',     color: '#5DCAA5' },
@@ -245,6 +256,14 @@ function timeAgo(dateStr) {
   const days = Math.floor(hours / 24)
   if (days < 7) return `${days}d ago`
   return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+}
+
+// Stable identity for a chat-style message row, used both as the
+// React key and for Realtime dedupe (a locally-inserted message and
+// the Realtime echo of that same insert need to collapse into one
+// row rather than rendering twice).
+function msgKey(m) {
+  return m.id ?? `${m.user_id}-${m.created_at}`
 }
 
 function nextSession(schedule) {
@@ -1161,6 +1180,62 @@ export default function Spaces({ user }) {
     if (activeTab === 'examportal' && isPaid && weeklyPhase === 'select') fetchWeeklyTests()
   }, [weeklyTrack, activeTab, isPaid, weeklyPhase, fetchWeeklyTests])
 
+  // ── Realtime: Accountability DM thread ────────────────────────
+  // Fires while paired, regardless of which tab is open, so a
+  // message that arrives while the founder is elsewhere in Spaces is
+  // already in state by the time they open Accountability. Dedup by
+  // msgKey since submitPairMessage's own refetch will usually land
+  // before this Realtime echo does.
+  useEffect(() => {
+    if (!myPair?.pair_id) return
+    const channel = supabase
+      .channel(`accountability_messages:${myPair.pair_id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'accountability_messages', filter: `pair_id=eq.${myPair.pair_id}` },
+        (payload) => {
+          setPairMessages(prev => prev.some(m => msgKey(m) === msgKey(payload.new)) ? prev : [...prev, payload.new])
+        }
+      )
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [myPair?.pair_id])
+
+  // ── Realtime: Circle group chat ────────────────────────────────
+  useEffect(() => {
+    if (!myCircle) return
+    const channel = supabase
+      .channel(`circle_messages:${myCircle}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'circle_messages', filter: `circle_id=eq.${myCircle}` },
+        (payload) => {
+          setCircleMessages(prev => prev.some(m => msgKey(m) === msgKey(payload.new)) ? prev : [...prev, payload.new])
+        }
+      )
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [myCircle])
+
+  // ── Realtime: Majlis reply thread ─────────────────────────────
+  // Scoped to the currently open post only — resubscribes whenever
+  // activeMajlisPost changes (including back to null, which just
+  // tears the subscription down).
+  useEffect(() => {
+    if (!activeMajlisPost?.id) return
+    const channel = supabase
+      .channel(`majlis_replies:${activeMajlisPost.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'majlis_replies', filter: `post_id=eq.${activeMajlisPost.id}` },
+        (payload) => {
+          setMajlisReplies(prev => prev.some(r => msgKey(r) === msgKey(payload.new)) ? prev : [...prev, payload.new])
+        }
+      )
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [activeMajlisPost?.id])
+
   useEffect(() => {
     if (subLoading || !isPaid) return
     const postId = searchParams.get('post')
@@ -1366,43 +1441,44 @@ export default function Spaces({ user }) {
             </button>
           </div>
 
-          <div className="spaces-circle-messages">
+          <div className="spaces-chat-thread">
             {pairMessages.length === 0 ? (
               <div className="spaces-no-replies">No messages yet. Say salaam and set your first check-in.</div>
-            ) : pairMessages.map((m) => (
-              <div
-                key={m.id}
-                className="spaces-reply card"
-                style={m.user_id === user.id ? { borderLeft: '3px solid #094570' } : undefined}
-              >
-                <div className="spaces-reply-header">
-                  <div className="spaces-reply-avatar" style={{ background: '#e8f0f8' }}>
-                    <span style={{ color: '#094570' }}>{getInitials(m.user_id)}</span>
-                  </div>
-                  <div>
-                    <p className="spaces-reply-author">{m.user_id === user.id ? 'You' : 'Your Partner'}</p>
-                    <p className="spaces-reply-date">{timeAgo(m.created_at)}</p>
+            ) : pairMessages.map((m) => {
+              const isOwn = m.user_id === user.id
+              return (
+                <div key={msgKey(m)} className={`spaces-chat-row ${isOwn ? 'own' : 'other'}`}>
+                  <div className={`spaces-chat-bubble ${isOwn ? 'own' : 'other'}`}>
+                    <p className="spaces-chat-bubble-text">{m.body}</p>
+                    <span className="spaces-chat-bubble-time">{timeAgo(m.created_at)}</span>
                   </div>
                 </div>
-                <p className="spaces-reply-body">{m.body}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
-          <div className="spaces-reply-input card">
+          <div className="spaces-chat-input-bar">
             <textarea
-              className="spaces-textarea"
+              className="spaces-chat-textarea"
               placeholder="Message your accountability partner..."
               value={pairMsgInput}
               onChange={e => setPairMsgInput(e.target.value)}
-              rows={3}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  if (pairMsgInput.trim() && !postingPairMsg) submitPairMessage()
+                }
+              }}
+              rows={1}
             />
             <button
-              className="spaces-submit-btn"
+              className="spaces-chat-send-btn"
               onClick={submitPairMessage}
               disabled={postingPairMsg || !pairMsgInput.trim()}
+              aria-label="Send message"
+              type="button"
             >
-              {postingPairMsg ? 'Sending...' : 'Send →'}
+              <SendIcon />
             </button>
           </div>
         </>
@@ -1662,39 +1738,45 @@ export default function Spaces({ user }) {
             </button>
           </div>
 
-          <div className="spaces-circle-messages">
+          <div className="spaces-chat-thread">
             {circleMessages.length === 0 ? (
               <div className="spaces-no-replies">No messages yet. Start the conversation.</div>
-            ) : circleMessages.map((m, i) => (
-              <div key={i} className="spaces-reply card">
-                <div className="spaces-reply-header">
-                  <div className="spaces-reply-avatar" style={{ background: '#e8f0f8' }}>
-                    <span style={{ color: '#094570' }}>{getInitials(m.user_id)}</span>
-                  </div>
-                  <div>
-                    <p className="spaces-reply-author">Member</p>
-                    <p className="spaces-reply-date">{timeAgo(m.created_at)}</p>
+            ) : circleMessages.map((m) => {
+              const isOwn = m.user_id === user.id
+              return (
+                <div key={msgKey(m)} className={`spaces-chat-row ${isOwn ? 'own' : 'other'}`}>
+                  <div className={`spaces-chat-bubble ${isOwn ? 'own' : 'other'}`}>
+                    {!isOwn && <span className="spaces-chat-bubble-label">Member</span>}
+                    <p className="spaces-chat-bubble-text">{m.body}</p>
+                    <span className="spaces-chat-bubble-time">{timeAgo(m.created_at)}</span>
                   </div>
                 </div>
-                <p className="spaces-reply-body">{m.body}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
-          <div className="spaces-reply-input card">
+          <div className="spaces-chat-input-bar">
             <textarea
-              className="spaces-textarea"
+              className="spaces-chat-textarea"
               placeholder="Share something with your circle..."
               value={circleMsgInput}
               onChange={e => setCircleMsgInput(e.target.value)}
-              rows={3}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  if (circleMsgInput.trim() && !postingCircleMsg) submitCircleMessage()
+                }
+              }}
+              rows={1}
             />
             <button
-              className="spaces-submit-btn"
+              className="spaces-chat-send-btn"
               onClick={submitCircleMessage}
               disabled={postingCircleMsg || !circleMsgInput.trim()}
+              aria-label="Send message"
+              type="button"
             >
-              {postingCircleMsg ? 'Posting...' : 'Post →'}
+              <SendIcon />
             </button>
           </div>
         </>
@@ -1899,26 +1981,51 @@ export default function Spaces({ user }) {
           <p style={{ whiteSpace: 'pre-wrap', marginBottom: 24 }}>{activeMajlisPost.body}</p>
 
           <h4 style={{ fontSize: '0.95rem', marginBottom: 12 }}>Questions &amp; Discussion ({majlisReplies.length})</h4>
-          {majlisReplies.length === 0 ? (
-            <p style={{ color: '#8a9ab0', fontSize: '0.85rem', marginBottom: 16 }}>No questions yet. Ask below if anything's unclear.</p>
-          ) : majlisReplies.map(r => (
-            <div key={r.id} className={`spaces-reply card ${r.is_admin_reply ? 'spaces-reply--scholar' : ''}`} style={{ marginBottom: 10 }}>
-              {r.is_admin_reply && <span className="spaces-scholar-badge">Admin</span>}
-              <p className="spaces-reply-body" style={{ whiteSpace: 'pre-wrap' }}>{r.body}</p>
-            </div>
-          ))}
 
-          <textarea
-            className="spaces-textarea"
-            placeholder="Ask a question about this announcement..."
-            value={newMajlisReply}
-            onChange={e => setNewMajlisReply(e.target.value)}
-            rows={3}
-            style={{ marginTop: 16 }}
-          />
-          <button className="spaces-submit-btn" onClick={submitMajlisReply} disabled={postingMajlisReply || !newMajlisReply.trim()}>
-            {postingMajlisReply ? 'Posting...' : 'Ask →'}
-          </button>
+          <div className="spaces-chat-thread">
+            {majlisReplies.length === 0 ? (
+              <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No questions yet. Ask below if anything's unclear.</p>
+            ) : majlisReplies.map(r => {
+              const isOwn = r.user_id === user.id
+              const bubbleClass = r.is_admin_reply
+                ? 'spaces-chat-bubble spaces-chat-bubble--admin'
+                : `spaces-chat-bubble ${isOwn ? 'own' : 'other'}`
+              return (
+                <div key={msgKey(r)} className={`spaces-chat-row ${isOwn && !r.is_admin_reply ? 'own' : 'other'}`}>
+                  <div className={bubbleClass}>
+                    <span className="spaces-chat-bubble-label">{r.is_admin_reply ? 'Admin' : isOwn ? 'You' : 'Member'}</span>
+                    <p className="spaces-chat-bubble-text" style={{ whiteSpace: 'pre-wrap' }}>{r.body}</p>
+                    <span className="spaces-chat-bubble-time">{timeAgo(r.created_at)}</span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="spaces-chat-input-bar" style={{ marginTop: 16 }}>
+            <textarea
+              className="spaces-chat-textarea"
+              placeholder="Ask a question about this announcement..."
+              value={newMajlisReply}
+              onChange={e => setNewMajlisReply(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  if (newMajlisReply.trim() && !postingMajlisReply) submitMajlisReply()
+                }
+              }}
+              rows={1}
+            />
+            <button
+              className="spaces-chat-send-btn"
+              onClick={submitMajlisReply}
+              disabled={postingMajlisReply || !newMajlisReply.trim()}
+              aria-label="Ask a question"
+              type="button"
+            >
+              <SendIcon />
+            </button>
+          </div>
         </div>
       )
     }
