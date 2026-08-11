@@ -2457,9 +2457,6 @@ export default function Spaces({ user }) {
           </div>
         )}
 
-        <p className="spaces-schedule-label">This week in Spaces</p>
-        {renderSchedule()}
-
         <div className="spaces-paywall">
           <div className="spaces-paywall-icon"><TabIcon name="majlis" /></div>
           <h2 className="spaces-paywall-title">Members Only</h2>
@@ -3089,7 +3086,6 @@ export default function Spaces({ user }) {
 
       {activeTab === 'community' && (
         <>
-          {renderSchedule()}
 
           {featured && (
             <button className="spaces-featured card" onClick={() => openPostById(featured.post.id)}>
