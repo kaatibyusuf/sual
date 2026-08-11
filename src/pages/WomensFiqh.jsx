@@ -54,6 +54,22 @@ const ICONS = {
       <polyline points="20 6 9 17 4 12" />
     </svg>
   ),
+  chevronLeft: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  ),
+  chevronRight: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  ),
+  close: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  ),
 }
 
 const Icon = ({ name }) => <span className="wf-icon" aria-hidden="true">{ICONS[name]}</span>
@@ -75,6 +91,11 @@ const INTENSITIES = [
   { key: 'heavy', label: 'Heavy' },
 ]
 
+const INTENSITY_LABEL = Object.fromEntries(INTENSITIES.map(i => [i.key, i.label]))
+
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December']
+const WEEKDAY_LABELS = ['S','M','T','W','T','F','S']
+
 function todayStr() {
   return new Date().toISOString().slice(0, 10)
 }
@@ -89,6 +110,10 @@ function formatDate(d) {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+function dateKey(y, m, d) {
+  return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+}
+
 export default function WomensFiqh({ user }) {
   const [tab, setTab] = useState('learn')
   const [activeTopic, setActiveTopic] = useState(null)
@@ -101,6 +126,16 @@ export default function WomensFiqh({ user }) {
   const [startingPostpartum, setStartingPostpartum] = useState(false)
   const [logging, setLogging] = useState(false)
   const [stopping, setStopping] = useState(false)
+  const [noteInput, setNoteInput] = useState('')
+
+  // ── Calendar state ───────────────────────────────────────────
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const now = new Date()
+    return { year: now.getFullYear(), month: now.getMonth() }
+  })
+  const [selectedDay, setSelectedDay] = useState(null) // 'YYYY-MM-DD' | null
+  const [dayLogging, setDayLogging] = useState(false)
+  const [dayNoteInput, setDayNoteInput] = useState('')
 
   const fetchCycles = useCallback(async () => {
     if (!user) return
@@ -128,10 +163,33 @@ export default function WomensFiqh({ user }) {
     if (tab === 'tracker') fetchCycles()
   }, [tab, fetchCycles])
 
+  const allCycles = activeCycle ? [activeCycle, ...pastCycles] : pastCycles
+
   const maxDaysFor = (isPostpartum) => {
     const topic = isPostpartum ? 'nifas' : 'hayd'
     return WOMENS_FIQH_CONTENT[topic]?.max_duration_days || FALLBACK_MAX_DAYS[topic]
   }
+
+  // Flatten every cycle's logged days into a lookup by date, each
+  // tagged with which ruling applied on that specific day (day count
+  // within its cycle vs. that cycle's max duration) — this is what
+  // colors each calendar cell and feeds the day-detail sheet.
+  const dayLookup = (() => {
+    const map = {}
+    allCycles.forEach(cycle => {
+      const maxDays = maxDaysFor(cycle.is_postpartum)
+      ;(cycle.days || []).forEach(d => {
+        const n = dayCount(cycle.start_date, d.date)
+        map[d.date] = {
+          intensity: d.intensity,
+          notes: d.notes || '',
+          status: n > maxDays ? 'istihadah' : (cycle.is_postpartum ? 'nifas' : 'hayd'),
+          cycleId: cycle.id,
+        }
+      })
+    })
+    return map
+  })()
 
   const currentStatus = (() => {
     if (!activeCycle) return null
@@ -153,11 +211,12 @@ export default function WomensFiqh({ user }) {
     setTrackerError(null)
     try {
       const today = todayStr()
+      const note = noteInput.trim()
       if (activeCycle) {
         const alreadyLogged = (activeCycle.days || []).some(d => d.date === today)
         const newDays = alreadyLogged
-          ? (activeCycle.days || []).map(d => d.date === today ? { ...d, intensity } : d)
-          : [...(activeCycle.days || []), { date: today, intensity }]
+          ? (activeCycle.days || []).map(d => d.date === today ? { ...d, intensity, notes: note } : d)
+          : [...(activeCycle.days || []), { date: today, intensity, notes: note }]
         const { error } = await supabase
           .from('womens_fiqh_cycles')
           .update({ days: newDays, updated_at: new Date().toISOString() })
@@ -168,10 +227,11 @@ export default function WomensFiqh({ user }) {
           user_id: user.id,
           start_date: today,
           is_postpartum: startingPostpartum,
-          days: [{ date: today, intensity }],
+          days: [{ date: today, intensity, notes: note }],
         })
         if (error) throw error
       }
+      setNoteInput('')
       fetchCycles()
     } catch (err) {
       setTrackerError(err.message)
@@ -199,6 +259,46 @@ export default function WomensFiqh({ user }) {
   }
 
   const todayAlreadyLogged = activeCycle && (activeCycle.days || []).some(d => d.date === todayStr())
+
+  // Log or edit a specific past date within the currently active
+  // cycle (backfilling). Only offered for dates that fall on or
+  // after the active cycle's start date — logging a day before the
+  // cycle even started, or when there's no active cycle at all, has
+  // no cycle to attach the entry to, so the day-detail sheet won't
+  // offer this action in those cases.
+  const logSpecificDay = async (dateStr, intensity) => {
+    if (!user || !activeCycle) return
+    setDayLogging(true)
+    setTrackerError(null)
+    try {
+      const note = dayNoteInput.trim()
+      const alreadyLogged = (activeCycle.days || []).some(d => d.date === dateStr)
+      const newDays = alreadyLogged
+        ? (activeCycle.days || []).map(d => d.date === dateStr ? { ...d, intensity, notes: note } : d)
+        : [...(activeCycle.days || []), { date: dateStr, intensity, notes: note }]
+      const { error } = await supabase
+        .from('womens_fiqh_cycles')
+        .update({ days: newDays, updated_at: new Date().toISOString() })
+        .eq('id', activeCycle.id)
+      if (error) throw error
+      setDayNoteInput('')
+      await fetchCycles()
+    } catch (err) {
+      setTrackerError(err.message)
+    } finally {
+      setDayLogging(false)
+    }
+  }
+
+  const openDay = (key) => {
+    setSelectedDay(key)
+    setDayNoteInput(dayLookup[key]?.notes || '')
+  }
+
+  const closeDaySheet = () => {
+    setSelectedDay(null)
+    setDayNoteInput('')
+  }
 
   // ── Learn tab render ─────────────────────────────────────────
   const openTopic = (key) => setActiveTopic(key)
@@ -283,6 +383,133 @@ export default function WomensFiqh({ user }) {
     )
   }
 
+  // ── Calendar render ──────────────────────────────────────────
+  const goToPrevMonth = () => {
+    setCalendarMonth(m => m.month === 0 ? { year: m.year - 1, month: 11 } : { year: m.year, month: m.month - 1 })
+  }
+  const goToNextMonth = () => {
+    setCalendarMonth(m => m.month === 11 ? { year: m.year + 1, month: 0 } : { year: m.year, month: m.month + 1 })
+  }
+
+  const renderCalendar = () => {
+    const { year, month } = calendarMonth
+    const firstOfMonth = new Date(year, month, 1)
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    const startWeekday = firstOfMonth.getDay() // 0 = Sunday
+    const today = todayStr()
+
+    const cells = []
+    for (let i = 0; i < startWeekday; i++) cells.push(null)
+    for (let d = 1; d <= daysInMonth; d++) cells.push(d)
+
+    return (
+      <div className="wf-calendar card">
+        <div className="wf-calendar-header">
+          <button className="wf-calendar-nav" onClick={goToPrevMonth} aria-label="Previous month">
+            <Icon name="chevronLeft" />
+          </button>
+          <p className="wf-calendar-month">{MONTH_NAMES[month]} {year}</p>
+          <button className="wf-calendar-nav" onClick={goToNextMonth} aria-label="Next month">
+            <Icon name="chevronRight" />
+          </button>
+        </div>
+
+        <div className="wf-calendar-weekdays">
+          {WEEKDAY_LABELS.map((w, i) => <span key={i}>{w}</span>)}
+        </div>
+
+        <div className="wf-calendar-grid">
+          {cells.map((d, i) => {
+            if (d === null) return <span key={`blank-${i}`} className="wf-calendar-cell wf-calendar-cell--blank" />
+            const key = dateKey(year, month, d)
+            const logged = dayLookup[key]
+            const isToday = key === today
+            let statusClass = ''
+            if (logged?.status === 'istihadah') statusClass = 'wf-calendar-cell--istihadah'
+            else if (logged) statusClass = 'wf-calendar-cell--logged'
+            return (
+              <button
+                key={key}
+                className={`wf-calendar-cell ${statusClass} ${isToday ? 'wf-calendar-cell--today' : ''}`}
+                onClick={() => openDay(key)}
+              >
+                {d}
+                {logged?.notes && <span className="wf-calendar-cell-note-dot" aria-hidden="true" />}
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="wf-calendar-legend">
+          <span className="wf-calendar-legend-item"><span className="wf-calendar-dot wf-calendar-dot--logged" /> Hayd / Nifas</span>
+          <span className="wf-calendar-legend-item"><span className="wf-calendar-dot wf-calendar-dot--istihadah" /> Istihadah</span>
+          <span className="wf-calendar-legend-item"><span className="wf-calendar-cell-note-dot wf-calendar-cell-note-dot--static" /> Has a note</span>
+        </div>
+      </div>
+    )
+  }
+
+  const renderDaySheet = () => {
+    if (!selectedDay) return null
+    const logged = dayLookup[selectedDay]
+    const canBackfill = !!activeCycle && selectedDay >= activeCycle.start_date && selectedDay <= todayStr()
+    return (
+      <div className="wf-day-sheet-overlay" onClick={closeDaySheet}>
+        <div className="wf-day-sheet card" onClick={e => e.stopPropagation()}>
+          <div className="wf-day-sheet-header">
+            <p className="wf-day-sheet-date">{formatDate(selectedDay)}</p>
+            <button className="wf-day-sheet-close" onClick={closeDaySheet} aria-label="Close">
+              <Icon name="close" />
+            </button>
+          </div>
+
+          {logged ? (
+            <>
+              <p className="wf-day-sheet-status">
+                Logged as <strong>{logged.status === 'istihadah' ? 'Istihadah' : logged.status === 'nifas' ? 'Nifas' : 'Hayd'}</strong>
+                {logged.intensity ? ` · ${INTENSITY_LABEL[logged.intensity] || logged.intensity}` : ''}
+              </p>
+              {logged.notes && <p className="wf-day-sheet-note-text">"{logged.notes}"</p>}
+            </>
+          ) : (
+            <p className="wf-day-sheet-status wf-day-sheet-status--empty">Nothing logged for this day.</p>
+          )}
+
+          {canBackfill ? (
+            <>
+              <p className="wf-log-label" style={{ marginTop: 14 }}>{logged ? 'Update this day' : 'Log this day'}</p>
+              <textarea
+                className="wf-note-input"
+                placeholder="Notes (optional) — anything you noticed..."
+                value={dayNoteInput}
+                onChange={e => setDayNoteInput(e.target.value)}
+                rows={2}
+              />
+              <div className="wf-intensity-row">
+                {INTENSITIES.map(i => (
+                  <button
+                    key={i.key}
+                    className="wf-intensity-btn"
+                    disabled={dayLogging}
+                    onClick={async () => { await logSpecificDay(selectedDay, i.key); closeDaySheet() }}
+                  >
+                    {i.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="wf-day-sheet-note">
+              {activeCycle
+                ? 'Only days within your current, ongoing cycle can be logged or edited here.'
+                : 'Start tracking today to begin logging days.'}
+            </p>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   // ── Tracker tab render ───────────────────────────────────────
   const renderTracker = () => (
     <>
@@ -318,6 +545,13 @@ export default function WomensFiqh({ user }) {
             ) : (
               <>
                 <p className="wf-log-label">Log today's intensity</p>
+                <textarea
+                  className="wf-note-input"
+                  placeholder="Notes for today (optional) — anything you noticed..."
+                  value={noteInput}
+                  onChange={e => setNoteInput(e.target.value)}
+                  rows={2}
+                />
                 <div className="wf-intensity-row">
                   {INTENSITIES.map(i => (
                     <button key={i.key} className="wf-intensity-btn" disabled={logging} onClick={() => startOrLogToday(i.key)}>
@@ -339,7 +573,15 @@ export default function WomensFiqh({ user }) {
             <input type="checkbox" checked={startingPostpartum} onChange={e => setStartingPostpartum(e.target.checked)} />
             This bleeding follows childbirth (nifas)
           </label>
-          <div className="wf-intensity-row" style={{ marginTop: 12 }}>
+          <textarea
+            className="wf-note-input"
+            placeholder="Notes for today (optional) — anything you noticed..."
+            value={noteInput}
+            onChange={e => setNoteInput(e.target.value)}
+            rows={2}
+            style={{ marginTop: 12 }}
+          />
+          <div className="wf-intensity-row">
             {INTENSITIES.map(i => (
               <button key={i.key} className="wf-intensity-btn" disabled={logging} onClick={() => startOrLogToday(i.key)}>
                 {i.label}
@@ -348,6 +590,8 @@ export default function WomensFiqh({ user }) {
           </div>
         </div>
       )}
+
+      {renderCalendar()}
 
       {pastCycles.length > 0 && (
         <div className="wf-history">
@@ -365,6 +609,8 @@ export default function WomensFiqh({ user }) {
           })}
         </div>
       )}
+
+      {renderDaySheet()}
     </>
   )
 

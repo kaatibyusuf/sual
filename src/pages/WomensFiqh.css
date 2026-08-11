@@ -516,3 +516,292 @@
 [data-theme="dark"] .wf-history-label { color: #7f97ae; }
 [data-theme="dark"] .wf-history-item { background: #0a1825; }
 [data-theme="dark"] .wf-history-badge { background: rgba(133,204,255,0.1); color: #85CCFF; }
+
+/* ── Calendar ── */
+.wf-calendar {
+  padding: 18px 16px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.wf-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.wf-calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid #c8d8e8;
+  background: #f5f8fb;
+  color: #094570;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wf-calendar-nav:hover { border-color: #094570; background: #e8f0f8; }
+.wf-calendar-nav .wf-icon { width: 16px; height: 16px; }
+
+.wf-calendar-month {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #094570;
+}
+
+.wf-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+}
+
+.wf-calendar-weekdays span {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8a9ab0;
+}
+
+.wf-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.wf-calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: none;
+  background: #f5f8fb;
+  color: #2a3a4a;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wf-calendar-cell:hover { background: #e8f0f8; }
+
+.wf-calendar-cell--blank {
+  background: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+
+.wf-calendar-cell--logged {
+  background: #f9dde0;
+  color: #a02040;
+}
+
+.wf-calendar-cell--logged:hover { background: #f4c9cf; }
+
+.wf-calendar-cell--istihadah {
+  background: #fde3cc;
+  color: #b85c00;
+}
+
+.wf-calendar-cell--istihadah:hover { background: #fbd3ac; }
+
+.wf-calendar-cell--today {
+  box-shadow: inset 0 0 0 2px #094570;
+}
+
+.wf-calendar-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.wf-calendar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #6a8090;
+}
+
+.wf-calendar-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.wf-calendar-dot--logged { background: #a02040; }
+.wf-calendar-dot--istihadah { background: #b85c00; }
+
+/* ── Day detail sheet ── */
+.wf-day-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 27, 42, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+}
+
+@media (min-width: 640px) {
+  .wf-day-sheet-overlay { align-items: center; }
+}
+
+.wf-day-sheet {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+  background: #ffffff !important;
+  border-radius: 18px 18px 0 0;
+  border: 1.5px solid #c8d8e8;
+}
+
+@media (min-width: 640px) {
+  .wf-day-sheet { border-radius: 18px; }
+}
+
+.wf-day-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.wf-day-sheet-date {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #094570;
+}
+
+.wf-day-sheet-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f8fb;
+  color: #6a8090;
+  cursor: pointer;
+}
+
+.wf-day-sheet-close .wf-icon { width: 14px; height: 14px; }
+
+.wf-day-sheet-status {
+  font-size: 0.88rem;
+  color: #2a3a4a;
+}
+
+.wf-day-sheet-status--empty { color: #8a9ab0; }
+
+.wf-day-sheet-note {
+  font-size: 0.8rem;
+  color: #8a9ab0;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+/* ── Dark mode: calendar + day sheet ── */
+[data-theme="dark"] .wf-calendar {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .wf-calendar-month { color: #85CCFF; }
+[data-theme="dark"] .wf-calendar-weekdays span { color: #7f97ae; }
+
+[data-theme="dark"] .wf-calendar-nav {
+  background: #0a1825;
+  border-color: #1e3448;
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .wf-calendar-cell {
+  background: #0a1825;
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .wf-calendar-cell:hover { background: #12283b; }
+
+[data-theme="dark"] .wf-calendar-cell--logged {
+  background: rgba(160, 32, 64, 0.28);
+  color: #ff9bb0;
+}
+
+[data-theme="dark"] .wf-calendar-cell--istihadah {
+  background: rgba(184, 92, 0, 0.28);
+  color: #ffb066;
+}
+
+[data-theme="dark"] .wf-calendar-cell--today {
+  box-shadow: inset 0 0 0 2px #85CCFF;
+}
+
+[data-theme="dark"] .wf-calendar-legend-item { color: #7f97ae; }
+
+[data-theme="dark"] .wf-day-sheet {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .wf-day-sheet-date { color: #85CCFF; }
+[data-theme="dark"] .wf-day-sheet-status { color: #a8c0d8; }
+[data-theme="dark"] .wf-day-sheet-status--empty,
+[data-theme="dark"] .wf-day-sheet-note { color: #7f97ae; }
+
+[data-theme="dark"] .wf-day-sheet-close {
+  background: #0a1825;
+  color: #7f97ae;
+}
+
+/* ── Note input ── */
+.wf-note-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 10px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: #0d1b2a;
+  background: #ffffff;
+  outline: none;
+  resize: vertical;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+
+.wf-note-input:focus {
+  border-color: #094570;
+  box-shadow: 0 0 0 3px rgba(9,69,112,0.1);
+}
+
+.wf-day-sheet-note-text {
+  font-size: 0.85rem;
+  color: #4a6080;
+  font-style: italic;
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+[data-theme="dark"] .wf-note-input {
+  background: #0a1825;
+  border-color: #1e3448;
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .wf-note-input:focus {
+  border-color: #85CCFF;
+  box-shadow: 0 0 0 3px rgba(133,204,255,0.12);
+}
+
+[data-theme="dark"] .wf-day-sheet-note-text { color: #a8c0d8; }
