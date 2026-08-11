@@ -85,6 +85,11 @@ const ICONS = {
       <line x1="16" y1="21" x2="16" y2="15" />
     </svg>
   ),
+  womensFiqh: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2.5c3.5 5 7 9 7 13a7 7 0 0 1-14 0c0-4 3.5-8 7-13z" />
+    </svg>
+  ),
   spaces: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="9" cy="9" r="5" />
@@ -97,32 +102,11 @@ const ICONS = {
       <line x1="12" y1="18.5" x2="12" y2="21" />
     </svg>
   ),
-  examPrep: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" />
-      <path d="M14 3v4h4" />
-      <path d="M9 13.5l2 2 4-4.5" />
-    </svg>
-  ),
-  bookQuiz: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 6.5c-1.5-1.2-3.6-1.7-6-1.7v13.5c2.4 0 4.5.5 6 1.7 1.5-1.2 3.6-1.7 6-1.7V4.8c-2.4 0-4.5.5-6 1.7z" />
-      <path d="M12 6.5v13.5" />
-      <path d="M9.3 9.2a1.4 1.4 0 0 1 1.4-.9c.8 0 1.4.5 1.4 1.2 0 .9-1.2 1-1.2 2" />
-      <circle cx="10.6" cy="14.1" r="0.15" fill="currentColor" stroke="none" />
-    </svg>
-  ),
   journey: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 20c3-1 3.5-3 5-6s2.5-8 5-8 2 5 4.5 5 3-1.5 3.5-3" />
       <circle cx="4" cy="20" r="1.4" fill="currentColor" stroke="none" />
       <circle cx="19" cy="8" r="1.4" fill="currentColor" stroke="none" />
-    </svg>
-  ),
-  lms: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 14l9-9-9-9-9 9 9 9z" />
-      <path d="M12 14l6.16-6.16a2 2 0 0 0-2.828-2.828l-8.837 8.837L3.5 14.5M12 14l6.16-6.16a2 2 0 0 0-2.828-2.828l-8.837 8.837L3.5 14.5" />
     </svg>
   ),
 }
@@ -139,17 +123,15 @@ const PRIMARY_ITEMS = [
 const MORE_ITEMS = [
   { to: '/disciplines', icon: 'disciplines', label: 'Disciplines' },
   { to: '/flashcards', icon: 'flashcards', label: 'Flashcards' },
-  { to: '/exam-prep', icon: 'examPrep', label: 'Exam Prep' },
-  { to: '/book-quiz', icon: 'bookQuiz', label: 'Book Quiz' },
   { to: '/stories', icon: 'stories', label: 'Stories' },
   { to: '/duas', icon: 'duas', label: 'Duas' },
   { to: '/calendar', icon: 'calendar', label: 'Calendar' },
   { to: '/tajweed', icon: 'tajweed', label: 'Tajweed' },
   { to: '/prayer-times', icon: 'prayerTimes', label: 'Prayer Times' },
+  { to: '/womens-fiqh', icon: 'womensFiqh', label: "Women's Fiqh" },
   { to: '/spaces', icon: 'spaces', label: 'Spaces' },
   { to: '/hifdh', icon: 'hifdh', label: 'Hifdh' },
   { to: '/journey', icon: 'journey', label: 'Journey' },
-  { to: '/lms', icon: 'lms', label: 'My Courses' },
 ]
 
 export default function BottomNav() {

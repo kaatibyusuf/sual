@@ -1,16 +1,13 @@
+import { HADEETH_42 } from '../data/hadeeth42.js'
+import { UMDAT_AL_AHKAM, UMDAT_AL_AHKAM_CHAPTERS } from '../data/umdatulAhkam.js'
+import { SAHIH_BUKHARI, SAHIH_BUKHARI_CHAPTERS } from '../data/sahihBukhari.js'
 import { BadgeStrip } from '../components/Badges.jsx'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import './Spaces.css'
 
 // ── Line-art icons, matching Sidebar's icon style ────────────────
-// Used for the main tab bar and schedule cards — the two spots where
-// emoji were sitting right alongside the sidebar's clean stroke icons
-// and looked visually inconsistent. Extended below to cover the rest
-// of the functional/UI emoji scattered through this file, including
-// the category pills (which were rendering as broken monochrome
-// fallback glyphs on systems without a color-emoji font).
 const ICONS = {
   chat: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -153,10 +150,6 @@ const ICONS = {
 
 const TabIcon = ({ name }) => <span className="spaces-tab-icon" aria-hidden="true">{ICONS[name]}</span>
 
-// Paper-plane send icon, used inline in the three WhatsApp-style chat
-// input bars (Accountability, Circles, Majlis replies) — kept as its
-// own small component rather than folded into ICONS/TabIcon since it
-// has no left margin and only ever sits inside a circular button.
 const SendIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="22" y1="2" x2="11" y2="13" />
@@ -212,36 +205,24 @@ const CLASSES = [
   },
   {
     id: 'hadeeth', title: 'Hadeeth Class', arabicTitle: 'فَصْلُ الحَدِيث', icon: 'hadeeth',
-    description: 'A structured Hadeeth memorization and study programme — from the Forty of An-Nawawi to the great collections of the Sunnah.',
+    description: 'A structured Hadeeth study programme — the 42 Hadith of An-Nawawi, Umdat al-Ahkam, and Sahih al-Bukhari, each hadith with a 20-question test immediately after it.',
     color: '#7b3f00',
     levels: [
       { key: 'beginner', label: 'Beginner', arabic: 'مُبْتَدِئ', color: '#2e7d32', icon: 'chat',
         title: "Al-Arba'oon An-Nawawiyyah", arabicTitle: 'الأَرْبَعُونَ النَّوَوِيَّة',
-        description: 'Complete memorization and study of the Forty Hadith of Imam An-Nawawi — the foundational text of Islamic learning for over seven centuries. Every hadith is memorized in Arabic with its chain, studied for its meanings, and applied to daily life.',
-        curriculum: ['Memorization of all 42 hadith with Arabic text and sanad', "Study of Imam An-Nawawi's commentary on each hadith", 'Understanding the fiqh and aqeedah derived from each hadith', 'Weekly recitation test — 2 hadith per week minimum', 'Final examination — recite all 42 from memory'],
-        outcome: 'Memorize all 42 hadith of An-Nawawi with their Arabic text, understand their meanings and scholarly commentary, and extract basic Islamic rulings from them.', duration: '6 months', commitment: '3 hours per week',
-        hadiths: [
-          { num: 1,  text: 'إِنَّمَا الأَعْمَالُ بِالنِّيَّات', translation: 'Actions are by intentions' },
-          { num: 2,  text: 'الإِسْلَامُ أَنْ تَشْهَدَ أَنْ لَا إِلَهَ إِلَّا اللَّه', translation: 'Islam is that you testify there is no god but Allah' },
-          { num: 3,  text: 'بُنِيَ الإِسْلَامُ عَلَى خَمْس', translation: 'Islam was built on five' },
-          { num: 4,  text: 'إِنَّ أَحَدَكُمْ يُجْمَعُ خَلْقُهُ فِي بَطْنِ أُمِّه', translation: "The creation of each of you is gathered in his mother's womb" },
-          { num: 5,  text: 'مَنْ أَحْدَثَ فِي أَمْرِنَا هَذَا مَا لَيْسَ مِنْه', translation: 'Whoever introduces into this affair of ours that which is not of it' },
-          { num: 6,  text: 'الحَلَالُ بَيِّنٌ وَالحَرَامُ بَيِّن', translation: 'The halal is clear and the haram is clear' },
-          { num: 7,  text: 'الدِّينُ النَّصِيحَة', translation: 'The religion is sincere advice' },
-          { num: 8,  text: 'أُمِرْتُ أَنْ أُقَاتِلَ النَّاسَ حَتَّى يَشْهَدُوا', translation: 'I was commanded to fight the people until they testify' },
-          { num: 9,  text: 'مَا نَهَيْتُكُمْ عَنْهُ فَاجْتَنِبُوه', translation: 'Whatever I have forbidden you, avoid it' },
-          { num: 10, text: 'إِنَّ اللَّهَ طَيِّبٌ لَا يَقْبَلُ إِلَّا طَيِّبًا', translation: 'Allah is pure and accepts only what is pure' },
-        ] },
+        description: 'Complete study of the 42 Hadith of Imam An-Nawawi — the foundational text of Islamic learning for over seven centuries. Every hadith is presented with its Arabic text, transliteration, translation, and the lessons drawn from it.',
+        curriculum: ['Study of all 42 hadith with Arabic text and narrator', "Transliteration and translation for each hadith", 'Lessons and rulings extracted from each hadith', 'A 20-question test immediately after each hadith', 'Self-paced — work through the collection at your own pace'],
+        outcome: 'Understand all 42 hadith of An-Nawawi, their meanings, and the lessons and rulings scholars have drawn from them.', duration: 'Self-paced', commitment: 'At your own pace' },
       { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100', icon: 'scroll',
-        title: 'Bulugh Al-Maram and Umdat Al-Ahkam', arabicTitle: 'بُلُوغُ المَرَام وَعُمْدَةُ الأَحْكَام',
-        description: 'Memorization and study of the two greatest collections of legal hadith — Bulugh Al-Maram by Ibn Hajar Al-Asqalani and Umdatul-Ahkam by Ibn Qudamah. These books form the backbone of fiqh al-hadith study in traditional Islamic scholarship.',
-        curriculum: ['Umdatul-Ahkam — 414 hadith on acts of worship and transactions, memorization and study', 'Bulughul-Maram — systematic study of all chapters', 'Weekly memorization target — 5 hadith per week minimum', 'Monthly written examination on chapters covered'],
-        outcome: "Memorize core legal hadith from both texts, understand how scholars derive fiqh rulings from hadith, and read Ibn Hajar's Arabic commentary.", duration: '10 months', commitment: '6 hours per week' },
+        title: 'Umdat Al-Ahkam', arabicTitle: 'عُمْدَةُ الأَحْكَام',
+        description: 'Hadith on rulings drawn exclusively from Bukhari and Muslim, organized by fiqh chapter — the backbone of legal-hadith study in traditional Islamic scholarship.',
+        curriculum: ['Hadith organized by chapter — Purification, Prayer, Zakah, Fasting, Hajj, Transactions, and more', 'Each hadith presented with Arabic text, transliteration, translation, and lessons', 'A 20-question test immediately after each hadith', 'Self-paced — work through chapters at your own pace'],
+        outcome: 'Understand the core legal hadith of Umdat al-Ahkam and the rulings scholars derive from them.', duration: 'Self-paced', commitment: 'At your own pace' },
       { key: 'advanced', label: 'Advanced', arabic: 'مُتَقَدِّم', color: '#6a1b9a', icon: 'award',
-        title: 'Sahih Bukhari Memorization', arabicTitle: 'حِفْظُ صَحِيح البُخَارِي',
-        description: 'The pinnacle of hadith study — systematic memorization and deep study of Sahih Al-Bukhari, the most authentic book after the Quran. Students study with Fath Al-Bari, the greatest commentary on Al-Bukhari by Ibn Hajar Al-Asqalani.',
-        curriculum: ["Memorization of selected hadith from each chapter of Sahih Bukhari (Kitab Al-Iman through Kitab Al-Jami')", 'Study of Fath Al-Bari by Ibn Hajar Al-Asqalani — chapter by chapter', 'Hadith sciences (Mustalahul-Hadith) — understanding chains, narrators, and authentication', 'Independent research assignments on specific hadith and their commentaries'],
-        outcome: 'Memorize 200+ hadith from Sahih Al-Bukhari, read and understand hadith sciences at an advanced level.', duration: '18 months', commitment: '12 hours per week' },
+        title: 'Sahih Al-Bukhari', arabicTitle: 'صَحِيح البُخَارِي',
+        description: 'The most authentic hadith collection after the Qur\'an, organized by book and chapter. Each hadith presented with Arabic text, transliteration, translation, and lessons drawn from it.',
+        curriculum: ["Hadith organized by book and chapter, following the traditional structure of Sahih Al-Bukhari", 'Each hadith presented with Arabic text, transliteration, translation, and lessons', 'A 20-question test immediately after each hadith', 'Self-paced — work through chapters at your own pace'],
+        outcome: 'Understand the hadith of Sahih Al-Bukhari and the lessons and rulings scholars have drawn from them.', duration: 'Self-paced', commitment: 'At your own pace' },
     ],
   },
 ]
@@ -258,10 +239,6 @@ function timeAgo(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
 }
 
-// Stable identity for a chat-style message row, used both as the
-// React key and for Realtime dedupe (a locally-inserted message and
-// the Realtime echo of that same insert need to collapse into one
-// row rather than rendering twice).
 function msgKey(m) {
   return m.id ?? `${m.user_id}-${m.created_at}`
 }
@@ -315,9 +292,6 @@ function buildTafseerQuestions(recentEntries, distractorPool) {
   recentEntries.forEach(entry => {
     const others = distractorPool.filter(e => e.id !== entry.id)
 
-    // Surah/ayah identification — quotes a snippet of the translation
-    // so it's clear which day's verse is being asked about, now that
-    // a single test can span several different days' entries.
     if (others.length >= 3) {
       const wrongLabels = shuffleArr(others).slice(0, 3).map(e => `${e.surah_name} ${e.surah_num}:${e.ayah_num}`)
       raw.push({
@@ -327,7 +301,6 @@ function buildTafseerQuestions(recentEntries, distractorPool) {
       })
     }
 
-    // Lesson-based questions, one per lesson in this entry
     const allOtherLessons = others.flatMap(e => Array.isArray(e.lessons) ? e.lessons : [])
     const lessons = Array.isArray(entry.lessons) ? entry.lessons : []
     lessons.forEach(lesson => {
@@ -340,8 +313,6 @@ function buildTafseerQuestions(recentEntries, distractorPool) {
       })
     })
 
-    // Fallback fill-in-the-blank if this entry didn't yield enough
-    // lesson-based questions on its own
     const sentences = (entry.tafseer_body || '').split(/(?<=[.!?])\s+/).filter(s => tfWords(s).length >= 5)
     if (sentences.length > 0) {
       const sentence = sentences[Math.floor(Math.random() * sentences.length)]
@@ -364,9 +335,6 @@ function buildTafseerQuestions(recentEntries, distractorPool) {
     }
   })
 
-  // Shuffle across ALL days' candidate questions together, then cap
-  // at 20 — this is what makes it a genuine mixed review rather than
-  // just today's entry repeated in different phrasings.
   return shuffleArr(raw).slice(0, 20).map(q => {
     const options = shuffleArr(q.optionPool)
     return {
@@ -378,9 +346,116 @@ function buildTafseerQuestions(recentEntries, distractorPool) {
   })
 }
 
+function pickLengthMatchedDistractors(correctText, pool) {
+  const target = correctText.length
+  const candidates = [...new Set(pool)].filter(p => p && p !== correctText)
+  candidates.sort((a, b) => Math.abs(a.length - target) - Math.abs(b.length - target))
+  return candidates.slice(0, 3)
+}
+
+function buildHadithQuiz(entry, allEntries) {
+  if (!entry) return []
+  const others = (allEntries || []).filter(e => e.num !== entry.num)
+  const raw = []
+
+  const otherNarrators = others.map(e => e.narrator).filter(Boolean)
+  const narratorDistractors = pickLengthMatchedDistractors(entry.narrator, otherNarrators)
+  if (entry.narrator && narratorDistractors.length === 3) {
+    raw.push({
+      question: `Who narrated the hadith titled "${entry.title}"?`,
+      optionPool: [entry.narrator, ...narratorDistractors],
+      correctText: entry.narrator,
+    })
+  }
+
+  const otherTitles = others.map(e => e.title).filter(Boolean)
+  const titleDistractors = pickLengthMatchedDistractors(entry.title, otherTitles)
+  if (titleDistractors.length === 3) {
+    raw.push({
+      question: `What is the title of hadith number ${entry.num}?`,
+      optionPool: [entry.title, ...titleDistractors],
+      correctText: entry.title,
+    })
+  }
+
+  const lessons = Array.isArray(entry.lessons) ? entry.lessons : []
+  lessons.forEach(lesson => {
+    const distractors = pickLengthMatchedDistractors(entry.title, otherTitles)
+    if (distractors.length === 3) {
+      raw.push({
+        question: `Which hadith teaches the following lesson: "${lesson}"?`,
+        optionPool: [entry.title, ...distractors],
+        correctText: entry.title,
+      })
+    }
+  })
+
+  const allOtherLessons = others.flatMap(e => Array.isArray(e.lessons) ? e.lessons : [])
+  lessons.forEach(lesson => {
+    const distractors = pickLengthMatchedDistractors(lesson, allOtherLessons.filter(l => l !== lesson))
+    if (distractors.length === 3) {
+      raw.push({
+        question: `Which of these is a genuine lesson drawn from "${entry.title}"?`,
+        optionPool: [lesson, ...distractors],
+        correctText: lesson,
+      })
+    }
+  })
+
+  const sentences = (entry.translation || '').split(/(?<=[.!?])\s+/).filter(s => tfWords(s).length >= 6)
+  sentences.forEach(sentence => {
+    const words = tfWords(sentence)
+    const candidates = words.map((w, i) => ({ w, i })).filter(({ w }) => w.replace(/[.,!?;:"']/g, '').length >= 5)
+    candidates.forEach(({ w, i }) => {
+      const blanked = words.map((ww, ii) => (ii === i ? '______' : ww)).join(' ')
+      const otherWords = others.flatMap(e => tfWords(e.translation || '')).filter(ow => ow.length >= 5 && ow !== w)
+      const distractors = pickLengthMatchedDistractors(w, otherWords)
+      if (distractors.length === 3) {
+        raw.push({
+          question: `Which word completes this line from "${entry.title}"?`,
+          context: blanked,
+          optionPool: [w, ...distractors],
+          correctText: w,
+        })
+      }
+    })
+  })
+
+  const otherSources = others.map(e => e.source).filter(s => s && s !== entry.source)
+  const sourceDistractors = pickLengthMatchedDistractors(entry.source, otherSources)
+  if (entry.source && sourceDistractors.length === 3) {
+    raw.push({
+      question: `Which collection records the hadith "${entry.title}"?`,
+      optionPool: [entry.source, ...sourceDistractors],
+      correctText: entry.source,
+    })
+  }
+
+  const built = shuffleArr(raw).slice(0, 20).map(q => {
+    const options = shuffleArr(q.optionPool)
+    return {
+      question: q.question,
+      context: q.context || null,
+      options,
+      correct: options.indexOf(q.correctText),
+    }
+  })
+
+  for (let i = 1; i < built.length; i++) {
+    let attempts = 0
+    while (built[i].correct === built[i - 1].correct && attempts < 20) {
+      const correctText = built[i].options[built[i].correct]
+      const reshuffled = shuffleArr(built[i].options)
+      built[i] = { ...built[i], options: reshuffled, correct: reshuffled.indexOf(correctText) }
+      attempts++
+    }
+  }
+
+  return built
+}
+
 export default function Spaces({ user }) {
   const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
   const [subscription,   setSubscription]   = useState(null)
   const [subLoading,     setSubLoading]     = useState(true)
   const [confirmingPayment, setConfirmingPayment] = useState(false)
@@ -420,7 +495,6 @@ export default function Spaces({ user }) {
   const [pairing, setPairing] = useState(false)
   const [unpairing, setUnpairing] = useState(false)
 
-  // ── Match request state ──────────────────────────────────────
   const [myMatchRequest, setMyMatchRequest] = useState(null)
   const [matchRequests, setMatchRequests] = useState([])
   const [matchRequestForm, setMatchRequestForm] = useState({ interests: '', improve_on: '', seeking: '' })
@@ -461,6 +535,18 @@ export default function Spaces({ user }) {
   const [showClassLessonArchive, setShowClassLessonArchive] = useState(false)
   const [selectedArchiveLesson, setSelectedArchiveLesson] = useState(null)
 
+  const [activeHadithNum, setActiveHadithNum] = useState(null)
+  const [activeUmdahNum, setActiveUmdahNum] = useState(null)
+  const [activeUmdahChapter, setActiveUmdahChapter] = useState(null)
+  const [activeBukhariNum, setActiveBukhariNum] = useState(null)
+  const [activeBukhariChapter, setActiveBukhariChapter] = useState(null)
+
+  const [hadithQuizIndex, setHadithQuizIndex] = useState(0)
+  const [hadithQuizChosen, setHadithQuizChosen] = useState(null)
+  const [hadithQuizRevealed, setHadithQuizRevealed] = useState(false)
+  const [hadithQuizScore, setHadithQuizScore] = useState(0)
+  const [hadithQuizDone, setHadithQuizDone] = useState(false)
+
   const [majlisPosts, setMajlisPosts] = useState([])
   const [majlisLoading, setMajlisLoading] = useState(false)
   const [activeMajlisPost, setActiveMajlisPost] = useState(null)
@@ -468,12 +554,11 @@ export default function Spaces({ user }) {
   const [newMajlisReply, setNewMajlisReply] = useState('')
   const [postingMajlisReply, setPostingMajlisReply] = useState(false)
 
-  // ── Weekly Tests state (Arabiyyah / Tafseer / Hadeeth) ────────
   const [weeklyTrack, setWeeklyTrack] = useState('arabiyyah')
   const [weeklyTests, setWeeklyTests] = useState([])
   const [weeklyTestsLoading, setWeeklyTestsLoading] = useState(false)
   const [weeklySelectedTest, setWeeklySelectedTest] = useState(null)
-  const [weeklyPhase, setWeeklyPhase] = useState('select') // select | active | grading | result
+  const [weeklyPhase, setWeeklyPhase] = useState('select')
   const [weeklyAttemptId, setWeeklyAttemptId] = useState(null)
   const [weeklyQuestions, setWeeklyQuestions] = useState([])
   const [weeklyAnswers, setWeeklyAnswers] = useState({})
@@ -1038,7 +1123,6 @@ export default function Spaces({ user }) {
     }
   }
 
-  // ── Weekly Tests functions ────────────────────────────────────
   const weeklyCallFn = useCallback(async (payload) => {
     const { data, error } = await supabase.functions.invoke('exam-portal', { body: payload })
     if (error) throw error
@@ -1170,22 +1254,15 @@ export default function Spaces({ user }) {
     if (activeTab === 'circles') fetchCircles()
     if (activeTab === 'tafseer') { fetchTafseer(); fetchTafseerArchive() }
     if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', classLevel.arabiyyah); fetchClassLessonArchive('arabiyyah', classLevel.arabiyyah) }
-    if (activeTab === 'hadeeth') { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
+    if (activeTab === 'hadeeth' && !['beginner', 'intermediate', 'advanced'].includes(classLevel.hadeeth)) { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
     if (activeTab === 'majlis') fetchMajlisPosts()
     if (activeTab === 'examportal' && weeklyPhase === 'select') fetchWeeklyTests()
   }, [activeTab, isPaid, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, fetchMajlisPosts, classLevel, weeklyPhase, fetchWeeklyTests])
 
-  // Refetch when the track switches while on the select screen
   useEffect(() => {
     if (activeTab === 'examportal' && isPaid && weeklyPhase === 'select') fetchWeeklyTests()
   }, [weeklyTrack, activeTab, isPaid, weeklyPhase, fetchWeeklyTests])
 
-  // ── Realtime: Accountability DM thread ────────────────────────
-  // Fires while paired, regardless of which tab is open, so a
-  // message that arrives while the founder is elsewhere in Spaces is
-  // already in state by the time they open Accountability. Dedup by
-  // msgKey since submitPairMessage's own refetch will usually land
-  // before this Realtime echo does.
   useEffect(() => {
     if (!myPair?.pair_id) return
     const channel = supabase
@@ -1201,7 +1278,6 @@ export default function Spaces({ user }) {
     return () => { supabase.removeChannel(channel) }
   }, [myPair?.pair_id])
 
-  // ── Realtime: Circle group chat ────────────────────────────────
   useEffect(() => {
     if (!myCircle) return
     const channel = supabase
@@ -1217,10 +1293,6 @@ export default function Spaces({ user }) {
     return () => { supabase.removeChannel(channel) }
   }, [myCircle])
 
-  // ── Realtime: Majlis reply thread ─────────────────────────────
-  // Scoped to the currently open post only — resubscribes whenever
-  // activeMajlisPost changes (including back to null, which just
-  // tears the subscription down).
   useEffect(() => {
     if (!activeMajlisPost?.id) return
     const channel = supabase
@@ -1246,6 +1318,45 @@ export default function Spaces({ user }) {
     setSearchParams(next, { replace: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subLoading, isPaid, searchParams])
+
+  const activeHadithEntry = useMemo(() => {
+    if (activeHadithNum != null) return { collection: 'hadeeth42', entry: HADEETH_42.find(h => h.num === activeHadithNum) || null, all: HADEETH_42 }
+    if (activeUmdahNum != null) return { collection: 'umdah', entry: UMDAT_AL_AHKAM.find(h => h.num === activeUmdahNum) || null, all: UMDAT_AL_AHKAM }
+    if (activeBukhariNum != null) return { collection: 'bukhari', entry: SAHIH_BUKHARI.find(h => h.num === activeBukhariNum) || null, all: SAHIH_BUKHARI }
+    return null
+  }, [activeHadithNum, activeUmdahNum, activeBukhariNum])
+
+  const hadithQuizQuestions = useMemo(() => {
+    if (!activeHadithEntry?.entry) return []
+    return buildHadithQuiz(activeHadithEntry.entry, activeHadithEntry.all)
+  }, [activeHadithEntry])
+
+  useEffect(() => {
+    setHadithQuizIndex(0)
+    setHadithQuizChosen(null)
+    setHadithQuizRevealed(false)
+    setHadithQuizScore(0)
+    setHadithQuizDone(false)
+  }, [activeHadithEntry?.collection, activeHadithEntry?.entry?.num])
+
+  const selectHadithQuizAnswer = (idx) => {
+    if (hadithQuizRevealed) return
+    setHadithQuizChosen(idx)
+    setHadithQuizRevealed(true)
+    const q = hadithQuizQuestions[hadithQuizIndex]
+    if (idx === q.correct) setHadithQuizScore(s => s + 1)
+  }
+
+  const nextHadithQuizQuestion = () => {
+    const isLast = hadithQuizIndex + 1 >= hadithQuizQuestions.length
+    if (isLast) {
+      setHadithQuizDone(true)
+    } else {
+      setHadithQuizIndex(i => i + 1)
+      setHadithQuizChosen(null)
+      setHadithQuizRevealed(false)
+    }
+  }
 
   if (!user) return null
 
@@ -1694,21 +1805,23 @@ export default function Spaces({ user }) {
               Choose a new circle — you'll leave {CIRCLES.find(c => c.id === myCircle)?.name || 'your current circle'}.
             </p>
           )}
-          <div className="spaces-circle-grid">
+          <div className="spaces-circle-list">
             {CIRCLES.map(c => (
               <button
                 key={c.id}
-                className="spaces-circle-card card"
+                className="spaces-circle-topic-card card"
                 onClick={() => switchingCircleMode ? switchCircle(c.id) : joinCircle(c.id)}
                 disabled={joiningCircle || c.id === myCircle}
               >
-                <span className="spaces-circle-icon"><TabIcon name={c.icon} /></span>
-                <h4 className="spaces-circle-name">{c.name}</h4>
-                <p className="spaces-circle-arabic arabic">{c.arabicName}</p>
-                <p className="spaces-circle-blurb">{c.blurb}</p>
-                <span className="spaces-circle-count">
-                  {circleCounts[c.id] || 0} members{c.id === myCircle ? ' · current' : ''}
-                </span>
+                <span className="spaces-circle-topic-icon"><TabIcon name={c.icon} /></span>
+                <div className="spaces-circle-topic-text">
+                  <h4 className="spaces-circle-topic-name">{c.name}</h4>
+                  <p className="spaces-circle-topic-arabic arabic">{c.arabicName}</p>
+                  <p className="spaces-circle-topic-desc">
+                    {c.blurb} <span className="spaces-circle-topic-count">· {circleCounts[c.id] || 0} members{c.id === myCircle ? ' · current' : ''}</span>
+                  </p>
+                </div>
+                <span className="spaces-circle-topic-arrow">→</span>
               </button>
             ))}
           </div>
@@ -1724,14 +1837,15 @@ export default function Spaces({ user }) {
         </>
       ) : (
         <>
-          <div className="spaces-circle-header card">
-            <span className="spaces-circle-icon"><TabIcon name={CIRCLES.find(c => c.id === myCircle)?.icon} /></span>
-            <div style={{ flex: 1 }}>
-              <h3 className="spaces-circle-name">{CIRCLES.find(c => c.id === myCircle)?.name}</h3>
-              <p className="spaces-circle-arabic arabic">{CIRCLES.find(c => c.id === myCircle)?.arabicName}</p>
+          <div className="spaces-circle-detail-header card">
+            <span className="spaces-circle-detail-icon"><TabIcon name={CIRCLES.find(c => c.id === myCircle)?.icon} /></span>
+            <div>
+              <h3 className="spaces-circle-detail-name">{CIRCLES.find(c => c.id === myCircle)?.name}</h3>
+              <p className="spaces-circle-detail-arabic arabic">{CIRCLES.find(c => c.id === myCircle)?.arabicName}</p>
             </div>
             <button
               className="btn btn-ghost"
+              style={{ marginLeft: 'auto' }}
               onClick={() => setSwitchingCircleMode(true)}
             >
               Switch Circle
@@ -1907,7 +2021,6 @@ export default function Spaces({ user }) {
       )
     }
 
-    // ── "view" phase from here on — today's entry (if any) + archive ──
     return (
       <div className="spaces-tafseer-view">
         {todayTafseer ? (
@@ -1951,15 +2064,19 @@ export default function Spaces({ user }) {
                 {renderTafseerReadOnly(selectedArchiveTafseer)}
               </>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div className="spaces-archive-list">
                 {tafseerArchive.map(t => (
                   <button
                     key={t.publish_date}
-                    className="spaces-disc-btn"
-                    style={{ textAlign: 'left', padding: '10px 14px' }}
+                    className="spaces-archive-card"
                     onClick={() => setSelectedArchiveTafseer(t)}
                   >
-                    <strong>{t.publish_date}</strong> — {t.surah_name} {t.surah_num}:{t.ayah_num}
+                    <span className="spaces-archive-icon"><TabIcon name="tafseer" /></span>
+                    <div className="spaces-archive-text">
+                      <h4 className="spaces-archive-title">{t.surah_name} — {t.surah_num}:{t.ayah_num}</h4>
+                      <p className="spaces-archive-desc">{t.publish_date}</p>
+                    </div>
+                    <span className="spaces-archive-arrow">→</span>
                   </button>
                 ))}
               </div>
@@ -2184,7 +2301,6 @@ export default function Spaces({ user }) {
       )
     }
 
-    // ── result ─────────────────────────────────────────────────
     const mcqPercent = weeklyResult.mcq_total > 0 ? Math.round((weeklyResult.mcq_score / weeklyResult.mcq_total) * 100) : null
 
     return (
@@ -2355,7 +2471,7 @@ export default function Spaces({ user }) {
             {[
               { icon: 'award', text: 'Direct answers from a qualified scholar' },
               { icon: 'arabiyyah', text: 'Structured Arabiyyah courses — Beginner to Advanced' },
-              { icon: 'hadeeth', text: 'Structured Hadeeth courses — An-Nawawi to Sahih Al-Bukhari' },
+              { icon: 'hadeeth', text: 'The 42 Hadith, Umdat al-Ahkam, and Sahih al-Bukhari — each with an instant 20-question test per hadith' },
               { icon: 'chat', text: 'Threaded community discussions' },
               { icon: 'majlis', text: 'Majlis — announcements and updates from the Sual team' },
               { icon: 'accountability', text: 'Accountability partners and Sahaabah circles' },
@@ -2389,9 +2505,362 @@ export default function Spaces({ user }) {
     )
   }
 
+  const renderHadithQuiz = () => {
+    if (hadithQuizQuestions.length === 0) {
+      return (
+        <div className="spaces-empty card" style={{ marginTop: 14 }}>
+          <p className="spaces-empty-text">No test available for this hadith yet</p>
+          <p className="spaces-empty-sub">A test needs at least a narrator, title, and lessons on this hadith to generate from.</p>
+        </div>
+      )
+    }
+
+    if (hadithQuizDone) {
+      const pct = Math.round((hadithQuizScore / hadithQuizQuestions.length) * 100)
+      return (
+        <div className="quiz-result-card card" style={{ marginTop: 14 }}>
+          <div className="quiz-result-header">
+            <span className="quiz-result-icon"><TabIcon name="target" /></span>
+            <h2 className="quiz-result-title">Test Complete</h2>
+            <div className="quiz-result-score">{hadithQuizScore} / {hadithQuizQuestions.length}</div>
+            <div className="quiz-result-percent">{pct}%</div>
+          </div>
+        </div>
+      )
+    }
+
+    const q = hadithQuizQuestions[hadithQuizIndex]
+    return (
+      <div className="spaces-tafseer-quiz" style={{ marginTop: 14 }}>
+        <div className="quiz-progress-header">
+          <span className="quiz-progress-label">Question {hadithQuizIndex + 1} of {hadithQuizQuestions.length}</span>
+          <span className="quiz-score-badge badge badge-regal">Score: {hadithQuizScore}</span>
+        </div>
+        <div className="quiz-question-card card">
+          {q.context && <p className="spaces-tafseer-quiz-context">{q.context}</p>}
+          <p className="quiz-question-text">{q.question}</p>
+          <div className="quiz-options">
+            {q.options.map((opt, idx) => {
+              let cls = 'quiz-option'
+              if (hadithQuizRevealed) {
+                if (idx === q.correct) cls += ' quiz-option--correct'
+                else if (idx === hadithQuizChosen && idx !== q.correct) cls += ' quiz-option--wrong'
+              } else if (hadithQuizChosen === idx) {
+                cls += ' quiz-option--selected'
+              }
+              return (
+                <button key={idx} className={cls} onClick={() => selectHadithQuizAnswer(idx)} disabled={hadithQuizRevealed}>
+                  <span className="quiz-option-letter">{String.fromCharCode(65 + idx)}</span>
+                  <span>{opt}</span>
+                </button>
+              )
+            })}
+          </div>
+          {hadithQuizRevealed && (
+            <div className="quiz-next-row">
+              <button className="btn btn-primary" onClick={nextHadithQuizQuestion}>
+                {hadithQuizIndex + 1 < hadithQuizQuestions.length ? 'Next Question →' : 'See Result →'}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const renderHadeeth42List = () => (
+    <div className="spaces-archive-list" style={{ marginTop: 8 }}>
+      {HADEETH_42.map(h => (
+        <button
+          key={h.num}
+          className="spaces-archive-card"
+          onClick={() => setActiveHadithNum(h.num)}
+        >
+          <span className="spaces-archive-icon" style={{ borderRadius: '50%', fontSize: '0.75rem', fontWeight: 700 }}>
+            {h.num}
+          </span>
+          <div className="spaces-archive-text">
+            <h4 className="spaces-archive-title">{h.title}</h4>
+            <p className="spaces-archive-desc">{h.narrator} · {h.source}</p>
+          </div>
+          <span className="spaces-archive-arrow">→</span>
+        </button>
+      ))}
+    </div>
+  )
+
+  const renderHadeeth42Detail = () => {
+    const h = HADEETH_42.find(x => x.num === activeHadithNum)
+    if (!h) return null
+    return (
+      <>
+        <button className="btn btn-ghost" style={{ marginBottom: 16 }} onClick={() => setActiveHadithNum(null)}>← Back to all 42</button>
+
+        <div className="spaces-hadith-detail-header card">
+          <span className="spaces-hadith-detail-num">{h.num}</span>
+          <div>
+            <h2 className="spaces-hadith-detail-title">{h.title}</h2>
+            <p className="spaces-hadith-detail-source">{h.narrator} · {h.source}</p>
+          </div>
+        </div>
+
+        <div className="spaces-tafseer-card card">
+          <p className="spaces-tafseer-arabic arabic-lg">{h.arabic_text}</p>
+          {h.transliteration && (
+            <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
+              {h.transliteration}
+            </p>
+          )}
+          <p className="spaces-tafseer-translation">"{h.translation}"</p>
+        </div>
+
+        {Array.isArray(h.lessons) && h.lessons.length > 0 && (
+          <div className="spaces-tafseer-card card">
+            <h4 className="spaces-class-section-title">Lessons</h4>
+            <ul className="spaces-class-curriculum">
+              {h.lessons.map((l, i) => (
+                <li key={i} className="spaces-class-curriculum-item">
+                  <span className="spaces-class-curriculum-num">{i + 1}</span>
+                  <span>{l}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="spaces-section-intro card" style={{ marginTop: 14 }}>
+          <h3 className="spaces-section-intro-title">Test Yourself</h3>
+          <p className="spaces-section-intro-text">20 questions on this hadith, generated on the spot.</p>
+        </div>
+        {renderHadithQuiz()}
+      </>
+    )
+  }
+
+  const renderUmdahChapterList = () => (
+    <div className="spaces-archive-list" style={{ marginTop: 8 }}>
+      {UMDAT_AL_AHKAM_CHAPTERS.map(c => {
+        const count = UMDAT_AL_AHKAM.filter(h => h.chapter === c.key).length
+        return (
+          <button
+            key={c.key}
+            className="spaces-archive-card"
+            onClick={() => setActiveUmdahChapter(c.key)}
+          >
+            <span className="spaces-archive-icon"><TabIcon name="scroll" /></span>
+            <div className="spaces-archive-text">
+              <h4 className="spaces-archive-title">{c.label}</h4>
+              <p className="spaces-archive-desc">{c.arabic} · {count} hadith</p>
+            </div>
+            <span className="spaces-archive-arrow">→</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+
+  const renderUmdahHadithList = () => {
+    const chapter = UMDAT_AL_AHKAM_CHAPTERS.find(c => c.key === activeUmdahChapter)
+    const hadiths = UMDAT_AL_AHKAM.filter(h => h.chapter === activeUmdahChapter)
+    return (
+      <>
+        <button className="btn btn-ghost" style={{ marginBottom: 16 }} onClick={() => setActiveUmdahChapter(null)}>← Back to chapters</button>
+        <div className="spaces-section-intro card">
+          <h3 className="spaces-section-intro-title">{chapter?.label}</h3>
+          <p className="spaces-section-intro-text arabic">{chapter?.arabic}</p>
+        </div>
+        {hadiths.length === 0 ? (
+          <div className="spaces-empty card">
+            <p className="spaces-empty-text">No hadith added to this chapter yet</p>
+            <p className="spaces-empty-sub">Check back once this chapter's content is published.</p>
+          </div>
+        ) : (
+          <div className="spaces-archive-list">
+            {hadiths.map(h => (
+              <button
+                key={h.num}
+                className="spaces-archive-card"
+                onClick={() => setActiveUmdahNum(h.num)}
+              >
+                <span className="spaces-archive-icon" style={{ borderRadius: '50%', fontSize: '0.75rem', fontWeight: 700 }}>
+                  {h.num}
+                </span>
+                <div className="spaces-archive-text">
+                  <h4 className="spaces-archive-title">{h.title}</h4>
+                  <p className="spaces-archive-desc">{h.narrator} · {h.source}</p>
+                </div>
+                <span className="spaces-archive-arrow">→</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </>
+    )
+  }
+
+  const renderUmdahDetail = () => {
+    const h = UMDAT_AL_AHKAM.find(x => x.num === activeUmdahNum)
+    if (!h) return null
+    return (
+      <>
+        <button className="btn btn-ghost" style={{ marginBottom: 16 }} onClick={() => setActiveUmdahNum(null)}>← Back to chapter</button>
+
+        <div className="spaces-hadith-detail-header card">
+          <span className="spaces-hadith-detail-num">{h.num}</span>
+          <div>
+            <h2 className="spaces-hadith-detail-title">{h.title}</h2>
+            <p className="spaces-hadith-detail-source">{h.narrator} · {h.source}</p>
+          </div>
+        </div>
+
+        <div className="spaces-tafseer-card card">
+          <p className="spaces-tafseer-arabic arabic-lg">{h.arabic_text}</p>
+          {h.transliteration && (
+            <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
+              {h.transliteration}
+            </p>
+          )}
+          <p className="spaces-tafseer-translation">"{h.translation}"</p>
+        </div>
+
+        {Array.isArray(h.lessons) && h.lessons.length > 0 && (
+          <div className="spaces-tafseer-card card">
+            <h4 className="spaces-class-section-title">Lessons</h4>
+            <ul className="spaces-class-curriculum">
+              {h.lessons.map((l, i) => (
+                <li key={i} className="spaces-class-curriculum-item">
+                  <span className="spaces-class-curriculum-num">{i + 1}</span>
+                  <span>{l}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="spaces-section-intro card" style={{ marginTop: 14 }}>
+          <h3 className="spaces-section-intro-title">Test Yourself</h3>
+          <p className="spaces-section-intro-text">20 questions on this hadith, generated on the spot.</p>
+        </div>
+        {renderHadithQuiz()}
+      </>
+    )
+  }
+
+  const renderBukhariChapterList = () => (
+    <div className="spaces-archive-list" style={{ marginTop: 8 }}>
+      {SAHIH_BUKHARI_CHAPTERS.map(c => {
+        const count = SAHIH_BUKHARI.filter(h => h.chapter === c.key).length
+        return (
+          <button
+            key={c.key}
+            className="spaces-archive-card"
+            onClick={() => setActiveBukhariChapter(c.key)}
+          >
+            <span className="spaces-archive-icon"><TabIcon name="award" /></span>
+            <div className="spaces-archive-text">
+              <h4 className="spaces-archive-title">{c.label}</h4>
+              <p className="spaces-archive-desc">{c.arabic} · {count} hadith</p>
+            </div>
+            <span className="spaces-archive-arrow">→</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+
+  const renderBukhariHadithList = () => {
+    const chapter = SAHIH_BUKHARI_CHAPTERS.find(c => c.key === activeBukhariChapter)
+    const hadiths = SAHIH_BUKHARI.filter(h => h.chapter === activeBukhariChapter)
+    return (
+      <>
+        <button className="btn btn-ghost" style={{ marginBottom: 16 }} onClick={() => setActiveBukhariChapter(null)}>← Back to chapters</button>
+        <div className="spaces-section-intro card">
+          <h3 className="spaces-section-intro-title">{chapter?.label}</h3>
+          <p className="spaces-section-intro-text arabic">{chapter?.arabic}</p>
+        </div>
+        {hadiths.length === 0 ? (
+          <div className="spaces-empty card">
+            <p className="spaces-empty-text">No hadith added to this chapter yet</p>
+            <p className="spaces-empty-sub">Check back once this chapter's content is published.</p>
+          </div>
+        ) : (
+          <div className="spaces-archive-list">
+            {hadiths.map(h => (
+              <button
+                key={h.num}
+                className="spaces-archive-card"
+                onClick={() => setActiveBukhariNum(h.num)}
+              >
+                <span className="spaces-archive-icon" style={{ borderRadius: '50%', fontSize: '0.75rem', fontWeight: 700 }}>
+                  {h.num}
+                </span>
+                <div className="spaces-archive-text">
+                  <h4 className="spaces-archive-title">{h.title}</h4>
+                  <p className="spaces-archive-desc">{h.narrator} · {h.source}</p>
+                </div>
+                <span className="spaces-archive-arrow">→</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </>
+    )
+  }
+
+  const renderBukhariDetail = () => {
+    const h = SAHIH_BUKHARI.find(x => x.num === activeBukhariNum)
+    if (!h) return null
+    return (
+      <>
+        <button className="btn btn-ghost" style={{ marginBottom: 16 }} onClick={() => setActiveBukhariNum(null)}>← Back to chapter</button>
+
+        <div className="spaces-hadith-detail-header card">
+          <span className="spaces-hadith-detail-num">{h.num}</span>
+          <div>
+            <h2 className="spaces-hadith-detail-title">{h.title}</h2>
+            <p className="spaces-hadith-detail-source">{h.narrator} · {h.source}</p>
+          </div>
+        </div>
+
+        <div className="spaces-tafseer-card card">
+          <p className="spaces-tafseer-arabic arabic-lg">{h.arabic_text}</p>
+          {h.transliteration && (
+            <p style={{ fontStyle: 'italic', color: '#6a8090', fontSize: '0.9rem', marginTop: 8 }}>
+              {h.transliteration}
+            </p>
+          )}
+          <p className="spaces-tafseer-translation">"{h.translation}"</p>
+        </div>
+
+        {Array.isArray(h.lessons) && h.lessons.length > 0 && (
+          <div className="spaces-tafseer-card card">
+            <h4 className="spaces-class-section-title">Lessons</h4>
+            <ul className="spaces-class-curriculum">
+              {h.lessons.map((l, i) => (
+                <li key={i} className="spaces-class-curriculum-item">
+                  <span className="spaces-class-curriculum-num">{i + 1}</span>
+                  <span>{l}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="spaces-section-intro card" style={{ marginTop: 14 }}>
+          <h3 className="spaces-section-intro-title">Test Yourself</h3>
+          <p className="spaces-section-intro-text">20 questions on this hadith, generated on the spot.</p>
+        </div>
+        {renderHadithQuiz()}
+      </>
+    )
+  }
+
   const renderClass = (cls) => {
     const currentLevelKey = classLevel[cls.id]
     const currentLevel    = cls.levels.find(l => l.key === currentLevelKey)
+    const isHadeeth42 = cls.id === 'hadeeth' && currentLevelKey === 'beginner'
+    const isUmdah = cls.id === 'hadeeth' && currentLevelKey === 'intermediate'
+    const isBukhari = cls.id === 'hadeeth' && currentLevelKey === 'advanced'
 
     return (
       <div className="spaces-class-page">
@@ -2411,7 +2880,14 @@ export default function Spaces({ user }) {
               key={lv.key}
               className={`spaces-class-level-btn ${currentLevelKey === lv.key ? 'spaces-class-level-btn--active' : ''}`}
               style={currentLevelKey === lv.key ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
-              onClick={() => setClassLevel(prev => ({ ...prev, [cls.id]: lv.key }))}
+              onClick={() => {
+                setClassLevel(prev => ({ ...prev, [cls.id]: lv.key }))
+                setActiveHadithNum(null)
+                setActiveUmdahNum(null)
+                setActiveUmdahChapter(null)
+                setActiveBukhariNum(null)
+                setActiveBukhariChapter(null)
+              }}
             >
               <TabIcon name={lv.icon} /> {lv.label}
               <span className="spaces-class-level-arabic arabic">{lv.arabic}</span>
@@ -2435,51 +2911,109 @@ export default function Spaces({ user }) {
               <p className="spaces-class-content-desc">{currentLevel.description}</p>
             </div>
 
-            {classLessonLoading ? (
-              <div className="spaces-loading"><div className="spaces-spinner" /></div>
-            ) : classLesson ? (
-              renderLessonContent(classLesson)
+            {isHadeeth42 ? (
+              activeHadithNum ? renderHadeeth42Detail() : (
+                <>
+                  <div className="spaces-section-intro card">
+                    <h3 className="spaces-section-intro-title">All 42 Hadith</h3>
+                    <p className="spaces-section-intro-text">
+                      Tap any hadith to read the full Arabic text, transliteration, translation, lessons, and take a 20-question test on it.
+                    </p>
+                  </div>
+                  {renderHadeeth42List()}
+                </>
+              )
+            ) : isUmdah ? (
+              activeUmdahNum ? renderUmdahDetail() : activeUmdahChapter ? renderUmdahHadithList() : (
+                <>
+                  <div className="spaces-section-intro card">
+                    <h3 className="spaces-section-intro-title">Umdat al-Ahkam</h3>
+                    <p className="spaces-section-intro-text">
+                      Hadith on rulings, organized by chapter. Browse a chapter to see its hadith.
+                    </p>
+                  </div>
+                  {UMDAT_AL_AHKAM_CHAPTERS.length === 0 ? (
+                    <div className="spaces-empty card">
+                      <p className="spaces-empty-text">Content coming soon</p>
+                      <p className="spaces-empty-sub">This collection is being added chapter by chapter.</p>
+                    </div>
+                  ) : (
+                    renderUmdahChapterList()
+                  )}
+                </>
+              )
+            ) : isBukhari ? (
+              activeBukhariNum ? renderBukhariDetail() : activeBukhariChapter ? renderBukhariHadithList() : (
+                <>
+                  <div className="spaces-section-intro card">
+                    <h3 className="spaces-section-intro-title">Sahih al-Bukhari</h3>
+                    <p className="spaces-section-intro-text">
+                      Hadith organized by book. Browse a book to see its chapters and hadith.
+                    </p>
+                  </div>
+                  {SAHIH_BUKHARI_CHAPTERS.length === 0 ? (
+                    <div className="spaces-empty card">
+                      <p className="spaces-empty-text">Content coming soon</p>
+                      <p className="spaces-empty-sub">This collection is being added book by book, verified before publishing.</p>
+                    </div>
+                  ) : (
+                    renderBukhariChapterList()
+                  )}
+                </>
+              )
             ) : (
-              <div className="spaces-empty card">
-                <p className="spaces-empty-text">No lesson posted yet today for this level</p>
-                <p className="spaces-empty-sub">Check My Courses for structured, self-paced chapters in the meantime.</p>
-              </div>
-            )}
-
-            <button
-              className="btn btn-ghost"
-              style={{ marginBottom: 16 }}
-              onClick={() => { setShowClassLessonArchive(v => !v); setSelectedArchiveLesson(null) }}
-            >
-              <TabIcon name="archive" /> {showClassLessonArchive ? 'Hide' : 'Browse'} Past Lessons
-            </button>
-
-            {showClassLessonArchive && (
-              <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-                {classLessonArchiveLoading ? (
-                  <p>Loading…</p>
-                ) : classLessonArchive.length === 0 ? (
-                  <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No past lessons yet for this level.</p>
-                ) : selectedArchiveLesson ? (
-                  <>
-                    <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setSelectedArchiveLesson(null)}>← Back to list</button>
-                    {renderLessonContent(selectedArchiveLesson)}
-                  </>
+              <>
+                {classLessonLoading ? (
+                  <div className="spaces-loading"><div className="spaces-spinner" /></div>
+                ) : classLesson ? (
+                  renderLessonContent(classLesson)
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {classLessonArchive.map(l => (
-                      <button
-                        key={l.publish_date}
-                        className="spaces-disc-btn"
-                        style={{ textAlign: 'left', padding: '10px 14px' }}
-                        onClick={() => setSelectedArchiveLesson(l)}
-                      >
-                        <strong>{l.publish_date}</strong> — {l.title}
-                      </button>
-                    ))}
+                  <div className="spaces-empty card">
+                    <p className="spaces-empty-text">No lesson posted yet today for this level</p>
+                    <p className="spaces-empty-sub">Check back once today's lesson is posted.</p>
                   </div>
                 )}
-              </div>
+
+                <button
+                  className="btn btn-ghost"
+                  style={{ marginBottom: 16 }}
+                  onClick={() => { setShowClassLessonArchive(v => !v); setSelectedArchiveLesson(null) }}
+                >
+                  <TabIcon name="archive" /> {showClassLessonArchive ? 'Hide' : 'Browse'} Past Lessons
+                </button>
+
+                {showClassLessonArchive && (
+                  <div className="card" style={{ padding: 16, marginBottom: 16 }}>
+                    {classLessonArchiveLoading ? (
+                      <p>Loading…</p>
+                    ) : classLessonArchive.length === 0 ? (
+                      <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No past lessons yet for this level.</p>
+                    ) : selectedArchiveLesson ? (
+                      <>
+                        <button className="btn btn-ghost" style={{ marginBottom: 12 }} onClick={() => setSelectedArchiveLesson(null)}>← Back to list</button>
+                        {renderLessonContent(selectedArchiveLesson)}
+                      </>
+                    ) : (
+                      <div className="spaces-archive-list">
+                        {classLessonArchive.map(l => (
+                          <button
+                            key={l.publish_date}
+                            className="spaces-archive-card"
+                            onClick={() => setSelectedArchiveLesson(l)}
+                          >
+                            <span className="spaces-archive-icon"><TabIcon name={cls.icon} /></span>
+                            <div className="spaces-archive-text">
+                              <h4 className="spaces-archive-title">{l.title}</h4>
+                              <p className="spaces-archive-desc">{l.publish_date}</p>
+                            </div>
+                            <span className="spaces-archive-arrow">→</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
             )}
 
             <div className="spaces-class-section card">
@@ -2497,35 +3031,6 @@ export default function Spaces({ user }) {
             <div className="spaces-class-section card spaces-class-outcome-card">
               <h4 className="spaces-class-section-title">🎯 Learning Outcome</h4>
               <p className="spaces-class-outcome-text">{currentLevel.outcome}</p>
-            </div>
-
-            {currentLevel.hadiths && (
-              <div className="spaces-class-section card">
-                <h4 className="spaces-class-section-title">📜 Sample Hadith — First Ten</h4>
-                <p className="spaces-class-hadith-note">
-                  Below are the first ten hadith of the Arba'oon An-Nawawiyyah. All 42 will be memorized by end of programme.
-                </p>
-                <div className="spaces-hadith-list">
-                  {currentLevel.hadiths.map(h => (
-                    <div key={h.num} className="spaces-hadith-item">
-                      <span className="spaces-hadith-num">{h.num}</span>
-                      <div>
-                        <p className="spaces-hadith-arabic arabic">{h.text}</p>
-                        <p className="spaces-hadith-translation">{h.translation}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="spaces-class-cta card">
-              <p className="spaces-class-cta-text">
-                Want to work through this level at your own pace, chapter by chapter, with progress tracked automatically?
-              </p>
-              <button className="spaces-submit-btn" onClick={() => navigate('/lms')}>
-                Go to My Courses →
-              </button>
             </div>
           </div>
         )}

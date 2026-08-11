@@ -2096,3 +2096,455 @@
   background: #85CCFF;
   color: #0a1825;
 }
+
+/* ═══════════════════════════════════════════════
+   Women's-Fiqh-style visual pass — icon badges,
+   consistent card radius, and tab polish, layered
+   on top of everything above via the cascade (a
+   later rule for the same selector overrides only
+   the properties it redeclares — nothing else is
+   touched). No JSX changes needed: these icon
+   wrapper classes already exist in the markup,
+   each wrapping a nested .spaces-tab-icon <span>
+   from the TabIcon component.
+   ═══════════════════════════════════════════════ */
+
+/* ── Icon badges: schedule / circles / class header / paywall ── */
+.spaces-schedule-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #094570, #1a6fa8);
+  color: #ffffff;
+}
+
+.spaces-schedule-icon .spaces-tab-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0;
+}
+
+.spaces-circle-icon {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #094570, #1a6fa8);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.spaces-circle-icon .spaces-tab-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 0;
+}
+
+.spaces-class-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #094570;
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.spaces-class-icon .spaces-tab-icon {
+  width: 26px;
+  height: 26px;
+  margin-right: 0;
+}
+
+.spaces-paywall-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #094570, #1a6fa8);
+  color: #ffffff;
+  margin: 0 auto 16px;
+}
+
+.spaces-paywall-icon .spaces-tab-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 0;
+}
+
+/* ── Consistent card radius, matching Women's Fiqh's 16px cards ── */
+.spaces-post-card,
+.spaces-schedule-card,
+.spaces-circle-card,
+.spaces-circle-header,
+.spaces-pair-card,
+.spaces-tafseer-card,
+.spaces-available-item,
+.spaces-empty,
+.spaces-featured,
+.spaces-post-detail,
+.spaces-reply,
+.spaces-reply-input,
+.spaces-section-intro,
+.spaces-class-content-header,
+.spaces-class-section,
+.spaces-class-cta,
+.quiz-question-card,
+.quiz-result-card,
+.spaces-modal,
+.spaces-alldone {
+  border-radius: 16px;
+}
+
+.spaces-schedule-card,
+.spaces-circle-card {
+  padding: 18px;
+}
+
+/* ── Tab bar polish ── */
+.spaces-main-tab {
+  border-radius: 12px;
+}
+
+.spaces-main-tab--active {
+  box-shadow: 0 4px 14px rgba(9,69,112,0.28);
+}
+
+.spaces-class-level-btn {
+  border-radius: 12px;
+}
+
+/* ── Dark mode: keep icon badges solid navy/gradient across
+   themes like Women's Fiqh's badges do — but swap to the light
+   accent blue against dark cards so they still read as raised
+   rather than blending into the surrounding panel. ── */
+[data-theme="dark"] .spaces-schedule-icon,
+[data-theme="dark"] .spaces-circle-icon,
+[data-theme="dark"] .spaces-class-icon,
+[data-theme="dark"] .spaces-paywall-icon {
+  background: #85CCFF;
+  color: #0a1825;
+}
+/* ═══════════════════════════════════════════════
+   Circles — topic-card list, matching Women's
+   Fiqh's Learn tab exactly (icon badge → text →
+   arrow, single column, full-width rows).
+   ═══════════════════════════════════════════════ */
+
+.spaces-circle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.spaces-circle-topic-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 16px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.spaces-circle-topic-card:hover:not(:disabled) {
+  border-color: #85CCFF;
+  box-shadow: 0 6px 20px rgba(9,69,112,0.1);
+  transform: translateY(-2px);
+}
+
+.spaces-circle-topic-card:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spaces-circle-topic-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #094570, #1a6fa8);
+  color: #ffffff;
+  padding: 11px;
+}
+
+.spaces-circle-topic-icon .spaces-tab-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 0;
+}
+
+.spaces-circle-topic-text { flex: 1; min-width: 0; }
+
+.spaces-circle-topic-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #094570;
+  margin-bottom: 2px;
+}
+
+.spaces-circle-topic-arabic {
+  font-size: 0.9rem;
+  color: #4a6080;
+  margin-bottom: 4px;
+}
+
+.spaces-circle-topic-desc {
+  font-size: 0.82rem;
+  color: #6a8090;
+  line-height: 1.5;
+}
+
+.spaces-circle-topic-count {
+  color: #8a9ab0;
+  font-weight: 600;
+}
+
+.spaces-circle-topic-arrow {
+  flex-shrink: 0;
+  color: #c8d8e8;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* ── Joined-circle header — same gradient treatment as
+   wf-detail-header ── */
+.spaces-circle-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px;
+  background: linear-gradient(135deg, #f0f7ff 0%, #fff 100%) !important;
+  border: 2px solid #094570;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.spaces-circle-detail-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #094570;
+  color: #ffffff;
+  padding: 11px;
+}
+
+.spaces-circle-detail-icon .spaces-tab-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 0;
+}
+
+.spaces-circle-detail-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0d1b2a;
+  margin-bottom: 2px;
+}
+
+.spaces-circle-detail-arabic {
+  font-size: 1rem;
+  color: #094570;
+}
+
+@media (max-width: 600px) {
+  .spaces-circle-detail-header { flex-wrap: wrap; }
+  .spaces-circle-detail-header .btn { margin-left: 0 !important; margin-top: 10px; width: 100%; }
+}
+
+/* ── Dark mode ── */
+[data-theme="dark"] .spaces-circle-topic-card {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-circle-topic-card:hover:not(:disabled) {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-circle-topic-icon {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .spaces-circle-topic-name { color: #85CCFF; }
+[data-theme="dark"] .spaces-circle-topic-arabic { color: #7f97ae; }
+[data-theme="dark"] .spaces-circle-topic-desc { color: #7f97ae; }
+[data-theme="dark"] .spaces-circle-topic-count { color: #7f97ae; }
+[data-theme="dark"] .spaces-circle-topic-arrow { color: #1e3448; }
+
+[data-theme="dark"] .spaces-circle-detail-header {
+  background: linear-gradient(135deg, #0a1825 0%, #0f1f2e 100%) !important;
+  border-color: #1e4a70;
+}
+
+[data-theme="dark"] .spaces-circle-detail-icon {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .spaces-circle-detail-name { color: #c8e0f5; }
+[data-theme="dark"] .spaces-circle-detail-arabic { color: #85CCFF; }
+
+/* ── Hadeeth 42 detail header ── */
+.spaces-hadith-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px;
+  background: linear-gradient(135deg, #f0f7ff 0%, #fff 100%) !important;
+  border: 2px solid #7b3f00;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.spaces-hadith-detail-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #7b3f00;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.spaces-hadith-detail-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0d1b2a;
+  margin-bottom: 2px;
+}
+
+.spaces-hadith-detail-source {
+  font-size: 0.85rem;
+  color: #6a8090;
+}
+
+[data-theme="dark"] .spaces-hadith-detail-header {
+  background: linear-gradient(135deg, #0a1825 0%, #0f1f2e 100%) !important;
+  border-color: #b5762b;
+}
+
+[data-theme="dark"] .spaces-hadith-detail-num {
+  background: #d99a4e;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .spaces-hadith-detail-title { color: #c8e0f5; }
+[data-theme="dark"] .spaces-hadith-detail-source { color: #7f97ae; }
+
+/* ═══════════════════════════════════════════════
+   Archive cards — Daily Tafseer past entries,
+   Class Lesson past-lessons list, and the Hadeeth
+   42-hadith list. Same topic-card anatomy as
+   Circles/Women's Fiqh: icon badge → text → arrow,
+   single column, full-width rows.
+   ═══════════════════════════════════════════════ */
+
+.spaces-archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spaces-archive-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.spaces-archive-card:hover {
+  border-color: #85CCFF;
+  box-shadow: 0 4px 16px rgba(9,69,112,0.1);
+  transform: translateY(-1px);
+}
+
+.spaces-archive-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #094570, #1a6fa8);
+  color: #ffffff;
+}
+
+.spaces-archive-icon .spaces-tab-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 0;
+}
+
+.spaces-archive-text { flex: 1; min-width: 0; }
+
+.spaces-archive-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #094570;
+  margin-bottom: 2px;
+}
+
+.spaces-archive-desc {
+  font-size: 0.78rem;
+  color: #8a9ab0;
+}
+
+.spaces-archive-arrow {
+  flex-shrink: 0;
+  color: #c8d8e8;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .spaces-archive-card {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-archive-card:hover {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-archive-icon {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .spaces-archive-title { color: #85CCFF; }
+[data-theme="dark"] .spaces-archive-desc { color: #7f97ae; }
+[data-theme="dark"] .spaces-archive-arrow { color: #1e3448; }

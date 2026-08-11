@@ -32,12 +32,9 @@ const PrayerTimes          = lazy(() => import('./pages/PrayerTimes.jsx'))
 const Disciplines          = lazy(() => import('./pages/Disciplines.jsx'))
 const Hifdh                = lazy(() => import('./pages/Hifdh.jsx'))
 const Admin                = lazy(() => import('./pages/Admin.jsx'))
-const AdminClassLessons    = lazy(() => import('./pages/AdminClassLessons.jsx'))
-const BookQuiz             = lazy(() => import('./pages/BookQuiz.jsx'))
-const ExamPrep             = lazy(() => import('./pages/ExamPrep.jsx'))
 const AddToHomeScreen      = lazy(() => import('./components/AddToHomeScreen.jsx'))
-const LmsDashboard         = lazy(() => import('./pages/LmsDashboard.jsx'))
-const LmsCourseDetail      = lazy(() => import('./pages/LmsCourseDetail.jsx'))
+const AdminClassLessons = lazy(() => import('./pages/AdminClassLessons.jsx'))
+const WomensFiqh           = lazy(() => import('./pages/WomensFiqh.jsx'))
 
 function RouteFallback() {
   return (
@@ -220,7 +217,6 @@ export default function App() {
               <Route path="/discipline/:id/:level/:qid" element={<DisciplineReader user={user} />} />
               <Route path="/quiz" element={<Quiz user={user} userLevel={userLevel} />} />
               <Route path="/flashcards" element={<Flashcards />} />
-              <Route path="/book-quiz" element={<BookQuiz user={user} />} />
               <Route path="/stories" element={<Stories />} />
               <Route path="/duas" element={<Duas />} />
               <Route path="/calendar" element={<Calendar />} />
@@ -234,10 +230,9 @@ export default function App() {
               <Route path="/hifdh" element={<Hifdh user={user} />} />
               <Route path="/admin" element={<Admin user={user} />} />
               <Route path="/admin/class-lessons" element={<AdminClassLessons user={user} />} />
-              <Route path="/exam-prep" element={<ExamPrep user={user} />} />
               <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
-              <Route path="/lms" element={<LmsDashboard user={user} />} />
-              <Route path="/lms/:courseId" element={<LmsCourseDetail user={user} />} />
+      
+              <Route path="/womens-fiqh" element={<WomensFiqh user={user} />} />
               <Route path="*" element={<Home user={user} />} />
             </Routes>
           </Suspense>

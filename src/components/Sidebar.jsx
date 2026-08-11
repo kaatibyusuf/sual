@@ -24,15 +24,6 @@ const ICONS = {
       <rect x="6" y="8" width="14" height="10" rx="2" />
     </svg>
   ),
-  bookQuiz: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
-      <path d="M9 8h7" />
-      <path d="M9 12h4" />
-      <circle cx="17.5" cy="15.5" r="2.2" />
-      <path d="M19 17l1.5 1.5" />
-    </svg>
-  ),
   stories: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 4h9a3 3 0 0 1 3 3v13H8a2 2 0 0 1-2-2V4z" />
@@ -67,6 +58,11 @@ const ICONS = {
       <line x1="4" y1="7" x2="20" y2="7" />
       <path d="M4 7 2 12a3 3 0 0 0 6 0L6 7" />
       <path d="M20 7 18 12a3 3 0 0 0 6 0l-2-5" />
+    </svg>
+  ),
+  womensFiqh: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2.5c3.5 5 7 9 7 13a7 7 0 0 1-14 0c0-4 3.5-8 7-13z" />
     </svg>
   ),
   profile: (
@@ -115,13 +111,6 @@ const ICONS = {
       <path d="M12 3a9 9 0 0 1 0 18" fill="none" />
     </svg>
   ),
-  examPrep: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 3v4a1 1 0 0 1-1 1H4" />
-      <path d="M9 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9l4-7Z" />
-      <path d="M9 13l2 2 4-4" />
-    </svg>
-  ),
 }
 
 // ── Six-pillar grouping ───────────────────────────────────────
@@ -150,13 +139,6 @@ const NAV_GROUPS = [
     items: [
       { path: '/quiz', label: 'Quiz', icon: 'quiz' },
       { path: '/flashcards', label: 'Flashcards', icon: 'flashcards' },
-      { path: '/book-quiz', label: 'Book Quiz', icon: 'bookQuiz' },
-    ],
-  },
-  {
-    label: 'Exam Prep',
-    items: [
-      { path: '/exam-prep', label: 'Exam Prep', icon: 'examPrep' },
     ],
   },
   {
@@ -171,12 +153,7 @@ const NAV_GROUPS = [
       { path: '/prayer-times', label: 'Prayer Times', icon: 'prayerTimes' },
       { path: '/duas', label: 'Duas', icon: 'duas' },
       { path: '/calendar', label: 'Calendar', icon: 'calendar' },
-    ],
-  },
-  {
-    label: 'My Courses',
-    items: [
-      { path: '/lms', label: 'Courses', icon: 'flashcards' }, // reuse an existing icon key for now
+      { path: '/womens-fiqh', label: "Women's Fiqh", icon: 'womensFiqh' },
     ],
   },
   {
