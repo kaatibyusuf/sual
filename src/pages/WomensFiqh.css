@@ -805,3 +805,28 @@
 }
 
 [data-theme="dark"] .wf-day-sheet-note-text { color: #a8c0d8; }
+
+.wf-calendar-cell {
+  position: relative;
+}
+
+.wf-calendar-cell-note-dot {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #094570;
+}
+
+.wf-calendar-cell-note-dot--static {
+  position: static;
+  transform: none;
+  display: inline-block;
+}
+
+[data-theme="dark"] .wf-calendar-cell-note-dot {
+  background: #85CCFF;
+}
