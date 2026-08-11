@@ -29,6 +29,11 @@ const ICONS = {
       <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
     </svg>
   ),
+  qiwaamah: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" />
+    </svg>
+  ),
   menu: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="4" y1="7" x2="20" y2="7" />
@@ -129,6 +134,7 @@ const MORE_ITEMS = [
   { to: '/tajweed', icon: 'tajweed', label: 'Tajweed' },
   { to: '/prayer-times', icon: 'prayerTimes', label: 'Prayer Times' },
   { to: '/womens-fiqh', icon: 'womensFiqh', label: "Women's Fiqh" },
+  { to: '/qiwaamah', icon: 'qiwaamah', label: 'Qiwaamah' },
   { to: '/spaces', icon: 'spaces', label: 'Spaces' },
   { to: '/hifdh', icon: 'hifdh', label: 'Hifdh' },
   { to: '/journey', icon: 'journey', label: 'Journey' },

@@ -35,6 +35,7 @@ const Admin                = lazy(() => import('./pages/Admin.jsx'))
 const AddToHomeScreen      = lazy(() => import('./components/AddToHomeScreen.jsx'))
 const AdminClassLessons = lazy(() => import('./pages/AdminClassLessons.jsx'))
 const WomensFiqh           = lazy(() => import('./pages/WomensFiqh.jsx'))
+const Qiwaamah = lazy(() => import('./pages/Qiwaamah.jsx'))
 
 function RouteFallback() {
   return (
@@ -231,6 +232,7 @@ export default function App() {
               <Route path="/admin" element={<Admin user={user} />} />
               <Route path="/admin/class-lessons" element={<AdminClassLessons user={user} />} />
               <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
+              <Route path="/qiwaamah" element={<Qiwaamah user={user} />} />
       
               <Route path="/womens-fiqh" element={<WomensFiqh user={user} />} />
               <Route path="*" element={<Home user={user} />} />

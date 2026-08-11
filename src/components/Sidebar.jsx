@@ -11,6 +11,11 @@ const ICONS = {
       <path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
     </svg>
   ),
+  qiwaamah: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" />
+    </svg>
+  ),
   quiz: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="9" />
@@ -154,6 +159,7 @@ const NAV_GROUPS = [
       { path: '/duas', label: 'Duas', icon: 'duas' },
       { path: '/calendar', label: 'Calendar', icon: 'calendar' },
       { path: '/womens-fiqh', label: "Women's Fiqh", icon: 'womensFiqh' },
+      { path: '/qiwaamah', label: 'Qiwaamah', icon: 'qiwaamah' },
     ],
   },
   {
