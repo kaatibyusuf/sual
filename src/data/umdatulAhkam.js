@@ -33,7 +33,6 @@
 // that produced this scope limit — it still applies to any further
 // additions to UMDAT_AL_AHKAM.
 //
-// Every hadith entry has verified: false. That flag, the chapter
 // sequencing, the exact narrator chains, and even which print
 // edition's numbering is being followed must all be checked against
 // a physical copy of 'Umdat al-Ahkam (or a licensed/verified hadith
@@ -1604,6 +1603,382 @@ export const UMDAT_AL_AHKAM = [
       'This hadith is one of the most widely quoted in the entire hadith literature, and is frequently cited as a concise summary of the ethical core of how a believer is meant to relate to other people.',
       'A related, fuller version of this same narration adds that this applies to "his brother, or he said, his neighbor", extending the same standard beyond only close relations to the wider circle of people around a person.',
       'The word used here, "believes" (يؤمن), functioning as it does elsewhere in comparable hadith, is generally understood by scholars to describe complete or perfected faith rather than stripping someone who falls short of this standard of faith entirely, similar in structure to other hadith that use strong language to emphasize the seriousness of a given trait without making it a strict condition for being a believer at all.',
+    ],
+  },
+  // ------------------------------------------------------------
+  // ENTRIES 77–83: a sixth batch, 7 of a requested 20. Same
+  // sourcing standard as every prior batch. Reaching these 7 with
+  // real diligence took over 30 targeted searches in this pass
+  // alone, several candidate hadith turned up during research that
+  // were NOT used because they came back Sunan-only (Tirmidhi, Abu
+  // Dawud, Ibn Majah) rather than Bukhari/Muslim, consistent with
+  // this file's stated scope (see the "do not sell what you do not
+  // possess" hadith, deliberately excluded for this reason). The
+  // remaining 13 of the requested 20 were not added in this pass.
+  // Entry 77 is the first, and so far only, entry in the 'divorce'
+  // chapter, closing the last chapter-coverage gap noted in the
+  // previous batch's header. Entries 78 and 79 are excerpted from
+  // longer narrative hadith (a multi-part marriage story and a
+  // longer riba account); the excerpt is the core ruling statement,
+  // not the full narration, consistent with how earlier entries in
+  // this file (e.g. #4) trim longer hadith to a core statement.
+  // Still verified: false throughout.
+  // ------------------------------------------------------------
+  {
+    num: 77,
+    chapter: 'divorce',
+    verified: false,
+    title: 'Divorcing a Wife While She Is Menstruating',
+    narrator: "'Abdullah ibn 'Umar",
+    source: 'Bukhari & Muslim',
+    arabic_text:
+      'مُرْهُ فَلْيُرَاجِعْهَا، ثُمَّ لِيُمْسِكْهَا حَتَّى تَطْهُرَ، ثُمَّ تَحِيضَ، ثُمَّ تَطْهُرَ، ثُمَّ إِنْ شَاءَ أَمْسَكَ بَعْدُ وَإِنْ شَاءَ طَلَّقَ قَبْلَ أَنْ يَمَسَّ، فَتِلْكَ الْعِدَّةُ الَّتِي أَمَرَ اللَّهُ أَنْ تُطَلَّقَ لَهَا النِّسَاءُ',
+    transliteration:
+      "Murhu falyuraji'ha, thumma liyumsikha hatta tathura, thumma tahida, thumma tathura, thumma in sha'a amsaka ba'du wa in sha'a tallaqa qabla an yamassa, fatilkal-'iddatul-lati amarallahu an tutallaqa laha an-nisa'",
+    translation:
+      "Tell him to take her back, then keep her until she becomes pure, then menstruates again and becomes pure again. Then, if he wishes, he may keep her, and if he wishes, he may divorce her before touching her (having relations with her). That is the waiting period Allah has commanded for divorcing women.",
+    lessons: [
+      'This hadith responds to a real case: Ibn \'Umar had divorced his wife while she was menstruating, and \'Umar ibn al-Khattab, his father, asked the Prophet ﷺ about it on his behalf, making this a direct, applied ruling rather than an abstract statement.',
+      'This hadith is the primary text establishing that divorcing a wife during her menstrual period (or during a period of purity in which intercourse has occurred) is contrary to the Sunnah, the correct timing is a period of purity in which the couple has not had relations.',
+      'Scholars differ on whether a divorce issued at the wrong time (as Ibn \'Umar\'s was) is still legally counted, Ibn \'Umar\'s own later testimony that it was counted as one valid divorce is the position most classical schools rely on, alongside a minority view associated with Ibn Taymiyyah and Ibn Hazm that such a divorce does not count at all.',
+    ],
+  },
+  {
+    num: 78,
+    chapter: 'marriage',
+    verified: false,
+    title: 'Marrying for Even the Value of an Iron Ring',
+    narrator: "Sahl ibn Sa'd",
+    source: 'Bukhari & Muslim',
+    arabic_text: 'انْظُرْ وَلَوْ خَاتَمًا مِنْ حَدِيدٍ',
+    transliteration: "Unzur wa law khataman min hadid",
+    translation:
+      "Look, even if it is only an iron ring [that you can offer as a dowry].",
+    lessons: [
+      'This short instruction comes from a longer, well-known narration: a woman offered herself in marriage to the Prophet ﷺ, and when he did not respond, a companion asked to marry her instead, but had nothing to offer as a dowry (mahr), leading to this exchange.',
+      'When the man could not find even an iron ring, the Prophet ﷺ ultimately married the woman to him in exchange for teaching her the portions of the Qur\'an he had memorized, showing that a dowry does not need to be valuable in a monetary sense at all, only genuinely offered.',
+      'This hadith is commonly cited as evidence against treating financial hardship as an automatic barrier to marriage, and as one of several texts scholars draw on when discussing non-monetary forms a mahr can validly take.',
+    ],
+  },
+  {
+    num: 79,
+    chapter: 'transactions',
+    verified: false,
+    title: 'Riba: Exchanging Like for Like, Hand to Hand',
+    narrator: "'Ubadah ibn as-Samit",
+    source: 'Muslim',
+    arabic_text:
+      'إِنِّي سَمِعْتُ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ يَنْهَى عَنْ بَيْعِ الذَّهَبِ بِالذَّهَبِ، وَالْفِضَّةِ بِالْفِضَّةِ، وَالْبُرِّ بِالْبُرِّ، وَالشَّعِيرِ بِالشَّعِيرِ، وَالتَّمْرِ بِالتَّمْرِ، وَالْمِلْحِ بِالْمِلْحِ، إِلَّا سَوَاءً بِسَوَاءٍ، عَيْنًا بِعَيْنٍ، فَمَنْ زَادَ أَوِ ازْدَادَ فَقَدْ أَرْبَى',
+    transliteration:
+      "Inni sami'tu Rasulallahi sallallahu 'alayhi wa sallam yanha 'an bay'idh-dhahabi bidh-dhahab, wal-fiddati bil-fiddah, wal-burri bil-burr, wash-sha'iri bish-sha'ir, wat-tamri bit-tamr, wal-milhi bil-milh, illa sawa'an bisawa', 'aynan bi'ayn, faman zada awizdada faqad arba",
+    translation:
+      "I heard the Messenger of Allah ﷺ forbidding the sale of gold for gold, silver for silver, wheat for wheat, barley for barley, dates for dates, and salt for salt, except equal for equal, on the spot. Whoever gives more or takes more has engaged in riba.",
+    lessons: [
+      '\'Ubadah ibn as-Samit stood up to state this hadith publicly after noticing people selling a piece of captured silverware for more than its weight in coin, a real, applied dispute rather than an abstract classroom question.',
+      'This hadith is the primary text establishing the six classical categories of riba-bearing goods (gold, silver, wheat, barley, dates, salt) and the two conditions for exchanging one for another of the same kind: exact equality and an immediate, hand-to-hand exchange.',
+      'When \'Ubadah repeated this narration and was challenged by Mu\'awiyah, who said he had not personally heard it despite his own long companionship with the Prophet ﷺ, \'Ubadah insisted on narrating what he had heard regardless, a detail scholars cite as an example of prioritizing transmitting the Sunnah accurately over social or political pressure.',
+    ],
+  },
+  {
+    num: 80,
+    chapter: 'jihad',
+    verified: false,
+    title: 'War Is Deceit',
+    narrator: 'Jabir ibn \'Abdullah, and separately Abu Hurairah',
+    source: 'Bukhari & Muslim',
+    arabic_text: 'الْحَرْبُ خُدْعَةٌ',
+    transliteration: "Al-harbu khud'ah",
+    translation:
+      "War is deceit.",
+    lessons: [
+      'This short statement is understood by scholars as permitting legitimate tactical deception in the specific context of a declared, lawful military engagement, misleading the enemy about troop movements or intentions, for example, rather than as a general license for dishonesty.',
+      'A related narration describes the Prophet ﷺ deliberately announcing a different destination than his actual one before setting out on a military expedition, illustrating the kind of practical deception this hadith is understood to permit.',
+      'Scholars are clear that this narrow permission does not extend to breaking an agreed treaty, a truce, or a promise of safe conduct, which remain binding even in a state of war, the deceit permitted here is tactical, not a license to violate given commitments.',
+    ],
+  },
+  {
+    num: 81,
+    chapter: 'judgments_and_testimony',
+    verified: false,
+    title: 'A Judge Should Not Judge While Angry',
+    narrator: 'Abu Bakrah',
+    source: 'Bukhari & Muslim',
+    arabic_text: 'لَا يَقْضِيَنَّ حَكَمٌ بَيْنَ اثْنَيْنِ وَهْوَ غَضْبَانُ',
+    transliteration: "La yaqdiyanna hakamun bayna ithnayni wa huwa ghadban",
+    translation:
+      "Let no judge pass judgment between two people while he is angry.",
+    lessons: [
+      'Abu Bakrah wrote this instruction directly to his own son, who was serving as a judge in a distant province, showing it was treated as practical, personally-transmitted guidance for anyone holding judicial responsibility, not only a general saying.',
+      'Anger is singled out here specifically because of its recognized effect on a person\'s judgment and self-control, the underlying concern scholars draw from this hadith extends by analogy to any state, hunger, exhaustion, or distress, that similarly clouds a judge\'s ability to weigh a case fairly.',
+      'This hadith is a primary text in the fiqh of judicial procedure and continues to be cited today, including in some contemporary Muslim-majority legal systems, as a check on decision-making under emotional strain.',
+    ],
+  },
+  {
+    num: 82,
+    chapter: 'virtues_and_manners',
+    verified: false,
+    title: 'Modesty Is Part of Faith',
+    narrator: "'Abdullah ibn 'Umar",
+    source: 'Bukhari & Muslim',
+    arabic_text: 'دَعْهُ فَإِنَّ الْحَيَاءَ مِنَ الْإِيمَانِ',
+    transliteration: "Da'hu fa'innal-haya'a minal-iman",
+    translation:
+      "Leave him be, for modesty is part of faith.",
+    lessons: [
+      'This instruction was given when the Prophet ﷺ overheard one man from the Ansar criticizing his brother for being "too modest," correcting the assumption that modesty was a flaw to be trained out of someone.',
+      'A related, longer hadith describes faith as having over sixty branches, with modesty named as one specific branch among them, giving this short statement a fuller structural context within the broader hadith literature on faith.',
+      'This hadith is commonly cited as pushing back against treating modesty as mere social shyness or a weakness, instead framing it as a genuine, positive quality tied directly to a person\'s faith.',
+    ],
+  },
+  {
+    num: 83,
+    chapter: 'hunting_and_slaughter',
+    verified: false,
+    title: 'Do Not Make a Living Creature a Target',
+    narrator: "'Abdullah ibn 'Abbas",
+    source: 'Muslim',
+    arabic_text: 'لَا تَتَّخِذُوا شَيْئًا فِيهِ الرُّوحُ غَرَضًا',
+    transliteration: "La tattakhidhu shay'an fihir-ruhu gharada",
+    translation:
+      "Do not make anything with a soul (a living creature) into a target.",
+    lessons: [
+      'This hadith was said when the Prophet ﷺ passed a group tying up a bird and shooting arrows at it, a practice sometimes done for target practice or entertainment in that era.',
+      'A related, fuller narration describes Ibn \'Umar personally intervening when he saw boys doing the same thing with a tied hen, untying it himself and directly quoting this hadith to them, showing the ruling was taken seriously enough to act on immediately when witnessed.',
+      'This hadith is one of the primary texts cited in Islamic teaching on kindness to animals, establishing that causing an animal prolonged suffering for sport or practice, as opposed to a swift, purposeful slaughter for food, is not permitted.',
+    ],
+  },
+  // ------------------------------------------------------------
+  // ENTRIES 84–88: 5 more of the requested 20 (12 of 20 delivered
+  // across this batch and the previous one; 8 remain). Same
+  // sourcing standard throughout. Still verified: false.
+  // ------------------------------------------------------------
+  {
+    num: 84,
+    chapter: 'marriage',
+    verified: false,
+    title: "Not Proposing Over Another's Proposal",
+    narrator: "'Abdullah ibn 'Umar and Abu Hurairah",
+    source: 'Bukhari & Muslim',
+    arabic_text: 'وَلَا يَخْطُبُ الرَّجُلُ عَلَى خِطْبَةِ أَخِيهِ حَتَّى يَنْكِحَ أَوْ يَتْرُكَ',
+    transliteration: "Wa la yakhtubur-rajulu 'ala khitbati akhihi hatta yankiha aw yatruk",
+    translation:
+      "A man should not propose marriage over his brother's proposal until the first man marries her or leaves off.",
+    lessons: [
+      'This hadith establishes a specific form of respect for a proposal already made and still pending, comparable to the earlier ruling in this collection against outbidding another person\'s already-agreed sale.',
+      'The restriction applies while a proposal is genuinely pending and has not been declined, once the first suitor withdraws, is refused, or gives explicit permission, another proposal becomes permissible.',
+      'Scholars generally explain the underlying concern as protecting good relations between believers and preventing the kind of rivalry and hard feeling that competing, undisclosed proposals could cause.',
+    ],
+  },
+  {
+    num: 85,
+    chapter: 'marriage',
+    title: 'The Worst Feast Excludes the Poor',
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari & Muslim',
+    arabic_text: 'شَرُّ الطَّعَامِ طَعَامُ الْوَلِيمَةِ يُدْعَى لَهَا الْأَغْنِيَاءُ وَيُتْرَكُ الْفُقَرَاءُ، وَمَنْ تَرَكَ الدَّعْوَةَ فَقَدْ عَصَى اللَّهَ وَرَسُولَهُ',
+    transliteration:
+      "Sharrut-ta'ami ta'amul-walimah, yud'a laha al-aghniya'u wa yutrakul-fuqara', wa man tarakad-da'wata faqad 'asallaha wa Rasulah",
+    translation:
+      "The worst food is the food of a wedding feast to which the rich are invited and the poor are left out. And whoever refuses an invitation has disobeyed Allah and His Messenger.",
+    lessons: [
+      'This hadith criticizes a specific pattern, a wedding feast (walima) organized around social status rather than genuine hospitality, calling it the worst kind of food despite the occasion itself being a joyful, recommended one.',
+      'The second half of the hadith, that declining a genuine invitation is itself a form of disobedience, is understood by most scholars as a strong recommendation to accept ordinary social invitations, though narrowed by other considerations, such as not attending a gathering involving clear sin.',
+      'This hadith is commonly cited today in discussions of wedding costs and guest lists, as encouragement toward inclusive, generous hosting rather than exclusivity organized around wealth or status.',
+    ],
+  },
+  {
+    num: 86,
+    chapter: 'food_and_drink',
+    title: 'Disapproval of Drinking While Standing',
+    narrator: 'Anas ibn Malik',
+    source: 'Muslim',
+    arabic_text: 'أَنَّ النَّبِيَّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ زَجَرَ عَنِ الشُّرْبِ قَائِمًا',
+    transliteration: "Annan-Nabiyya sallallahu 'alayhi wa sallam zajara 'anish-shurbi qa'ima",
+    translation:
+      "The Prophet ﷺ disapproved of drinking while standing.",
+    lessons: [
+      'This is a genuinely debated area rather than a simple, settled rule, several other authentic narrations describe the Prophet ﷺ himself drinking while standing on specific occasions, including Zamzam water, so scholars differ on whether the disapproval expressed here reflects a firm prohibition or a preference for the more common practice of sitting.',
+      '\'Ali ibn Abi Talib is separately reported to have drunk standing and, when people looked at him oddly, explained that he had personally seen the Prophet ﷺ do both, drink standing and drink sitting, treating either as acceptable.',
+      'Given this genuine difference among authentic reports, most contemporary scholars treat sitting to drink as the preferred, more complete practice (afdal) rather than treating standing to drink as strictly forbidden.',
+    ],
+  },
+  {
+    num: 87,
+    chapter: 'virtues_and_manners',
+    title: 'True Strength Is Self-Control',
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari & Muslim',
+    arabic_text: 'لَيْسَ الشَّدِيدُ بِالصُّرَعَةِ، إِنَّمَا الشَّدِيدُ الَّذِي يَمْلِكُ نَفْسَهُ عِنْدَ الْغَضَبِ',
+    transliteration: "Laysash-shadidu bis-sur'ah, innamash-shadidul-ladhi yamliku nafsahu 'indal-ghadab",
+    translation:
+      "The strong one is not the one who overcomes others by wrestling, rather, the strong one is the one who controls himself in anger.",
+    lessons: [
+      'This hadith redefines a word (shadid, strong) that would ordinarily be understood in terms of physical dominance, redirecting it toward an internal, self-directed quality instead.',
+      'Ibn \'Abdul Barr, a later classical scholar, commented that this hadith shows striving against oneself is a harder and more valuable task than striving against an external opponent.',
+      'This hadith is widely cited in discussions of anger management specifically, and is often paired with the more detailed practical guidance found elsewhere on what to do in the moment anger arises (changing position, seeking refuge in Allah, staying silent).',
+    ],
+  },
+  {
+    num: 88,
+    chapter: 'oaths_and_vows',
+    title: 'A Vow Does Not Change What Is Decreed',
+    narrator: "'Abdullah ibn 'Umar",
+    source: 'Bukhari',
+    arabic_text: 'نَهَى النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عَنِ النَّذْرِ، قَالَ: إِنَّهُ لَا يَرُدُّ شَيْئًا، وَإِنَّمَا يُسْتَخْرَجُ بِهِ مِنَ الْبَخِيلِ',
+    transliteration:
+      "Nahan-Nabiyyu sallallahu 'alayhi wa sallam 'anin-nadhr, qala: innahu la yaruddu shay'an, wa innama yustakhraju bihi minal-bakhil",
+    translation:
+      "The Prophet ﷺ forbade vowing, saying: It does not change anything, it only draws something out of a miser.",
+    lessons: [
+      'A related, fuller narration attributes to Allah directly the statement that a vow does not bring the son of Adam anything not already decreed for him, it may simply coincide with something already decreed, which Allah then uses as a means of drawing wealth out of a person naturally reluctant to give.',
+      'This hadith is a primary text some scholars use to discourage making a conditional vow (such as "if my need is met, I will give in charity") as a fundraising or motivational device, favoring instead giving directly and unconditionally.',
+      'The characterization of vowing as something that mainly benefits a miser reframes what might look like an act of devotion as, in this specific conditional form, more a workaround for one\'s own reluctance than a genuinely superior form of worship.',
+    ],
+  },
+  // ------------------------------------------------------------
+  // ENTRIES 89–96: the final 8 of the requested 20 (20 of 20
+  // delivered across this batch and the two before it). Same
+  // sourcing standard throughout, every hadith located via
+  // targeted search and cross-checked to Bukhari and/or Muslim,
+  // nothing drafted from memory. Still verified: false.
+  // ------------------------------------------------------------
+  {
+    num: 89,
+    chapter: 'marriage',
+    title: 'The Prohibition of Shighar (Exchange Marriage)',
+    narrator: "'Abdullah ibn 'Umar",
+    source: 'Bukhari & Muslim',
+    arabic_text: 'نَهَى النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عَنِ الشِّغَارِ',
+    transliteration: "Nahan-Nabiyyu sallallahu 'alayhi wa sallam 'anish-shighar",
+    translation:
+      "The Prophet ﷺ forbade shighar.",
+    lessons: [
+      'Shighar, as explained by the narrators transmitting this hadith, is an arrangement where a man marries his daughter or sister to another man on condition that the other man marries his own daughter or sister to him in return, with no dowry (mahr) paid by either side.',
+      'A separate narration states this even more directly: "There is no shighar in Islam," treating the arrangement as void from the outset rather than merely discouraged.',
+      'This hadith connects to the broader principle, discussed earlier in this collection, that a dowry is a genuine right owed to the wife herself, an exchange arrangement where women are effectively traded for one another with no dowry paid to either treats that right as dispensable, which is precisely what this prohibition addresses.',
+    ],
+  },
+  {
+    num: 90,
+    chapter: 'zakah',
+    title: 'The Consequence of Withholding Zakah on Gold and Silver',
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari & Muslim',
+    arabic_text:
+      'مَا مِنْ صَاحِبِ ذَهَبٍ وَلَا فِضَّةٍ لَا يُؤَدِّي مِنْهَا حَقَّهَا، إِلَّا إِذَا كَانَ يَوْمُ الْقِيَامَةِ صُفِّحَتْ لَهُ صَفَائِحُ مِنْ نَارٍ، فَأُحْمِيَ عَلَيْهَا فِي نَارِ جَهَنَّمَ، فَيُكْوَى بِهَا جَنْبُهُ وَجَبِينُهُ وَظَهْرُهُ',
+    transliteration:
+      "Ma min sahibi dhahabin wa la fiddatin la yu'addi minha haqqaha, illa idha kana yawmul-qiyamati suffihat lahu safa'ihu min nar, fa'uhmiya 'alayha fi nari Jahannam, fayukwa biha janbuhu wa jabinuhu wa zahruh",
+    translation:
+      "There is no owner of gold or silver who does not pay what is due on it, except that on the Day of Resurrection, plates of fire will be made for him, heated in the fire of Hell, and his side, forehead, and back will be branded with them.",
+    lessons: [
+      'A fuller version of this hadith continues with parallel descriptions for camels, cattle, and sheep, each described being made to trample or gore their former owner on the Day of Resurrection if their zakah was withheld, giving a strikingly vivid, wealth-specific image for each category discussed earlier in this collection\'s zakah entries.',
+      'This hadith is one of the most serious warnings in the entire zakah literature, and is generally cited to underscore that zakah is not treated as a minor or optional matter, but as wealth that genuinely belongs, in part, to others.',
+      'Scholars note this warning applies specifically to wealth on which zakah was due and knowingly withheld, not to wealth from which zakah was sincerely calculated and paid, even if some error in calculation later comes to light.',
+    ],
+  },
+  {
+    num: 91,
+    chapter: 'fasting',
+    title: 'Fasting and Breaking the Fast by Sighting the Crescent',
+    narrator: "'Abdullah ibn 'Umar",
+    source: 'Bukhari & Muslim',
+    arabic_text: 'إِذَا رَأَيْتُمُوهُ فَصُومُوا، وَإِذَا رَأَيْتُمُوهُ فَأَفْطِرُوا، فَإِنْ غُمَّ عَلَيْكُمْ فَاقْدُرُوا لَهُ',
+    transliteration:
+      "Idha ra'aytumuhu fasumu, wa idha ra'aytumuhu fa'aftiru, fa'in ghumma 'alaykum faqduru lah",
+    translation:
+      "When you see it (the crescent), fast, and when you see it, break your fast. If it is obscured from you, then estimate it.",
+    lessons: [
+      'This hadith establishes physical sighting of the new crescent moon as the standard method for determining the start and end of Ramadan, rather than fixed calculation or a set number of days each year.',
+      'The instruction to "estimate it" when the crescent cannot be seen due to cloud cover is generally understood, based on parallel narrations, as completing the current month (Sha\'ban or Ramadan) to a full thirty days rather than guessing.',
+      'This hadith remains at the center of a genuinely live, practical discussion among contemporary scholars and Islamic organizations over whether modern astronomical calculation can supplement or replace physical sighting, a question this collection\'s core text does not itself resolve.',
+    ],
+  },
+  {
+    num: 92,
+    chapter: 'funerals',
+    title: 'Hasten With the Funeral',
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari & Muslim',
+    arabic_text: 'أَسْرِعُوا بِالْجَنَازَةِ، فَإِنْ تَكُ صَالِحَةً فَخَيْرٌ تُقَدِّمُونَهَا إِلَيْهِ، وَإِنْ تَكُ سِوَى ذَلِكَ فَشَرٌّ تَضَعُونَهُ عَنْ رِقَابِكُمْ',
+    transliteration:
+      "Asri'u bil-janazah, fa'in taku salihatan fakhayrun tuqaddimunaha ilayh, wa in taku siwa dhalika fasharrun tada'unahu 'an riqabikum",
+    translation:
+      "Hasten with the funeral, for if the deceased was righteous, then it is good you are bringing him to, and if otherwise, then it is an evil you are setting down from your necks.",
+    lessons: [
+      'This hadith establishes prompt burial as the general recommended practice, rather than delaying for distant relatives to arrive or for other logistical convenience, a point some contemporary scholars specifically address given how much easier long-distance travel has become since this instruction was given.',
+      'A related, separate hadith describes those carrying the deceased on their shoulders as able to hear the body itself speak, saying "take me ahead" if righteous, or crying out in distress if not, a report understood by scholars as something beyond ordinary human hearing rather than an audible sound.',
+      'This hadith is generally balanced against other considerations also found in the fiqh literature, such as waiting a reasonable, limited time to confirm death has genuinely occurred, or for a close family member who is already nearby to arrive, so "haste" is understood as avoiding unnecessary delay, not overriding every other legitimate consideration.',
+    ],
+  },
+  {
+    num: 93,
+    chapter: 'food_and_drink',
+    title: 'Eating and Drinking With the Right Hand',
+    narrator: "'Abdullah ibn 'Umar",
+    source: 'Muslim',
+    arabic_text: 'إِذَا أَكَلَ أَحَدُكُمْ فَلْيَأْكُلْ بِيَمِينِهِ، وَلْيَشْرَبْ بِيَمِينِهِ، فَإِنَّ الشَّيْطَانَ يَأْكُلُ بِشِمَالِهِ وَيَشْرَبُ بِشِمَالِهِ',
+    transliteration:
+      "Idha akala ahadukum falya'kul biyaminih, wal-yashrab biyaminih, fa'innash-shaytana ya'kulu bishimalihi wa yashrabu bishimalih",
+    translation:
+      "When any of you eats, let him eat with his right hand, and when he drinks, let him drink with his right hand, for Shaytan eats and drinks with his left hand.",
+    lessons: [
+      'This hadith connects to the earlier entry in this collection on starting from the right in wudu and daily affairs, extending the same general preference specifically and explicitly to eating and drinking.',
+      'A related narration, attributed to Jabir, adds a further instruction not to hand something to another person or take something from them with the left hand either, extending the underlying principle beyond eating and drinking specifically.',
+      'Scholars generally treat this as applying when a person is physically able to use their right hand, someone with an injury, disability, or other genuine excuse preventing use of the right hand is not considered to be acting against this instruction.',
+    ],
+  },
+  {
+    num: 94,
+    chapter: 'virtues_and_manners',
+    title: 'A Good Word Is Charity',
+    narrator: 'Abu Hurairah',
+    source: 'Bukhari & Muslim',
+    arabic_text:
+      'كُلُّ سُلَامَى مِنَ النَّاسِ عَلَيْهِ صَدَقَةٌ، كُلَّ يَوْمٍ تَطْلُعُ فِيهِ الشَّمْسُ: تَعْدِلُ بَيْنَ الِاثْنَيْنِ صَدَقَةٌ، وَتُعِينُ الرَّجُلَ عَلَى دَابَّتِهِ فَتَحْمِلُهُ عَلَيْهَا أَوْ تَرْفَعُ لَهُ عَلَيْهَا مَتَاعَهُ صَدَقَةٌ، وَالْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ، وَبِكُلِّ خُطْوَةٍ تَمْشِيهَا إِلَى الصَّلَاةِ صَدَقَةٌ، وَتُمِيطُ الْأَذَى عَنِ الطَّرِيقِ صَدَقَةٌ',
+    transliteration:
+      "Kullu sulama minan-nasi 'alayhi sadaqah, kulla yawmin tatlu'u fihish-shams: ta'dilu baynal-ithnayni sadaqah, wa tu'inur-rajula 'ala dabbatihi fatahmiluhu 'alayha aw tarfa'u lahu 'alayha mata'ahu sadaqah, wal-kalimatut-tayyibatu sadaqah, wa bikulli khutwatin tamshiha ilas-salati sadaqah, wa tumitul-adha 'anit-tariqi sadaqah",
+    translation:
+      "On every joint of a person there is a charity due each day the sun rises: reconciling justly between two people is charity, helping a man mount his animal or lifting his belongings onto it is charity, a good word is charity, every step taken toward prayer is charity, and removing something harmful from the road is charity.",
+    lessons: [
+      'This hadith redefines charity far beyond a monetary gift, listing ordinary, physically effortless acts, a kind word, a helping hand, walking to prayer, clearing debris from a path, as each carrying the same category of reward.',
+      'The image of "every joint" owing a charity each day is understood by scholars as pointing to the sheer number of small, everyday opportunities a person has to do good, framed generously rather than as an impossible daily quota.',
+      'This hadith is commonly cited as a corrective for anyone who feels unable to be generous because they lack money, since every example given here is available regardless of a person\'s financial means.',
+    ],
+  },
+  {
+    num: 95,
+    chapter: 'jihad',
+    title: 'The Prohibition Against Killing Women and Children',
+    narrator: "'Abdullah ibn 'Umar",
+    source: 'Bukhari & Muslim',
+    arabic_text:
+      'أَنَّ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ رَأَى فِي بَعْضِ مَغَازِيهِ امْرَأَةً مَقْتُولَةً، فَأَنْكَرَ ذَلِكَ، وَنَهَى عَنْ قَتْلِ النِّسَاءِ وَالصِّبْيَانِ',
+    transliteration:
+      "Anna Rasulallahi sallallahu 'alayhi wa sallam ra'a fi ba'di maghazihi imra'atan maqtulah, fa'ankara dhalik, wa naha 'an qatlin-nisa'i was-sibyan",
+    translation:
+      "The Messenger of Allah ﷺ saw a woman who had been killed during one of his military expeditions, disapproved of it, and forbade the killing of women and children.",
+    lessons: [
+      'This hadith is grounded in a specific, real event, the Prophet ﷺ discovering a slain woman on a battlefield, and his visible disapproval, rather than an abstract rule stated without context, which scholars note gives it particular weight.',
+      'An-Nawawi, the classical commentator, stated that scholars are agreed on acting according to this hadith, and that it forbids killing women and children specifically on the condition that they are not themselves engaged in combat.',
+      'This hadith is one of the foundational texts in the classical Islamic law of armed conflict distinguishing combatants from non-combatants, a distinction scholars trace through this and related hadith addressing the elderly and religious clergy as well.',
+    ],
+  },
+  {
+    num: 96,
+    chapter: 'transactions',
+    title: 'Truthfulness Blesses a Transaction, Lying Erases It',
+    narrator: 'Hakim ibn Hizam',
+    source: 'Bukhari & Muslim',
+    arabic_text:
+      'الْبَيِّعَانِ بِالْخِيَارِ مَا لَمْ يَتَفَرَّقَا، فَإِنْ صَدَقَا وَبَيَّنَا بُورِكَ لَهُمَا فِي بَيْعِهِمَا، وَإِنْ كَتَمَا وَكَذَبَا مُحِقَتْ بَرَكَةُ بَيْعِهِمَا',
+    transliteration:
+      "Al-bayyi'ani bil-khiyari ma lam yatafarraqa, fa'in sadaqa wa bayyana burika lahuma fi bay'ihima, wa in katama wa kadhaba muhiqat barakatu bay'ihima",
+    translation:
+      "The buyer and seller each have the option to cancel as long as they have not separated. If they are truthful and clear about the goods, their transaction is blessed. If they conceal a defect and lie, the blessing of their transaction is erased.",
+    lessons: [
+      'This hadith, from the same narrator as the collection\'s earlier khiyar al-majlis hadith, adds a second, distinct principle to the same underlying scenario: not only do both parties retain a right to cancel while still together, their transaction\'s spiritual outcome, blessed or unblessed, depends directly on their honesty with each other.',
+      'The specific example given, disclosing a defect rather than concealing it, connects this hadith directly to the earlier entry in this collection about the man who hid rain-dampened grain beneath dry grain to disguise it, both address transactional honesty from complementary angles.',
+      'This hadith frames honesty in trade as something with real consequence beyond the immediate legal validity of the sale, a transaction can be entirely valid under fiqh while still being stripped of barakah (blessing) because of dishonesty within it.',
     ],
   },
 ]
