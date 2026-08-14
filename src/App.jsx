@@ -236,6 +236,7 @@ export default function App() {
       
               <Route path="/womens-fiqh" element={<WomensFiqh user={user} />} />
               <Route path="*" element={<Home user={user} />} />
+              <Route path="/stories" element={<Stories user={user} />} />
             </Routes>
           </Suspense>
         </main>

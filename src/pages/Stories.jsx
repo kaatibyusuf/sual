@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { STORIES } from '../data/stories.js'
+import { supabase } from '../lib/supabase.js'
 import './Stories.css'
 
 // Filter buttons correspond directly to a story's `era` field.
@@ -22,10 +23,112 @@ const ERA_BADGE_LABEL = {
   battles: 'Battle',
 }
 
-export default function Stories() {
+// A story counts as finished once scroll reaches this far down the
+// page — kept a little short of 100% since the sources/footer area
+// at the very bottom isn't really "the story" itself.
+const COMPLETE_THRESHOLD = 92
+const SAVE_DEBOUNCE_MS = 800
+
+export default function Stories({ user }) {
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(null)
+  const [progressMap, setProgressMap] = useState({}) // story_id -> { progress_percent, completed }
+  const saveTimeoutRef = useRef(null)
+  const latestProgressRef = useRef(0) // avoids stale closures inside the scroll listener
+
+  const fetchProgress = useCallback(async () => {
+    if (!user) return
+    try {
+      const { data, error } = await supabase
+        .from('story_reading_progress')
+        .select('story_id, progress_percent, completed')
+        .eq('user_id', user.id)
+      if (error) throw error
+      const map = {}
+      ;(data || []).forEach(row => { map[row.story_id] = row })
+      setProgressMap(map)
+    } catch (err) {
+      console.error('Failed to load reading progress:', err)
+    }
+  }, [user])
+
+  useEffect(() => { fetchProgress() }, [fetchProgress])
+
+  const saveProgress = useCallback(async (storyId, percent) => {
+    if (!user) return
+    const completed = percent >= COMPLETE_THRESHOLD
+    try {
+      const { error } = await supabase.from('story_reading_progress').upsert({
+        user_id: user.id,
+        story_id: storyId,
+        progress_percent: completed ? 100 : percent,
+        completed,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id,story_id' })
+      if (error) throw error
+      setProgressMap(prev => ({
+        ...prev,
+        [storyId]: { story_id: storyId, progress_percent: completed ? 100 : percent, completed },
+      }))
+    } catch (err) {
+      console.error('Failed to save reading progress:', err)
+    }
+  }, [user])
+
+  // Debounced save — only writes to Supabase after scrolling settles,
+  // rather than on every scroll event. Always flushes the most recent
+  // value, even if several scroll events fired since the last save.
+  const scheduleSave = useCallback((storyId, percent) => {
+    latestProgressRef.current = percent
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
+    saveTimeoutRef.current = setTimeout(() => {
+      saveProgress(storyId, latestProgressRef.current)
+    }, SAVE_DEBOUNCE_MS)
+  }, [saveProgress])
+
+  // Track scroll position while a story is open, converting it into a
+  // 0–100 percent of the full page height. Flushes any pending save
+  // immediately when leaving the story (closing or unmounting), so a
+  // quick visit isn't lost to the debounce timer.
+  useEffect(() => {
+    if (!selected) return
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      const percent = docHeight > 0 ? Math.min(100, Math.round((scrollTop / docHeight) * 100)) : 100
+      setProgressMap(prev => {
+        const existing = prev[selected.id]
+        // Never let scroll-tracking silently un-complete a story that
+        // was already marked finished on an earlier visit.
+        if (existing?.completed) return prev
+        return { ...prev, [selected.id]: { story_id: selected.id, progress_percent: percent, completed: percent >= COMPLETE_THRESHOLD } }
+      })
+      scheduleSave(selected.id, percent)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // capture initial position (e.g. reopening a story already scrolled via anchor)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+        saveProgress(selected.id, latestProgressRef.current)
+      }
+    }
+  }, [selected, scheduleSave, saveProgress])
+
+  const openStory = (s) => {
+    setSelected(s)
+    window.scrollTo(0, 0)
+  }
+
+  const closeStory = () => {
+    setSelected(null)
+    window.scrollTo(0, 0)
+  }
 
   const filtered = STORIES.filter(s => {
     const matchEra = filter === 'all' || s.era === filter
@@ -37,11 +140,34 @@ export default function Stories() {
     return matchEra && matchSearch
   })
 
+  const renderCardProgress = (storyId) => {
+    const p = progressMap[storyId]
+    if (!p) return null
+    if (p.completed) {
+      return <span className="story-progress-badge story-progress-badge--done">✓ Completed</span>
+    }
+    if (p.progress_percent > 0) {
+      return (
+        <div className="story-progress-track" aria-label={`${p.progress_percent}% read`}>
+          <div className="story-progress-fill" style={{ width: `${p.progress_percent}%` }} />
+        </div>
+      )
+    }
+    return null
+  }
+
   if (selected) {
     const s = selected
+    const p = progressMap[s.id]
     return (
       <div className="page-content stories-page">
-        <button className="stories-back" onClick={() => setSelected(null)}>
+        {user && (
+          <div className="story-reading-bar" aria-hidden="true">
+            <div className="story-reading-bar-fill" style={{ width: `${p?.progress_percent ?? 0}%` }} />
+          </div>
+        )}
+
+        <button className="stories-back" onClick={closeStory}>
           ← Back to Stories
         </button>
 
@@ -54,6 +180,9 @@ export default function Stories() {
                 {ERA_BADGE_LABEL[s.era] || s.era}
               </span>
               <span className="stories-badge badge-category">{s.category}</span>
+              {p?.completed && (
+                <span className="story-progress-badge story-progress-badge--done">✓ Completed</span>
+              )}
             </div>
             <h1 className="story-detail-name">{s.name}</h1>
             <p className="story-detail-arabic arabic">{s.arabicName}</p>
@@ -69,6 +198,12 @@ export default function Stories() {
               <p key={i} className="story-para">{para}</p>
             ))}
           </div>
+
+          {p?.completed && (
+            <div className="story-complete-banner card">
+              <span>✓ You've finished this story.</span>
+            </div>
+          )}
 
           {/* Lessons */}
           <div className="story-detail-lessons card">
@@ -143,7 +278,7 @@ export default function Stories() {
             <button
               key={s.id}
               className="story-card card"
-              onClick={() => setSelected(s)}
+              onClick={() => openStory(s)}
             >
               <div className="story-card-top">
                 <div className="story-card-icon">{s.image}</div>
@@ -158,6 +293,7 @@ export default function Stories() {
               <p className="story-card-title">{s.title}</p>
               <p className="story-card-lifespan">{s.lifespan}</p>
               <p className="story-card-summary">{s.summary}</p>
+              {user && renderCardProgress(s.id)}
               <div className="story-card-footer">
                 <span className="story-card-read">Read Story →</span>
               </div>
