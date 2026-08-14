@@ -1,3 +1,4 @@
+import SpacesCTA from '../components/SpacesCTA.jsx'
 import React, { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { QIWAAMAH_CONTENT } from '../data/qiwaamah.js'
@@ -251,7 +252,13 @@ export default function Qiwaamah({ user }) {
         </>
       )
     }
+// ...
 
+// end of renderLearn's card list:
+        <SpacesCTA user={user} variant="default" />
+
+// in renderReflect, after the history section:
+        {entries.length >= 5 && <SpacesCTA user={user} variant="reflectStreak" />}
     return (
       <div className="qw-cards">
         {TOPICS.map(t => {

@@ -1,0 +1,76 @@
+.scta-banner {
+  position: relative;
+  padding: 20px 22px;
+  background: linear-gradient(135deg, #094570, #1a6fa8) !important;
+  border: none;
+  border-radius: 16px;
+  margin-top: 20px;
+  color: #ffffff;
+}
+
+.scta-dismiss {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.12);
+  border: none;
+  color: rgba(255,255,255,0.7);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scta-dismiss:hover { background: rgba(255,255,255,0.2); color: #ffffff; }
+
+.scta-title {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  padding-right: 24px;
+}
+
+.scta-text {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.scta-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.scta-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.scta-price-period {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+}
+
+.scta-btn {
+  padding: 10px 20px;
+  background: #ffffff;
+  color: #094570;
+  border: none;
+  border-radius: 100px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.scta-btn:hover { transform: translateY(-1px); }

@@ -1,3 +1,4 @@
+import SpacesCTA from '../components/SpacesCTA.jsx'
 import React, { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { WOMENS_FIQH_CONTENT } from '../data/womensFiqh.js'
@@ -408,7 +409,16 @@ export default function WomensFiqh({ user }) {
         </>
       )
     }
+// ...
 
+    return (
+      <>
+        <div className="wf-cards">
+          {/* ...existing map... */}
+        </div>
+        <SpacesCTA user={user} variant="hadith" />
+      </>
+    )
     return (
       <div className="wf-cards">
         {TOPICS.map(t => {
