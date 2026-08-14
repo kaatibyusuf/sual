@@ -128,6 +128,12 @@ export default function WomensFiqh({ user }) {
   const [stopping, setStopping] = useState(false)
   const [noteInput, setNoteInput] = useState('')
 
+  // ── Cycle date-edit state ────────────────────────────────────
+  const [editingCycleId, setEditingCycleId] = useState(null)
+  const [editStartDate, setEditStartDate] = useState('')
+  const [editEndDate, setEditEndDate] = useState('')
+  const [savingEdit, setSavingEdit] = useState(false)
+
   // ── Calendar state ───────────────────────────────────────────
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const now = new Date()
@@ -173,7 +179,9 @@ export default function WomensFiqh({ user }) {
   // Flatten every cycle's logged days into a lookup by date, each
   // tagged with which ruling applied on that specific day (day count
   // within its cycle vs. that cycle's max duration) — this is what
-  // colors each calendar cell and feeds the day-detail sheet.
+  // colors each calendar cell and feeds the day-detail sheet. Since
+  // day counts are derived from cycle.start_date, editing a cycle's
+  // start date correctly reflows every logged day's status here.
   const dayLookup = (() => {
     const map = {}
     allCycles.forEach(cycle => {
@@ -260,12 +268,6 @@ export default function WomensFiqh({ user }) {
 
   const todayAlreadyLogged = activeCycle && (activeCycle.days || []).some(d => d.date === todayStr())
 
-  // Log or edit a specific past date within the currently active
-  // cycle (backfilling). Only offered for dates that fall on or
-  // after the active cycle's start date — logging a day before the
-  // cycle even started, or when there's no active cycle at all, has
-  // no cycle to attach the entry to, so the day-detail sheet won't
-  // offer this action in those cases.
   const logSpecificDay = async (dateStr, intensity) => {
     if (!user || !activeCycle) return
     setDayLogging(true)
@@ -298,6 +300,50 @@ export default function WomensFiqh({ user }) {
   const closeDaySheet = () => {
     setSelectedDay(null)
     setDayNoteInput('')
+  }
+
+  // ── Cycle date-edit handlers ─────────────────────────────────
+  const startEditingCycle = (cycle) => {
+    setEditingCycleId(cycle.id)
+    setEditStartDate(cycle.start_date)
+    setEditEndDate(cycle.end_date || '')
+    setTrackerError(null)
+  }
+
+  const cancelEditingCycle = () => {
+    setEditingCycleId(null)
+    setEditStartDate('')
+    setEditEndDate('')
+  }
+
+  const saveEditedCycle = async (cycle) => {
+    if (!editStartDate) return
+    const upperBound = cycle.end_date ? editEndDate || cycle.end_date : todayStr()
+    if (editStartDate > upperBound) {
+      setTrackerError(`Start date can't be after ${cycle.end_date ? 'the end date' : 'today'}.`)
+      return
+    }
+    if (cycle.end_date && editEndDate && editEndDate < editStartDate) {
+      setTrackerError('End date can\'t be before the start date.')
+      return
+    }
+    setSavingEdit(true)
+    setTrackerError(null)
+    try {
+      const updates = { start_date: editStartDate, updated_at: new Date().toISOString() }
+      if (cycle.end_date) updates.end_date = editEndDate || cycle.end_date
+      const { error } = await supabase
+        .from('womens_fiqh_cycles')
+        .update(updates)
+        .eq('id', cycle.id)
+      if (error) throw error
+      cancelEditingCycle()
+      fetchCycles()
+    } catch (err) {
+      setTrackerError(err.message)
+    } finally {
+      setSavingEdit(false)
+    }
   }
 
   // ── Learn tab render ─────────────────────────────────────────
@@ -537,6 +583,31 @@ export default function WomensFiqh({ user }) {
             ) : (
               <p className="wf-status-note">Up to {currentStatus.maxDays} days for this category.</p>
             )}
+
+            {editingCycleId === activeCycle.id ? (
+              <div className="wf-edit-date-form">
+                <label className="wf-edit-date-label">
+                  Started on
+                  <input
+                    type="date"
+                    className="wf-edit-date-input"
+                    value={editStartDate}
+                    max={todayStr()}
+                    onChange={e => setEditStartDate(e.target.value)}
+                  />
+                </label>
+                <div className="wf-edit-date-actions">
+                  <button className="btn btn-ghost" onClick={cancelEditingCycle} disabled={savingEdit}>Cancel</button>
+                  <button className="wf-intensity-btn" onClick={() => saveEditedCycle(activeCycle)} disabled={savingEdit}>
+                    {savingEdit ? 'Saving…' : 'Save'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button className="wf-edit-date-trigger" onClick={() => startEditingCycle(activeCycle)}>
+                Started {formatDate(activeCycle.start_date)} · Edit date
+              </button>
+            )}
           </div>
 
           <div className="wf-log-card card">
@@ -600,10 +671,48 @@ export default function WomensFiqh({ user }) {
             const days = dayCount(c.start_date, c.end_date)
             const maxDays = maxDaysFor(c.is_postpartum)
             const label = days > maxDays ? 'Istihadah' : (c.is_postpartum ? 'Nifas' : 'Hayd')
+            const isEditing = editingCycleId === c.id
             return (
-              <div key={c.id} className="wf-history-item">
-                <span>{formatDate(c.start_date)} – {formatDate(c.end_date)}</span>
-                <span className="wf-history-badge">{days}d · {label}</span>
+              <div key={c.id} className="wf-history-item" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                {isEditing ? (
+                  <div className="wf-edit-date-form">
+                    <label className="wf-edit-date-label">
+                      Start date
+                      <input
+                        type="date"
+                        className="wf-edit-date-input"
+                        value={editStartDate}
+                        max={editEndDate || undefined}
+                        onChange={e => setEditStartDate(e.target.value)}
+                      />
+                    </label>
+                    <label className="wf-edit-date-label">
+                      End date
+                      <input
+                        type="date"
+                        className="wf-edit-date-input"
+                        value={editEndDate}
+                        min={editStartDate || undefined}
+                        max={todayStr()}
+                        onChange={e => setEditEndDate(e.target.value)}
+                      />
+                    </label>
+                    <div className="wf-edit-date-actions">
+                      <button className="btn btn-ghost" onClick={cancelEditingCycle} disabled={savingEdit}>Cancel</button>
+                      <button className="wf-intensity-btn" onClick={() => saveEditedCycle(c)} disabled={savingEdit}>
+                        {savingEdit ? 'Saving…' : 'Save'}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>{formatDate(c.start_date)} – {formatDate(c.end_date)}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span className="wf-history-badge">{days}d · {label}</span>
+                      <button className="wf-edit-date-trigger" onClick={() => startEditingCycle(c)}>Edit</button>
+                    </span>
+                  </div>
+                )}
               </div>
             )
           })}

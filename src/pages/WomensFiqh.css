@@ -830,3 +830,62 @@
 [data-theme="dark"] .wf-calendar-cell-note-dot {
   background: #85CCFF;
 }
+
+.wf-edit-date-trigger {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #4a6080;
+  font-size: 0.78rem;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.wf-edit-date-trigger:hover { color: #094570; }
+
+.wf-edit-date-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #dde8f2;
+}
+
+.wf-edit-date-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a6080;
+}
+
+.wf-edit-date-input {
+  padding: 8px 10px;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 8px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: #0d1b2a;
+  background: #ffffff;
+}
+
+.wf-edit-date-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+[data-theme="dark"] .wf-edit-date-trigger { color: #a8c0d8; }
+[data-theme="dark"] .wf-edit-date-trigger:hover { color: #85CCFF; }
+[data-theme="dark"] .wf-edit-date-form { border-top-color: #1e3448; }
+[data-theme="dark"] .wf-edit-date-label { color: #a8c0d8; }
+[data-theme="dark"] .wf-edit-date-input {
+  background: #0a1825;
+  border-color: #1e3448;
+  color: #c8e0f5;
+}
