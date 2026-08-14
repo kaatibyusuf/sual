@@ -1,176 +1,267 @@
 .home-page {
   padding-top: 40px;
-}
-
-.home-hero {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  margin-bottom: 24px;
-  padding: 40px;
-  background: linear-gradient(135deg, var(--regal-blue) 0%, #1a6fa3 100%);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
   position: relative;
 }
 
-.home-hero::after {
+.home-page::before {
   content: '';
   position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: rgba(133, 204, 255, 0.1);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 340px;
+  z-index: -1;
+  opacity: 0.05;
+  background-image:
+    linear-gradient(45deg, transparent 48%, rgba(133, 204, 255, 0.5) 49%, rgba(133, 204, 255, 0.5) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(133, 204, 255, 0.5) 49%, rgba(133, 204, 255, 0.5) 51%, transparent 52%);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
   pointer-events: none;
 }
 
-.home-hero-mark {
-  font-family: var(--font-arabic);
-  font-size: 5rem;
-  color: var(--pastel-blue);
-  line-height: 1;
-  flex-shrink: 0;
-  opacity: 0.9;
-  text-shadow: 0 4px 24px rgba(133, 204, 255, 0.4);
+/* ── Swipeable account-style card carousel ───────────────────── */
+.home-carousel {
+  margin-bottom: 24px;
 }
 
-.home-hero-title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--white);
-  letter-spacing: -0.02em;
-  margin-bottom: 10px;
-}
-
-.home-hero-subtitle {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.7;
-  max-width: 480px;
-}
-
-.home-today-strip {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.home-carousel-track {
+  display: flex;
   gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.home-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.home-account-card {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  min-width: 0;
+  padding: 24px 24px 20px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.home-account-card--navy {
+  background:
+    radial-gradient(ellipse at 90% -10%, rgba(200, 149, 47, 0.18), transparent 55%),
+    radial-gradient(ellipse at -10% 110%, rgba(133, 204, 255, 0.12), transparent 60%),
+    linear-gradient(135deg, #062038 0%, var(--regal-blue) 60%, #0a3a52 100%);
+}
+
+.home-account-card--gold {
+  background:
+    radial-gradient(ellipse at 90% -10%, rgba(255, 255, 255, 0.14), transparent 55%),
+    linear-gradient(135deg, #8a6420 0%, #c8952f 55%, #a97a1f 100%);
+}
+
+.home-account-card--emerald {
+  background:
+    radial-gradient(ellipse at 90% -10%, rgba(255, 255, 255, 0.14), transparent 55%),
+    linear-gradient(135deg, #1a4a38 0%, #2e8a63 55%, #1f6b4a 100%);
+}
+
+.home-account-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 14px;
+}
+
+.home-account-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 4px;
+}
+
+.home-account-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+
+.home-account-sub {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.65);
   margin-bottom: 20px;
 }
 
-.home-today-item {
+.home-account-actions {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 14px 16px;
-  background: #eef6fc;
-  border: 1px solid #d0e8f8;
-  border-left: 3px solid #1a6fa8;
-  border-radius: 12px;
-  text-decoration: none;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.home-today-item--prayer {
-  border-left-color: #c8952f;
-  cursor: pointer;
-}
-
-.home-today-label {
-  font-size: 0.68rem;
+.home-account-btn {
+  padding: 10px 18px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.82rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #5c7186;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
-.home-today-value {
-  font-size: 0.92rem;
-  font-weight: 600;
+.home-account-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+.home-account-btn--primary {
+  background: #ffffff;
   color: #0d1b2a;
+  border-color: #ffffff;
 }
 
-.home-today-countdown {
-  font-size: 0.78rem;
-  font-weight: 400;
-  color: #a97a1f;
+.home-account-btn--primary:hover {
+  background: rgba(255, 255, 255, 0.9);
 }
 
-[data-theme="dark"] .home-today-item {
-  background: #0f2c40;
-  border-color: rgba(255, 255, 255, 0.06);
-  border-left-color: #1a6fa8;
+.home-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
 }
 
-[data-theme="dark"] .home-today-item--prayer {
-  border-left-color: #c8952f;
+.home-carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c8d8e8;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-[data-theme="dark"] .home-today-label {
-  color: #7d93a6;
+.home-carousel-dot--active {
+  width: 18px;
+  border-radius: 100px;
+  background: #094570;
 }
 
-[data-theme="dark"] .home-today-value {
-  color: #f2e8d3;
+[data-theme="dark"] .home-carousel-dot { background: #1e3448; }
+[data-theme="dark"] .home-carousel-dot--active { background: #85CCFF; }
+
+/* ── "More to continue" list (below the carousel) ────────────── */
+.home-continue { margin-bottom: 28px; }
+
+.home-section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 12px;
 }
 
-[data-theme="dark"] .home-today-countdown {
-  color: #c8952f;
-}
-
-.home-stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 28px;
-}
-
-.home-stat-card {
+.home-continue-list {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+}
+
+.home-continue-card {
+  display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 14px 8px;
+  gap: 12px;
+  padding: 12px 14px;
   background: #eef6fc;
   border: 1px solid #d0e8f8;
   border-radius: 12px;
   text-decoration: none;
-  text-align: center;
   transition: transform 0.15s ease;
 }
 
-.home-stat-card:hover {
-  transform: translateY(-2px);
+.home-continue-card:hover { transform: translateY(-1px); }
+
+.home-continue-icon { font-size: 1.6rem; flex-shrink: 0; }
+
+.home-continue-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
-.home-stat-value {
-  font-size: 1.05rem;
+.home-continue-name {
+  font-size: 0.88rem;
   font-weight: 700;
-  color: #0d1b2a;
+  color: #094570;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.home-stat-label {
-  font-size: 0.68rem;
+.home-continue-title {
+  font-size: 0.75rem;
   color: #5c7186;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-[data-theme="dark"] .home-stat-card {
+.home-continue-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 90px;
+}
+
+.home-continue-track {
+  flex: 1;
+  height: 5px;
+  border-radius: 100px;
+  background: #d0e8f8;
+  overflow: hidden;
+}
+
+.home-continue-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #094570, #85CCFF);
+}
+
+.home-continue-percent {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #5c7186;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .home-continue-card {
   background: #0f2c40;
   border-color: rgba(255, 255, 255, 0.06);
 }
 
-[data-theme="dark"] .home-stat-value {
-  color: #f2e8d3;
-}
+[data-theme="dark"] .home-continue-name { color: #85CCFF; }
+[data-theme="dark"] .home-continue-title,
+[data-theme="dark"] .home-continue-percent { color: #7d93a6; }
+[data-theme="dark"] .home-continue-track { background: #1e3448; }
 
-[data-theme="dark"] .home-stat-label {
-  color: #7d93a6;
-}
-
-.home-divider {
-  text-align: center;
-  margin: 0 0 36px;
-}
+.home-divider { text-align: center; margin: 0 0 36px; }
 
 .home-divider-arabic {
   font-family: var(--font-arabic);
@@ -179,58 +270,6 @@
 }
 
 @media (max-width: 768px) {
-  .home-hero {
-    flex-direction: column;
-    gap: 20px;
-    padding: 28px 24px;
-  }
-
-  .home-hero-mark { font-size: 3.5rem; }
-  .home-hero-title { font-size: 1.7rem; }
-
-  .home-today-strip {
-    grid-template-columns: 1fr;
-  }
-  .home-hero--compact {
-  padding: 18px 24px;
-  gap: 16px;
-}
-
-.home-hero-mark--small {
-  font-size: 2.2rem;
-}
-
-.home-hero-greeting {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--white);
-  margin-bottom: 2px;
-}
-
-.home-hero-nudge {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.home-today-gregorian {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: #5c7186;
-  margin-top: 2px;
-}
-
-[data-theme="dark"] .home-today-gregorian {
-  color: #7d93a6;
-}
-
-.home-stat-value--empty {
-  color: #a0b0c0;
-  font-weight: 500;
-}
-
-[data-theme="dark"] .home-stat-value--empty {
-  color: #5c7186;
-}
-
+  .home-account-card { padding: 20px 20px 18px; }
+  .home-account-value { font-size: 1.4rem; }
 }

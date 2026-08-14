@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { toHijriString } from '../lib/hijri.js'
 import { getPrayerStatus } from '../lib/prayerTimes.js'
+import { STORIES } from '../data/stories.js'
+import SpacesCTA from '../components/SpacesCTA.jsx'
 import QuickActions from '../components/QuickActions.jsx'
 import './Home.css'
-
-const LEVEL_COLOR = {
-  beginner:     '#5DCAA5',
-  intermediate: '#F0997B',
-  advanced:     '#AFA9EC',
-}
 
 function getGreeting() {
   const hour = new Date().getHours()
@@ -45,6 +41,70 @@ function computeQuizStreak(history) {
   return streak
 }
 
+// ── Swipeable hero card carousel ──────────────────────────────
+function HeroCardCarousel({ cards }) {
+  const trackRef = useRef(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  const handleScroll = useCallback(() => {
+    const track = trackRef.current
+    if (!track) return
+    const cardWidth = track.firstChild?.offsetWidth || 1
+    const gap = 12
+    const index = Math.round(track.scrollLeft / (cardWidth + gap))
+    setActiveIndex(Math.min(index, cards.length - 1))
+  }, [cards.length])
+
+  const goToCard = (i) => {
+    const track = trackRef.current
+    if (!track) return
+    const cardWidth = track.firstChild?.offsetWidth || 1
+    const gap = 12
+    track.scrollTo({ left: i * (cardWidth + gap), behavior: 'smooth' })
+  }
+
+  if (cards.length === 0) return null
+
+  return (
+    <div className="home-carousel">
+      <div className="home-carousel-track" ref={trackRef} onScroll={handleScroll}>
+        {cards.map((c) => (
+          <div key={c.key} className={`home-account-card home-account-card--${c.tone || 'navy'}`}>
+            {c.badge && <span className="home-account-badge">{c.badge}</span>}
+            <p className="home-account-label">{c.label}</p>
+            <p className="home-account-value">{c.value}</p>
+            {c.sub && <p className="home-account-sub">{c.sub}</p>}
+            <div className="home-account-actions">
+              {c.actions.map((a, j) => (
+                <Link
+                  key={j}
+                  to={a.to}
+                  className={`home-account-btn ${j === 0 ? 'home-account-btn--primary' : ''}`}
+                >
+                  {a.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {cards.length > 1 && (
+        <div className="home-carousel-dots">
+          {cards.map((c, i) => (
+            <button
+              key={c.key}
+              className={`home-carousel-dot ${i === activeIndex ? 'home-carousel-dot--active' : ''}`}
+              onClick={() => goToCard(i)}
+              aria-label={`Go to ${c.label}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Home({ user }) {
   const [time, setTime] = useState(new Date())
   const [lat, setLat] = useState(6.5244)
@@ -55,6 +115,13 @@ export default function Home({ user }) {
   const [levelData, setLevelData] = useState(null)
   const [fullName, setFullName] = useState(null)
   const [statsLoading, setStatsLoading] = useState(true)
+
+  // "Continue where you left off" — Stories only for now, since that's
+  // the only content type with reading-progress tracking built. Slots
+  // in cleanly for hadith collections later once similar tracking
+  // exists for those (see story_reading_progress for the pattern).
+  const [continueStories, setContinueStories] = useState([])
+  const [continueLoading, setContinueLoading] = useState(true)
 
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 30000)
@@ -108,6 +175,33 @@ export default function Home({ user }) {
     load()
   }, [user])
 
+  useEffect(() => {
+    if (!user) { setContinueLoading(false); return }
+    const loadContinue = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('story_reading_progress')
+          .select('story_id, progress_percent, completed, updated_at')
+          .eq('user_id', user.id)
+          .eq('completed', false)
+          .gt('progress_percent', 0)
+          .order('updated_at', { ascending: false })
+          .limit(3)
+        if (error) throw error
+        const withStoryData = (data || [])
+          .map(row => ({ ...row, story: STORIES.find(s => s.id === row.story_id) }))
+          .filter(row => row.story) // drop rows whose story no longer exists in the data file
+        setContinueStories(withStoryData)
+      } catch (err) {
+        console.error('Failed to load continue-reading stories:', err)
+        setContinueStories([])
+      } finally {
+        setContinueLoading(false)
+      }
+    }
+    loadContinue()
+  }, [user])
+
   const totalQuizzes = history.length
   const avgScore = totalQuizzes > 0
     ? Math.round(history.reduce((s, r) => s + r.percentage, 0) / totalQuizzes)
@@ -118,81 +212,74 @@ export default function Home({ user }) {
 
   const { nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
 
-  // A returning user (someone with at least one quiz on record) gets a
-  // compact, personalized hero instead of the full first-run marketing
-  // banner — the full banner has already done its job of introducing
-  // Sual by that point, and taking up less space surfaces Today/Next
-  // Prayer/stats sooner on repeat visits.
-  const isReturningUser = user && !statsLoading && totalQuizzes > 0
+  // Everyone — brand new or long-time — sees the same carousel-first
+  // homepage. A new user with zero quizzes just sees "Beginner" and
+  // "0 quizzes taken" on the progress card instead of a separate
+  // introductory banner; the carousel itself still tells them what's
+  // here (View Progress, Take a Quiz, Prayer Times, etc.) without
+  // needing a dedicated "what is Sual" pitch first.
+  const heroCards = [
+    {
+      key: 'progress',
+      tone: 'navy',
+      badge: streak > 0 ? `${streak}-day streak` : 'Welcome',
+      label: getGreeting() + (firstName ? `, ${firstName}` : ''),
+      value: statsLoading ? '—' : currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1),
+      sub: statsLoading ? '' : `${totalQuizzes} quizzes taken · ${totalQuizzes > 0 ? `${avgScore}% average` : 'no scores yet'}`,
+      actions: [
+        { to: '/dashboard', label: 'View Progress' },
+        { to: '/quiz', label: 'Take a Quiz' },
+      ],
+    },
+    {
+      key: 'today',
+      tone: 'gold',
+      badge: nextPrayer ? `${nextPrayer.arabic} in ${countdown}` : null,
+      label: 'Today',
+      value: toHijriString(time),
+      sub: time.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+      actions: [
+        { to: '/prayer-times', label: 'Prayer Times' },
+        { to: '/calendar', label: 'Calendar' },
+      ],
+    },
+    ...(continueStories.length > 0 ? [{
+      key: 'continue',
+      tone: 'emerald',
+      badge: `${continueStories[0].progress_percent}% done`,
+      label: 'Continue Reading',
+      value: continueStories[0].story.name,
+      sub: continueStories[0].story.title,
+      actions: [
+        { to: '/stories', label: 'Continue' },
+      ],
+    }] : []),
+  ]
 
   return (
     <div className="page-content home-page">
-      {isReturningUser ? (
-        <div className="home-hero home-hero--compact">
-          <span className="home-hero-mark home-hero-mark--small arabic">سُؤَال</span>
-          <div>
-            <p className="home-hero-greeting">
-              {getGreeting()}{firstName ? `, ${firstName}` : ''}
-            </p>
-            <p className="home-hero-nudge">
-              {streak > 0
-                ? `${streak}-day quiz streak — keep it going.`
-                : 'Ready to pick up where you left off?'}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div className="home-hero">
-          <div className="home-hero-mark">سُؤَال</div>
-          <div className="home-hero-content">
-            <h1 className="home-hero-title">Sual</h1>
-            <p className="home-hero-subtitle">
-              Your companion for the Islamic sciences — ask, learn, and test your knowledge
-              in Fiqh, Seerah, Arabic, and more.
-            </p>
-          </div>
-        </div>
-      )}
+      <HeroCardCarousel cards={heroCards} />
 
-      <div className="home-today-strip">
-        <div className="home-today-item">
-          <span className="home-today-label">Today</span>
-          <span className="home-today-value">
-            <span className="arabic">{toHijriString(time)}</span>
-            <span className="home-today-gregorian">
-              {time.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-            </span>
-          </span>
-        </div>
-        {nextPrayer && (
-          <Link to="/prayer-times" className="home-today-item home-today-item--prayer">
-            <span className="home-today-label">Next prayer</span>
-            <span className="home-today-value">
-              <span className="arabic">{nextPrayer.arabic}</span>
-              <span className="home-today-countdown"> in {countdown}</span>
-            </span>
-          </Link>
-        )}
-      </div>
-
-      {user && !statsLoading && (
-        <div className="home-stats-row">
-          <Link to="/dashboard" className="home-stat-card">
-            <span className="home-stat-value">{totalQuizzes}</span>
-            <span className="home-stat-label">Quizzes taken</span>
-          </Link>
-          <Link to="/dashboard" className="home-stat-card">
-            <span className={`home-stat-value ${totalQuizzes === 0 ? 'home-stat-value--empty' : ''}`}>
-              {totalQuizzes > 0 ? `${avgScore}%` : '—'}
-            </span>
-            <span className="home-stat-label">Average score</span>
-          </Link>
-          <Link to="/dashboard" className="home-stat-card">
-            <span className="home-stat-value" style={{ color: LEVEL_COLOR[currentLevel] }}>
-              {currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1)}
-            </span>
-            <span className="home-stat-label">Level</span>
-          </Link>
+      {!continueLoading && continueStories.length > 1 && (
+        <div className="home-continue">
+          <p className="home-section-label">More to Continue</p>
+          <div className="home-continue-list">
+            {continueStories.slice(1).map(row => (
+              <Link key={row.story_id} to="/stories" className="home-continue-card">
+                <span className="home-continue-icon">{row.story.image}</span>
+                <div className="home-continue-text">
+                  <span className="home-continue-name">{row.story.name}</span>
+                  <span className="home-continue-title">{row.story.title}</span>
+                </div>
+                <div className="home-continue-progress">
+                  <div className="home-continue-track">
+                    <div className="home-continue-fill" style={{ width: `${row.progress_percent}%` }} />
+                  </div>
+                  <span className="home-continue-percent">{row.progress_percent}%</span>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 
@@ -201,6 +288,8 @@ export default function Home({ user }) {
       </div>
 
       <QuickActions />
+
+      <SpacesCTA user={user} variant="default" />
     </div>
   )
 }
