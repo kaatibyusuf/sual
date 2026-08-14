@@ -889,3 +889,32 @@
   border-color: #1e3448;
   color: #c8e0f5;
 }
+
+.wf-status-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.wf-delete-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #c0392b;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+.wf-delete-trigger:hover { color: #a02f22; }
+.wf-delete-trigger:disabled { opacity: 0.6; cursor: not-allowed; }
+.wf-delete-trigger .wf-icon { width: 14px; height: 14px; }
+
+[data-theme="dark"] .wf-delete-trigger { color: #e57373; }
+[data-theme="dark"] .wf-delete-trigger:hover { color: #ef9a9a; }

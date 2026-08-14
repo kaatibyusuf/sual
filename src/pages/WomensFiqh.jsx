@@ -1,4 +1,3 @@
-import SpacesCTA from '../components/SpacesCTA.jsx'
 import React, { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { WOMENS_FIQH_CONTENT } from '../data/womensFiqh.js'
@@ -71,6 +70,15 @@ const ICONS = {
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   ),
+  trash: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+    </svg>
+  ),
 }
 
 const Icon = ({ name }) => <span className="wf-icon" aria-hidden="true">{ICONS[name]}</span>
@@ -128,6 +136,7 @@ export default function WomensFiqh({ user }) {
   const [logging, setLogging] = useState(false)
   const [stopping, setStopping] = useState(false)
   const [noteInput, setNoteInput] = useState('')
+  const [deletingCycleId, setDeletingCycleId] = useState(null)
 
   // ── Cycle date-edit state ────────────────────────────────────
   const [editingCycleId, setEditingCycleId] = useState(null)
@@ -180,9 +189,7 @@ export default function WomensFiqh({ user }) {
   // Flatten every cycle's logged days into a lookup by date, each
   // tagged with which ruling applied on that specific day (day count
   // within its cycle vs. that cycle's max duration) — this is what
-  // colors each calendar cell and feeds the day-detail sheet. Since
-  // day counts are derived from cycle.start_date, editing a cycle's
-  // start date correctly reflows every logged day's status here.
+  // colors each calendar cell and feeds the day-detail sheet.
   const dayLookup = (() => {
     const map = {}
     allCycles.forEach(cycle => {
@@ -347,6 +354,33 @@ export default function WomensFiqh({ user }) {
     }
   }
 
+  // ── Delete cycle ─────────────────────────────────────────────
+  // Permanently removes an entire logged cycle (start date, end
+  // date if any, and every day logged within it). Used to correct
+  // mistaken/duplicate/test entries — e.g. accidentally logging two
+  // separate cycles on the same date while learning the tracker.
+  const deleteCycle = async (cycle) => {
+    const confirmed = window.confirm(
+      `Delete this ${cycle.end_date ? 'entry' : 'ongoing entry'} (${formatDate(cycle.start_date)}${cycle.end_date ? ` – ${formatDate(cycle.end_date)}` : ''})? This can't be undone.`
+    )
+    if (!confirmed) return
+    setDeletingCycleId(cycle.id)
+    setTrackerError(null)
+    try {
+      const { error } = await supabase
+        .from('womens_fiqh_cycles')
+        .delete()
+        .eq('id', cycle.id)
+      if (error) throw error
+      if (editingCycleId === cycle.id) cancelEditingCycle()
+      fetchCycles()
+    } catch (err) {
+      setTrackerError(err.message)
+    } finally {
+      setDeletingCycleId(null)
+    }
+  }
+
   // ── Learn tab render ─────────────────────────────────────────
   const openTopic = (key) => setActiveTopic(key)
   const closeTopic = () => setActiveTopic(null)
@@ -409,16 +443,7 @@ export default function WomensFiqh({ user }) {
         </>
       )
     }
-// ...
 
-    return (
-      <>
-        <div className="wf-cards">
-          {/* ...existing map... */}
-        </div>
-        <SpacesCTA user={user} variant="hadith" />
-      </>
-    )
     return (
       <div className="wf-cards">
         {TOPICS.map(t => {
@@ -614,9 +639,18 @@ export default function WomensFiqh({ user }) {
                 </div>
               </div>
             ) : (
-              <button className="wf-edit-date-trigger" onClick={() => startEditingCycle(activeCycle)}>
-                Started {formatDate(activeCycle.start_date)} · Edit date
-              </button>
+              <div className="wf-status-actions">
+                <button className="wf-edit-date-trigger" onClick={() => startEditingCycle(activeCycle)}>
+                  Started {formatDate(activeCycle.start_date)} · Edit date
+                </button>
+                <button
+                  className="wf-delete-trigger"
+                  onClick={() => deleteCycle(activeCycle)}
+                  disabled={deletingCycleId === activeCycle.id}
+                >
+                  <Icon name="trash" /> {deletingCycleId === activeCycle.id ? 'Deleting…' : 'Delete'}
+                </button>
+              </div>
             )}
           </div>
 
@@ -715,11 +749,18 @@ export default function WomensFiqh({ user }) {
                     </div>
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
                     <span>{formatDate(c.start_date)} – {formatDate(c.end_date)}</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span className="wf-history-badge">{days}d · {label}</span>
                       <button className="wf-edit-date-trigger" onClick={() => startEditingCycle(c)}>Edit</button>
+                      <button
+                        className="wf-delete-trigger"
+                        onClick={() => deleteCycle(c)}
+                        disabled={deletingCycleId === c.id}
+                      >
+                        <Icon name="trash" /> {deletingCycleId === c.id ? 'Deleting…' : 'Delete'}
+                      </button>
                     </span>
                   </div>
                 )}
