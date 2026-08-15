@@ -79,6 +79,13 @@ const ICONS = {
       <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
     </svg>
   ),
+  archive: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="5" rx="1" />
+      <path d="M4 8v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V8" />
+      <line x1="10" y1="12" x2="14" y2="12" />
+    </svg>
+  ),
 }
 
 const Icon = ({ name }) => <span className="wf-icon" aria-hidden="true">{ICONS[name]}</span>
@@ -87,6 +94,7 @@ const TOPICS = [
   { key: 'hayd', label: 'Hayd', arabic: 'الحَيْض', icon: 'droplet' },
   { key: 'nifas', label: 'Nifas', arabic: 'النِّفَاس', icon: 'droplets' },
   { key: 'istihadah', label: 'Istihadah', arabic: 'الاسْتِحَاضَة', icon: 'question' },
+  { key: 'be_prepared', label: 'Be Prepared', arabic: 'كُونِي مُسْتَعِدَّة', icon: 'archive' },
 ]
 
 const SECTION_ICONS = { definition: 'book', duration: 'calendar', signs: 'droplet', rulings: 'scroll' }
@@ -401,16 +409,30 @@ export default function WomensFiqh({ user }) {
             </div>
           </div>
 
-          {['definition', 'duration', 'signs', 'rulings'].map(section => (
-            entry[section] ? (
-              <div key={section} className="wf-section card">
+          {Array.isArray(entry.sections) ? (
+            // Custom-titled sections (used by topics like "Be Prepared"
+            // that don't fit the definition/duration/signs/rulings
+            // shape the fiqh topics use).
+            entry.sections.map(s => (
+              <div key={s.key} className="wf-section card">
                 <h3 className="wf-section-title">
-                  <Icon name={SECTION_ICONS[section]} /> {section.charAt(0).toUpperCase() + section.slice(1)}
+                  <Icon name={s.icon} /> {s.title}
                 </h3>
-                <p className="wf-section-body">{entry[section]}</p>
+                <p className="wf-section-body">{s.body}</p>
               </div>
-            ) : null
-          ))}
+            ))
+          ) : (
+            ['definition', 'duration', 'signs', 'rulings'].map(section => (
+              entry[section] ? (
+                <div key={section} className="wf-section card">
+                  <h3 className="wf-section-title">
+                    <Icon name={SECTION_ICONS[section]} /> {section.charAt(0).toUpperCase() + section.slice(1)}
+                  </h3>
+                  <p className="wf-section-body">{entry[section]}</p>
+                </div>
+              ) : null
+            ))
+          )}
 
           {Array.isArray(entry.cases) && entry.cases.length > 0 && (
             <div className="wf-section card">

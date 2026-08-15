@@ -561,4 +561,85 @@ export const WOMENS_FIQH_CONTENT = {
       },
     ],
   },
+
+  be_prepared: {
+    title: 'Be Prepared',
+    arabic_title: 'كُونِي مُسْتَعِدَّة',
+    quick_fact: 'Ghusl, hygiene, products, and everyday knowledge',
+    sections: [
+      {
+        key: 'ghusl',
+        title: "How to Perform Ghusl",
+        icon: 'droplet',
+        body:
+          'Ghusl is the full ritual bath required after hayd or nifas ends, before prayer and other acts of worship resume. The commonly taught method, drawn from how the Prophet\'s ﷺ wives described his ghusl:\n\n' +
+          '1. Make the intention (niyyah) in your heart to purify yourself from hayd or nifas — no specific words are required.\n' +
+          '2. Say "Bismillah" and wash both hands up to the wrists, three times.\n' +
+          '3. Wash away any visible traces of blood from the private area with your left hand.\n' +
+          '4. Perform wudu as you would for prayer — face, arms to the elbows, wiping the head, and the feet (some narrations describe delaying the feet until the very end of the ghusl; either is acceptable).\n' +
+          '5. Pour water over your head three times, working it through to the roots of the hair so the scalp is thoroughly wet. You do not need to undo braids or tight hairstyles if water can reach the scalp through them — this is a well-known concession, particularly relevant for women.\n' +
+          '6. Pour water over the right side of your body, then the left, then over the rest of the body, making sure every part is reached — behind the ears, under the arms, the navel, between the toes.\n' +
+          '7. If you delayed washing the feet in step 4, wash them now.\n\n' +
+          'Once ghusl is complete, you are in a state of purity and prayer, fasting, tawaf, and intimacy are all permissible again.',
+      },
+      {
+        key: 'islamic-dos-donts',
+        title: "During Hayd — What's Permitted and What Isn't",
+        icon: 'scroll',
+        body:
+          'Not permitted during hayd: praying the five daily prayers (and these are not made up afterward), fasting (these days are made up later), tawaf around the Ka\'bah, and intercourse with your spouse. Scholars differ on entering the mosque itself and on touching the physical Arabic mus-haf directly — many permit touching it through a cloth or cover, or reading from a phone/tablet, and some permit reciting from memory without touching anything. If you\'re unsure what applies to your situation, it\'s worth asking a knowledgeable person directly rather than guessing.\n\n' +
+          'Fully permitted during hayd: dhikr (remembrance of Allah), du\'a, reading translations or tafsir, attending Islamic classes and gatherings, being kind and affectionate with your spouse (short of intercourse), cooking, working, exercising, and every other normal daily activity. Hayd is not a punishment or something to feel ashamed of — it is a natural part of a woman\'s life that the Shari\'ah accounts for with real mercy, including not requiring the missed prayers to be made up.',
+      },
+      {
+        key: 'health-dos-donts',
+        title: 'Taking Care of Your Body During Hayd',
+        icon: 'droplets',
+        body:
+          'Change your pad, tampon, or empty your cup regularly — roughly every 4–8 hours depending on flow and the product\'s instructions, even if it doesn\'t feel full, since bacteria can build up over time. Wash your hands before and after changing products. Gentle exercise (walking, stretching, light yoga) can actually ease cramps for many women, rather than needing to avoid activity entirely. A warm compress or heating pad on the lower abdomen is a widely used, low-risk way to ease cramping. Staying hydrated and eating normally (some find reducing caffeine and salty food helps with bloating, though this varies person to person) supports how your body handles the cycle.\n\n' +
+          'Avoid douching (rinsing inside the vagina) — it disrupts the natural balance of bacteria and can increase risk of infection; the vagina cleans itself naturally. If you use over-the-counter pain relief for cramps, follow the dosing on the product\'s own label or ask a pharmacist rather than guessing — don\'t exceed what\'s recommended. Very severe pain that stops you from normal activity, unusually heavy bleeding (soaking through a pad or tampon every hour for several hours), a cycle that suddenly becomes very irregular, or bleeding lasting well beyond your normal pattern are all worth mentioning to a doctor — they can be signs of something that benefits from a proper medical look, not something to self-diagnose from an app.',
+      },
+      {
+        key: 'products',
+        title: 'Pads, Tampons, Cups, and Other Products',
+        icon: 'cases',
+        body:
+          'Disposable pads sit externally and come in a range of absorbencies (light, regular, overnight) — the most commonly used option and generally considered the most straightforward to use correctly. Reusable cloth pads work the same way but are washed and reused, which some prefer for cost and environmental reasons.\n\n' +
+          'Tampons are inserted internally and available with or without an applicator. They carry a small but real risk of Toxic Shock Syndrome (TSS) if left in too long — follow the product\'s stated maximum wear time (commonly up to 8 hours) and use the lowest absorbency that suits your flow rather than the highest "just in case." Some scholars raise a concern specifically for unmarried women regarding whether tampon use could affect the hymen — views differ on this, and it\'s a genuinely personal and religious question worth discussing with a trusted, knowledgeable person if it applies to you, rather than something with one universal answer.\n\n' +
+          'Menstrual cups are inserted internally, collect rather than absorb blood, and can be worn longer than a tampon (often up to 12 hours) — many find them cost-effective over time since they\'re reusable for years with proper cleaning. The same consideration some scholars raise about tampons and unmarried women is sometimes raised about cups too; again, worth asking directly if it\'s relevant to you.\n\n' +
+          'Period underwear (absorbent built-in layers, worn like regular underwear) is a newer external option, often used alone for lighter days or as backup alongside a pad or cup on heavier days.\n\n' +
+          'Whichever product you use, proper hygiene — regular changes, handwashing, and following the product\'s own guidance — matters more than which specific product you choose. There isn\'t one "correct" option; it comes down to comfort, flow, lifestyle, and for some women, the religious considerations noted above.',
+      },
+      {
+        key: 'general-knowledge',
+        title: 'General Knowledge Worth Having',
+        icon: 'book',
+        body:
+          'A typical menstrual cycle (from the first day of one period to the first day of the next) ranges roughly 21–35 days, and periods themselves commonly last 3–7 days. There\'s real natural variation between women, and even cycle-to-cycle in the same woman, so "normal" covers a fairly wide range. Tracking your cycle (dates, flow, symptoms) over a few months helps you notice your own pattern, which is also useful for the fiqh side of things — recognizing your personal hayd pattern is part of how some scholarly approaches to distinguishing hayd from istihadah work.\n\n' +
+          'Premenstrual symptoms (PMS) — mood changes, bloating, breast tenderness, mild cramping in the days before bleeding starts — are common and generally not something to worry about on their own. Symptoms severe enough to disrupt daily life are worth discussing with a doctor rather than just managing quietly, since there are legitimate treatment options available.\n\n' +
+          'This page is general knowledge to help you feel prepared and informed. For anything specific to your own body, a doctor or qualified healthcare provider is always the right next step.',
+      },
+    ],
+    faq: [
+      {
+        question: 'Do I need to redo my hair every time I do ghusl?',
+        answer:
+          'No. You don\'t need to undo braids, twists, or other hairstyles, as long as water can reach your scalp through them. This is a well-known concession that makes ghusl practical for daily life.',
+      },
+      {
+        question: 'Is it true I can\'t touch the Quran at all during hayd?',
+        answer:
+          'Scholars differ on this. Many permit touching the mus-haf through a cloth or cover, reading from a phone or tablet, or reciting from memory. It\'s worth asking a knowledgeable person about the specific view you want to follow, rather than assuming one universal rule.',
+      },
+      {
+        question: 'Are tampons or cups against Islamic teaching?',
+        answer:
+          'There\'s no general prohibition on either. The specific discussion some scholars raise is about unmarried women and any effect on the hymen. A genuinely personal question worth asking a trusted, knowledgeable person about if it applies to your situation, not something with one blanket answer for everyone.',
+      },
+      {
+        question: 'When should I actually see a doctor about my period?',
+        answer:
+          'If bleeding is soaking through a pad or tampon every hour for several hours, if pain is severe enough to disrupt your daily life, if your cycle suddenly becomes very irregular, or if bleeding lasts well beyond what\'s normal for you. These are all worth a proper medical opinion rather than guessing at the cause yourself.',
+      },
+    ],
+  },
 };
