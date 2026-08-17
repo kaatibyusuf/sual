@@ -2548,3 +2548,109 @@
 [data-theme="dark"] .spaces-archive-title { color: #85CCFF; }
 [data-theme="dark"] .spaces-archive-desc { color: #7f97ae; }
 [data-theme="dark"] .spaces-archive-arrow { color: #1e3448; }
+
+.spaces-plans {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.spaces-plan-card {
+  position: relative;
+  padding: 24px 18px;
+  background: #ffffff;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spaces-plan-card--featured {
+  border: 2px solid #094570;
+  box-shadow: 0 8px 24px rgba(9,69,112,0.15);
+  transform: scale(1.03);
+}
+
+.spaces-plan-badge {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #094570;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 12px;
+  border-radius: 100px;
+  letter-spacing: 0.03em;
+}
+
+.spaces-plan-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #4a6080;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+.spaces-plan-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.spaces-plan-price .spaces-currency {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #094570;
+}
+
+.spaces-plan-price .spaces-amount {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0d1b2a;
+}
+
+.spaces-plan-price .spaces-period {
+  font-size: 0.75rem;
+  color: #8a9ab0;
+}
+
+.spaces-plan-note {
+  font-size: 0.75rem;
+  color: #6a8090;
+  margin-bottom: 18px;
+  min-height: 32px;
+}
+
+.spaces-pay-btn--secondary {
+  background: #f0f4f8;
+  color: #094570;
+  box-shadow: none;
+}
+
+.spaces-pay-btn--secondary:hover {
+  background: #e8f0f8;
+}
+
+@media (max-width: 700px) {
+  .spaces-plans { grid-template-columns: 1fr; }
+  .spaces-plan-card--featured { transform: none; }
+}
+
+[data-theme="dark"] .spaces-plan-card {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-plan-card--featured { border-color: #85CCFF; }
+[data-theme="dark"] .spaces-plan-name { color: #7f97ae; }
+[data-theme="dark"] .spaces-plan-price .spaces-amount { color: #c8e0f5; }
+[data-theme="dark"] .spaces-plan-note { color: #7f97ae; }
+[data-theme="dark"] .spaces-pay-btn--secondary { background: #0a1825; color: #85CCFF; }

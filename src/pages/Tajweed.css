@@ -526,3 +526,146 @@
     font-size: 1.3rem;
   }
 }
+
+/* ── Locked section cards ── */
+.tj-section-card--locked {
+  opacity: 0.85;
+}
+
+.tj-section-card-locked-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #8a6420;
+  background: #fdf3dd;
+  border: 1px solid #ecd9a8;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+/* ── Paywall ── */
+.tj-paywall {
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.tj-paywall-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.tj-paywall-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #094570;
+  margin-bottom: 10px;
+}
+
+.tj-paywall-text {
+  font-size: 0.87rem;
+  color: #4a6080;
+  line-height: 1.7;
+  max-width: 440px;
+  margin: 0 auto 24px;
+}
+
+.tj-paywall-confirming {
+  font-size: 0.85rem;
+  color: #094570;
+  font-weight: 600;
+}
+
+.tj-paywall-plans {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.tj-paywall-plan {
+  position: relative;
+  padding: 20px 16px;
+  background: #f5f8fb;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tj-paywall-plan--featured {
+  border: 2px solid #094570;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(9,69,112,0.12);
+}
+
+.tj-paywall-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #094570;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+.tj-paywall-plan-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a6080;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.tj-paywall-plan-price {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0d1b2a;
+  margin-bottom: 4px;
+}
+
+.tj-paywall-plan-price span {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #8a9ab0;
+}
+
+.tj-paywall-plan-note {
+  font-size: 0.68rem;
+  color: #6a8090;
+  margin-bottom: 14px;
+}
+
+.tj-paywall-btn {
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #094570, #1a6fa8);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tj-paywall-btn--secondary {
+  background: #ffffff;
+  color: #094570;
+  border: 1.5px solid #c8d8e8;
+}
+
+.tj-paywall-error {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(231,76,60,0.08);
+  border: 1px solid rgba(231,76,60,0.25);
+  border-radius: 8px;
+  color: #c0392b;
+  font-size: 0.82rem;
+}

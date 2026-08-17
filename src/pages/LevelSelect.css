@@ -262,3 +262,68 @@
     padding: 24px 16px;
   }
 }
+
+/* ── RTL support for Intermediate/Advanced cards ─────────────────
+   dir="rtl" alone flips text direction and default text-align, but
+   several flex layouts in this file need explicit mirroring too —
+   otherwise you get RTL text sitting inside a layout that still
+   visually reads left-to-right (icon still on the left, dots still
+   on the left of their text, etc). */
+
+.level-card--rtl {
+  text-align: right;
+}
+
+.level-card--rtl .level-card-top {
+  flex-direction: row-reverse;
+}
+
+.level-card--rtl .level-card-icon {
+  margin-right: 0;
+  margin-left: 12px;
+}
+
+.level-card--rtl .level-card-label {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.level-card--rtl .level-card-desc {
+  font-size: 0.92rem;
+  line-height: 2;
+}
+
+.level-card--rtl .level-card-includes-title {
+  text-align: right;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.78rem;
+}
+
+.level-card--rtl .level-card-include-item {
+  flex-direction: row-reverse;
+  font-size: 0.88rem;
+  line-height: 1.8;
+}
+
+.level-card--rtl .level-card-include-dot {
+  margin-top: 7px;
+}
+
+.level-card--rtl .level-card-req {
+  text-align: right;
+}
+
+.level-card--rtl .level-card-req-label {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.72rem;
+}
+
+.level-card--rtl .level-card-req-text {
+  font-size: 0.85rem;
+}
+
+.level-card--rtl .level-card-cta {
+  font-size: 0.9rem;
+}

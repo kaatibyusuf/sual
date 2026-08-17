@@ -5,6 +5,9 @@ import { BadgeStrip } from '../components/Badges.jsx'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
+import { AccessibilityProvider, useAccessibility } from '../accessibility/AccessibilityContext.jsx'
+import TouchExploreLayer from '../accessibility/TouchExploreLayer.jsx'
+import AccessibilityToggle from '../accessibility/AccessibilityToggle.jsx'
 import './Spaces.css'
 
 // ── Line-art icons, matching Sidebar's icon style ────────────────
@@ -454,7 +457,8 @@ function buildHadithQuiz(entry, allEntries) {
   return built
 }
 
-export default function Spaces({ user }) {
+function SpacesInner({ user }) {
+  const { announce } = useAccessibility()
   const [searchParams, setSearchParams] = useSearchParams()
   const [subscription,   setSubscription]   = useState(null)
   const [subLoading,     setSubLoading]     = useState(true)
@@ -1219,6 +1223,9 @@ export default function Spaces({ user }) {
   }, [user, checkSubscription, checkReferralAccess])
 
   const isPaid = useMemo(() => {
+    if (subscription?.status === 'active' && subscription?.plan === 'spaces_lifetime') {
+      return true
+    }
     const subActive =
       subscription?.status === 'active' &&
       subscription?.expires_at &&
@@ -1272,6 +1279,9 @@ export default function Spaces({ user }) {
         { event: 'INSERT', schema: 'public', table: 'accountability_messages', filter: `pair_id=eq.${myPair.pair_id}` },
         (payload) => {
           setPairMessages(prev => prev.some(m => msgKey(m) === msgKey(payload.new)) ? prev : [...prev, payload.new])
+          if (payload.new.user_id !== user.id) {
+            announce(`New message from your accountability partner: ${payload.new.body}`)
+          }
         }
       )
       .subscribe()
@@ -1287,6 +1297,9 @@ export default function Spaces({ user }) {
         { event: 'INSERT', schema: 'public', table: 'circle_messages', filter: `circle_id=eq.${myCircle}` },
         (payload) => {
           setCircleMessages(prev => prev.some(m => msgKey(m) === msgKey(payload.new)) ? prev : [...prev, payload.new])
+          if (payload.new.user_id !== user.id) {
+            announce(`New message in your circle: ${payload.new.body}`)
+          }
         }
       )
       .subscribe()
@@ -1456,17 +1469,18 @@ export default function Spaces({ user }) {
     }
   }
 
-  const handlePaystack = async () => {
-  try {
-    const { data, error } = await supabase.functions.invoke('initialize-payment', {
-      body: { product: 'spaces' },
-    })
-    if (error || data?.error) throw new Error(data?.error || error.message)
-    window.location.href = data.authorization_url
-  } catch (err) {
-    setError(err.message)
+  const handlePaystack = async (plan) => {
+    setError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('initialize-payment', {
+        body: { product: 'spaces', plan },
+      })
+      if (error || data?.error) throw new Error(data?.error || error.message)
+      window.location.href = data.authorization_url
+    } catch (err) {
+      setError(err.message)
+    }
   }
-}
 
   const formatDate = (d) => new Date(d).toLocaleDateString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric'
@@ -1558,7 +1572,11 @@ export default function Spaces({ user }) {
             ) : pairMessages.map((m) => {
               const isOwn = m.user_id === user.id
               return (
-                <div key={msgKey(m)} className={`spaces-chat-row ${isOwn ? 'own' : 'other'}`}>
+                <div
+                  key={msgKey(m)}
+                  className={`spaces-chat-row ${isOwn ? 'own' : 'other'}`}
+                  data-a11y-label={`${isOwn ? 'You' : 'Your partner'} said: ${m.body}. ${timeAgo(m.created_at)}.`}
+                >
                   <div className={`spaces-chat-bubble ${isOwn ? 'own' : 'other'}`}>
                     <p className="spaces-chat-bubble-text">{m.body}</p>
                     <span className="spaces-chat-bubble-time">{timeAgo(m.created_at)}</span>
@@ -1858,7 +1876,11 @@ export default function Spaces({ user }) {
             ) : circleMessages.map((m) => {
               const isOwn = m.user_id === user.id
               return (
-                <div key={msgKey(m)} className={`spaces-chat-row ${isOwn ? 'own' : 'other'}`}>
+                <div
+                  key={msgKey(m)}
+                  className={`spaces-chat-row ${isOwn ? 'own' : 'other'}`}
+                  data-a11y-label={`${isOwn ? 'You' : 'A circle member'} said: ${m.body}. ${timeAgo(m.created_at)}.`}
+                >
                   <div className={`spaces-chat-bubble ${isOwn ? 'own' : 'other'}`}>
                     {!isOwn && <span className="spaces-chat-bubble-label">Member</span>}
                     <p className="spaces-chat-bubble-text">{m.body}</p>
@@ -2108,7 +2130,11 @@ export default function Spaces({ user }) {
                 ? 'spaces-chat-bubble spaces-chat-bubble--admin'
                 : `spaces-chat-bubble ${isOwn ? 'own' : 'other'}`
               return (
-                <div key={msgKey(r)} className={`spaces-chat-row ${isOwn && !r.is_admin_reply ? 'own' : 'other'}`}>
+                <div
+                  key={msgKey(r)}
+                  className={`spaces-chat-row ${isOwn && !r.is_admin_reply ? 'own' : 'other'}`}
+                  data-a11y-label={`${r.is_admin_reply ? 'Admin' : isOwn ? 'You' : 'A member'} replied: ${r.body}. ${timeAgo(r.created_at)}.`}
+                >
                   <div className={bubbleClass}>
                     <span className="spaces-chat-bubble-label">{r.is_admin_reply ? 'Admin' : isOwn ? 'You' : 'Member'}</span>
                     <p className="spaces-chat-bubble-text" style={{ whiteSpace: 'pre-wrap' }}>{r.body}</p>
@@ -2481,18 +2507,48 @@ export default function Spaces({ user }) {
               </div>
             ))}
           </div>
-          <div className="spaces-price-card">
-            <div className="spaces-price">
-              <span className="spaces-currency">₦</span>
-              <span className="spaces-amount">2,500</span>
-              <span className="spaces-period">/month</span>
+          <div className="spaces-plans">
+            <div className="spaces-plan-card">
+              <p className="spaces-plan-name">Monthly</p>
+              <div className="spaces-plan-price">
+                <span className="spaces-currency">₦</span>
+                <span className="spaces-amount">2,500</span>
+                <span className="spaces-period">/month</span>
+              </div>
+              <p className="spaces-plan-note">Cancel anytime</p>
+              <button className="spaces-pay-btn spaces-pay-btn--secondary" onClick={() => handlePaystack('monthly')}>
+                Subscribe →
+              </button>
             </div>
-            <p className="spaces-price-note">Cancel anytime. Billed monthly.</p>
-            {error && <div className="spaces-error" style={{ marginBottom: 12 }}>{error}</div>}
-            <button className="spaces-pay-btn" onClick={handlePaystack}>
-              Subscribe to Spaces →
-            </button>
+
+            <div className="spaces-plan-card spaces-plan-card--featured">
+              <span className="spaces-plan-badge">Best Value</span>
+              <p className="spaces-plan-name">Annual</p>
+              <div className="spaces-plan-price">
+                <span className="spaces-currency">₦</span>
+                <span className="spaces-amount">20,000</span>
+                <span className="spaces-period">/year</span>
+              </div>
+              <p className="spaces-plan-note">₦1,667/month · save ₦10,000 a year</p>
+              <button className="spaces-pay-btn" onClick={() => handlePaystack('annual')}>
+                Subscribe →
+              </button>
+            </div>
+
+            <div className="spaces-plan-card">
+              <p className="spaces-plan-name">Lifetime</p>
+              <div className="spaces-plan-price">
+                <span className="spaces-currency">₦</span>
+                <span className="spaces-amount">100,000</span>
+                <span className="spaces-period">once</span>
+              </div>
+              <p className="spaces-plan-note">Pay once, member forever</p>
+              <button className="spaces-pay-btn spaces-pay-btn--secondary" onClick={() => handlePaystack('lifetime')}>
+                Subscribe →
+              </button>
+            </div>
           </div>
+          {error && <div className="spaces-error" style={{ marginTop: 12 }}>{error}</div>}
           <p className="spaces-paywall-hadith">
             "Whoever Allah wants good for, He gives him understanding of the religion."
             <br /><span>Sahih Bukhari 71</span>
@@ -3049,7 +3105,7 @@ export default function Spaces({ user }) {
           )}
         </div>
         {activeTab === 'community' && (
-          <button className="spaces-new-btn" onClick={() => setShowNewPost(true)}>
+          <button className="spaces-new-btn" onClick={() => setShowNewPost(true)} data-a11y-label="Create a new post">
             + New Post
           </button>
         )}
@@ -3185,7 +3241,12 @@ export default function Spaces({ user }) {
                 const cat = catOf(post.category)
                 const isNew = lastVisit && new Date(post.created_at) > lastVisit
                 return (
-                  <button key={post.id} className="spaces-post-card card" onClick={() => openPost(post)}>
+                  <button
+                    key={post.id}
+                    className="spaces-post-card card"
+                    onClick={() => openPost(post)}
+                    data-a11y-label={`${post.title}. ${post.category} category, ${post.reply_count} ${post.reply_count === 1 ? 'reply' : 'replies'}.`}
+                  >
                     <div className="spaces-post-top">
                       <span className="spaces-cat-badge">
                         <span className="spaces-cat-dot" style={{ background: cat?.color }} />
@@ -3214,5 +3275,22 @@ export default function Spaces({ user }) {
         </>
       )}
     </div>
+  )
+}
+
+// Wraps the real page with the accessibility layer: the provider
+// holds the reader on/off state, TouchExploreLayer intercepts touches
+// while it's on, and the floating toggle button is how someone turns
+// it on in the first place. For an app-wide rollout, move this
+// AccessibilityProvider (and the toggle) up into App.jsx, above the
+// router, so the reader's on/off state and touch-explore behavior
+// persist across page navigations instead of resetting on Spaces.
+export default function Spaces({ user }) {
+  return (
+    <AccessibilityProvider>
+      <TouchExploreLayer />
+      <AccessibilityToggle />
+      <SpacesInner user={user} />
+    </AccessibilityProvider>
   )
 }

@@ -3,18 +3,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #062f4a, #094570);
+  background: linear-gradient(160deg, #062f4a, #094570, #0d6fa8);
   padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Faint oversized Arabic watermark behind the card — the same
+   treatment LevelSelect.jsx uses immediately after this screen in
+   the real user flow, so the two pages read as one continuous
+   moment rather than two unrelated designs. */
+.auth-bg-arabic {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-arabic);
+  font-size: 50vw;
+  color: rgba(255, 255, 255, 0.03);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
 }
 
 .auth-card {
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 22px;
   padding: 40px 36px;
   max-width: 420px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-logo {
@@ -47,32 +69,53 @@
   line-height: 1.5;
 }
 
+/* ── Sign In / Create Account switcher ──
+   A sliding pill indicator underneath two transparent buttons,
+   rather than two independently-colored tab buttons — the pill
+   itself carries the "you are here" state, so switching reads as
+   one continuous motion instead of two things swapping color. */
 .auth-tabs {
+  position: relative;
   display: flex;
-  gap: 8px;
   background: #f0f4f8;
-  border-radius: 10px;
+  border-radius: 999px;
   padding: 4px;
   margin-bottom: 24px;
 }
 
+.auth-tabs-indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: #094570;
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(9, 69, 112, 0.3);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-tabs-indicator--right {
+  transform: translateX(100%);
+}
+
 .auth-tab {
+  position: relative;
+  z-index: 1;
   flex: 1;
   padding: 10px 0;
   border: none;
   background: transparent;
-  border-radius: 8px;
+  border-radius: 999px;
   font-weight: 600;
   font-size: 0.9rem;
   color: #6a8090;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: color 0.2s ease;
 }
 
 .auth-tab--active {
-  background: #094570;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(9, 69, 112, 0.25);
 }
 
 .auth-field {
@@ -90,19 +133,37 @@
   margin-bottom: 6px;
 }
 
-.auth-input {
+.auth-input,
+.auth-select {
   width: 100%;
-  padding: 12px 14px;
+  padding: 13px 18px;
   border: 1.5px solid #c8d8e8;
-  border-radius: 8px;
+  border-radius: 999px;
+  font-family: var(--font-ui);
   font-size: 0.95rem;
+  color: #0d1b2a;
+  background: #ffffff;
   box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.auth-input:focus {
-  outline: none;
+.auth-input::placeholder {
+  color: #a8b8c8;
+}
+
+.auth-input:focus,
+.auth-select:focus {
   border-color: #85CCFF;
-  box-shadow: 0 0 0 3px rgba(133, 204, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(133, 204, 255, 0.25);
+}
+
+/* date/number inputs don't take a pill radius well at this height in
+   every browser's native chrome — dial it back slightly so the
+   spinner/calendar controls don't look clipped. */
+.auth-input[type="date"],
+.auth-input[type="number"] {
+  border-radius: 16px;
 }
 
 /* Wrapper for password fields so the eye-toggle button can sit
@@ -112,7 +173,7 @@
 }
 
 .auth-input-wrap .auth-input {
-  padding-right: 42px;
+  padding-right: 46px;
 }
 
 .auth-input--error {
@@ -127,7 +188,7 @@
 .auth-eye-btn {
   position: absolute;
   top: 50%;
-  right: 10px;
+  right: 14px;
   transform: translateY(-50%);
   background: none;
   border: none;
@@ -145,12 +206,14 @@
   color: #094570;
 }
 
-.auth-eye-btn:focus {
-  outline: none;
+.auth-eye-btn:focus-visible {
+  outline: 2px solid #85CCFF;
+  outline-offset: 2px;
 }
 
 .auth-field-hint {
   margin-top: 6px;
+  margin-left: 6px;
   font-size: 0.78rem;
 }
 
@@ -158,45 +221,69 @@
   color: #a02b1f;
 }
 
-.auth-error {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  background: rgba(192, 57, 43, 0.08);
-  border: 1px solid rgba(192, 57, 43, 0.25);
-  color: #a02b1f;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 0.85rem;
+/* Small eyebrow separating the credentials fields from the signup
+   profile fields, so the form reads as two short steps rather than
+   one long undifferentiated list. */
+.auth-section-label {
   text-align: left;
-  margin-bottom: 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #094570;
+  margin: 20px 0 14px;
+  padding-top: 16px;
+  border-top: 1px solid #e8f0f8;
 }
 
+.auth-error,
 .auth-info {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  background: rgba(46, 125, 50, 0.08);
-  border: 1px solid rgba(46, 125, 50, 0.25);
-  color: #1e6b22;
-  border-radius: 8px;
-  padding: 10px 12px;
+  border-radius: 12px;
+  padding: 10px 14px;
   font-size: 0.85rem;
   text-align: left;
   margin-bottom: 14px;
 }
 
+.auth-error {
+  background: rgba(192, 57, 43, 0.08);
+  border: 1px solid rgba(192, 57, 43, 0.25);
+  color: #a02b1f;
+}
+
+.auth-info {
+  background: rgba(46, 125, 50, 0.08);
+  border: 1px solid rgba(46, 125, 50, 0.25);
+  color: #1e6b22;
+}
+
+.auth-banner-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.auth-error p,
+.auth-info p {
+  margin: 0;
+  line-height: 1.4;
+}
+
 .auth-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
-  padding: 13px 0;
+  padding: 14px 0;
   background: #094570;
   color: #ffffff;
   border: none;
-  border-radius: 10px;
+  border-radius: 999px;
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 0.1s ease;
   margin-bottom: 14px;
 }
 
@@ -204,16 +291,28 @@
   background: #062f4a;
 }
 
+.auth-submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
 .auth-submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* FIX: JSX uses class "auth-forgot-link", this file previously
-   defined "auth-forgot" — the mismatch meant this button never
-   matched any rule at all and fell back to plain default browser
-   button styling, rendering bunched against the submit button above
-   with no spacing of its own. */
+.auth-submit-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: auth-spin 0.7s linear infinite;
+}
+
+@keyframes auth-spin {
+  to { transform: rotate(360deg); }
+}
+
 .auth-forgot-link {
   display: block;
   width: 100%;
@@ -228,6 +327,27 @@
 
 .auth-forgot-link:hover {
   color: #094570;
+  text-decoration: underline;
+}
+
+.auth-switch-line {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6a8090;
+  margin: 0 0 20px;
+}
+
+.auth-switch-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: #094570;
+  cursor: pointer;
+}
+
+.auth-switch-link:hover {
   text-decoration: underline;
 }
 
@@ -249,4 +369,172 @@
   font-size: 0.75rem;
   color: #8a9ab0;
   font-weight: 600;
+}
+
+/* ── Signup: paired fields (DOB+Age, Gender+Country) ── */
+.auth-field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.auth-field-row .auth-field {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .auth-field-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .auth-card {
+    padding: 32px 24px;
+  }
+}
+
+/* ============================================
+   Dark mode
+   ============================================ */
+
+[data-theme="dark"] .auth-page {
+  background: linear-gradient(160deg, #04141f, #062f4a, #094570);
+}
+
+[data-theme="dark"] .auth-bg-arabic {
+  color: rgba(255, 255, 255, 0.025);
+}
+
+[data-theme="dark"] .auth-card {
+  background: #0f1f2e;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .auth-logo-arabic,
+[data-theme="dark"] .auth-logo-latin {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .auth-tagline {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .auth-tabs {
+  background: #0a1825;
+}
+
+[data-theme="dark"] .auth-tabs-indicator {
+  background: #85CCFF;
+  box-shadow: 0 2px 10px rgba(133, 204, 255, 0.25);
+}
+
+[data-theme="dark"] .auth-tab {
+  color: #7f97ae;
+}
+
+[data-theme="dark"] .auth-tab--active {
+  color: #0a1825;
+}
+
+[data-theme="dark"] .auth-label {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .auth-input,
+[data-theme="dark"] .auth-select {
+  background: #0a1825;
+  border-color: #1e3448;
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .auth-input::placeholder {
+  color: #5c7086;
+}
+
+[data-theme="dark"] .auth-input:focus,
+[data-theme="dark"] .auth-select:focus {
+  border-color: #85CCFF;
+  box-shadow: 0 0 0 3px rgba(133, 204, 255, 0.18);
+}
+
+[data-theme="dark"] .auth-eye-btn {
+  color: #7f97ae;
+}
+
+[data-theme="dark"] .auth-eye-btn:hover {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .auth-section-label {
+  color: #85CCFF;
+  border-top-color: #1e3448;
+}
+
+[data-theme="dark"] .auth-error {
+  background: rgba(224, 108, 90, 0.1);
+  border-color: rgba(224, 108, 90, 0.3);
+  color: #e8897a;
+}
+
+[data-theme="dark"] .auth-info {
+  background: rgba(88, 179, 96, 0.1);
+  border-color: rgba(88, 179, 96, 0.3);
+  color: #7ecb85;
+}
+
+[data-theme="dark"] .auth-submit-btn {
+  background: #85CCFF;
+  color: #062f4a;
+}
+
+[data-theme="dark"] .auth-submit-btn:hover:not(:disabled) {
+  background: #a3d9ff;
+}
+
+[data-theme="dark"] .auth-submit-spinner {
+  border-color: rgba(6, 47, 74, 0.35);
+  border-top-color: #062f4a;
+}
+
+[data-theme="dark"] .auth-forgot-link {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .auth-forgot-link:hover {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .auth-switch-line {
+  color: #7f97ae;
+}
+
+[data-theme="dark"] .auth-switch-link {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .auth-quote {
+  border-top-color: #1e3448;
+}
+
+[data-theme="dark"] .auth-quote-text {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .auth-quote-source {
+  color: #7f97ae;
+}
+
+/* ============================================
+   Reduced motion
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-tabs-indicator,
+  .auth-submit-btn {
+    transition: none;
+  }
+
+  .auth-submit-spinner {
+    animation-duration: 1.4s;
+  }
 }

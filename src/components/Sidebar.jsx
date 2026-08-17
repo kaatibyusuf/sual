@@ -116,6 +116,13 @@ const ICONS = {
       <path d="M12 3a9 9 0 0 1 0 18" fill="none" />
     </svg>
   ),
+  zakaat: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="12" cy="6" rx="7" ry="3" />
+      <path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6" />
+      <path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
+    </svg>
+  ),
 }
 
 // ── Six-pillar grouping ───────────────────────────────────────
@@ -160,6 +167,7 @@ const NAV_GROUPS = [
       { path: '/calendar', label: 'Calendar', icon: 'calendar' },
       { path: '/womens-fiqh', label: "Women's Fiqh", icon: 'womensFiqh' },
       { path: '/qiwaamah', label: 'Qiwaamah', icon: 'qiwaamah' },
+      { path: '/zakaat', label: 'Everything Zakaat', icon: 'zakaat' },
     ],
   },
   {

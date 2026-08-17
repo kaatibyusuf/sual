@@ -150,3 +150,38 @@
   .lms-detail-layout { flex-direction: column; }
   .lms-detail-sidebar { position: static; width: 100%; max-height: none; }
 }
+
+/* ── Subtle brand-blue accent on cards ────────────────────────
+   Keeps the white card background (preserves contrast against the
+   blue page gradient) but ties each card back to the brand navy
+   with a top accent border and a soft corner glow. */
+
+.level-card {
+  border-top: 3px solid #094570;
+  overflow: hidden;
+}
+
+.level-card::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(9,69,112,0.08), transparent 70%);
+  pointer-events: none;
+}
+
+.level-card--rtl::before {
+  right: auto;
+  left: -30px;
+}
+
+/* On hover/selection, the top border shifts to the level's own
+   accent color instead of staying navy, so the existing hover/
+   selected states still read clearly per-level. */
+.level-card:hover:not(:disabled),
+.level-card--selected {
+  border-top-color: var(--level-color);
+}

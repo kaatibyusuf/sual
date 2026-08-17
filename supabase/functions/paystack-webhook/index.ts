@@ -12,14 +12,24 @@
 // so the subscription-renewal-reminder function can send a fresh
 // reminder ahead of the new expiry date).
 //
-// Two products share this one webhook, since Paystack only supports
+// Three products share this one webhook, since Paystack only supports
 // one registered webhook URL per account:
-//   - Spaces subscriptions: reference sual_<uuid>_<epoch ms>
+//   - Spaces subscriptions: reference sual_<plan>_<uuid>_<epoch ms>
+//     where <plan> is "monthly", "annual", or "lifetime"
 //   - Book Quiz subscriptions: reference bookquiz_<plan>_<uuid>_<epoch ms>
 //     where <plan> is "monthly" or "annual"
-// Each writes to its own table (subscriptions vs book_quiz_subscriptions)
-// so the two products stay fully independent — a user can hold both,
-// either, or neither.
+//   - Tajweed Course subscriptions: reference tajweed_<plan>_<uuid>_<epoch ms>
+//     where <plan> is "monthly" or "annual"
+// Each writes to its own table (subscriptions / book_quiz_subscriptions /
+// tajweed_subscriptions) so all three products stay fully independent —
+// a user can hold any combination of them.
+//
+// Lifetime Spaces members get expires_at = null (never expires) and
+// plan = 'spaces_lifetime'. The frontend's isPaid check treats
+// plan === 'spaces_lifetime' as always-active without checking
+// expires_at at all. subscription-renewal-reminder's query filters
+// on expires_at ranges, so lifetime rows (null expires_at) simply
+// never match and are correctly never reminded.
 //
 // Deploy:  supabase functions deploy paystack-webhook --no-verify-jwt
 // Secrets: supabase secrets set PAYSTACK_SECRET_KEY=your_paystack_secret_key
@@ -53,16 +63,19 @@ async function verifySignature(rawBody: string, signature: string | null): Promi
 }
 
 // ── Reference parsing ────────────────────────────────────────
-// Returns { product: 'spaces' | 'bookquiz', userId, plan? } or null
-// if the reference doesn't match either known pattern.
+// Returns { product: 'spaces' | 'bookquiz' | 'tajweed', userId, plan }
+// or null if the reference doesn't match any known pattern.
 function parseReference(reference: string | null) {
   if (!reference) return null
 
-  const spacesMatch = reference.match(/^sual_([0-9a-fA-F-]{36})_/)
-  if (spacesMatch) return { product: 'spaces' as const, userId: spacesMatch[1] }
+  const spacesMatch = reference.match(/^sual_(monthly|annual|lifetime)_([0-9a-fA-F-]{36})_/)
+  if (spacesMatch) return { product: 'spaces' as const, plan: spacesMatch[1], userId: spacesMatch[2] }
 
   const bookQuizMatch = reference.match(/^bookquiz_(monthly|annual)_([0-9a-fA-F-]{36})_/)
   if (bookQuizMatch) return { product: 'bookquiz' as const, plan: bookQuizMatch[1], userId: bookQuizMatch[2] }
+
+  const tajweedMatch = reference.match(/^tajweed_(monthly|annual)_([0-9a-fA-F-]{36})_/)
+  if (tajweedMatch) return { product: 'tajweed' as const, plan: tajweedMatch[1], userId: tajweedMatch[2] }
 
   return null
 }
@@ -83,7 +96,7 @@ async function resolveUserIdByEmail(email: string | null) {
   }
 }
 
-function welcomeEmailHtml(product: 'spaces' | 'bookquiz'): string {
+function welcomeEmailHtml(product: 'spaces' | 'bookquiz' | 'tajweed', plan?: string): string {
   if (product === 'bookquiz') {
     return `
       <h1>Assalamu alaykum, and welcome to Book Quiz</h1>
@@ -95,6 +108,24 @@ function welcomeEmailHtml(product: 'spaces' | 'bookquiz'): string {
       <p>— The Sual team</p>
     `
   }
+
+  if (product === 'tajweed') {
+    return `
+      <h1>Assalamu alaykum, and welcome to the Tajweed Course</h1>
+      <p>Your Tajweed Course subscription is now active. You now have full access to every
+      section — from Noon Sakinah and Meem Sakinah rules through Madd, Waqf, the Ten Qiraat,
+      and beyond.</p>
+      <p>If anything about your access looks wrong, just reply to this email — this message
+      is our record that your subscription was confirmed and access was granted.</p>
+      <p>بارك الله فيك</p>
+      <p>— The Sual team</p>
+    `
+  }
+
+  // product === 'spaces'
+  const lifetimeLine = plan === 'lifetime'
+    ? `<p>Your membership is a one-time lifetime purchase — no renewal, ever.</p>`
+    : ''
   return `
     <h1>Assalamu alaykum, and welcome to Spaces</h1>
     <p>Your Spaces subscription is now active. You have full access to:</p>
@@ -104,6 +135,7 @@ function welcomeEmailHtml(product: 'spaces' | 'bookquiz'): string {
       <li>The Hadeeth programme (the Arba'in through Sahih al-Bukhari with Fath al-Bari)</li>
       <li>Live class sessions — Hadeeth on Saturdays, Arabiyyah on Sundays, 9–10pm</li>
     </ul>
+    ${lifetimeLine}
     <p>If anything about your access looks wrong, just reply to this email — this message
     is our record that your subscription was confirmed and access was granted.</p>
     <p>بارك الله فيك</p>
@@ -111,8 +143,14 @@ function welcomeEmailHtml(product: 'spaces' | 'bookquiz'): string {
   `
 }
 
-async function sendWelcomeEmail(email: string, product: 'spaces' | 'bookquiz'): Promise<{ ok: boolean; resendId: string | null; error: string | null }> {
+async function sendWelcomeEmail(email: string, product: 'spaces' | 'bookquiz' | 'tajweed', plan?: string): Promise<{ ok: boolean; resendId: string | null; error: string | null }> {
   try {
+    const subject = product === 'bookquiz'
+      ? 'Welcome to Sual Book Quiz — your access is confirmed'
+      : product === 'tajweed'
+      ? 'Welcome to Sual Tajweed Course — your access is confirmed'
+      : 'Welcome to Sual Spaces — your access is confirmed'
+
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -122,10 +160,8 @@ async function sendWelcomeEmail(email: string, product: 'spaces' | 'bookquiz'): 
       body: JSON.stringify({
         from: FROM_ADDRESS,
         to: email,
-        subject: product === 'bookquiz'
-          ? 'Welcome to Sual Book Quiz — your access is confirmed'
-          : 'Welcome to Sual Spaces — your access is confirmed',
-        html: welcomeEmailHtml(product),
+        subject,
+        html: welcomeEmailHtml(product, plan),
       }),
     })
     const body = await res.json()
@@ -179,7 +215,7 @@ serve(async (req) => {
     const parsed = parseReference(reference)
 
     if (!parsed) {
-      // Doesn't match either known product's reference format —
+      // Doesn't match any known product's reference format —
       // acknowledge without action rather than guessing.
       console.error('Unrecognized charge.success reference format:', { reference, email })
       return new Response(JSON.stringify({ warning: 'unrecognized reference format' }), { status: 200 })
@@ -202,15 +238,36 @@ serve(async (req) => {
         .maybeSingle()
 
       const isFirstActivation = !existing?.welcome_email_sent_at
-      const nextPaymentDate = data.plan_object?.next_payment_date ?? null
-      const expiresAt = nextPaymentDate
-        ? nextPaymentDate
-        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+
+      // Lifetime never expires (expires_at stays null); annual and
+      // monthly fall back to a computed date if Paystack doesn't
+      // supply next_payment_date (e.g. a one-off, non-recurring
+      // charge rather than a Paystack Plan-based subscription).
+      let expiresAt: string | null
+      let planName: string
+      let defaultAmount: number
+      if (parsed.plan === 'lifetime') {
+        expiresAt = null
+        planName = 'spaces_lifetime'
+        defaultAmount = 100000
+      } else if (parsed.plan === 'annual') {
+        expiresAt = data.plan_object?.next_payment_date
+          ?? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+        planName = 'spaces_annual'
+        defaultAmount = 20000
+      } else {
+        expiresAt = data.plan_object?.next_payment_date
+          ?? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        planName = 'spaces_monthly'
+        defaultAmount = 2500
+      }
 
       // A user only counts as "recurring" once they've completed at
       // least one renewal after their original activation — the very
       // first charge.success (before welcome_email_sent_at exists)
-      // isn't itself a renewal.
+      // isn't itself a renewal. A lifetime purchase is a single
+      // payment by nature, so it naturally stays at 0 here too,
+      // which is accurate (not a renewal pattern).
       const renewalCount = isFirstActivation ? 0 : (existing?.renewal_count ?? 0) + 1
 
       const { error: upsertError } = await supabaseAdmin
@@ -220,13 +277,15 @@ serve(async (req) => {
           paystack_customer_code: customerCode,
           paystack_subscription_code: subscriptionCode,
           status: 'active',
-          plan: 'spaces_monthly',
-          amount: data.amount ? Math.round(data.amount / 100) : 2500,
+          plan: planName,
+          amount: data.amount ? Math.round(data.amount / 100) : defaultAmount,
           started_at: existing?.started_at ?? new Date().toISOString(),
           expires_at: expiresAt,
           renewal_count: renewalCount,
           // New cycle just started — clear so the reminder function
           // can send a fresh one ahead of this new expiry date.
+          // Irrelevant for lifetime (expires_at is null, so the
+          // reminder query will never match this row regardless).
           renewal_reminder_sent_at: null,
         }, { onConflict: 'user_id' })
 
@@ -236,14 +295,14 @@ serve(async (req) => {
       }
 
       if (isFirstActivation && email) {
-        const result = await sendWelcomeEmail(email, 'spaces')
+        const result = await sendWelcomeEmail(email, 'spaces', parsed.plan)
         await logEmail(userId, email, 'Welcome to Sual Spaces — your access is confirmed', result, 'spaces_welcome')
         if (result.ok) {
           await supabaseAdmin.from('subscriptions').update({ welcome_email_sent_at: new Date().toISOString() }).eq('user_id', userId)
         }
       }
 
-      return new Response(JSON.stringify({ ok: true, product: 'spaces', welcomeEmailSent: isFirstActivation, renewalCount }), {
+      return new Response(JSON.stringify({ ok: true, product: 'spaces', plan: planName, welcomeEmailSent: isFirstActivation, renewalCount }), {
         headers: { 'Content-Type': 'application/json' },
       })
     }
@@ -295,17 +354,71 @@ serve(async (req) => {
         headers: { 'Content-Type': 'application/json' },
       })
     }
+
+    if (parsed.product === 'tajweed') {
+      const plan = parsed.plan === 'annual' ? 'tajweed_annual' : 'tajweed_monthly'
+      const durationDays = parsed.plan === 'annual' ? 365 : 30
+
+      const { data: existing } = await supabaseAdmin
+        .from('tajweed_subscriptions')
+        .select('welcome_email_sent_at, started_at, renewal_count')
+        .eq('user_id', userId)
+        .maybeSingle()
+
+      const isFirstActivation = !existing?.welcome_email_sent_at
+      const expiresAt = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString()
+
+      const renewalCount = isFirstActivation ? 0 : (existing?.renewal_count ?? 0) + 1
+
+      const { error: upsertError } = await supabaseAdmin
+        .from('tajweed_subscriptions')
+        .upsert({
+          user_id: userId,
+          paystack_customer_code: customerCode,
+          paystack_subscription_code: subscriptionCode,
+          status: 'active',
+          plan,
+          amount: data.amount ? Math.round(data.amount / 100) : (parsed.plan === 'annual' ? 10000 : 1500),
+          started_at: existing?.started_at ?? new Date().toISOString(),
+          expires_at: expiresAt,
+          renewal_count: renewalCount,
+          renewal_reminder_sent_at: null,
+        }, { onConflict: 'user_id' })
+
+      if (upsertError) {
+        console.error('Failed to upsert Tajweed subscription:', upsertError)
+        return new Response(JSON.stringify({ error: upsertError.message }), { status: 500 })
+      }
+
+      if (isFirstActivation && email) {
+        const result = await sendWelcomeEmail(email, 'tajweed')
+        await logEmail(userId, email, 'Welcome to Sual Tajweed Course — your access is confirmed', result, 'tajweed_welcome')
+        if (result.ok) {
+          await supabaseAdmin.from('tajweed_subscriptions').update({ welcome_email_sent_at: new Date().toISOString() }).eq('user_id', userId)
+        }
+      }
+
+      return new Response(JSON.stringify({ ok: true, product: 'tajweed', plan, welcomeEmailSent: isFirstActivation, renewalCount }), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
   }
 
   if (eventType === 'subscription.disable') {
+    // Lifetime and one-off charges never create a Paystack recurring
+    // subscription object, so this event simply never fires for
+    // those rows — nothing extra needed here to protect lifetime
+    // members from being deactivated by this handler.
     const subscriptionCode = data.subscription_code ?? null
     if (subscriptionCode) {
-      const [{ error: err1 }, { error: err2 }] = await Promise.all([
+      const [{ error: err1 }, { error: err2 }, { error: err3 }] = await Promise.all([
         supabaseAdmin.from('subscriptions').update({ status: 'inactive' }).eq('paystack_subscription_code', subscriptionCode),
         supabaseAdmin.from('book_quiz_subscriptions').update({ status: 'inactive' }).eq('paystack_subscription_code', subscriptionCode),
+        supabaseAdmin.from('tajweed_subscriptions').update({ status: 'inactive' }).eq('paystack_subscription_code', subscriptionCode),
       ])
       if (err1) console.error('Failed to mark Spaces subscription inactive:', err1)
       if (err2) console.error('Failed to mark Book Quiz subscription inactive:', err2)
+      if (err3) console.error('Failed to mark Tajweed subscription inactive:', err3)
     }
     return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json' } })
   }

@@ -27,6 +27,12 @@ const ICONS = {
   ),
 }
 
+// Beginner is displayed in English throughout, as before. Intermediate
+// and Advanced are displayed fully in Arabic (description, curriculum,
+// requirement, CTA) — only the top-level `label` (used elsewhere in the
+// app, e.g. Home's level badge) and the stored `key` stay in English,
+// since those aren't user-facing translation targets and other parts
+// of the app key off `key`/`label` directly.
 const LEVELS = [
   {
     key: 'beginner',
@@ -36,7 +42,9 @@ const LEVELS = [
     color: '#2e7d32',
     bg: 'rgba(46,125,50,0.08)',
     border: 'rgba(46,125,50,0.25)',
+    rtl: false,
     description: 'You are new to the Islamic sciences or want to build a solid foundation. Start here with the essentials of Fiqh, Seerah, and Arabic.',
+    includesTitle: 'What you will study:',
     includes: [
       'Core Fiqh — Taharah, Salah, Zakah, Sawm, Hajj',
       'Foundational Seerah — Birth to Hijrah',
@@ -44,7 +52,9 @@ const LEVELS = [
       'Introduction to Tajweed',
       '50 beginner Q&As per discipline',
     ],
+    requirementLabel: 'Requirement:',
     requirement: 'No prior requirement — start immediately',
+    cta: 'Begin as Beginner →',
   },
   {
     key: 'intermediate',
@@ -54,15 +64,19 @@ const LEVELS = [
     color: '#e65100',
     bg: 'rgba(230,81,0,0.08)',
     border: 'rgba(230,81,0,0.25)',
-    description: 'You have studied the basics and are ready to go deeper. Engage with scholarly opinions, complex rulings, and classical texts.',
+    rtl: true,
+    description: 'إن كنت قد درست الأساسيات وأصبحت مستعدًا للتعمق أكثر، فهذا المستوى لك. تفاعل مع أقوال العلماء، والأحكام المعقدة، والنصوص الكلاسيكية.',
+    includesTitle: 'ما ستدرسه:',
     includes: [
-      'Advanced Fiqh — Khilaf, Maqasid, Muamalat',
-      'Detailed Seerah — Madinah period, Battles, Companions',
-      'Nahw and Sarf — Intermediate grammar',
-      'Usul al-Fiqh — Principles of jurisprudence',
-      '50 intermediate Q&As per discipline',
+      'الفقه المتقدم — الخلاف، المقاصد، المعاملات',
+      'السيرة التفصيلية — العهد المدني، الغزوات، الصحابة',
+      'النحو والصرف — قواعد متوسطة',
+      'أصول الفقه — مبادئ الاجتهاد والاستنباط',
+      '٥٠ سؤالًا متوسط المستوى لكل علم',
     ],
-    requirement: 'Complete all Beginner content with 70% quiz average',
+    requirementLabel: 'الشرط:',
+    requirement: 'إتمام جميع محتوى المستوى المبتدئ بمعدل ٧٠٪ في الاختبارات',
+    cta: '← ابدأ كمتوسط',
   },
   {
     key: 'advanced',
@@ -72,15 +86,19 @@ const LEVELS = [
     color: '#6a1b9a',
     bg: 'rgba(106,27,154,0.08)',
     border: 'rgba(106,27,154,0.25)',
-    description: 'You are a serious student of knowledge engaging with classical texts, scholarly methodology, and deep analysis of the Islamic sciences.',
+    rtl: true,
+    description: 'أنت طالب علم جاد تتعامل مع النصوص الكلاسيكية، ومناهج العلماء، والتحليل العميق للعلوم الإسلامية.',
+    includesTitle: 'ما ستدرسه:',
     includes: [
-      'Fiqh al-Nawazil — Contemporary rulings',
-      'Tafseer — Classical and analytical methodology',
-      'Advanced Usul — Ijtihad, Qiyas, Maslaha',
-      'Hadith Sciences — Mustalah, Rijal, Takhrij',
-      '50 advanced Q&As per discipline',
+      'فقه النوازل — الأحكام المعاصرة',
+      'التفسير — المنهج الكلاسيكي والتحليلي',
+      'أصول متقدمة — الاجتهاد، القياس، المصلحة',
+      'علوم الحديث — المصطلح، الرجال، التخريج',
+      '٥٠ سؤالًا متقدمًا لكل علم',
     ],
-    requirement: 'Complete all Intermediate content with 75% quiz average',
+    requirementLabel: 'الشرط:',
+    requirement: 'إتمام جميع محتوى المستوى المتوسط بمعدل ٧٥٪ في الاختبارات',
+    cta: '← ابدأ كمتقدم',
   },
 ]
 
@@ -133,9 +151,10 @@ export default function LevelSelect({ user, onLevelSelected }) {
             return (
               <button
                 key={level.key}
-                className={`level-card ${isSaving ? 'level-card--selected' : ''}`}
+                className={`level-card ${isSaving ? 'level-card--selected' : ''} ${level.rtl ? 'level-card--rtl' : ''}`}
                 onClick={() => choose(level.key)}
                 disabled={!!saving}
+                dir={level.rtl ? 'rtl' : 'ltr'}
                 style={{
                   '--level-color': level.color,
                   '--level-bg': level.bg,
@@ -146,33 +165,35 @@ export default function LevelSelect({ user, onLevelSelected }) {
                 <div className="level-card-top">
                   <span className="level-card-icon">{ICONS[level.icon]}</span>
                   <div className="level-card-titles">
-                    <h2 className="level-card-label">{level.label}</h2>
-                    <p className="level-card-arabic arabic">{level.arabic}</p>
+                    <h2 className={`level-card-label ${level.rtl ? 'arabic' : ''}`}>
+                      {level.rtl ? level.arabic : level.label}
+                    </h2>
+                    {!level.rtl && <p className="level-card-arabic arabic">{level.arabic}</p>}
                   </div>
                   <div className={`level-card-check ${isSaving ? 'level-card-check--active' : ''}`}>
                     {isSaving ? '…' : ''}
                   </div>
                 </div>
 
-                <p className="level-card-desc">{level.description}</p>
+                <p className={`level-card-desc ${level.rtl ? 'arabic' : ''}`}>{level.description}</p>
 
                 <div className="level-card-includes">
-                  <p className="level-card-includes-title">What you will study:</p>
+                  <p className={`level-card-includes-title ${level.rtl ? 'arabic' : ''}`}>{level.includesTitle}</p>
                   {level.includes.map((item, i) => (
                     <div key={i} className="level-card-include-item">
                       <span className="level-card-include-dot" style={{ background: level.color }} />
-                      <span>{item}</span>
+                      <span className={level.rtl ? 'arabic' : ''}>{item}</span>
                     </div>
                   ))}
                 </div>
 
                 <div className="level-card-req" style={{ borderColor: level.border, background: level.bg }}>
-                  <span className="level-card-req-label">Requirement:</span>
-                  <span className="level-card-req-text">{level.requirement}</span>
+                  <span className={`level-card-req-label ${level.rtl ? 'arabic' : ''}`}>{level.requirementLabel}</span>
+                  <span className={`level-card-req-text ${level.rtl ? 'arabic' : ''}`}>{level.requirement}</span>
                 </div>
 
-                <div className="level-card-cta" style={{ color: level.color }}>
-                  {isSaving ? 'Saving...' : `Begin as ${level.label} →`}
+                <div className={`level-card-cta ${level.rtl ? 'arabic' : ''}`} style={{ color: level.color }}>
+                  {isSaving ? (level.rtl ? '...جارٍ الحفظ' : 'Saving...') : level.cta}
                 </div>
               </button>
             )

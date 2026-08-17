@@ -138,6 +138,7 @@ const MORE_ITEMS = [
   { to: '/spaces', icon: 'spaces', label: 'Spaces' },
   { to: '/hifdh', icon: 'hifdh', label: 'Hifdh' },
   { to: '/journey', icon: 'journey', label: 'Journey' },
+  { to: '/zakaat', icon: 'zakaat', label: 'Everything Zakaat' },
 ]
 
 export default function BottomNav() {

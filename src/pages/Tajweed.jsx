@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import { supabase } from '../lib/supabase.js'
 import { TAJWEED_SECTIONS, TAJWEED_SCHOLARS } from '../data/tajweed.js'
 import './Tajweed.css'
 
@@ -9,12 +10,134 @@ const LEVEL_COLORS = {
   advanced: { bg: '#f3e5f5', color: '#6a1b9a', border: '#ce93d8', label: 'Advanced' },
 }
 
-export default function Tajweed() {
+// tj1 (Introduction/Makharij/Sifaat) and tj2 (Noon Sakinah rules) are
+// free for every signed-in user. tj3 onward requires an active
+// tajweed_subscriptions row. Kept as a plain array (not derived from
+// TAJWEED_SECTIONS) so the free/paid line is explicit and easy to
+// audit at a glance, rather than implied by array position.
+const FREE_SECTION_IDS = ['tj1', 'tj2']
+
+export default function Tajweed({ user }) {
   const [activeSection, setActiveSection] = useState(null)
   const [activeRule, setActiveRule] = useState(null)
   const [filter, setFilter] = useState('all')
 
+  const [subscription, setSubscription] = useState(null)
+  const [subLoading, setSubLoading] = useState(true)
+  const [confirmingPayment, setConfirmingPayment] = useState(false)
+  const [payError, setPayError] = useState(null)
+
   const levels = ['all', 'foundation', 'beginner', 'intermediate', 'advanced']
+
+  const checkSubscription = useCallback(async () => {
+    if (!user) { setSubLoading(false); return }
+    setSubLoading(true)
+    try {
+      const { data } = await supabase
+        .from('tajweed_subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      setSubscription(data)
+    } catch {
+      setSubscription(null)
+    } finally {
+      setSubLoading(false)
+    }
+  }, [user])
+
+  useEffect(() => { checkSubscription() }, [checkSubscription])
+
+  useEffect(() => {
+    if (!user) return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('payment') === 'success') {
+      window.history.replaceState({}, '', '/tajweed')
+      setConfirmingPayment(true)
+      let attempts = 0
+      const poll = setInterval(async () => {
+        attempts++
+        const { data } = await supabase
+          .from('tajweed_subscriptions')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        if (data?.status === 'active') {
+          setSubscription(data)
+          setConfirmingPayment(false)
+          clearInterval(poll)
+        } else if (attempts >= 8) {
+          setConfirmingPayment(false)
+          clearInterval(poll)
+        }
+      }, 5000)
+      return () => clearInterval(poll)
+    }
+  }, [user])
+
+  const isPaid = useMemo(() => {
+    if (!subscription) return false
+    return subscription.status === 'active' &&
+      subscription.expires_at &&
+      new Date(subscription.expires_at) > new Date()
+  }, [subscription])
+
+  const isSectionLocked = (sectionId) => !FREE_SECTION_IDS.includes(sectionId) && !isPaid
+
+  const handlePaystack = async (plan) => {
+    setPayError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('initialize-payment', {
+        body: { product: 'tajweed', plan },
+      })
+      if (error || data?.error) throw new Error(data?.error || error.message)
+      window.location.href = data.authorization_url
+    } catch (err) {
+      setPayError(err.message)
+    }
+  }
+
+  const openSection = (sectionId) => {
+    setActiveSection(sectionId)
+    setActiveRule(null)
+    setFilter('all')
+  }
+
+  const renderPaywall = (section) => (
+    <div className="tj-paywall card">
+      <span className="tj-paywall-icon">🔒</span>
+      <h2 className="tj-paywall-title">{section.title} is part of the full Tajweed course</h2>
+      <p className="tj-paywall-text">
+        {section.title} is available to Tajweed course subscribers. Introduction to Tajweed
+        (Makharij and Sifaat) and Noon Sakinah &amp; Tanween remain free for everyone.
+      </p>
+
+      {confirmingPayment ? (
+        <p className="tj-paywall-confirming">Confirming your payment — this can take up to a minute.</p>
+      ) : (
+        <div className="tj-paywall-plans">
+          <div className="tj-paywall-plan">
+            <p className="tj-paywall-plan-name">Monthly</p>
+            <p className="tj-paywall-plan-price">₦1,500<span>/month</span></p>
+            <button className="tj-paywall-btn tj-paywall-btn--secondary" onClick={() => handlePaystack('monthly')}>
+              Subscribe →
+            </button>
+          </div>
+          <div className="tj-paywall-plan tj-paywall-plan--featured">
+            <span className="tj-paywall-badge">Best Value</span>
+            <p className="tj-paywall-plan-name">Annual</p>
+            <p className="tj-paywall-plan-price">₦10,000<span>/year</span></p>
+            <p className="tj-paywall-plan-note">₦833/month · save ₦8,000 a year</p>
+            <button className="tj-paywall-btn" onClick={() => handlePaystack('annual')}>
+              Subscribe →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {payError && <div className="tj-paywall-error">{payError}</div>}
+    </div>
+  )
 
   if (activeRule && activeSection) {
     const section = TAJWEED_SECTIONS.find(s => s.id === activeSection)
@@ -82,6 +205,8 @@ export default function Tajweed() {
     const section = TAJWEED_SECTIONS.find(s => s.id === activeSection)
     if (!section) return null
 
+    const locked = isSectionLocked(section.id)
+
     const filteredRules = filter === 'all'
       ? section.rules
       : section.rules.filter(r => r.level === filter)
@@ -104,56 +229,66 @@ export default function Tajweed() {
           <p className="tj-overview-text">{section.overview}</p>
         </div>
 
-        {/* Level filter */}
-        <div className="tj-filter-row">
-          {levels.map(l => (
-            <button
-              key={l}
-              className={`tj-filter-btn ${filter === l ? 'tj-filter-btn--active' : ''}`}
-              onClick={() => setFilter(l)}
-              style={filter === l && l !== 'all' ? {
-                background: LEVEL_COLORS[l]?.bg,
-                color: LEVEL_COLORS[l]?.color,
-                borderColor: LEVEL_COLORS[l]?.border,
-              } : {}}
-            >
-              {l === 'all' ? 'All' : LEVEL_COLORS[l].label}
-            </button>
-          ))}
-        </div>
+        {subLoading ? (
+          <div className="tj-paywall card">
+            <p className="tj-paywall-confirming">Checking your access…</p>
+          </div>
+        ) : locked ? (
+          renderPaywall(section)
+        ) : (
+          <>
+            {/* Level filter */}
+            <div className="tj-filter-row">
+              {levels.map(l => (
+                <button
+                  key={l}
+                  className={`tj-filter-btn ${filter === l ? 'tj-filter-btn--active' : ''}`}
+                  onClick={() => setFilter(l)}
+                  style={filter === l && l !== 'all' ? {
+                    background: LEVEL_COLORS[l]?.bg,
+                    color: LEVEL_COLORS[l]?.color,
+                    borderColor: LEVEL_COLORS[l]?.border,
+                  } : {}}
+                >
+                  {l === 'all' ? 'All' : LEVEL_COLORS[l].label}
+                </button>
+              ))}
+            </div>
 
-        <div className="tj-rules-list">
-          {filteredRules.map(rule => {
-            const lc = LEVEL_COLORS[rule.level]
-            return (
-              <button
-                key={rule.id}
-                className="tj-rule-card card"
-                onClick={() => setActiveRule(rule.id)}
-              >
-                <div className="tj-rule-card-top">
-                  <span
-                    className="tj-level-badge"
-                    style={{ background: lc.bg, color: lc.color, border: `1px solid ${lc.border}` }}
+            <div className="tj-rules-list">
+              {filteredRules.map(rule => {
+                const lc = LEVEL_COLORS[rule.level]
+                return (
+                  <button
+                    key={rule.id}
+                    className="tj-rule-card card"
+                    onClick={() => setActiveRule(rule.id)}
                   >
-                    {lc.label}
-                  </span>
-                  {rule.examples?.length > 0 && (
-                    <span className="tj-examples-count">{rule.examples.length} examples</span>
-                  )}
-                </div>
-                <h3 className="tj-rule-card-name">{rule.name}</h3>
-                <p className="tj-rule-card-arabic arabic">{rule.arabic}</p>
-                <p className="tj-rule-card-preview">
-                  {rule.explanation.slice(0, 150)}...
-                </p>
-                <div className="tj-rule-card-footer">
-                  <span className="tj-rule-card-read">Read Rule →</span>
-                </div>
-              </button>
-            )
-          })}
-        </div>
+                    <div className="tj-rule-card-top">
+                      <span
+                        className="tj-level-badge"
+                        style={{ background: lc.bg, color: lc.color, border: `1px solid ${lc.border}` }}
+                      >
+                        {lc.label}
+                      </span>
+                      {rule.examples?.length > 0 && (
+                        <span className="tj-examples-count">{rule.examples.length} examples</span>
+                      )}
+                    </div>
+                    <h3 className="tj-rule-card-name">{rule.name}</h3>
+                    <p className="tj-rule-card-arabic arabic">{rule.arabic}</p>
+                    <p className="tj-rule-card-preview">
+                      {rule.explanation.slice(0, 150)}...
+                    </p>
+                    <div className="tj-rule-card-footer">
+                      <span className="tj-rule-card-read">Read Rule →</span>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </>
+        )}
       </div>
     )
   }
@@ -194,14 +329,15 @@ export default function Tajweed() {
       <div className="tj-sections-grid">
         {TAJWEED_SECTIONS.map(section => {
           const totalRules = section.rules.length
-          const levels = [...new Set(section.rules.map(r => r.level))]
+          const sectionLevels = [...new Set(section.rules.map(r => r.level))]
+          const locked = isSectionLocked(section.id)
           return (
             <button
               key={section.id}
-              className="tj-section-card card"
-              onClick={() => { setActiveSection(section.id); setActiveRule(null); setFilter('all') }}
+              className={`tj-section-card card ${locked ? 'tj-section-card--locked' : ''}`}
+              onClick={() => openSection(section.id)}
             >
-              <div className="tj-section-card-icon">{section.icon}</div>
+              <div className="tj-section-card-icon">{locked ? '🔒' : section.icon}</div>
               <h3 className="tj-section-card-title">{section.title}</h3>
               <p className="tj-section-card-arabic arabic">{section.arabicTitle}</p>
               <p className="tj-section-card-overview">
@@ -210,7 +346,7 @@ export default function Tajweed() {
               <div className="tj-section-card-footer">
                 <span className="tj-section-card-count">{totalRules} {totalRules === 1 ? 'rule' : 'rules'}</span>
                 <div className="tj-section-card-levels">
-                  {levels.map(l => (
+                  {sectionLevels.map(l => (
                     <span
                       key={l}
                       className="tj-section-level-dot"
@@ -219,7 +355,11 @@ export default function Tajweed() {
                     />
                   ))}
                 </div>
-                <span className="tj-section-card-read">Explore →</span>
+                {locked ? (
+                  <span className="tj-section-card-locked-badge">Paid</span>
+                ) : (
+                  <span className="tj-section-card-read">Explore →</span>
+                )}
               </div>
             </button>
           )
