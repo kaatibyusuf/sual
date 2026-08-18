@@ -130,6 +130,19 @@ const ICONS = {
       <polyline points="6 11 12 5 18 11" />
     </svg>
   ),
+  unlock: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="10" width="16" height="10" rx="2" />
+      <path d="M8 10V7a4 4 0 0 1 7.75-1.5" />
+    </svg>
+  ),
+  coins: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="12" cy="6" rx="7" ry="3" />
+      <path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6" />
+      <path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
+    </svg>
+  ),
 }
 
 // The tiles below the hero — same destinations as before, now
@@ -362,6 +375,19 @@ export default function Home({ user }) {
           </div>
         </div>
       )}
+
+      {/* ── Refer a friend, get free access to Spaces. Links to
+          Profile, where the existing referral link/progress
+          (ReferralProgress) already lives. Padlock = unlocked
+          access, coins = the reward itself. ── */}
+      <Link to="/profile" className="hm-referral">
+        <span className="hm-referral-icons">
+          <span className="hm-referral-icon hm-referral-icon--lock">{ICONS.unlock}</span>
+          <span className="hm-referral-icon hm-referral-icon--coins">{ICONS.coins}</span>
+        </span>
+        <span className="hm-referral-text">Refer and get free access to Spaces</span>
+        <span className="hm-referral-arrow" aria-hidden="true">→</span>
+      </Link>
 
       <SpacesCTA user={user} variant="default" />
     </div>

@@ -356,6 +356,74 @@
   color: var(--hm-sky);
 }
 
+/* ── Referral banner ────────────────────────────────────────── */
+.hm-referral {
+  --hm-referral-bg: var(--hm-navy);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  background: var(--hm-referral-bg);
+  border-radius: 14px;
+  text-decoration: none;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.hm-referral:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.hm-referral-icons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 50px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.hm-referral-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  border: 2px solid var(--hm-referral-bg);
+}
+
+.hm-referral-icon svg {
+  width: 17px;
+  height: 17px;
+  color: #ffffff;
+}
+
+.hm-referral-icon--lock {
+  left: 0;
+  z-index: 1;
+}
+
+.hm-referral-icon--coins {
+  left: 20px;
+}
+
+.hm-referral-text {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hm-referral-arrow {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+
 /* ── Hero: navy in light mode (set above), white in dark mode —
    every child element flips from white-on-navy to navy-on-white
    along with it, rather than just swapping the background alone. ── */
@@ -423,26 +491,35 @@
    else in the app. */
 [data-theme="dark"] .hm-tile,
 [data-theme="dark"] .hm-standing-card,
-[data-theme="dark"] .hm-activity-card {
+[data-theme="dark"] .hm-activity-card,
+[data-theme="dark"] .hm-referral {
   background: #0f1f2e;
   border: 1px solid #1e3448;
+  --hm-referral-bg: #0f1f2e;
 }
 
 [data-theme="dark"] .hm-tile-icon,
 [data-theme="dark"] .hm-standing-icon svg,
-[data-theme="dark"] .hm-activity-badge svg {
+[data-theme="dark"] .hm-activity-badge svg,
+[data-theme="dark"] .hm-referral-icon svg {
   color: var(--hm-sky);
 }
 
 [data-theme="dark"] .hm-tile-label,
 [data-theme="dark"] .hm-activity-name,
-[data-theme="dark"] .hm-standing-value {
+[data-theme="dark"] .hm-standing-value,
+[data-theme="dark"] .hm-referral-text {
   color: #c8e0f5;
 }
 
 [data-theme="dark"] .hm-standing-icon,
-[data-theme="dark"] .hm-activity-badge {
+[data-theme="dark"] .hm-activity-badge,
+[data-theme="dark"] .hm-referral-icon {
   background: rgba(133, 204, 255, 0.12);
+}
+
+[data-theme="dark"] .hm-referral-arrow {
+  color: #7d93a6;
 }
 
 [data-theme="dark"] .hm-standing-label,
