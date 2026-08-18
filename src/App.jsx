@@ -7,6 +7,9 @@ import Toolbar from './components/Toolbar.jsx'
 import BottomNav from './components/BottomNav.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 import NotificationBell from './components/NotificationBell.jsx'
+import { AccessibilityProvider } from './accessibility/AccessibilityContext.jsx'
+import TouchExploreLayer from './accessibility/TouchExploreLayer.jsx'
+import AccessibilityToggle from './accessibility/AccessibilityToggle.jsx'
 
 // Every route below is lazy-loaded: only the code for the page a
 // user actually visits gets downloaded, instead of the entire app's
@@ -53,7 +56,10 @@ function RouteFallback() {
   )
 }
 
-export default function App() {
+// The entire previous App() body, unchanged, just renamed — it now
+// renders INSIDE the accessibility provider mounted by the default
+// export below, instead of being the default export itself.
+function AppInner() {
   const [showSplash, setShowSplash] = useState(true)
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
@@ -246,5 +252,20 @@ export default function App() {
       </div>
       <BottomNav />
     </div>
+  )
+}
+
+// Mounted once, above absolutely everything — including the splash
+// screen and sign-in flow, so the reader is available to someone
+// before they even have an account. TouchExploreLayer and the toggle
+// don't change anything about how the app behaves or renders until
+// someone actually turns the reader on.
+export default function App() {
+  return (
+    <AccessibilityProvider>
+      <TouchExploreLayer />
+      <AccessibilityToggle />
+      <AppInner />
+    </AccessibilityProvider>
   )
 }

@@ -148,6 +148,7 @@ export default function LevelSelect({ user, onLevelSelected }) {
         <div className="level-select-cards">
           {LEVELS.map(level => {
             const isSaving = saving === level.key
+            const spokenName = level.rtl ? level.arabic : level.label
             return (
               <button
                 key={level.key}
@@ -155,6 +156,7 @@ export default function LevelSelect({ user, onLevelSelected }) {
                 onClick={() => choose(level.key)}
                 disabled={!!saving}
                 dir={level.rtl ? 'rtl' : 'ltr'}
+                data-a11y-label={`${spokenName}. ${level.description} ${level.requirementLabel} ${level.requirement}`}
                 style={{
                   '--level-color': level.color,
                   '--level-bg': level.bg,
@@ -202,7 +204,7 @@ export default function LevelSelect({ user, onLevelSelected }) {
 
         <p className="level-select-note">
           The Prophet ﷺ said: "Whoever Allah wants good for, He gives him understanding of the religion."
-          <br /><span>Sahih al-Bukhari 71</span>
+          <br /><span>Sahih Bukhari 71</span>
         </p>
       </div>
     </div>

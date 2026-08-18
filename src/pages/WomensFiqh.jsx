@@ -401,7 +401,7 @@ export default function WomensFiqh({ user }) {
         <>
           <button className="wf-back" onClick={closeTopic}>← Back to Women's Fiqh</button>
 
-          <div className="wf-detail-header card">
+          <div className="wf-detail-header card" data-a11y-label={`${entry.title}.`}>
             <span className="wf-detail-icon"><Icon name={meta.icon} /></span>
             <div>
               <h2 className="wf-detail-title">{entry.title}</h2>
@@ -414,7 +414,7 @@ export default function WomensFiqh({ user }) {
             // that don't fit the definition/duration/signs/rulings
             // shape the fiqh topics use).
             entry.sections.map(s => (
-              <div key={s.key} className="wf-section card">
+              <div key={s.key} className="wf-section card" data-a11y-label={`${s.title}: ${s.body}`}>
                 <h3 className="wf-section-title">
                   <Icon name={s.icon} /> {s.title}
                 </h3>
@@ -424,7 +424,7 @@ export default function WomensFiqh({ user }) {
           ) : (
             ['definition', 'duration', 'signs', 'rulings'].map(section => (
               entry[section] ? (
-                <div key={section} className="wf-section card">
+                <div key={section} className="wf-section card" data-a11y-label={`${section}: ${entry[section]}`}>
                   <h3 className="wf-section-title">
                     <Icon name={SECTION_ICONS[section]} /> {section.charAt(0).toUpperCase() + section.slice(1)}
                   </h3>
@@ -439,7 +439,11 @@ export default function WomensFiqh({ user }) {
               <h3 className="wf-section-title"><Icon name="cases" /> Cases</h3>
               <div className="wf-cases">
                 {entry.cases.map((c, i) => (
-                  <div key={i} className="wf-case">
+                  <div
+                    key={i}
+                    className="wf-case"
+                    data-a11y-label={`Case: ${c.title}. ${c.scenario}. Ruling: ${c.ruling}`}
+                  >
                     <p className="wf-case-title">{c.title}</p>
                     <p className="wf-case-scenario">{c.scenario}</p>
                     <p className="wf-case-ruling"><strong>Ruling:</strong> {c.ruling}</p>
@@ -454,7 +458,11 @@ export default function WomensFiqh({ user }) {
               <h3 className="wf-section-title"><Icon name="question" /> Common Questions</h3>
               <div className="wf-faq">
                 {entry.faq.map((f, i) => (
-                  <div key={i} className="wf-faq-item">
+                  <div
+                    key={i}
+                    className="wf-faq-item"
+                    data-a11y-label={`Question: ${f.question}. Answer: ${f.answer}`}
+                  >
                     <p className="wf-faq-q">{f.question}</p>
                     <p className="wf-faq-a">{f.answer}</p>
                   </div>
@@ -471,7 +479,12 @@ export default function WomensFiqh({ user }) {
         {TOPICS.map(t => {
           const entry = WOMENS_FIQH_CONTENT[t.key]
           return (
-            <button key={t.key} className="wf-topic-card card" onClick={() => openTopic(t.key)}>
+            <button
+              key={t.key}
+              className="wf-topic-card card"
+              onClick={() => openTopic(t.key)}
+              data-a11y-label={`${t.label}. ${entry.quick_fact}`}
+            >
               <span className="wf-topic-icon"><Icon name={t.icon} /></span>
               <div className="wf-topic-text">
                 <h3 className="wf-topic-label">{t.label}</h3>
@@ -494,6 +507,8 @@ export default function WomensFiqh({ user }) {
     setCalendarMonth(m => m.month === 11 ? { year: m.year + 1, month: 0 } : { year: m.year, month: m.month + 1 })
   }
 
+  const statusLabel = (s) => s === 'istihadah' ? 'Istihadah' : s === 'nifas' ? 'Nifas' : 'Hayd'
+
   const renderCalendar = () => {
     const { year, month } = calendarMonth
     const firstOfMonth = new Date(year, month, 1)
@@ -506,7 +521,7 @@ export default function WomensFiqh({ user }) {
     for (let d = 1; d <= daysInMonth; d++) cells.push(d)
 
     return (
-      <div className="wf-calendar card">
+      <div className="wf-calendar card" data-a11y-label={`Calendar: ${MONTH_NAMES[month]} ${year}`}>
         <div className="wf-calendar-header">
           <button className="wf-calendar-nav" onClick={goToPrevMonth} aria-label="Previous month">
             <Icon name="chevronLeft" />
@@ -530,11 +545,13 @@ export default function WomensFiqh({ user }) {
             let statusClass = ''
             if (logged?.status === 'istihadah') statusClass = 'wf-calendar-cell--istihadah'
             else if (logged) statusClass = 'wf-calendar-cell--logged'
+            const spokenLabel = `${MONTH_NAMES[month]} ${d}${isToday ? ', today' : ''}.${logged ? ` Logged as ${statusLabel(logged.status)}.` : ' Nothing logged.'}${logged?.notes ? ' Has a note.' : ''}`
             return (
               <button
                 key={key}
                 className={`wf-calendar-cell ${statusClass} ${isToday ? 'wf-calendar-cell--today' : ''}`}
                 onClick={() => openDay(key)}
+                data-a11y-label={spokenLabel}
               >
                 {d}
                 {logged?.notes && <span className="wf-calendar-cell-note-dot" aria-hidden="true" />}
@@ -569,7 +586,7 @@ export default function WomensFiqh({ user }) {
           {logged ? (
             <>
               <p className="wf-day-sheet-status">
-                Logged as <strong>{logged.status === 'istihadah' ? 'Istihadah' : logged.status === 'nifas' ? 'Nifas' : 'Hayd'}</strong>
+                Logged as <strong>{statusLabel(logged.status)}</strong>
                 {logged.intensity ? ` · ${INTENSITY_LABEL[logged.intensity] || logged.intensity}` : ''}
               </p>
               {logged.notes && <p className="wf-day-sheet-note-text">"{logged.notes}"</p>}
@@ -630,7 +647,10 @@ export default function WomensFiqh({ user }) {
         <div className="wf-loading"><div className="wf-spinner" /></div>
       ) : activeCycle ? (
         <>
-          <div className={`wf-status-card card ${currentStatus.overMax ? 'wf-status-card--istihadah' : ''}`}>
+          <div
+            className={`wf-status-card card ${currentStatus.overMax ? 'wf-status-card--istihadah' : ''}`}
+            data-a11y-label={`Day ${currentStatus.days}${activeCycle.is_postpartum ? ', postpartum' : ''}. Currently ${currentStatus.label}. ${currentStatus.overMax ? `Past the ${currentStatus.maxDays}-day maximum.` : `Up to ${currentStatus.maxDays} days for this category.`}`}
+          >
             <p className="wf-status-label">Day {currentStatus.days}{activeCycle.is_postpartum ? ' (postpartum)' : ''}</p>
             <p className="wf-status-value">{currentStatus.label}</p>
             {currentStatus.overMax ? (
@@ -669,6 +689,7 @@ export default function WomensFiqh({ user }) {
                   className="wf-delete-trigger"
                   onClick={() => deleteCycle(activeCycle)}
                   disabled={deletingCycleId === activeCycle.id}
+                  data-a11y-label="Delete this cycle"
                 >
                   <Icon name="trash" /> {deletingCycleId === activeCycle.id ? 'Deleting…' : 'Delete'}
                 </button>
@@ -739,7 +760,12 @@ export default function WomensFiqh({ user }) {
             const label = days > maxDays ? 'Istihadah' : (c.is_postpartum ? 'Nifas' : 'Hayd')
             const isEditing = editingCycleId === c.id
             return (
-              <div key={c.id} className="wf-history-item" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+              <div
+                key={c.id}
+                className="wf-history-item"
+                style={{ flexDirection: 'column', alignItems: 'stretch' }}
+                data-a11y-label={isEditing ? undefined : `${formatDate(c.start_date)} to ${formatDate(c.end_date)}, ${days} days, ${label}`}
+              >
                 {isEditing ? (
                   <div className="wf-edit-date-form">
                     <label className="wf-edit-date-label">
@@ -780,6 +806,7 @@ export default function WomensFiqh({ user }) {
                         className="wf-delete-trigger"
                         onClick={() => deleteCycle(c)}
                         disabled={deletingCycleId === c.id}
+                        data-a11y-label="Delete this cycle"
                       >
                         <Icon name="trash" /> {deletingCycleId === c.id ? 'Deleting…' : 'Delete'}
                       </button>

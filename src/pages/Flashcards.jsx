@@ -112,13 +112,18 @@ export default function Flashcards() {
                   <p className="fc-deck-count">{deck.cards.length} cards · {due} due</p>
                 </div>
                 <div className="fc-deck-actions">
-                  <button className="btn btn-ghost fc-deck-action" onClick={() => startDeck(deck, 'browse')}>
+                  <button
+                    className="btn btn-ghost fc-deck-action"
+                    onClick={() => startDeck(deck, 'browse')}
+                    data-a11y-label={`Browse all ${deck.cards.length} cards in ${deck.name}`}
+                  >
                     Browse All
                   </button>
                   <button
                     className="btn btn-primary fc-deck-action"
                     onClick={() => startDeck(deck, 'review')}
                     disabled={due === 0}
+                    data-a11y-label={due > 0 ? `Review ${due} due cards in ${deck.name}` : `Nothing due in ${deck.name}`}
                   >
                     Review Due{due > 0 ? ` (${due})` : ''}
                   </button>
@@ -136,7 +141,7 @@ export default function Flashcards() {
     return (
       <div className="page-content flashcards-page">
         <h1 className="page-title">{selectedDeck.name} Review</h1>
-        <div className="fc-done card">
+        <div className="fc-done card" data-a11y-label={`Review complete. ${reviewedCount} card${reviewedCount !== 1 ? 's' : ''} reviewed.`}>
           <div className="fc-done-icon">📚</div>
           <h2 className="fc-done-title">Review complete</h2>
           <p className="fc-done-score">{reviewedCount} card{reviewedCount !== 1 ? 's' : ''} reviewed</p>
@@ -166,6 +171,18 @@ export default function Flashcards() {
   const progressPct = (currentIdx / sessionCards.length) * 100
   const isLast = currentIdx + 1 >= sessionCards.length
 
+  // The flip card is the core interaction on this page and isn't a
+  // native button, so — same as everywhere else — it's silent to
+  // touch-explore without an explicit label. This one changes with
+  // `flipped`, so a first tap always announces whichever face is
+  // currently showing, and a second tap on the same face flips it
+  // (the real onClick), at which point the NEXT first tap announces
+  // the new face. That double-tap-to-flip rhythm mirrors exactly how
+  // this card already works visually for a sighted user tapping it.
+  const cardSpokenLabel = flipped
+    ? `Definition: ${card.back}`
+    : `Term: ${card.frontTranslit}. Tap again to reveal the definition.`
+
   return (
     <div className="page-content flashcards-page">
       {/* Header */}
@@ -192,6 +209,7 @@ export default function Flashcards() {
       <div
         className={`fc-card-wrapper ${flipped ? 'fc-card-wrapper--flipped' : ''}`}
         onClick={() => setFlipped(f => !f)}
+        data-a11y-label={cardSpokenLabel}
       >
         <div className="fc-card">
           {/* Front */}

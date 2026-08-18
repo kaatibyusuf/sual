@@ -173,7 +173,10 @@ export default function Stories({ user }) {
 
         <div className="story-detail">
           {/* Header */}
-          <div className="story-detail-header card">
+          <div
+            className="story-detail-header card"
+            data-a11y-label={`${s.name}. ${s.title}. ${s.lifespan}. ${s.summary}`}
+          >
             <div className="story-detail-icon">{s.image}</div>
             <div className="story-detail-meta">
               <span className={`stories-badge badge-${s.era}`}>
@@ -195,12 +198,16 @@ export default function Stories({ user }) {
           <div className="story-detail-body card">
             <h2 className="story-section-title">📜 Biography</h2>
             {s.story.split('\n\n').map((para, i) => (
-              <p key={i} className="story-para">{para}</p>
+              // Each paragraph carries its own label so a reader can
+              // tap through the biography one paragraph at a time,
+              // rather than only being able to hear the whole card's
+              // combined summary at once.
+              <p key={i} className="story-para" data-a11y-label={para}>{para}</p>
             ))}
           </div>
 
           {p?.completed && (
-            <div className="story-complete-banner card">
+            <div className="story-complete-banner card" data-a11y-label="You've finished this story.">
               <span>✓ You've finished this story.</span>
             </div>
           )}
@@ -210,7 +217,7 @@ export default function Stories({ user }) {
             <h2 className="story-section-title">💡 Lessons</h2>
             <ul className="story-lessons-list">
               {s.lessons.map((lesson, i) => (
-                <li key={i} className="story-lesson-item">
+                <li key={i} className="story-lesson-item" data-a11y-label={`Lesson ${i + 1}: ${lesson}`}>
                   <span className="story-lesson-num">{String(i + 1).padStart(2, '0')}</span>
                   <p>{lesson}</p>
                 </li>
@@ -221,7 +228,10 @@ export default function Stories({ user }) {
           {/* Sources */}
           <div className="story-detail-sources card">
             <h2 className="story-section-title">📚 Primary Sources</h2>
-            <div className="story-sources-list">
+            <div
+              className="story-sources-list"
+              data-a11y-label={`Primary sources: ${s.sources.join(', ')}.`}
+            >
               {s.sources.map((src, i) => (
                 <span key={i} className="story-source-chip">{src}</span>
               ))}
@@ -260,7 +270,13 @@ export default function Stories({ user }) {
             onChange={e => setSearch(e.target.value)}
           />
           {search && (
-            <button className="stories-search-clear" onClick={() => setSearch('')}>✕</button>
+            <button
+              className="stories-search-clear"
+              onClick={() => setSearch('')}
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
           )}
         </div>
       </div>
@@ -274,31 +290,40 @@ export default function Stories({ user }) {
         </div>
       ) : (
         <div className="stories-grid">
-          {filtered.map(s => (
-            <button
-              key={s.id}
-              className="story-card card"
-              onClick={() => openStory(s)}
-            >
-              <div className="story-card-top">
-                <div className="story-card-icon">{s.image}</div>
-                <div className="story-card-badges">
-                  <span className={`stories-badge badge-${s.era}`}>
-                    {ERA_BADGE_LABEL[s.era] || s.era}
-                  </span>
+          {filtered.map(s => {
+            const p = progressMap[s.id]
+            const progressNote = p?.completed
+              ? ' Completed.'
+              : p?.progress_percent > 0
+                ? ` ${p.progress_percent} percent read.`
+                : ''
+            return (
+              <button
+                key={s.id}
+                className="story-card card"
+                onClick={() => openStory(s)}
+                data-a11y-label={`${s.name}, ${ERA_BADGE_LABEL[s.era] || s.era}. ${s.title}. ${s.lifespan}.${progressNote}`}
+              >
+                <div className="story-card-top">
+                  <div className="story-card-icon">{s.image}</div>
+                  <div className="story-card-badges">
+                    <span className={`stories-badge badge-${s.era}`}>
+                      {ERA_BADGE_LABEL[s.era] || s.era}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <h3 className="story-card-name">{s.name}</h3>
-              <p className="story-card-arabic arabic">{s.arabicName}</p>
-              <p className="story-card-title">{s.title}</p>
-              <p className="story-card-lifespan">{s.lifespan}</p>
-              <p className="story-card-summary">{s.summary}</p>
-              {user && renderCardProgress(s.id)}
-              <div className="story-card-footer">
-                <span className="story-card-read">Read Story →</span>
-              </div>
-            </button>
-          ))}
+                <h3 className="story-card-name">{s.name}</h3>
+                <p className="story-card-arabic arabic">{s.arabicName}</p>
+                <p className="story-card-title">{s.title}</p>
+                <p className="story-card-lifespan">{s.lifespan}</p>
+                <p className="story-card-summary">{s.summary}</p>
+                {user && renderCardProgress(s.id)}
+                <div className="story-card-footer">
+                  <span className="story-card-read">Read Story →</span>
+                </div>
+              </button>
+            )
+          })}
         </div>
       )}
     </div>

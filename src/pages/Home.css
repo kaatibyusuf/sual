@@ -48,26 +48,21 @@
   border-radius: 20px;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
 }
 
+/* Flat, solid tones — no gradient, no shadow. Each color is the
+   midpoint pulled from the previous gradient so the palette reads
+   the same at a glance, just without the sheen. */
 .home-account-card--navy {
-  background:
-    radial-gradient(ellipse at 90% -10%, rgba(200, 149, 47, 0.18), transparent 55%),
-    radial-gradient(ellipse at -10% 110%, rgba(133, 204, 255, 0.12), transparent 60%),
-    linear-gradient(135deg, #062038 0%, var(--regal-blue) 60%, #0a3a52 100%);
+  background: var(--regal-blue);
 }
 
 .home-account-card--gold {
-  background:
-    radial-gradient(ellipse at 90% -10%, rgba(255, 255, 255, 0.14), transparent 55%),
-    linear-gradient(135deg, #8a6420 0%, #c8952f 55%, #a97a1f 100%);
+  background: #c8952f;
 }
 
 .home-account-card--emerald {
-  background:
-    radial-gradient(ellipse at 90% -10%, rgba(255, 255, 255, 0.14), transparent 55%),
-    linear-gradient(135deg, #1a4a38 0%, #2e8a63 55%, #1f6b4a 100%);
+  background: #2e8a63;
 }
 
 .home-account-badge {

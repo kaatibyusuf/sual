@@ -5,6 +5,7 @@ import './Profile.css'
 import { BadgesSection } from '../components/Badges.jsx'
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from '../lib/pushNotifications.js'
 import AccountabilityProfileEditor from '../components/AccountabilityProfileEditor.jsx'
+import { useAccessibility } from '../accessibility/AccessibilityContext.jsx'
 
 function NotificationToggle({ user }) {
   const [supported, setSupported] = useState(true)
@@ -54,6 +55,7 @@ const LEVELS = [
 ]
 
 export default function Profile({ user, userLevel, setUserLevel }) {
+  const { announce } = useAccessibility()
   const [name, setName] = useState(user?.user_metadata?.full_name || '')
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [newPassword, setNewPassword] = useState('')
@@ -82,6 +84,15 @@ export default function Profile({ user, userLevel, setUserLevel }) {
   // render even if a future change ever calls it before `user` is
   // guaranteed to exist.
   if (!user) return null
+
+  // Success/error text renders as a plain banner div, which a native
+  // screen reader will happily pick up in DOM order — but for
+  // touch-explore, and for anyone not actively re-scanning the
+  // screen, these outcomes need to be spoken proactively the moment
+  // they happen, the same way the chat/quiz pages announce their own
+  // state changes.
+  const flashSuccess = (msg) => { setSuccess(msg); setError(null); announce(msg) }
+  const flashError = (msg) => { setError(msg); setSuccess(null); announce(msg) }
 
   const fetchAvatar = async () => {
     if (!user) return
@@ -119,9 +130,9 @@ export default function Profile({ user, userLevel, setUserLevel }) {
         .upsert({ id: user.id, gender: value }, { onConflict: 'id' })
       if (error) throw error
       setGenderState(value)
-      setSuccess('Saved.')
+      flashSuccess('Saved.')
     } catch (err) {
-      setError(err.message)
+      flashError(err.message)
     } finally {
       setGenderLoading(false)
     }
@@ -146,7 +157,7 @@ export default function Profile({ user, userLevel, setUserLevel }) {
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    if (file.size > 2 * 1024 * 1024) { setError('Image must be under 2MB.'); return }
+    if (file.size > 2 * 1024 * 1024) { flashError('Image must be under 2MB.'); return }
     setAvatarLoading(true)
     setError(null)
     try {
@@ -155,45 +166,45 @@ export default function Profile({ user, userLevel, setUserLevel }) {
         .upload(`${user.id}/avatar`, file, { upsert: true, contentType: file.type })
       if (uploadError) throw uploadError
       await fetchAvatar()
-      setSuccess('Profile picture updated.')
+      flashSuccess('Profile picture updated.')
     } catch (err) {
-      setError(err.message)
+      flashError(err.message)
     } finally {
       setAvatarLoading(false)
     }
   }
 
   const handleUpdateProfile = async () => {
-    if (!name.trim()) { setError('Name cannot be empty.'); return }
+    if (!name.trim()) { flashError('Name cannot be empty.'); return }
     setLoading(true)
     setError(null)
     setSuccess(null)
     try {
       const { error } = await supabase.auth.updateUser({ data: { full_name: name.trim() } })
       if (error) throw error
-      setSuccess('Profile updated successfully.')
+      flashSuccess('Profile updated successfully.')
     } catch (err) {
-      setError(err.message)
+      flashError(err.message)
     } finally {
       setLoading(false)
     }
   }
 
   const handleChangePassword = async () => {
-    if (!newPassword || !confirmPassword) { setError('Please fill in all password fields.'); return }
-    if (newPassword.length < 6) { setError('Password must be at least 6 characters.'); return }
-    if (newPassword !== confirmPassword) { setError('Passwords do not match.'); return }
+    if (!newPassword || !confirmPassword) { flashError('Please fill in all password fields.'); return }
+    if (newPassword.length < 6) { flashError('Password must be at least 6 characters.'); return }
+    if (newPassword !== confirmPassword) { flashError('Passwords do not match.'); return }
     setLoading(true)
     setError(null)
     setSuccess(null)
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword })
       if (error) throw error
-      setSuccess('Password changed successfully.')
+      flashSuccess('Password changed successfully.')
       setNewPassword('')
       setConfirmPassword('')
     } catch (err) {
-      setError(err.message)
+      flashError(err.message)
     } finally {
       setLoading(false)
     }
@@ -218,9 +229,9 @@ export default function Profile({ user, userLevel, setUserLevel }) {
         .eq('user_id', user.id)
       if (error) throw error
       setUserLevel?.(newLevel)
-      setSuccess(`Level switched to ${newLevel.charAt(0).toUpperCase() + newLevel.slice(1)}.`)
+      flashSuccess(`Level switched to ${newLevel.charAt(0).toUpperCase() + newLevel.slice(1)}.`)
     } catch (err) {
-      setError(err.message)
+      flashError(err.message)
     } finally {
       setLevelLoading(false)
     }
@@ -250,7 +261,7 @@ export default function Profile({ user, userLevel, setUserLevel }) {
       <p className="page-subtitle">حِسَابِي — Manage your account and settings</p>
 
       {/* Avatar section */}
-      <div className="profile-hero card">
+      <div className="profile-hero card" data-a11y-label={`${name || user?.email}. ${user?.email}. Member since ${memberSince}.`}>
         <div className="profile-avatar-wrapper">
           {avatarUrl ? (
             <img src={avatarUrl} alt="Profile" className="profile-avatar-img" />
@@ -283,7 +294,12 @@ export default function Profile({ user, userLevel, setUserLevel }) {
       <BadgesSection user={user} />
 
       {/* Subscription card */}
-      <div className={`profile-sub-card ${isPaid ? 'profile-sub-card--active' : 'profile-sub-card--inactive'}`}>
+      <div
+        className={`profile-sub-card ${isPaid ? 'profile-sub-card--active' : 'profile-sub-card--inactive'}`}
+        data-a11y-label={isPaid
+          ? `Spaces Membership: Active. Subscribed ${subStart}. Renews ${subEnd}. ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left.`
+          : 'Spaces Membership: Not subscribed.'}
+      >
         <div className="profile-sub-top">
           <div>
             <p className="profile-sub-label">Spaces Membership</p>
@@ -360,6 +376,7 @@ export default function Profile({ user, userLevel, setUserLevel }) {
                 key={g}
                 onClick={() => handleSetGender(g)}
                 disabled={genderLoading || active}
+                data-a11y-label={`${g}${active ? ', currently selected' : ''}`}
                 style={{
                   flex: 1,
                   padding: '10px 14px',
@@ -401,6 +418,7 @@ export default function Profile({ user, userLevel, setUserLevel }) {
                 key={lv.key}
                 onClick={() => handleChangeLevel(lv.key)}
                 disabled={levelLoading || active}
+                data-a11y-label={`${lv.label}${active ? ', currently selected' : ''}`}
                 style={{
                   flex: '1 1 140px',
                   padding: '10px 14px',

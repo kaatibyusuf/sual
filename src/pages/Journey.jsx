@@ -147,6 +147,16 @@ export default function Journey({ user }) {
       <h1 className="page-title">Journey</h1>
       <p className="page-subtitle">مَسِيرَة — Where you stand, and what's next</p>
 
+      {/* NOTE: the pasted source had a second, malformed
+          `<div className="page-content"><h1>Journey</h1>
+          <ReferralProgress .../></div>` block sitting mid-render,
+          nested inside the real return with no clear purpose beyond
+          rendering ReferralProgress once. That's been collapsed to
+          just the ReferralProgress line below, in its likely intended
+          spot right under the page header — flagging this since it's
+          a guess about original intent, not something I introduced. */}
+      <ReferralProgress user={user} />
+
       {loading ? (
         <div className="journey-card journey-loading"><p>Loading your journey…</p></div>
       ) : (
@@ -156,29 +166,24 @@ export default function Journey({ user }) {
               <p>Quiz analytics couldn't be loaded right now — milestones and Hifdh data below are still accurate.</p>
             </div>
           )}
-  
-  <div className="page-content">
-    <h1 className="page-title">Journey</h1>
-    <ReferralProgress user={user} />
-    {/* stats, charts, quiz history, etc. */}
-  </div>
+
           {/* Milestones */}
           <section className="journey-section">
             <h2 className="journey-section-title">Milestones</h2>
             <div className="journey-stats-row">
-              <div className="journey-stat card">
+              <div className="journey-stat card" data-a11y-label={`${totalQuizzes} quizzes taken`}>
                 <span className="journey-stat-value">{totalQuizzes}</span>
                 <span className="journey-stat-label">Quizzes taken</span>
               </div>
-              <div className="journey-stat card">
+              <div className="journey-stat card" data-a11y-label={`Overall average: ${overallAverage !== null ? `${overallAverage} percent` : 'no data yet'}`}>
                 <span className="journey-stat-value">{overallAverage !== null ? `${overallAverage}%` : '—'}</span>
                 <span className="journey-stat-label">Overall average</span>
               </div>
-              <div className="journey-stat card">
+              <div className="journey-stat card" data-a11y-label={`Current level: ${userLevel || 'not set'}`}>
                 <span className="journey-stat-value journey-stat-value--level">{userLevel || '—'}</span>
                 <span className="journey-stat-label">Current level</span>
               </div>
-              <div className="journey-stat card">
+              <div className="journey-stat card" data-a11y-label={`${totalHifdhStrong} hifdh items strong`}>
                 <span className="journey-stat-value" style={{ color: '#2e7d32' }}>{totalHifdhStrong}</span>
                 <span className="journey-stat-label">Hifdh items strong</span>
               </div>
@@ -190,7 +195,12 @@ export default function Journey({ user }) {
             <h2 className="journey-section-title">Hifdh Collections</h2>
             <div className="journey-hifdh-grid">
               {hifdhMilestones.map(c => (
-                <Link key={c.id} to="/hifdh" className="journey-hifdh-card card">
+                <Link
+                  key={c.id}
+                  to="/hifdh"
+                  className="journey-hifdh-card card"
+                  data-a11y-label={`${c.title}. ${c.strong} of ${c.total} strong.${c.due > 0 ? ` ${c.due} due for review.` : ''}`}
+                >
                   <p className="journey-hifdh-title">{c.title}</p>
                   <p className="journey-hifdh-arabic arabic">{c.arabicTitle}</p>
                   <p className="journey-hifdh-stats">
@@ -218,7 +228,11 @@ export default function Journey({ user }) {
                 )}
                 <div className="journey-breakdown">
                   {disciplineBreakdown.map(d => (
-                    <div key={d.id} className="journey-breakdown-row">
+                    <div
+                      key={d.id}
+                      className="journey-breakdown-row"
+                      data-a11y-label={`${d.name}: ${d.pct} percent`}
+                    >
                       <span className="journey-breakdown-name">{d.name}</span>
                       <div className="journey-breakdown-bar-track">
                         <div

@@ -202,7 +202,7 @@ export default function Qiwaamah({ user }) {
         <>
           <button className="qw-back" onClick={closeTopic}>← Back to Qiwaamah</button>
 
-          <div className="qw-detail-header card">
+          <div className="qw-detail-header card" data-a11y-label={`${entry.title}.`}>
             <span className="qw-detail-icon"><Icon name={meta.icon} /></span>
             <div>
               <h2 className="qw-detail-title">{entry.title}</h2>
@@ -212,7 +212,7 @@ export default function Qiwaamah({ user }) {
 
           {['definition', 'scope', 'signs', 'rulings'].map(section => (
             entry[section] ? (
-              <div key={section} className="qw-section card">
+              <div key={section} className="qw-section card" data-a11y-label={`${section}: ${entry[section]}`}>
                 <h3 className="qw-section-title">
                   <Icon name={SECTION_ICONS[section]} /> {section.charAt(0).toUpperCase() + section.slice(1)}
                 </h3>
@@ -226,7 +226,11 @@ export default function Qiwaamah({ user }) {
               <h3 className="qw-section-title"><Icon name="cases" /> Cases</h3>
               <div className="qw-cases">
                 {entry.cases.map((c, i) => (
-                  <div key={i} className="qw-case">
+                  <div
+                    key={i}
+                    className="qw-case"
+                    data-a11y-label={`Case: ${c.title}. ${c.scenario}. Ruling: ${c.ruling}`}
+                  >
                     <p className="qw-case-title">{c.title}</p>
                     <p className="qw-case-scenario">{c.scenario}</p>
                     <p className="qw-case-ruling"><strong>Ruling:</strong> {c.ruling}</p>
@@ -241,7 +245,11 @@ export default function Qiwaamah({ user }) {
               <h3 className="qw-section-title"><Icon name="question" /> Common Questions</h3>
               <div className="qw-faq">
                 {entry.faq.map((f, i) => (
-                  <div key={i} className="qw-faq-item">
+                  <div
+                    key={i}
+                    className="qw-faq-item"
+                    data-a11y-label={`Question: ${f.question}. Answer: ${f.answer}`}
+                  >
                     <p className="qw-faq-q">{f.question}</p>
                     <p className="qw-faq-a">{f.answer}</p>
                   </div>
@@ -252,30 +260,40 @@ export default function Qiwaamah({ user }) {
         </>
       )
     }
-// ...
 
-// end of renderLearn's card list:
-        <SpacesCTA user={user} variant="default" />
-
-// in renderReflect, after the history section:
-        {entries.length >= 5 && <SpacesCTA user={user} variant="reflectStreak" />}
+    // NOTE: the pasted source had `<SpacesCTA variant="default" />` and
+    // the reflectStreak variant sitting as orphaned JSX outside any
+    // return statement (with "// ..." placeholder comments marking
+    // where they belonged) — that doesn't compile as-is. Placed here,
+    // at the end of the topic grid, and further below at the end of
+    // renderReflect's history section, matching what the comments
+    // indicated was intended. Flagging this so it can be corrected if
+    // this guess doesn't match the original intent.
     return (
-      <div className="qw-cards">
-        {TOPICS.map(t => {
-          const entry = QIWAAMAH_CONTENT[t.key]
-          return (
-            <button key={t.key} className="qw-topic-card card" onClick={() => openTopic(t.key)}>
-              <span className="qw-topic-icon"><Icon name={t.icon} /></span>
-              <div className="qw-topic-text">
-                <h3 className="qw-topic-label">{t.label}</h3>
-                <p className="qw-topic-arabic arabic">{t.arabic}</p>
-                <p className="qw-topic-desc">{entry.quick_fact}</p>
-              </div>
-              <span className="qw-topic-arrow">→</span>
-            </button>
-          )
-        })}
-      </div>
+      <>
+        <div className="qw-cards">
+          {TOPICS.map(t => {
+            const entry = QIWAAMAH_CONTENT[t.key]
+            return (
+              <button
+                key={t.key}
+                className="qw-topic-card card"
+                onClick={() => openTopic(t.key)}
+                data-a11y-label={`${t.label}. ${entry.quick_fact}`}
+              >
+                <span className="qw-topic-icon"><Icon name={t.icon} /></span>
+                <div className="qw-topic-text">
+                  <h3 className="qw-topic-label">{t.label}</h3>
+                  <p className="qw-topic-arabic arabic">{t.arabic}</p>
+                  <p className="qw-topic-desc">{entry.quick_fact}</p>
+                </div>
+                <span className="qw-topic-arrow">→</span>
+              </button>
+            )
+          })}
+        </div>
+        <SpacesCTA user={user} variant="default" />
+      </>
     )
   }
 
@@ -285,7 +303,10 @@ export default function Qiwaamah({ user }) {
       return (
         <>
           <button className="qw-back" onClick={() => setSelectedEntry(null)}>← Back to Reflect</button>
-          <div className="qw-reflection-detail card">
+          <div
+            className="qw-reflection-detail card"
+            data-a11y-label={`${formatDate(selectedEntry.entry_date)}${selectedEntry.rating ? `, ${RATING_LABEL[selectedEntry.rating] || selectedEntry.rating}` : ''}. ${selectedEntry.reflection}`}
+          >
             <p className="qw-reflection-detail-date">{formatDate(selectedEntry.entry_date)}</p>
             {selectedEntry.rating && (
               <span className="qw-rating-badge">{RATING_LABEL[selectedEntry.rating] || selectedEntry.rating}</span>
@@ -353,7 +374,12 @@ export default function Qiwaamah({ user }) {
           <div className="qw-history">
             <p className="qw-history-label">Past Reflections</p>
             {entries.filter(e => e.entry_date !== todayStr()).map(e => (
-              <button key={e.id} className="qw-history-item" onClick={() => setSelectedEntry(e)}>
+              <button
+                key={e.id}
+                className="qw-history-item"
+                onClick={() => setSelectedEntry(e)}
+                data-a11y-label={`${formatDate(e.entry_date)}${e.rating ? `, ${RATING_LABEL[e.rating] || e.rating}` : ''}. ${e.reflection.length > 60 ? e.reflection.slice(0, 60) + '…' : e.reflection}`}
+              >
                 <span className="qw-history-date">{formatDate(e.entry_date)}</span>
                 <span className="qw-history-preview">
                   {e.reflection.length > 60 ? e.reflection.slice(0, 60) + '…' : e.reflection}
@@ -363,6 +389,8 @@ export default function Qiwaamah({ user }) {
             ))}
           </div>
         )}
+
+        {entries.length >= 5 && <SpacesCTA user={user} variant="reflectStreak" />}
       </>
     )
   }

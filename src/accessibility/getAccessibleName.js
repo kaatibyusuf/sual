@@ -52,7 +52,11 @@ export function getAccessibleName(startEl) {
   let node = startEl
   let depth = 0
   while (node && node.nodeType === 1 && node !== document.body && depth < MAX_WALK_DEPTH) {
-    if (node.hasAttribute('data-a11y-label') || node.matches(INTERACTIVE_SELECTOR)) {
+    if (
+      node.hasAttribute('data-a11y-label') ||
+      node.hasAttribute('aria-label') ||
+      node.matches(INTERACTIVE_SELECTOR)
+    ) {
       const label = labelFor(node)
       if (label) return { label, node }
     }

@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { DISCIPLINES, QUIZ_QUESTIONS } from '../data/knowledge.js'
 import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
 import { supabase } from '../lib/supabase.js'
+import { useAccessibility } from '../accessibility/AccessibilityContext.jsx'
 import './Quiz.css'
 import {
   INTERMEDIATE_QUIZ,
@@ -215,6 +216,7 @@ function buildQuizPool(disciplineId, level = 'beginner') {
 }
 
 export default function Quiz({ user, userLevel = 'beginner' }) {
+  const { announce } = useAccessibility()
   const [searchParams] = useSearchParams()
   const preselect = searchParams.get('discipline') || 'mixed'
 
@@ -349,7 +351,15 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setChosen(idx)
     setRevealed(true)
     const q = questions[currentIdx]
-    if (idx === q.correct) setScore(s => s + 1)
+    const isCorrect = idx === q.correct
+    if (isCorrect) setScore(s => s + 1)
+    // The color change that marks correct/wrong on screen has no
+    // spoken equivalent otherwise — this is the one moment on this
+    // page where something important happens without the user
+    // navigating anywhere, so it needs an explicit announcement.
+    announce(isCorrect
+      ? 'Correct.'
+      : `Incorrect. The correct answer was: ${q.options[q.correct]}`)
   }
 
   // FIX: this previously recomputed and added credit for the final
@@ -376,6 +386,8 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
       saveScore(score, questions.length)
       clearProgress(`${selectedDiscipline}-${selectedLevel}`)
       setPhase('result')
+      const finalPercent = Math.round((score / questions.length) * 100)
+      announce(`Quiz complete. Score: ${score} out of ${questions.length}, ${finalPercent} percent.`)
     } else {
       setCurrentIdx(i => i + 1)
       setChosen(null)
@@ -411,6 +423,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
             <button
               className={`quiz-disc-btn ${selectedDiscipline === 'mixed' ? 'quiz-disc-btn--active' : ''}`}
               onClick={() => setSelectedDiscipline('mixed')}
+              data-a11y-label="Mixed, all disciplines"
             >
               <span className="quiz-disc-icon"><IconInline name="mixed" /></span>
               <span className="quiz-disc-name">Mixed</span>
@@ -421,6 +434,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
                 key={d.id}
                 className={`quiz-disc-btn ${selectedDiscipline === d.id ? 'quiz-disc-btn--active' : ''}`}
                 onClick={() => setSelectedDiscipline(d.id)}
+                data-a11y-label={d.name}
               >
                 <span className="quiz-disc-icon">{DISCIPLINE_ICONS[d.icon]}</span>
                 <span className="quiz-disc-name">{d.name}</span>
@@ -441,6 +455,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
                 style={selectedLevel === lv.key ? { borderColor: lv.color, color: lv.color } : {}}
                 onClick={() => !lv.locked && setSelectedLevel(lv.key)}
                 title={lv.locked ? 'Complete previous level to unlock' : ''}
+                data-a11y-label={`${lv.label}${lv.locked ? ', locked, complete the previous level to unlock' : ''}`}
               >
                 {lv.locked ? <IconInline name="lock" /> : ''}{lv.label}
                 <span className="quiz-level-arabic arabic">{lv.arabic}</span>
@@ -492,7 +507,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
                 {selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1)}
               </strong>
             </p>
-            <button className="btn btn-primary" onClick={startQuiz}>Begin Quiz →</button>
+            <button className="btn btn-primary" onClick={startQuiz} data-a11y-label={`Begin quiz: ${selectedInfo.name}, ${selectedLevel} level`}>Begin Quiz →</button>
           </div>
         </div>
       </div>
@@ -514,15 +529,16 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
           <div className="quiz-progress-fill" style={{ width: `${progress}%` }} />
         </div>
 
-        <div className="quiz-question-card card">
+        <div className="quiz-question-card card" data-a11y-label={`Question ${currentIdx + 1} of ${questions.length}: ${q.question}`}>
           <p className="quiz-question-text">{q.question}</p>
 
           <div className="quiz-options">
             {q.options.map((opt, idx) => {
               let cls = 'quiz-option'
+              let status = ''
               if (revealed) {
-                if (idx === q.correct)                        cls += ' quiz-option--correct'
-                else if (idx === chosen && idx !== q.correct) cls += ' quiz-option--wrong'
+                if (idx === q.correct) { cls += ' quiz-option--correct'; status = ', correct answer' }
+                else if (idx === chosen && idx !== q.correct) { cls += ' quiz-option--wrong'; status = ', your answer, incorrect' }
               } else if (chosen === idx) {
                 cls += ' quiz-option--selected'
               }
@@ -532,6 +548,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
                   className={cls}
                   onClick={() => selectAnswer(idx)}
                   disabled={revealed}
+                  data-a11y-label={`Option ${String.fromCharCode(65 + idx)}: ${opt}${status}`}
                 >
                   <span className="quiz-option-letter">{String.fromCharCode(65 + idx)}</span>
                   <span>{opt}</span>
@@ -541,7 +558,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
           </div>
 
           {revealed && (
-            <div className={`quiz-explanation ${chosen === q.correct ? 'quiz-explanation--correct' : 'quiz-explanation--wrong'}`}>
+            <div className={`quiz-explanation ${chosen === q.correct ? 'quiz-explanation--correct' : 'quiz-explanation--wrong'}`} data-a11y-label={`Explanation: ${q.explanation}`}>
               <span className="quiz-explanation-icon">
                 <IconInline name={chosen === q.correct ? 'check' : 'cross'} />
               </span>
@@ -567,7 +584,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   return (
     <div className="page-content quiz-page">
       <div className="quiz-result-card card">
-        <div className="quiz-result-header">
+        <div className="quiz-result-header" data-a11y-label={`Quiz complete. Score: ${score} out of ${questions.length}, ${scorePercent} percent. ${msg}`}>
           <span className="quiz-result-icon"><IconInline name="target" /></span>
           <h2 className="quiz-result-title">Quiz Complete</h2>
           <div className="quiz-result-score"  style={{ color }}>{score} / {questions.length}</div>
@@ -583,26 +600,30 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
         <div className="quiz-review">
           <h3 className="quiz-review-title">Review</h3>
-          {answers.map((a, i) => (
-            <div
-              key={i}
-              className={`quiz-review-item ${a.chosen === a.correct ? 'quiz-review-item--correct' : 'quiz-review-item--wrong'}`}
-            >
-              <div className="quiz-review-q">
-                <span className="quiz-review-icon">
-                  <IconInline name={a.chosen === a.correct ? 'check' : 'cross'} />
-                </span>
-                <strong>Q{i + 1}:</strong> {a.question}
+          {answers.map((a, i) => {
+            const wasCorrect = a.chosen === a.correct
+            return (
+              <div
+                key={i}
+                className={`quiz-review-item ${wasCorrect ? 'quiz-review-item--correct' : 'quiz-review-item--wrong'}`}
+                data-a11y-label={`Question ${i + 1}: ${a.question}. ${wasCorrect ? 'You answered correctly.' : `You answered ${a.options[a.chosen]}, incorrect. Correct answer: ${a.options[a.correct]}.`} ${a.explanation}`}
+              >
+                <div className="quiz-review-q">
+                  <span className="quiz-review-icon">
+                    <IconInline name={wasCorrect ? 'check' : 'cross'} />
+                  </span>
+                  <strong>Q{i + 1}:</strong> {a.question}
+                </div>
+                <div className="quiz-review-ans">
+                  Your answer: <em className={wasCorrect ? 'correct-text' : 'wrong-text'}>{a.options[a.chosen]}</em>
+                  {!wasCorrect && (
+                    <> &nbsp;|&nbsp; Correct: <em className="correct-text">{a.options[a.correct]}</em></>
+                  )}
+                </div>
+                <div className="quiz-review-exp">{a.explanation}</div>
               </div>
-              <div className="quiz-review-ans">
-                Your answer: <em className={a.chosen === a.correct ? 'correct-text' : 'wrong-text'}>{a.options[a.chosen]}</em>
-                {a.chosen !== a.correct && (
-                  <> &nbsp;|&nbsp; Correct: <em className="correct-text">{a.options[a.correct]}</em></>
-                )}
-              </div>
-              <div className="quiz-review-exp">{a.explanation}</div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="quiz-result-actions">

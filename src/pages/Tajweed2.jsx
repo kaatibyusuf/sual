@@ -218,14 +218,14 @@ export default function Tajweed2({ user }) {
         <p className="tj-paywall-confirming">Confirming your payment — this can take up to a minute.</p>
       ) : (
         <div className="tj-paywall-plans">
-          <div className="tj-paywall-plan">
+          <div className="tj-paywall-plan" data-a11y-label="Monthly plan, 1,500 naira per month">
             <p className="tj-paywall-plan-name">Monthly</p>
             <p className="tj-paywall-plan-price">₦1,500<span>/month</span></p>
             <button className="tj-paywall-btn tj-paywall-btn--secondary" onClick={() => handlePaystack('monthly')}>
               Subscribe →
             </button>
           </div>
-          <div className="tj-paywall-plan tj-paywall-plan--featured">
+          <div className="tj-paywall-plan tj-paywall-plan--featured" data-a11y-label="Annual plan, 10,000 naira per year, best value, saves 8,000 naira a year">
             <span className="tj-paywall-badge">Best Value</span>
             <p className="tj-paywall-plan-name">Annual</p>
             <p className="tj-paywall-plan-price">₦10,000<span>/year</span></p>
@@ -250,7 +250,7 @@ export default function Tajweed2({ user }) {
       <>
         <button className="tj-back" onClick={closeTopic}>← Back to Tajweed Course</button>
 
-        <div className="tj-detail-header card">
+        <div className="tj-detail-header card" data-a11y-label={`${entry.title}.`}>
           <span className="tj-detail-icon"><Icon name={meta.icon} /></span>
           <div>
             <h2 className="tj-detail-title">{entry.title}</h2>
@@ -266,7 +266,7 @@ export default function Tajweed2({ user }) {
           <>
             {['definition', 'scope', 'rulings'].map(section => (
               entry[section] ? (
-                <div key={section} className="tj-section card">
+                <div key={section} className="tj-section card" data-a11y-label={`${section}: ${entry[section]}`}>
                   <h3 className="tj-section-title">
                     <Icon name={SECTION_ICONS[section]} /> {section.charAt(0).toUpperCase() + section.slice(1)}
                   </h3>
@@ -280,7 +280,11 @@ export default function Tajweed2({ user }) {
                 <h3 className="tj-section-title"><Icon name="cases" /> Cases</h3>
                 <div className="tj-cases">
                   {entry.cases.map((c, i) => (
-                    <div key={i} className="tj-case">
+                    <div
+                      key={i}
+                      className="tj-case"
+                      data-a11y-label={`Case: ${c.title}. ${c.scenario}. Ruling: ${c.ruling}`}
+                    >
                       <p className="tj-case-title">{c.title}</p>
                       <p className="tj-case-scenario">{c.scenario}</p>
                       <p className="tj-case-ruling"><strong>Ruling:</strong> {c.ruling}</p>
@@ -295,7 +299,11 @@ export default function Tajweed2({ user }) {
                 <h3 className="tj-section-title"><Icon name="question" /> Common Questions</h3>
                 <div className="tj-faq">
                   {entry.faq.map((f, i) => (
-                    <div key={i} className="tj-faq-item">
+                    <div
+                      key={i}
+                      className="tj-faq-item"
+                      data-a11y-label={`Question: ${f.question}. Answer: ${f.answer}`}
+                    >
                       <p className="tj-faq-q">{f.question}</p>
                       <p className="tj-faq-a">{f.answer}</p>
                     </div>
@@ -329,7 +337,12 @@ export default function Tajweed2({ user }) {
           const entry = TAJWEED_CONTENT[t.key]
           const locked = isTopicLocked(t.key)
           return (
-            <button key={t.key} className="tj-topic-card card" onClick={() => openTopic(t.key)}>
+            <button
+              key={t.key}
+              className="tj-topic-card card"
+              onClick={() => openTopic(t.key)}
+              data-a11y-label={`${t.label}${locked ? ', paid' : ''}. ${entry.quick_fact}`}
+            >
               <span className={`tj-topic-icon ${locked ? 'tj-topic-icon--locked' : ''}`}>
                 <Icon name={locked ? 'lock' : t.icon} />
               </span>

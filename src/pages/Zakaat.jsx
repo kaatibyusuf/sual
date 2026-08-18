@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { ZAKAAT_CONTENT } from '../data/zakaat.js'
+import { useAccessibility } from '../accessibility/AccessibilityContext.jsx'
 import './Zakaat.css'
 
 const ICONS = {
@@ -174,6 +175,7 @@ function writeNisabCache(result) {
 }
 
 export default function Zakaat({ user }) {
+  const { announce } = useAccessibility()
   const [tab, setTab] = useState('learn')
   const [activeTopic, setActiveTopic] = useState(null)
 
@@ -248,7 +250,10 @@ export default function Zakaat({ user }) {
         <>
           <button className="zk-back" onClick={closeTopic}>← Back to Everything Zakaat</button>
 
-          <div className="zk-detail-header card">
+          <div
+            className="zk-detail-header card"
+            data-a11y-label={`${entry.title}.`}
+          >
             <span className="zk-detail-icon"><Icon name={meta.icon} /></span>
             <div>
               <h2 className="zk-detail-title">{entry.title}</h2>
@@ -258,7 +263,7 @@ export default function Zakaat({ user }) {
 
           {['definition', 'scope', 'rulings'].map(section => (
             entry[section] ? (
-              <div key={section} className="zk-section card">
+              <div key={section} className="zk-section card" data-a11y-label={`${section}: ${entry[section]}`}>
                 <h3 className="zk-section-title">
                   <Icon name={SECTION_ICONS[section]} /> {section.charAt(0).toUpperCase() + section.slice(1)}
                 </h3>
@@ -272,7 +277,11 @@ export default function Zakaat({ user }) {
               <h3 className="zk-section-title"><Icon name="cases" /> Cases</h3>
               <div className="zk-cases">
                 {entry.cases.map((c, i) => (
-                  <div key={i} className="zk-case">
+                  <div
+                    key={i}
+                    className="zk-case"
+                    data-a11y-label={`Case: ${c.title}. ${c.scenario}. Ruling: ${c.ruling}`}
+                  >
                     <p className="zk-case-title">{c.title}</p>
                     <p className="zk-case-scenario">{c.scenario}</p>
                     <p className="zk-case-ruling"><strong>Ruling:</strong> {c.ruling}</p>
@@ -287,7 +296,11 @@ export default function Zakaat({ user }) {
               <h3 className="zk-section-title"><Icon name="question" /> Common Questions</h3>
               <div className="zk-faq">
                 {entry.faq.map((f, i) => (
-                  <div key={i} className="zk-faq-item">
+                  <div
+                    key={i}
+                    className="zk-faq-item"
+                    data-a11y-label={`Question: ${f.question}. Answer: ${f.answer}`}
+                  >
                     <p className="zk-faq-q">{f.question}</p>
                     <p className="zk-faq-a">{f.answer}</p>
                   </div>
@@ -304,7 +317,12 @@ export default function Zakaat({ user }) {
         {TOPICS.map(t => {
           const entry = ZAKAAT_CONTENT[t.key]
           return (
-            <button key={t.key} className="zk-topic-card card" onClick={() => openTopic(t.key)}>
+            <button
+              key={t.key}
+              className="zk-topic-card card"
+              onClick={() => openTopic(t.key)}
+              data-a11y-label={`${t.label}. ${entry.quick_fact}`}
+            >
               <span className="zk-topic-icon"><Icon name={t.icon} /></span>
               <div className="zk-topic-text">
                 <h3 className="zk-topic-label">{t.label}</h3>
@@ -347,6 +365,20 @@ export default function Zakaat({ user }) {
     const hrs = Math.round(mins / 60)
     return `${hrs}h ago`
   })()
+
+  const handleCalculate = () => {
+    setShowResult(true)
+    // The result card renders conditionally below and wouldn't
+    // otherwise get announced — this is the one place on this page
+    // where tapping a button changes what's on screen without the
+    // user having navigated anywhere, so it needs an explicit
+    // announcement rather than relying on touch-explore to find it.
+    if (meetsNisab) {
+      announce(`Net zakatable wealth ${fmt(netZakatable)}. Above nisab. Estimated zakat due: ${fmt(zakatDue)}.`)
+    } else {
+      announce(`Net zakatable wealth ${fmt(netZakatable)}. Below the nisab threshold of ${fmt(nisabValue)} — no zakat due right now.`)
+    }
+  }
 
   const renderCalculator = () => (
     <>
@@ -420,14 +452,19 @@ export default function Zakaat({ user }) {
 
         <div className="zk-calc-actions">
           <button className="zk-calc-btn-secondary" onClick={resetCalculator}>Reset</button>
-          <button className="zk-calc-btn" onClick={() => setShowResult(true)} disabled={nisabLoading || nisabValue == null}>
+          <button className="zk-calc-btn" onClick={handleCalculate} disabled={nisabLoading || nisabValue == null}>
             {nisabLoading || nisabValue == null ? 'Loading nisab…' : 'Calculate'}
           </button>
         </div>
       </div>
 
       {showResult && nisabValue != null && (
-        <div className={`zk-result-card card ${meetsNisab ? '' : 'zk-result-card--below'}`}>
+        <div
+          className={`zk-result-card card ${meetsNisab ? '' : 'zk-result-card--below'}`}
+          data-a11y-label={meetsNisab
+            ? `Net zakatable wealth ${fmt(netZakatable)}. Above nisab. Estimated zakat due, 2.5 percent: ${fmt(zakatDue)}.`
+            : `Net zakatable wealth ${fmt(netZakatable)}. Below the nisab threshold of ${fmt(nisabValue)} — no zakat due right now.`}
+        >
           <p className="zk-result-label">Net zakatable wealth</p>
           <p className="zk-result-value">{fmt(netZakatable)}</p>
 

@@ -116,14 +116,14 @@ export default function Tajweed({ user }) {
         <p className="tj-paywall-confirming">Confirming your payment — this can take up to a minute.</p>
       ) : (
         <div className="tj-paywall-plans">
-          <div className="tj-paywall-plan">
+          <div className="tj-paywall-plan" data-a11y-label="Monthly plan, 1,500 naira per month">
             <p className="tj-paywall-plan-name">Monthly</p>
             <p className="tj-paywall-plan-price">₦1,500<span>/month</span></p>
             <button className="tj-paywall-btn tj-paywall-btn--secondary" onClick={() => handlePaystack('monthly')}>
               Subscribe →
             </button>
           </div>
-          <div className="tj-paywall-plan tj-paywall-plan--featured">
+          <div className="tj-paywall-plan tj-paywall-plan--featured" data-a11y-label="Annual plan, 10,000 naira per year, best value, saves 8,000 naira a year">
             <span className="tj-paywall-badge">Best Value</span>
             <p className="tj-paywall-plan-name">Annual</p>
             <p className="tj-paywall-plan-price">₦10,000<span>/year</span></p>
@@ -153,7 +153,7 @@ export default function Tajweed({ user }) {
 
         <div className="tj-rule-detail">
           {/* Header */}
-          <div className="tj-rule-header card">
+          <div className="tj-rule-header card" data-a11y-label={`${rule.name}, ${lc.label} level.`}>
             <div className="tj-rule-header-top">
               <span
                 className="tj-level-badge"
@@ -171,7 +171,7 @@ export default function Tajweed({ user }) {
           <div className="tj-rule-body card">
             <h2 className="tj-section-label">📖 Explanation</h2>
             {rule.explanation.split('\n').map((para, i) => (
-              <p key={i} className="tj-rule-para">{para}</p>
+              <p key={i} className="tj-rule-para" data-a11y-label={para}>{para}</p>
             ))}
           </div>
 
@@ -181,7 +181,11 @@ export default function Tajweed({ user }) {
               <h2 className="tj-section-label">✍️ Examples from the Quran</h2>
               <div className="tj-examples-grid">
                 {rule.examples.map((ex, i) => (
-                  <div key={i} className="tj-example-item">
+                  <div
+                    key={i}
+                    className="tj-example-item"
+                    data-a11y-label={`${ex.transliteration}. ${ex.note}`}
+                  >
                     <div className="tj-example-arabic arabic-lg">{ex.arabic}</div>
                     <div className="tj-example-translit">{ex.transliteration}</div>
                     <div className="tj-example-note">{ex.note}</div>
@@ -192,7 +196,7 @@ export default function Tajweed({ user }) {
           )}
 
           {/* Source */}
-          <div className="tj-rule-source card">
+          <div className="tj-rule-source card" data-a11y-label={`Source: ${rule.source}`}>
             <h2 className="tj-section-label">📚 Source</h2>
             <p className="tj-source-text">{rule.source}</p>
           </div>
@@ -217,7 +221,7 @@ export default function Tajweed({ user }) {
           ← Back to Tajweed
         </button>
 
-        <div className="tj-section-header">
+        <div className="tj-section-header" data-a11y-label={`${section.title}: ${section.overview}`}>
           <div className="tj-section-icon">{section.icon}</div>
           <div>
             <h1 className="tj-section-title">{section.title}</h1>
@@ -263,6 +267,7 @@ export default function Tajweed({ user }) {
                     key={rule.id}
                     className="tj-rule-card card"
                     onClick={() => setActiveRule(rule.id)}
+                    data-a11y-label={`${rule.name}, ${lc.label} level. ${rule.explanation.slice(0, 150)}`}
                   >
                     <div className="tj-rule-card-top">
                       <span
@@ -299,7 +304,10 @@ export default function Tajweed({ user }) {
       <p className="page-subtitle">عِلْمُ التَّجْوِيد — The Science of Quranic Recitation</p>
 
       {/* Intro banner */}
-      <div className="tj-intro-banner">
+      <div
+        className="tj-intro-banner"
+        data-a11y-label={`"And recite the Quran with measured recitation." Quran 73:4. The Prophet Muhammad said: "The one who is proficient in the Quran will be with the noble and righteous scribes, and the one who recites it with difficulty will have two rewards." Sahih al-Bukhari 4937.`}
+      >
         <div className="tj-intro-ayah arabic-lg">
           وَرَتِّلِ القُرْآنَ تَرْتِيلًا
         </div>
@@ -336,6 +344,7 @@ export default function Tajweed({ user }) {
               key={section.id}
               className={`tj-section-card card ${locked ? 'tj-section-card--locked' : ''}`}
               onClick={() => openSection(section.id)}
+              data-a11y-label={`${section.title}${locked ? ', paid' : ''}. ${totalRules} ${totalRules === 1 ? 'rule' : 'rules'}. ${section.overview.slice(0, 120)}`}
             >
               <div className="tj-section-card-icon">{locked ? '🔒' : section.icon}</div>
               <h3 className="tj-section-card-title">{section.title}</h3>
@@ -371,7 +380,11 @@ export default function Tajweed({ user }) {
         <h2 className="tj-scholars-title">Foundational Scholars of Tajweed</h2>
         <div className="tj-scholars-grid">
           {TAJWEED_SCHOLARS.map((s, i) => (
-            <div key={i} className="tj-scholar-card card">
+            <div
+              key={i}
+              className="tj-scholar-card card"
+              data-a11y-label={`${s.name}, ${s.lifespan}. ${s.contribution}`}
+            >
               <h3 className="tj-scholar-name">{s.name}</h3>
               <p className="tj-scholar-arabic arabic">{s.arabicName}</p>
               <p className="tj-scholar-lifespan">{s.lifespan}</p>
