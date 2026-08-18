@@ -16,7 +16,7 @@
 
 .a11y-toggle-btn {
   position: fixed;
-  right: 18px;
+  left: 18px;
   bottom: calc(48px + env(safe-area-inset-bottom, 0px) + 16px);
   z-index: 500;
   width: 52px;
@@ -55,7 +55,7 @@
 
 @media (max-width: 600px) {
   .a11y-toggle-btn {
-    right: 14px;
+    left: 14px;
     bottom: calc(48px + env(safe-area-inset-bottom, 0px) + 14px);
   }
 }

@@ -1,17 +1,20 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
+import { useAccessibility } from '../accessibility/AccessibilityContext.jsx'
 import './NotificationBell.css'
 
 const POLL_INTERVAL_MS = 45000
 const PREVIEW_LIMIT = 5
 
 export default function NotificationBell({ user }) {
+  const { announce } = useAccessibility()
   const [unreadCount, setUnreadCount] = useState(0)
   const [preview,     setPreview]     = useState([])
   const [open,        setOpen]        = useState(false)
   const [lastSeenAt,  setLastSeenAt]  = useState(null)
   const [loading,     setLoading]     = useState(false)
+  const prevCountRef = useRef(0)
 
   // First time we ever see this user, baseline them to "now" rather
   // than showing every historical post as unread.
@@ -38,8 +41,16 @@ export default function NotificationBell({ user }) {
       .select('id', { count: 'exact', head: true })
       .gt('created_at', seen)
       .neq('user_id', user.id) // don't notify people of their own post
-    setUnreadCount(count || 0)
-  }, [user, ensureActivityRow])
+    const newCount = count || 0
+    // Only announce on an actual increase — this fires on every poll
+    // tick regardless of change, so without the comparison it would
+    // re-announce the same count every 45 seconds.
+    if (newCount > prevCountRef.current) {
+      announce(`${newCount} new ${newCount === 1 ? 'post' : 'posts'} in Spaces.`)
+    }
+    prevCountRef.current = newCount
+    setUnreadCount(newCount)
+  }, [user, ensureActivityRow, announce])
 
   useEffect(() => {
     if (!user) return
@@ -74,6 +85,7 @@ export default function NotificationBell({ user }) {
     const now = new Date().toISOString()
     await supabase.from('user_spaces_activity').upsert({ user_id: user.id, last_seen_at: now })
     setLastSeenAt(now)
+    prevCountRef.current = 0
     setUnreadCount(0)
   }
 
@@ -81,7 +93,11 @@ export default function NotificationBell({ user }) {
 
   return (
     <div className="notif-bell-wrapper">
-      <button className="notif-bell-btn" onClick={togglePanel} aria-label="Spaces notifications">
+      <button
+        className="notif-bell-btn"
+        onClick={togglePanel}
+        aria-label={unreadCount > 0 ? `Spaces notifications, ${unreadCount} unread` : 'Spaces notifications'}
+      >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
@@ -105,6 +121,7 @@ export default function NotificationBell({ user }) {
                 to={`/spaces?post=${p.id}`}
                 className="notif-bell-item"
                 onClick={() => setOpen(false)}
+                data-a11y-label={`${p.category}: ${p.title}`}
               >
                 <span className="notif-bell-item-cat">{p.category}</span>
                 <span className="notif-bell-item-title">{p.title}</span>
