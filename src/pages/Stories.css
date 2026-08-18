@@ -23,20 +23,28 @@
   color: #094570;
 }
 
-/* Filters */
+/* ── Filters — era pills are now a single horizontally-scrollable
+   row instead of wrapping to two lines (same fix already applied to
+   Spaces' tab strip and category filters), and the search bar sits
+   on its own line below rather than fighting the pills for width. ── */
 .stories-filters {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 12px;
-  flex-wrap: wrap;
 }
 
 .stories-filter-group {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
 }
+
+.stories-filter-group::-webkit-scrollbar { display: none; }
 
 .stories-filter-btn {
   padding: 7px 16px;
@@ -49,6 +57,8 @@
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: var(--font-ui);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .stories-filter-btn:hover {
@@ -64,8 +74,7 @@
 
 .stories-search {
   position: relative;
-  flex: 1;
-  min-width: 200px;
+  width: 100%;
 }
 
 .stories-search-input {
@@ -108,7 +117,9 @@
   margin-bottom: 20px;
 }
 
-/* Badges */
+/* Badges — kept theme-invariant on purpose, same as Spaces' category
+   dots: an era's color is part of its identity, not something that
+   should shift with light/dark mode. */
 .stories-badge {
   display: inline-block;
   padding: 3px 10px;
@@ -324,16 +335,9 @@
 
 .story-detail-body {
   padding: 28px;
-  background: #ffffff !important;
+  background: #ffffff;
   border: 1.5px solid #c8d8e8;
   border-radius: 12px;
-}
-
-.story-para {
-  font-size: 0.93rem;
-  color: #0d1b2a !important;
-  line-height: 1.9;
-  margin-bottom: 16px;
 }
 
 .story-para {
@@ -422,11 +426,6 @@
     grid-template-columns: 1fr;
   }
 
-  .stories-filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
   .story-detail-name {
     font-size: 1.4rem;
   }
@@ -439,10 +438,6 @@
     font-size: 0.88rem;
   }
 }
-.story-card { background: #ffffff !important; }
-.story-detail-header { background: #ffffff !important; }
-.story-detail-lessons { background: #ffffff !important; }
-.story-detail-sources { background: #ffffff !important; }
 
 /* ── Reading progress bar (fixed, detail view) ── */
 .story-reading-bar {
@@ -497,7 +492,7 @@
 /* ── "Finished" banner in the detail view ── */
 .story-complete-banner {
   padding: 14px 18px;
-  background: rgba(46,125,50,0.06) !important;
+  background: rgba(46,125,50,0.06);
   border: 1.5px solid rgba(46,125,50,0.3);
   border-radius: 12px;
   color: #2e7d32;
@@ -506,7 +501,137 @@
   text-align: center;
 }
 
-/* ── Dark mode ── */
+/* ============================================
+   Dark mode
+
+   The whole page previously had .story-card / .story-detail-header /
+   .story-detail-lessons / .story-detail-sources hard-forced to white
+   with !important and NO dark-mode override anywhere — that's what
+   was producing the jarring white block on a dark page. Text colors
+   throughout (.story-para, .story-detail-name, lesson text, etc.)
+   were also all hardcoded to light-mode ink colors with no dark
+   variant. This section gives every one of those the same treatment
+   the rest of the app already uses: #0f1f2e / #1e3448 for card
+   surfaces, #c8e0f5 / #a8c0d8 / #7d93a6 for primary/secondary/muted
+   text, #85CCFF for accents and links.
+   ============================================ */
+
+[data-theme="dark"] .stories-back {
+  color: #7f97ae;
+}
+
+[data-theme="dark"] .stories-back:hover {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .stories-filter-btn {
+  background: #0f1f2e;
+  border-color: #1e3448;
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .stories-filter-btn:hover {
+  border-color: #85CCFF;
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .stories-filter-btn--active {
+  background: #85CCFF;
+  border-color: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .stories-search-input {
+  background: #0f1f2e;
+  border-color: #1e3448;
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .stories-search-input:focus {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .stories-search-input::placeholder {
+  color: #6a8090;
+}
+
+[data-theme="dark"] .stories-search-clear {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .stories-count {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .story-card,
+[data-theme="dark"] .story-detail-header,
+[data-theme="dark"] .story-detail-body,
+[data-theme="dark"] .story-detail-lessons,
+[data-theme="dark"] .story-detail-sources {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .story-card:hover {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .story-card-name,
+[data-theme="dark"] .story-detail-name {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .story-card-arabic,
+[data-theme="dark"] .story-detail-arabic {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .story-card-title,
+[data-theme="dark"] .story-detail-title,
+[data-theme="dark"] .story-card-lifespan,
+[data-theme="dark"] .story-detail-lifespan {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .story-card-summary,
+[data-theme="dark"] .story-para,
+[data-theme="dark"] .story-lesson-item p {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .story-card-footer {
+  border-top-color: #1e3448;
+}
+
+[data-theme="dark"] .story-card-read {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .stories-empty {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .story-detail-summary {
+  background: rgba(133,204,255,0.08);
+  border-left-color: #85CCFF;
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .story-lesson-item {
+  background: #0a1825;
+}
+
+[data-theme="dark"] .story-lesson-num {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .story-source-chip {
+  background: rgba(133,204,255,0.1);
+  border-color: rgba(133,204,255,0.3);
+  color: #85CCFF;
+}
+
 [data-theme="dark"] .story-reading-bar {
   background: rgba(133,204,255,0.1);
 }
@@ -521,7 +646,7 @@
 }
 
 [data-theme="dark"] .story-complete-banner {
-  background: rgba(46,125,50,0.1) !important;
+  background: rgba(46,125,50,0.1);
   border-color: rgba(46,125,50,0.35);
   color: #7fc98a;
 }
