@@ -729,6 +729,220 @@
   color: #85CCFF;
 }
 
+/* ── Sahaabah Circles list — this class name existed in Spaces.jsx
+   with no matching CSS at all (only the generic .card utility was
+   giving it any shape), so the icon/title/description/count/arrow
+   fell back to unstyled default block/inline flow rather than an
+   intentional layout. ── */
+.spaces-circle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spaces-circle-topic-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  text-align: left;
+  font-family: var(--font-ui);
+}
+
+.spaces-circle-topic-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #094570;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.spaces-circle-topic-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.spaces-circle-topic-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  gap: 2px;
+}
+
+.spaces-circle-topic-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #094570;
+}
+
+.spaces-circle-topic-arabic {
+  font-size: 0.85rem;
+  color: #6a8090;
+  margin-bottom: 2px;
+}
+
+.spaces-circle-topic-desc {
+  font-size: 0.8rem;
+  color: #4a6080;
+  line-height: 1.55;
+}
+
+/* Fixes the bidi text-reordering bug where "ﷺ" (a strong
+   right-to-left character) sitting right before the member count
+   caused the browser's bidi algorithm to reclassify the following
+   digit as an Arabic number (Unicode bidi rule W2) and reorder the
+   whole "ﷺ. · N" cluster — e.g. Halaqah Ali's blurb rendering as
+   "...the Prophet 6 · ﷺ members" instead of "...the Prophet ﷺ. · 6
+   members". Isolating this span stops that reclassification from
+   reaching across the boundary. */
+.spaces-circle-topic-count {
+  unicode-bidi: isolate;
+  direction: ltr;
+  color: #8a9ab0;
+  font-weight: 600;
+}
+
+.spaces-circle-topic-arrow {
+  align-self: center;
+  font-size: 1.1rem;
+  color: #094570;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .spaces-circle-topic-icon {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .spaces-circle-topic-name {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-circle-topic-arabic,
+[data-theme="dark"] .spaces-circle-topic-count {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .spaces-circle-topic-desc {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .spaces-circle-topic-arrow {
+  color: #85CCFF;
+}
+
+/* ── Archive lists — used for past lesson archives AND the Hadeeth
+   Class collections (42 Hadith, Umdat al-Ahkam, Sahih al-Bukhari
+   chapter/hadith browsing, 8 call sites total). None of these
+   classes had any CSS at all — no dedicated rules and no generic
+   .card fallback either — so every one of these lists was rendering
+   as plain unstyled buttons (default grey background, square
+   corners, browser button font). ── */
+.spaces-archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spaces-archive-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.spaces-archive-card:hover {
+  border-color: #85CCFF;
+  box-shadow: 0 4px 12px rgba(9,69,112,0.08);
+  transform: translateY(-1px);
+}
+
+.spaces-archive-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #094570;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.spaces-archive-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.spaces-archive-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  gap: 2px;
+}
+
+.spaces-archive-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #094570;
+  line-height: 1.35;
+}
+
+.spaces-archive-desc {
+  font-size: 0.76rem;
+  color: #6a8090;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spaces-archive-arrow {
+  font-size: 1rem;
+  color: #094570;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .spaces-archive-card {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .spaces-archive-card:hover {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-archive-icon {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .spaces-archive-title {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .spaces-archive-desc {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .spaces-archive-arrow {
+  color: #85CCFF;
+}
+
 /* ── Main tabs (superseded by the hub list above — kept here only
    in case any other view still references these classes) ──
    Was an 8-button grid (flex:1 + wrap), which forced two full rows

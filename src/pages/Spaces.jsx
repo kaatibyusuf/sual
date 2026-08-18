@@ -489,7 +489,10 @@ export default function Spaces({ user }) {
   const [error,          setError]          = useState(null)
   const [activeTab,      setActiveTab]      = useState(null) // null = hub list; a key = inside that section
   const [hubSearch,      setHubSearch]      = useState('')
-  const [classLevel,     setClassLevel]     = useState({ arabiyyah: 'beginner', hadeeth: 'beginner' })
+  // A student's own level (from user_levels, same source Quiz/Home/
+  // Journey already read), used to pick which Arabiyyah/Hadeeth Class
+  // content to show automatically — no manual level picker.
+  const [userLevel,      setUserLevel]      = useState('beginner')
   const [featured,       setFeatured]       = useState(null)
   const [memberCount,    setMemberCount]    = useState(null)
   const [justJoined,     setJustJoined]     = useState(false)
@@ -558,6 +561,18 @@ export default function Spaces({ user }) {
   const [activeBukhariNum, setActiveBukhariNum] = useState(null)
   const [activeBukhariChapter, setActiveBukhariChapter] = useState(null)
 
+  // The level picker used to clear these on manual switch; now that
+  // the Hadeeth Class collection (42 Hadith / Umdah / Bukhari) is
+  // picked automatically from userLevel, this guards the same edge
+  // case — e.g. leveling up mid-session — without needing a click.
+  useEffect(() => {
+    setActiveHadithNum(null)
+    setActiveUmdahNum(null)
+    setActiveUmdahChapter(null)
+    setActiveBukhariNum(null)
+    setActiveBukhariChapter(null)
+  }, [userLevel])
+
   const [hadithQuizIndex, setHadithQuizIndex] = useState(0)
   const [hadithQuizChosen, setHadithQuizChosen] = useState(null)
   const [hadithQuizRevealed, setHadithQuizRevealed] = useState(false)
@@ -617,6 +632,23 @@ export default function Spaces({ user }) {
       .limit(1)
       .maybeSingle()
     setHasReferralAccess(!!data)
+  }, [user])
+
+  // Same source Quiz/Home/Journey already read from — used here only
+  // to auto-pick which Arabiyyah/Hadeeth Class content to show, with
+  // no manual level picker in the UI.
+  const fetchUserLevel = useCallback(async () => {
+    if (!user) return
+    try {
+      const { data } = await supabase
+        .from('user_levels')
+        .select('current_level')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      setUserLevel(data?.current_level || 'beginner')
+    } catch (err) {
+      console.error('Failed to load user level:', err)
+    }
   }, [user])
 
   const fetchPosts = useCallback(async () => {
@@ -1208,6 +1240,7 @@ export default function Spaces({ user }) {
     if (!user) return
     checkSubscription()
     checkReferralAccess()
+    fetchUserLevel()
 
     const params = new URLSearchParams(window.location.search)
     if (params.get('payment') === 'success') {
@@ -1233,7 +1266,7 @@ export default function Spaces({ user }) {
       }, 5000)
       return () => clearInterval(poll)
     }
-  }, [user, checkSubscription, checkReferralAccess])
+  }, [user, checkSubscription, checkReferralAccess, fetchUserLevel])
 
   const isPaid = useMemo(() => {
     if (subscription?.status === 'active' && subscription?.plan === 'spaces_lifetime') {
@@ -1273,11 +1306,11 @@ export default function Spaces({ user }) {
     if (activeTab === 'accountability') fetchAccountability()
     if (activeTab === 'circles') fetchCircles()
     if (activeTab === 'tafseer') { fetchTafseer(); fetchTafseerArchive() }
-    if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', classLevel.arabiyyah); fetchClassLessonArchive('arabiyyah', classLevel.arabiyyah) }
-    if (activeTab === 'hadeeth' && !['beginner', 'intermediate', 'advanced'].includes(classLevel.hadeeth)) { fetchClassLesson('hadeeth', classLevel.hadeeth); fetchClassLessonArchive('hadeeth', classLevel.hadeeth) }
+    if (activeTab === 'arabiyyah') { fetchClassLesson('arabiyyah', userLevel); fetchClassLessonArchive('arabiyyah', userLevel) }
+    if (activeTab === 'hadeeth') { fetchClassLesson('hadeeth', userLevel); fetchClassLessonArchive('hadeeth', userLevel) }
     if (activeTab === 'majlis') fetchMajlisPosts()
     if (activeTab === 'examportal' && weeklyPhase === 'select') fetchWeeklyTests()
-  }, [activeTab, isPaid, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, fetchMajlisPosts, classLevel, weeklyPhase, fetchWeeklyTests])
+  }, [activeTab, isPaid, fetchAccountability, fetchCircles, fetchTafseer, fetchTafseerArchive, fetchClassLesson, fetchClassLessonArchive, fetchMajlisPosts, userLevel, weeklyPhase, fetchWeeklyTests])
 
   useEffect(() => {
     if (activeTab === 'examportal' && isPaid && weeklyPhase === 'select') fetchWeeklyTests()
@@ -2974,7 +3007,9 @@ export default function Spaces({ user }) {
   }
 
   const renderClass = (cls) => {
-    const currentLevelKey = classLevel[cls.id]
+    // Auto-fit — the student's own account level picks which content
+    // shows, same as everywhere else in the app; no in-page picker.
+    const currentLevelKey = userLevel
     const currentLevel    = cls.levels.find(l => l.key === currentLevelKey)
     const isHadeeth42 = cls.id === 'hadeeth' && currentLevelKey === 'beginner'
     const isUmdah = cls.id === 'hadeeth' && currentLevelKey === 'intermediate'
@@ -2990,27 +3025,6 @@ export default function Spaces({ user }) {
             <p className="spaces-class-arabic arabic">{cls.arabicTitle}</p>
             <p className="spaces-class-desc">{cls.description}</p>
           </div>
-        </div>
-
-        <div className="spaces-class-levels">
-          {cls.levels.map(lv => (
-            <button
-              key={lv.key}
-              className={`spaces-class-level-btn ${currentLevelKey === lv.key ? 'spaces-class-level-btn--active' : ''}`}
-              style={currentLevelKey === lv.key ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
-              onClick={() => {
-                setClassLevel(prev => ({ ...prev, [cls.id]: lv.key }))
-                setActiveHadithNum(null)
-                setActiveUmdahNum(null)
-                setActiveUmdahChapter(null)
-                setActiveBukhariNum(null)
-                setActiveBukhariChapter(null)
-              }}
-            >
-              <TabIcon name={lv.icon} /> {lv.label}
-              <span className="spaces-class-level-arabic arabic">{lv.arabic}</span>
-            </button>
-          ))}
         </div>
 
         {currentLevel && (
@@ -3133,18 +3147,6 @@ export default function Spaces({ user }) {
                 )}
               </>
             )}
-
-            <div className="spaces-class-section card">
-              <h4 className="spaces-class-section-title">📋 Curriculum</h4>
-              <ul className="spaces-class-curriculum">
-                {currentLevel.curriculum.map((item, i) => (
-                  <li key={i} className="spaces-class-curriculum-item">
-                    <span className="spaces-class-curriculum-num">{i + 1}</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
 
             <div className="spaces-class-section card spaces-class-outcome-card">
               <h4 className="spaces-class-section-title">🎯 Learning Outcome</h4>
