@@ -5,9 +5,7 @@ import { BadgeStrip } from '../components/Badges.jsx'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
-import { AccessibilityProvider, useAccessibility } from '../accessibility/AccessibilityContext.jsx'
-import TouchExploreLayer from '../accessibility/TouchExploreLayer.jsx'
-import AccessibilityToggle from '../accessibility/AccessibilityToggle.jsx'
+import { useAccessibility } from '../accessibility/AccessibilityContext.jsx'
 import './Spaces.css'
 
 // ── Line-art icons, matching Sidebar's icon style ────────────────
@@ -168,6 +166,20 @@ const CATEGORIES = [
   { key: 'tajweed',   label: 'Tajweed',   arabic: 'التَّجْوِيد',  icon: 'mic',       color: '#F0997B' },
   { key: 'aqeedah',   label: 'Aqeedah',   arabic: 'العَقِيدَة',   icon: 'star',      color: '#FAC775' },
   { key: 'general',   label: 'General',   arabic: 'عَامّ',        icon: 'chat',      color: '#8FD9C4' },
+]
+
+// The Spaces landing list — one row per section, WhatsApp-inbox
+// style, replacing the old horizontal tab strip. Colors are reused
+// directly from CATEGORIES above rather than inventing new ones.
+const HUB_ITEMS = [
+  { key: 'community',      label: 'Community',       icon: 'chat',           color: '#094570', desc: 'Ask questions, share knowledge, get scholar answers' },
+  { key: 'majlis',         label: 'Majlis',          icon: 'majlis',         color: '#FAC775', desc: 'Announcements and updates from the Sual team' },
+  { key: 'arabiyyah',      label: 'Arabiyyah Class', icon: 'arabiyyah',      color: '#85B7EB', desc: 'Structured Arabic course, beginner to advanced' },
+  { key: 'hadeeth',        label: 'Hadeeth Class',   icon: 'hadeeth',        color: '#8FD9C4', desc: 'From An-Nawawi to Sahih Al-Bukhari' },
+  { key: 'accountability', label: 'Accountability',  icon: 'accountability', color: '#5DCAA5', desc: 'Pair up and keep each other consistent' },
+  { key: 'circles',        label: 'Circles',         icon: 'circles',       color: '#AFA9EC', desc: 'Small group discussion, named after the Sahabah' },
+  { key: 'tafseer',        label: 'Daily Tafseer',   icon: 'tafseer',        color: '#F0997B', desc: 'A new verse and short test every day' },
+  { key: 'examportal',     label: 'Weekly Tests',    icon: 'weeklyTests',    color: '#094570', desc: 'Graded automatically, one per track per week' },
 ]
 
 const CLASS_SCHEDULE = [
@@ -457,7 +469,7 @@ function buildHadithQuiz(entry, allEntries) {
   return built
 }
 
-function SpacesInner({ user }) {
+export default function Spaces({ user }) {
   const { announce } = useAccessibility()
   const [searchParams, setSearchParams] = useSearchParams()
   const [subscription,   setSubscription]   = useState(null)
@@ -475,7 +487,8 @@ function SpacesInner({ user }) {
   const [showWelcomePrompt, setShowWelcomePrompt] = useState(false)
   const [posting,        setPosting]        = useState(false)
   const [error,          setError]          = useState(null)
-  const [activeTab,      setActiveTab]      = useState('community')
+  const [activeTab,      setActiveTab]      = useState(null) // null = hub list; a key = inside that section
+  const [hubSearch,      setHubSearch]      = useState('')
   const [classLevel,     setClassLevel]     = useState({ arabiyyah: 'beginner', hadeeth: 'beginner' })
   const [featured,       setFeatured]       = useState(null)
   const [memberCount,    setMemberCount]    = useState(null)
@@ -1410,6 +1423,7 @@ function SpacesInner({ user }) {
 
   const openPost = async (post) => {
     setActivePost(post)
+    setActiveTab('community')
     await fetchReplies(post.id)
   }
 
@@ -1488,6 +1502,57 @@ function SpacesInner({ user }) {
 
   const getInitials = (str) => str ? str[0].toUpperCase() : 'U'
   const catOf = (key) => CATEGORIES.find(c => c.key === key)
+
+  const filteredHubItems = HUB_ITEMS.filter(item =>
+    hubSearch.trim() === '' || item.label.toLowerCase().includes(hubSearch.trim().toLowerCase())
+  )
+
+  // The Spaces landing screen — a WhatsApp-inbox-style list of
+  // sections instead of the old horizontal tab strip. Tapping a row
+  // drills into that section; a back button (rendered in the main
+  // return, once, rather than duplicated per section) returns here.
+  const renderHub = () => (
+    <>
+      <div className="spaces-hub-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          type="text"
+          className="spaces-hub-search-input"
+          placeholder="Search Spaces"
+          value={hubSearch}
+          onChange={e => setHubSearch(e.target.value)}
+        />
+      </div>
+
+      <div className="spaces-hub-list">
+        {filteredHubItems.map(item => (
+          <button
+            key={item.key}
+            className="spaces-hub-row"
+            onClick={() => setActiveTab(item.key)}
+            data-a11y-label={`${item.label}. ${item.desc}`}
+          >
+            <span className="spaces-hub-avatar" style={{ background: item.color }} aria-hidden="true">
+              {ICONS[item.icon]}
+            </span>
+            <span className="spaces-hub-text">
+              <span className="spaces-hub-title">{item.label}</span>
+              <span className="spaces-hub-desc">{item.desc}</span>
+            </span>
+            {item.key === 'community' && memberCount !== null && (
+              <span className="spaces-hub-meta">{memberCount.toLocaleString()} members</span>
+            )}
+          </button>
+        ))}
+        {filteredHubItems.length === 0 && (
+          <p className="spaces-hub-empty">No section matches "{hubSearch}".</p>
+        )}
+      </div>
+    </>
+  )
 
   const renderSchedule = () => (
     <div className="spaces-schedule">
@@ -3095,15 +3160,25 @@ function SpacesInner({ user }) {
     <div className="page-content spaces-page">
 
       <div className="spaces-header">
-        <div>
-          <h1 className="page-title">Spaces</h1>
-          <p className="page-subtitle">فَضَاءَات — Community for serious students</p>
-          {memberCount !== null && (
-            <p style={{ fontSize: '0.85rem', color: '#6a8090', marginTop: 4 }}>
-              <TabIcon name="people" /> {memberCount.toLocaleString()} members
-            </p>
-          )}
-        </div>
+        {activeTab === null ? (
+          <div>
+            <h1 className="page-title">Spaces</h1>
+            <p className="page-subtitle">فَضَاءَات — Community for serious students</p>
+            {memberCount !== null && (
+              <p style={{ fontSize: '0.85rem', color: '#6a8090', marginTop: 4 }}>
+                <TabIcon name="people" /> {memberCount.toLocaleString()} members
+              </p>
+            )}
+          </div>
+        ) : (
+          <button
+            className="spaces-hub-back"
+            onClick={() => setActiveTab(null)}
+            data-a11y-label="Back to Spaces"
+          >
+            ← Spaces
+          </button>
+        )}
         {activeTab === 'community' && (
           <button className="spaces-new-btn" onClick={() => setShowNewPost(true)} data-a11y-label="Create a new post">
             + New Post
@@ -3111,26 +3186,7 @@ function SpacesInner({ user }) {
         )}
       </div>
 
-      <div className="spaces-main-tabs">
-        {[
-          { key: 'community',      label: 'Community',      icon: 'chat' },
-          { key: 'majlis',         label: 'Majlis',         icon: 'majlis' },
-          { key: 'arabiyyah',      label: 'Arabiyyah Class', icon: 'arabiyyah' },
-          { key: 'hadeeth',        label: 'Hadeeth Class',   icon: 'hadeeth' },
-          { key: 'accountability', label: 'Accountability',  icon: 'accountability' },
-          { key: 'circles',        label: 'Circles',         icon: 'circles' },
-          { key: 'tafseer',        label: 'Daily Tafseer',   icon: 'tafseer' },
-          { key: 'examportal',     label: 'Weekly Tests',    icon: 'weeklyTests' },
-        ].map(t => (
-          <button
-            key={t.key}
-            className={`spaces-main-tab ${activeTab === t.key ? 'spaces-main-tab--active' : ''}`}
-            onClick={() => setActiveTab(t.key)}
-          >
-            <TabIcon name={t.icon} /> {t.label}
-          </button>
-        ))}
-      </div>
+      {activeTab === null && renderHub()}
 
       {activeTab === 'majlis' && renderMajlis()}
       {activeTab === 'arabiyyah' && renderClass(CLASSES[0])}
@@ -3275,22 +3331,5 @@ function SpacesInner({ user }) {
         </>
       )}
     </div>
-  )
-}
-
-// Wraps the real page with the accessibility layer: the provider
-// holds the reader on/off state, TouchExploreLayer intercepts touches
-// while it's on, and the floating toggle button is how someone turns
-// it on in the first place. For an app-wide rollout, move this
-// AccessibilityProvider (and the toggle) up into App.jsx, above the
-// router, so the reader's on/off state and touch-explore behavior
-// persist across page navigations instead of resetting on Spaces.
-export default function Spaces({ user }) {
-  return (
-    <AccessibilityProvider>
-      <TouchExploreLayer />
-      <AccessibilityToggle />
-      <SpacesInner user={user} />
-    </AccessibilityProvider>
   )
 }
