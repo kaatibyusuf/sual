@@ -41,10 +41,17 @@ export default function TouchExploreLayer() {
       const now = Date.now()
       const { node: lastNode, time: lastTime } = lastRef.current
 
+      // Safety valve: the reader toggle itself always fires on a
+      // single tap, on AND off — someone who wants immediate silence
+      // shouldn't have to first survive a "speak, don't activate"
+      // tap and then land a correctly-timed second one. Every other
+      // control keeps the normal double-tap rule below.
+      const isInstantToggle = found?.node.hasAttribute('data-a11y-instant-toggle')
+
       const isSecondTapOnSameElement =
         found && found.node === lastNode && (now - lastTime) < DOUBLE_TAP_MS
 
-      if (isSecondTapOnSameElement) {
+      if (isInstantToggle || isSecondTapOnSameElement) {
         // Real activation — let this click proceed untouched.
         lastRef.current = { node: null, time: 0 }
         clearHighlight()

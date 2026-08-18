@@ -20,6 +20,7 @@ export default function AccessibilityToggle() {
       aria-pressed={enabled}
       aria-label={enabled ? 'Voice reader on. Tap to turn off.' : 'Voice reader off. Tap to turn on.'}
       data-a11y-label={enabled ? 'Voice reader, currently on' : 'Voice reader, currently off'}
+      data-a11y-instant-toggle="true"
     >
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M11 5 6 9H2v6h4l5 4V5z" />
