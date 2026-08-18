@@ -1,10 +1,12 @@
 // supabase/functions/initialize-payment/index.ts
 //
-// Initializes a Paystack transaction for Spaces (monthly, annual,
-// or lifetime) or Book Quiz. The reference format carries the plan
-// so the webhook can branch on it without a second lookup:
+// Initializes a Paystack transaction for Spaces (monthly, annual, or
+// lifetime), Book Quiz, or the Tajweed Course. The reference format
+// carries the plan so the webhook can branch on it without a second
+// lookup:
 //   sual_<plan>_<uuid>_<epoch>          (Spaces)
-//   bookquiz_<plan>_<uuid>_<epoch>      (Book Quiz — unchanged)
+//   bookquiz_<plan>_<uuid>_<epoch>      (Book Quiz)
+//   tajweed_<plan>_<uuid>_<epoch>       (Tajweed Course)
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -26,10 +28,17 @@ const SPACES_PLAN_AMOUNTS = {
   lifetime: 100000 * 100,
 }
 
-// Amounts in kobo (Paystack expects the smallest currency unit).
 const TAJWEED_PLAN_AMOUNTS = {
   monthly: 1500 * 100,
   annual: 10000 * 100,
+}
+
+// Where the user is sent back to after paying, per product — so a
+// Tajweed purchase lands back on /tajweed, not /spaces.
+const CALLBACK_PATHS = {
+  spaces: '/spaces',
+  bookquiz: '/book-quiz',
+  tajweed: '/tajweed',
 }
 
 serve(async (req) => {
@@ -60,10 +69,11 @@ serve(async (req) => {
     const tajweedPlan = plan === 'annual' ? 'annual' : 'monthly'
     amount = TAJWEED_PLAN_AMOUNTS[tajweedPlan]
     reference = `tajweed_${tajweedPlan}_${user.id}_${Date.now()}`
-  }
   } else {
     return new Response(JSON.stringify({ error: 'Unknown product' }), { status: 400, headers: corsHeaders })
   }
+
+  const callbackPath = CALLBACK_PATHS[product] ?? '/spaces'
 
   const res = await fetch('https://api.paystack.co/transaction/initialize', {
     method: 'POST',
@@ -75,7 +85,7 @@ serve(async (req) => {
       email: user.email,
       amount,
       reference,
-      callback_url: `${req.headers.get('origin') ?? 'https://app.usesual.com'}/spaces?payment=success`,
+      callback_url: `${req.headers.get('origin') ?? 'https://app.usesual.com'}${callbackPath}?payment=success`,
     }),
   })
 
