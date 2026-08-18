@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { toHijriString } from '../lib/hijri.js'
 import { getPrayerStatus } from '../lib/prayerTimes.js'
 import { STORIES } from '../data/stories.js'
+import { DISCIPLINES } from '../data/knowledge.js'
 import SpacesCTA from '../components/SpacesCTA.jsx'
-import QuickActions from '../components/QuickActions.jsx'
 import './Home.css'
 
 function getGreeting() {
@@ -41,69 +41,109 @@ function computeQuizStreak(history) {
   return streak
 }
 
-// ── Swipeable hero card carousel ──────────────────────────────
-function HeroCardCarousel({ cards }) {
-  const trackRef = useRef(null)
-  const [activeIndex, setActiveIndex] = useState(0)
-
-  const handleScroll = useCallback(() => {
-    const track = trackRef.current
-    if (!track) return
-    const cardWidth = track.firstChild?.offsetWidth || 1
-    const gap = 12
-    const index = Math.round(track.scrollLeft / (cardWidth + gap))
-    setActiveIndex(Math.min(index, cards.length - 1))
-  }, [cards.length])
-
-  const goToCard = (i) => {
-    const track = trackRef.current
-    if (!track) return
-    const cardWidth = track.firstChild?.offsetWidth || 1
-    const gap = 12
-    track.scrollTo({ left: i * (cardWidth + gap), behavior: 'smooth' })
-  }
-
-  if (cards.length === 0) return null
-
-  return (
-    <div className="home-carousel">
-      <div className="home-carousel-track" ref={trackRef} onScroll={handleScroll}>
-        {cards.map((c) => (
-          <div key={c.key} className={`home-account-card home-account-card--${c.tone || 'navy'}`}>
-            {c.badge && <span className="home-account-badge">{c.badge}</span>}
-            <p className="home-account-label">{c.label}</p>
-            <p className="home-account-value">{c.value}</p>
-            {c.sub && <p className="home-account-sub">{c.sub}</p>}
-            <div className="home-account-actions">
-              {c.actions.map((a, j) => (
-                <Link
-                  key={j}
-                  to={a.to}
-                  className={`home-account-btn ${j === 0 ? 'home-account-btn--primary' : ''}`}
-                >
-                  {a.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {cards.length > 1 && (
-        <div className="home-carousel-dots">
-          {cards.map((c, i) => (
-            <button
-              key={c.key}
-              className={`home-carousel-dot ${i === activeIndex ? 'home-carousel-dot--active' : ''}`}
-              onClick={() => goToCard(i)}
-              aria-label={`Go to ${c.label}`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
+function disciplineName(id) {
+  if (id === 'mixed') return 'All Disciplines (Mixed)'
+  const d = DISCIPLINES.find(x => x.id === id)
+  return d?.name || id
 }
+
+// Icons — paths reused verbatim from BottomNav's icon set so a tile
+// tapped here and the matching tab/entry elsewhere always draw the
+// exact same glyph.
+const ICONS = {
+  dashboard: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="20" x2="12" y2="10" />
+      <line x1="18" y1="20" x2="18" y2="4" />
+      <line x1="6" y1="20" x2="6" y2="16" />
+    </svg>
+  ),
+  disciplines: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    </svg>
+  ),
+  quiz: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  flashcards: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="7" width="14" height="10" rx="2" transform="rotate(-6 12 12)" />
+      <rect x="6" y="8" width="14" height="10" rx="2" />
+    </svg>
+  ),
+  stories: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 4h9a3 3 0 0 1 3 3v13H8a2 2 0 0 1-2-2V4z" />
+      <path d="M6 4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2" />
+      <line x1="9" y1="9" x2="14" y2="9" />
+      <line x1="9" y1="13" x2="14" y2="13" />
+    </svg>
+  ),
+  spaces: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="9" r="5" />
+      <circle cx="15" cy="15" r="5" />
+    </svg>
+  ),
+  prayerTimes: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 21v-8a8 8 0 0 1 16 0v8" />
+      <line x1="2" y1="21" x2="22" y2="21" />
+      <line x1="12" y1="3" x2="12" y2="7" />
+      <line x1="8" y1="21" x2="8" y2="15" />
+      <line x1="16" y1="21" x2="16" y2="15" />
+    </svg>
+  ),
+  calendar: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+      <line x1="8" y1="3" x2="8" y2="7" />
+      <line x1="16" y1="3" x2="16" y2="7" />
+    </svg>
+  ),
+  flame: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2.5c3.5 5 7 9 7 13a7 7 0 0 1-14 0c0-4 3.5-8 7-13z" />
+    </svg>
+  ),
+  moon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+    </svg>
+  ),
+  book: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z" />
+      <line x1="12" y1="6" x2="12" y2="19" />
+    </svg>
+  ),
+  arrowUp: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="19" x2="12" y2="5" />
+      <polyline points="6 11 12 5 18 11" />
+    </svg>
+  ),
+}
+
+// The tiles below the hero — same destinations as before, now
+// arranged as a grid rather than a table-of-contents list.
+const SERVICE_TILES = [
+  { to: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
+  { to: '/disciplines', icon: 'disciplines', label: 'Disciplines' },
+  { to: '/quiz', icon: 'quiz', label: 'Quiz' },
+  { to: '/flashcards', icon: 'flashcards', label: 'Flashcards' },
+  { to: '/stories', icon: 'stories', label: 'Stories' },
+  { to: '/spaces', icon: 'spaces', label: 'Spaces' },
+  { to: '/prayer-times', icon: 'prayerTimes', label: 'Prayer Times' },
+  { to: '/calendar', icon: 'calendar', label: 'Calendar' },
+]
 
 export default function Home({ user }) {
   const [time, setTime] = useState(new Date())
@@ -211,83 +251,117 @@ export default function Home({ user }) {
   const firstName = fullName ? fullName.trim().split(/\s+/)[0] : null
 
   const { nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
-
-  // Everyone — brand new or long-time — sees the same carousel-first
-  // homepage. A new user with zero quizzes just sees "Beginner" and
-  // "0 quizzes taken" on the progress card instead of a separate
-  // introductory banner; the carousel itself still tells them what's
-  // here (View Progress, Take a Quiz, Prayer Times, etc.) without
-  // needing a dedicated "what is Sual" pitch first.
-  const heroCards = [
-    {
-      key: 'progress',
-      tone: 'navy',
-      badge: streak > 0 ? `${streak}-day streak` : 'Welcome',
-      label: getGreeting() + (firstName ? `, ${firstName}` : ''),
-      value: statsLoading ? '—' : currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1),
-      sub: statsLoading ? '' : `${totalQuizzes} quizzes taken · ${totalQuizzes > 0 ? `${avgScore}% average` : 'no scores yet'}`,
-      actions: [
-        { to: '/dashboard', label: 'View Progress' },
-        { to: '/quiz', label: 'Take a Quiz' },
-      ],
-    },
-    {
-      key: 'today',
-      tone: 'gold',
-      badge: nextPrayer ? `${nextPrayer.arabic} in ${countdown}` : null,
-      label: 'Today',
-      value: toHijriString(time),
-      sub: time.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
-      actions: [
-        { to: '/prayer-times', label: 'Prayer Times' },
-        { to: '/calendar', label: 'Calendar' },
-      ],
-    },
-    ...(continueStories.length > 0 ? [{
-      key: 'continue',
-      tone: 'emerald',
-      badge: `${continueStories[0].progress_percent}% done`,
-      label: 'Continue Reading',
-      value: continueStories[0].story.name,
-      sub: continueStories[0].story.title,
-      actions: [
-        { to: '/stories', label: 'Continue' },
-      ],
-    }] : []),
-  ]
+  const primaryContinue = continueStories[0] || null
+  const recentQuizzes = history.slice(0, 4)
 
   return (
     <div className="page-content home-page">
-      <HeroCardCarousel cards={heroCards} />
+      {/* ── Hero: standing, at a glance — the one card everything
+          else on this page sits beneath, the way a balance card
+          anchors a banking app. ── */}
+      <div className="hm-hero">
+        <p className="hm-hero-bismillah arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</p>
+        <div className="hm-hero-top">
+          <span className="hm-hero-greeting">{getGreeting()}{firstName ? `, ${firstName}` : ''}</span>
+          {streak > 0 && <span className="hm-hero-streak">{ICONS.flame} {streak}-day streak</span>}
+        </div>
 
-      {!continueLoading && continueStories.length > 1 && (
-        <div className="home-continue">
-          <p className="home-section-label">More to Continue</p>
-          <div className="home-continue-list">
-            {continueStories.slice(1).map(row => (
-              <Link key={row.story_id} to="/stories" className="home-continue-card">
-                <span className="home-continue-icon">{row.story.image}</span>
-                <div className="home-continue-text">
-                  <span className="home-continue-name">{row.story.name}</span>
-                  <span className="home-continue-title">{row.story.title}</span>
+        <p className="hm-hero-value">
+          {statsLoading ? '—' : currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1)}
+        </p>
+        <p className="hm-hero-sub">
+          {statsLoading
+            ? 'Loading your standing…'
+            : totalQuizzes > 0
+              ? `${totalQuizzes} ${totalQuizzes === 1 ? 'quiz' : 'quizzes'} taken · ${avgScore}% average`
+              : 'No quizzes taken yet'}
+        </p>
+
+        <div className="hm-hero-actions">
+          <Link to="/quiz" className="hm-hero-btn hm-hero-btn--fill">{ICONS.quiz} Take a Quiz</Link>
+          <Link to="/dashboard" className="hm-hero-btn">{ICONS.dashboard} View Progress</Link>
+        </div>
+      </div>
+
+      {/* ── Explore: the same destinations as before, as a tile
+          grid. ── */}
+      <div className="hm-section">
+        <div className="hm-section-head">
+          <p className="hm-section-title">Explore <span className="arabic">اِسْتَكْشِف</span></p>
+        </div>
+        <div className="hm-tiles">
+          {SERVICE_TILES.map(t => (
+            <Link key={t.to} to={t.to} className="hm-tile">
+              <span className="hm-tile-icon">{ICONS[t.icon]}</span>
+              <span className="hm-tile-label">{t.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Standing: today's date/prayer, and where you left off,
+          side by side. ── */}
+      <div className="hm-section">
+        <div className="hm-section-head">
+          <p className="hm-section-title">Today <span className="arabic">اليَوْم</span></p>
+        </div>
+        <div className="hm-standing-grid">
+          <div className="hm-standing-card">
+            <span className="hm-standing-icon hm-standing-icon--gold">{ICONS.moon}</span>
+            <p className="hm-standing-label">Hijri Date</p>
+            <p className="hm-standing-value">{toHijriString(time)}</p>
+            {nextPrayer && <p className="hm-standing-tag">{nextPrayer.arabic} in {countdown}</p>}
+          </div>
+
+          {!continueLoading && primaryContinue ? (
+            <Link to="/stories" className="hm-standing-card hm-standing-card--link">
+              <span className="hm-standing-icon hm-standing-icon--emerald">{ICONS.book}</span>
+              <p className="hm-standing-label">Continue Reading</p>
+              <p className="hm-standing-value">{primaryContinue.story.name}</p>
+              <p className="hm-standing-tag hm-standing-tag--emerald">{primaryContinue.progress_percent}% done</p>
+            </Link>
+          ) : (
+            <Link to="/stories" className="hm-standing-card hm-standing-card--link">
+              <span className="hm-standing-icon hm-standing-icon--emerald">{ICONS.book}</span>
+              <p className="hm-standing-label">Stories of the Salaf</p>
+              <p className="hm-standing-value">Start reading</p>
+              <p className="hm-standing-tag hm-standing-tag--emerald">The Prophets &amp; the Companions</p>
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* ── Recent activity: your last few quiz attempts. ── */}
+      {recentQuizzes.length > 0 && (
+        <div className="hm-section">
+          <div className="hm-section-head">
+            <p className="hm-section-title">Recent Activity</p>
+            <Link to="/dashboard" className="hm-section-link">View All</Link>
+          </div>
+          <div className="hm-activity-card">
+            {recentQuizzes.map((q, i) => {
+              const passed = q.percentage >= 70
+              const when = new Date(q.taken_at)
+              return (
+                <div key={i} className="hm-activity-row">
+                  <span className={`hm-activity-badge ${passed ? 'hm-activity-badge--pass' : 'hm-activity-badge--low'}`}>
+                    {ICONS.quiz}
+                  </span>
+                  <span className="hm-activity-text">
+                    <span className="hm-activity-name">{disciplineName(q.discipline)}</span>
+                    <span className="hm-activity-date">
+                      {when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}, {when.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </span>
+                  <span className={`hm-activity-score ${passed ? 'hm-activity-score--pass' : 'hm-activity-score--low'}`}>
+                    {q.score}/{q.total}
+                  </span>
                 </div>
-                <div className="home-continue-progress">
-                  <div className="home-continue-track">
-                    <div className="home-continue-fill" style={{ width: `${row.progress_percent}%` }} />
-                  </div>
-                  <span className="home-continue-percent">{row.progress_percent}%</span>
-                </div>
-              </Link>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
-
-      <div className="home-divider">
-        <span className="home-divider-arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</span>
-      </div>
-
-      <QuickActions />
 
       <SpacesCTA user={user} variant="default" />
     </div>

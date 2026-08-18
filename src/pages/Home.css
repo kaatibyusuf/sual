@@ -1,115 +1,108 @@
+/* ============================================
+   Home — dashboard restructure, no gold
+
+   Accents use only navy/sky — the exact swap already used
+   everywhere else in the app (navy #094570 in light mode, sky
+   #85CCFF in dark mode for the same role), instead of a separate
+   gold accent. The one exception is the pass/fail activity colors,
+   which reuse the app's own established green (#2e7d32 / #7fc98a,
+   same as quiz-option--correct).
+
+   Hero: navy in light mode, white in dark mode, with every child
+   element flipping tone along with it. The primary "Take a Quiz"
+   button is always the opposite tone of the hero itself — white
+   fill on the navy hero, navy fill on the white hero — the same
+   contrast logic the original pre-redesign primary button used.
+
+   Non-hero cards (tiles, standing cards, activity list) stay navy
+   in light mode and switch to the app's exact dark-card pair
+   (#0f1f2e / #1e3448) in dark mode, same as every other page.
+   ============================================ */
+
 .home-page {
-  padding-top: 40px;
-  position: relative;
+  --hm-navy: #094570;
+  --hm-sky: #85CCFF;
+
+  padding-top: 32px;
 }
 
-.home-page::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 340px;
-  z-index: -1;
-  opacity: 0.05;
-  background-image:
-    linear-gradient(45deg, transparent 48%, rgba(133, 204, 255, 0.5) 49%, rgba(133, 204, 255, 0.5) 51%, transparent 52%),
-    linear-gradient(-45deg, transparent 48%, rgba(133, 204, 255, 0.5) 49%, rgba(133, 204, 255, 0.5) 51%, transparent 52%);
-  background-size: 64px 64px;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-  pointer-events: none;
-}
-
-/* ── Swipeable account-style card carousel ───────────────────── */
-.home-carousel {
-  margin-bottom: 24px;
-}
-
-.home-carousel-track {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 4px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.home-carousel-track::-webkit-scrollbar {
-  display: none;
-}
-
-.home-account-card {
-  flex: 0 0 100%;
-  scroll-snap-align: start;
-  min-width: 0;
-  padding: 24px 24px 20px;
+/* ── Hero ────────────────────────────────────────────────────── */
+.hm-hero {
+  padding: 26px 24px 24px;
+  margin-bottom: 22px;
+  background: var(--hm-navy);
   border-radius: 20px;
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(9, 69, 112, 0.18);
+  transition: background 0.15s ease;
 }
 
-/* Flat, solid tones — no gradient, no shadow. Each color is the
-   midpoint pulled from the previous gradient so the palette reads
-   the same at a glance, just without the sheen. */
-.home-account-card--navy {
-  background: var(--regal-blue);
+.hm-hero-bismillah {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 1.05rem;
+  margin-bottom: 14px;
 }
 
-.home-account-card--gold {
-  background: #c8952f;
+.hm-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
 }
 
-.home-account-card--emerald {
-  background: #2e8a63;
+.hm-hero-greeting {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
 }
 
-.home-account-badge {
-  display: inline-block;
-  padding: 4px 12px;
+.hm-hero-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
   border-radius: 100px;
   background: rgba(255, 255, 255, 0.16);
   border: 1px solid rgba(255, 255, 255, 0.22);
   color: #ffffff;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  margin-bottom: 14px;
 }
 
-.home-account-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+.hm-hero-streak svg {
+  width: 12px;
+  height: 12px;
+}
+
+.hm-hero-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
   margin-bottom: 4px;
 }
 
-.home-account-value {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #ffffff;
-  line-height: 1.25;
-  margin-bottom: 3px;
+.hm-hero-sub {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 22px;
 }
 
-.home-account-sub {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.65);
-  margin-bottom: 20px;
-}
-
-.home-account-actions {
+.hm-hero-actions {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.home-account-btn {
-  padding: 10px 18px;
+.hm-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 18px;
   border-radius: 100px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: #ffffff;
   font-size: 0.82rem;
   font-weight: 700;
@@ -117,154 +110,351 @@
   transition: background 0.15s ease, transform 0.15s ease;
 }
 
-.home-account-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
+.hm-hero-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.hm-hero-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
 
-.home-account-btn--primary {
-  background: #ffffff;
-  color: #0d1b2a;
-  border-color: #ffffff;
+.hm-hero-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
 }
 
-.home-account-btn--primary:hover {
+/* Primary action — opposite tone of the hero, same contrast logic
+   the original pre-redesign "home-account-btn--primary" used. */
+.hm-hero-btn--fill {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--hm-navy);
+}
+
+.hm-hero-btn--fill:hover {
   background: rgba(255, 255, 255, 0.9);
 }
 
-.home-carousel-dots {
+/* ── Section shell ──────────────────────────────────────────── */
+.hm-section {
+  margin-bottom: 24px;
+}
+
+.hm-section-head {
   display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.home-carousel-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #c8d8e8;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.home-carousel-dot--active {
-  width: 18px;
-  border-radius: 100px;
-  background: #094570;
-}
-
-[data-theme="dark"] .home-carousel-dot { background: #1e3448; }
-[data-theme="dark"] .home-carousel-dot--active { background: #85CCFF; }
-
-/* ── "More to continue" list (below the carousel) ────────────── */
-.home-continue { margin-bottom: 28px; }
-
-.home-section-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
+  align-items: baseline;
+  justify-content: space-between;
   margin-bottom: 12px;
 }
 
-.home-continue-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.hm-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--hm-navy);
 }
 
-.home-continue-card {
+.hm-section-title .arabic {
+  font-weight: 400;
+  color: var(--hm-navy);
+  opacity: 0.65;
+  font-size: 1rem;
+  margin-left: 6px;
+}
+
+.hm-section-link {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--hm-navy);
+  text-decoration: none;
+}
+
+.hm-section-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Explore tile grid ──────────────────────────────────────── */
+.hm-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.hm-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 6px 12px;
+  background: var(--hm-navy);
+  border-radius: 16px;
+  text-decoration: none;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.hm-tile:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.hm-tile-icon {
+  width: 22px;
+  height: 22px;
+  color: #ffffff;
+}
+
+.hm-tile-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hm-tile-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  line-height: 1.25;
+}
+
+/* ── Standing cards (Today / Continue Reading) ─────────────── */
+.hm-standing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.hm-standing-card {
+  padding: 18px 16px;
+  background: var(--hm-navy);
+  border-radius: 16px;
+  min-width: 0;
+  text-decoration: none;
+  display: block;
+}
+
+.hm-standing-card--link {
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.hm-standing-card--link:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.hm-standing-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  margin-bottom: 12px;
+}
+
+.hm-standing-icon svg {
+  width: 18px;
+  height: 18px;
+  color: #ffffff;
+}
+
+.hm-standing-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 4px;
+}
+
+.hm-standing-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 8px;
+}
+
+.hm-standing-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--hm-sky);
+}
+
+/* ── Recent activity list ──────────────────────────────────── */
+.hm-activity-card {
+  background: var(--hm-navy);
+  border-radius: 16px;
+  padding: 6px 16px;
+}
+
+.hm-activity-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
-  background: #eef6fc;
-  border: 1px solid #d0e8f8;
-  border-radius: 12px;
-  text-decoration: none;
-  transition: transform 0.15s ease;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.home-continue-card:hover { transform: translateY(-1px); }
+.hm-activity-row:last-child {
+  border-bottom: none;
+}
 
-.home-continue-icon { font-size: 1.6rem; flex-shrink: 0; }
+.hm-activity-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  flex-shrink: 0;
+}
 
-.home-continue-text {
+.hm-activity-badge svg {
+  width: 16px;
+  height: 16px;
+  color: #ffffff;
+}
+
+.hm-activity-text {
   display: flex;
   flex-direction: column;
   min-width: 0;
   flex: 1;
+  gap: 2px;
 }
 
-.home-continue-name {
-  font-size: 0.88rem;
+.hm-activity-name {
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #094570;
+  color: #ffffff;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.home-continue-title {
-  font-size: 0.75rem;
-  color: #5c7186;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.hm-activity-date {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.home-continue-progress {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  width: 90px;
-}
-
-.home-continue-track {
-  flex: 1;
-  height: 5px;
-  border-radius: 100px;
-  background: #d0e8f8;
-  overflow: hidden;
-}
-
-.home-continue-fill {
-  height: 100%;
-  border-radius: 100px;
-  background: linear-gradient(90deg, #094570, #85CCFF);
-}
-
-.home-continue-percent {
-  font-size: 0.7rem;
+.hm-activity-score {
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #5c7186;
   flex-shrink: 0;
 }
 
-[data-theme="dark"] .home-continue-card {
-  background: #0f2c40;
-  border-color: rgba(255, 255, 255, 0.06);
+.hm-activity-score--pass {
+  color: #7fc98a;
 }
 
-[data-theme="dark"] .home-continue-name { color: #85CCFF; }
-[data-theme="dark"] .home-continue-title,
-[data-theme="dark"] .home-continue-percent { color: #7d93a6; }
-[data-theme="dark"] .home-continue-track { background: #1e3448; }
-
-.home-divider { text-align: center; margin: 0 0 36px; }
-
-.home-divider-arabic {
-  font-family: var(--font-arabic);
-  font-size: 1.4rem;
-  color: var(--text-secondary);
+.hm-activity-score--low {
+  color: var(--hm-sky);
 }
 
-@media (max-width: 768px) {
-  .home-account-card { padding: 20px 20px 18px; }
-  .home-account-value { font-size: 1.4rem; }
+/* ── Hero: navy in light mode (set above), white in dark mode —
+   every child element flips from white-on-navy to navy-on-white
+   along with it, rather than just swapping the background alone. ── */
+[data-theme="dark"] .hm-hero {
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(9, 69, 112, 0.1);
+}
+
+[data-theme="dark"] .hm-hero-bismillah {
+  color: rgba(9, 69, 112, 0.5);
+}
+
+[data-theme="dark"] .hm-hero-greeting {
+  color: rgba(9, 69, 112, 0.75);
+}
+
+[data-theme="dark"] .hm-hero-streak {
+  background: rgba(9, 69, 112, 0.08);
+  border-color: rgba(9, 69, 112, 0.16);
+  color: var(--hm-navy);
+}
+
+[data-theme="dark"] .hm-hero-value {
+  color: var(--hm-navy);
+}
+
+[data-theme="dark"] .hm-hero-sub {
+  color: rgba(9, 69, 112, 0.6);
+}
+
+[data-theme="dark"] .hm-hero-btn {
+  background: rgba(9, 69, 112, 0.08);
+  border-color: rgba(9, 69, 112, 0.18);
+  color: var(--hm-navy);
+}
+
+[data-theme="dark"] .hm-hero-btn:hover {
+  background: rgba(9, 69, 112, 0.14);
+}
+
+[data-theme="dark"] .hm-hero-btn:focus-visible {
+  outline-color: var(--hm-navy);
+}
+
+/* Primary action flips too — navy fill on the now-white hero. */
+[data-theme="dark"] .hm-hero-btn--fill {
+  background: var(--hm-navy);
+  border-color: var(--hm-navy);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .hm-hero-btn--fill:hover {
+  filter: brightness(1.15);
+}
+
+/* ── Section-title text adapts to page theme; every card above
+   stays the same navy/dark-card fill in both themes ── */
+[data-theme="dark"] .hm-section-title,
+[data-theme="dark"] .hm-section-title .arabic,
+[data-theme="dark"] .hm-section-link {
+  color: var(--hm-sky);
+}
+
+/* Non-hero cards switch to the exact dark-card pair used everywhere
+   else in the app. */
+[data-theme="dark"] .hm-tile,
+[data-theme="dark"] .hm-standing-card,
+[data-theme="dark"] .hm-activity-card {
+  background: #0f1f2e;
+  border: 1px solid #1e3448;
+}
+
+[data-theme="dark"] .hm-tile-icon,
+[data-theme="dark"] .hm-standing-icon svg,
+[data-theme="dark"] .hm-activity-badge svg {
+  color: var(--hm-sky);
+}
+
+[data-theme="dark"] .hm-tile-label,
+[data-theme="dark"] .hm-activity-name,
+[data-theme="dark"] .hm-standing-value {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .hm-standing-icon,
+[data-theme="dark"] .hm-activity-badge {
+  background: rgba(133, 204, 255, 0.12);
+}
+
+[data-theme="dark"] .hm-standing-label,
+[data-theme="dark"] .hm-activity-date {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .hm-activity-row {
+  border-bottom-color: #1e3448;
+}
+
+@media (max-width: 480px) {
+  .hm-tiles { grid-template-columns: repeat(3, 1fr); }
+  .hm-hero-value { font-size: 1.7rem; }
 }
