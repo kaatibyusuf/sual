@@ -6,7 +6,7 @@
    ============================================ */
 
 .pt-page {
-  padding-top: 0;
+  padding-top: 32px;
   max-width: 640px;
 }
 
@@ -23,18 +23,23 @@
 }
 
 /* ── Hero ────────────────────────────────────────────────────── */
+/* No bleed technique — a normal rounded card sitting inside
+   page-content's own padding, same as every other card in the app
+   (Home's hero, Spaces cards, Stories cards). Two different bleed
+   attempts (negative-margin guessing the parent's padding, then the
+   100vw/left:50% technique) both broke on real devices — the second
+   one assumes the element's parent is horizontally centered in the
+   viewport, which doesn't hold here because the sidebar's margin
+   isn't being removed at this width, so the visible content column
+   sits offset rather than centered. Not worth a third attempt at a
+   purely cosmetic edge-to-edge effect nothing else in the app uses
+   anyway. */
 .pt-hero {
   background: linear-gradient(160deg, #094570, #1a6fa8);
-  border-radius: 0 0 28px 28px;
+  border-radius: 20px;
   padding: 28px 24px 32px;
-  margin: -32px -32px 0;
+  margin-bottom: 22px;
   text-align: center;
-}
-
-@media (max-width: 768px) {
-  .pt-hero {
-    margin: -20px -16px 0;
-  }
 }
 
 .pt-hero-top {
@@ -111,16 +116,9 @@
 .pt-panel {
   background: #ffffff;
   border: 1.5px solid #e0e8f0;
-  border-top: none;
-  border-radius: 0 0 20px 20px;
+  border-radius: 20px;
   padding: 18px 20px 8px;
-  margin: 0 -32px 40px;
-}
-
-@media (max-width: 768px) {
-  .pt-panel {
-    margin: 0 -16px 40px;
-  }
+  margin-bottom: 40px;
 }
 
 .pt-panel-hijri {

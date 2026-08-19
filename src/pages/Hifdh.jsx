@@ -186,19 +186,52 @@ function makeCompleteRecall(item) {
   }
 }
 
-function buildSession(dueItems, pool, collection) {
+// Focused review modes — each restricts which question generators
+// buildSession draws from, instead of always mixing all five. This
+// is the direct answer to "quizzes about guessing the surah" and
+// "complete this ayah without knowing the surah first": the
+// underlying question types (makeWhichItem, makeContinuation,
+// makeCompleteRecall) already existed and already never reveal which
+// surah/hadith you're on during an active question — what was
+// actually missing was a way to CHOOSE to drill one of them
+// specifically, instead of it being one of five types that might or
+// might not come up for a given item.
+const SESSION_MODES = {
+  mixed:    { label: 'Mixed Review',   desc: () => 'A blend of every question type — the default.' },
+  identify: { label: 'Identify',       desc: (c) => `Guess which ${c.itemNoun} a passage is from — no context given.` },
+  complete: { label: 'Blind Complete', desc: () => 'Continue the passage from memory, without being told which one it is.' },
+}
+
+function makersForMode(mode, item, pool, collection) {
+  if (mode === 'identify') {
+    return [() => makeWhichItem(item, pool, collection)]
+  }
+  if (mode === 'complete') {
+    return shuffle([
+      () => makeCompleteRecall(item),
+      () => makeContinuation(item, pool),
+    ])
+  }
+  return shuffle([
+    () => makeFillBlank(item, pool),
+    () => makeContinuation(item, pool),
+    () => makeWhichItem(item, pool, collection),
+    () => makeMeta(item, pool, collection),
+    () => makeCompleteRecall(item),
+  ])
+}
+
+function buildSession(dueItems, pool, collection, mode = 'mixed') {
   const raw = []
   dueItems.forEach(item => {
-    const makers = shuffle([
-      () => makeFillBlank(item, pool),
-      () => makeContinuation(item, pool),
-      () => makeWhichItem(item, pool, collection),
-      () => makeMeta(item, pool, collection),
-      () => makeCompleteRecall(item),
-    ])
+    const makers = makersForMode(mode, item, pool, collection)
+    // Focused modes only offer 1-2 generators per item, so cap at
+    // however many actually exist rather than forcing QUESTIONS_PER_ITEM
+    // attempts that would just fail past what's available.
+    const perItemCap = mode === 'mixed' ? QUESTIONS_PER_ITEM : makers.length
     let added = 0
     for (const make of makers) {
-      if (added >= QUESTIONS_PER_ITEM) break
+      if (added >= perItemCap) break
       const q = make()
       if (q) { raw.push(q); added++ }
     }
@@ -222,6 +255,7 @@ export default function Hifdh({ user = null }) {
     () => COLLECTIONS.find(c => c.id === collectionId) || null,
     [collectionId]
   )
+  const [sessionMode, setSessionMode] = useState('mixed')
 
   const [progress, setProgress] = useState({})
   const [progressLoading, setProgressLoading] = useState(false)
@@ -240,6 +274,16 @@ export default function Hifdh({ user = null }) {
   const [finished, setFinished] = useState(false)
 
   const [voiceSupported] = useState(() => typeof window !== 'undefined' && !!(navigator.mediaDevices && window.MediaRecorder))
+  // Live word-by-word preview, using the browser's native speech
+  // recognition where available — Chrome/Edge only in practice, no
+  // Firefox support, spotty Safari. This is display-only: the actual
+  // correct/incorrect scoring still comes from hifdh-voice-check
+  // (gpt-4o-mini-transcribe) on submit, since the browser API's
+  // Arabic accuracy isn't reliable enough to trust for grading, only
+  // for "yes, words are appearing as I speak."
+  const [liveSupported] = useState(() => typeof window !== 'undefined' && !!(window.SpeechRecognition || window.webkitSpeechRecognition))
+  const [liveTranscript, setLiveTranscript] = useState('')
+  const recognitionRef = useRef(null)
   const [isRecording, setIsRecording] = useState(false)
   const [hasRecording, setHasRecording] = useState(false) // stopped, not yet submitted — lets the take be discarded and redone
   const [voiceChecking, setVoiceChecking] = useState(false)
@@ -247,6 +291,21 @@ export default function Hifdh({ user = null }) {
   const [voiceError, setVoiceError] = useState(null)
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
+
+  // Safety net: if the person navigates away mid-recording (tab
+  // switch, back button, etc.), stop the mic and recognizer instead
+  // of leaving them running in the background.
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.onend = null
+        recognitionRef.current.stop()
+      }
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop()
+      }
+    }
+  }, [])
   const recordedBlobRef = useRef(null)
 
   useEffect(() => {
@@ -319,6 +378,7 @@ export default function Hifdh({ user = null }) {
     setCollectionId(id)
     setSession(null)
     setFinished(false)
+    setSessionMode('mixed')
   }
 
   const backToCollections = () => {
@@ -329,7 +389,7 @@ export default function Hifdh({ user = null }) {
 
   const startSession = () => {
     const due = shuffle(dueItems).slice(0, SESSION_SIZE)
-    const qs = buildSession(due, scopedItems, collection)
+    const qs = buildSession(due, scopedItems, collection, sessionMode)
     if (qs.length === 0) return
     setSession(qs)
     setQIndex(0)
@@ -340,6 +400,7 @@ export default function Hifdh({ user = null }) {
     setVoiceResult(null)
     setVoiceError(null)
     setHasRecording(false)
+    setLiveTranscript('')
     recordedBlobRef.current = null
     setResults({})
     setFinished(false)
@@ -369,10 +430,67 @@ export default function Hifdh({ user = null }) {
     recordResult(currentQ.itemKey, correct)
   }
 
+  // Starts (or restarts) the live preview recognizer. A separate
+  // function from startRecording because Chrome silently ends
+  // SpeechRecognition after periods of silence even mid-session
+  // (someone pausing to think, exactly the scenario earlier feedback
+  // flagged) — onend below calls this again to keep the live preview
+  // going for as long as actual recording continues, rather than the
+  // preview just stopping partway through for no visible reason.
+  const startLiveRecognition = () => {
+    if (!liveSupported) return
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    const recognition = new Recognition()
+    recognition.lang = 'ar-SA'
+    recognition.continuous = true
+    recognition.interimResults = true
+
+    recognition.onresult = (event) => {
+      let finalText = ''
+      let interimText = ''
+      for (let i = 0; i < event.results.length; i++) {
+        const result = event.results[i]
+        if (result.isFinal) finalText += result[0].transcript + ' '
+        else interimText += result[0].transcript
+      }
+      setLiveTranscript((finalText + interimText).trim())
+    }
+
+    recognition.onerror = (event) => {
+      // 'no-speech' and 'aborted' fire constantly during normal
+      // pauses — not real errors, don't surface them. Anything else
+      // (e.g. 'not-allowed') just silently disables the live preview;
+      // the actual MediaRecorder + server check path is unaffected.
+      if (event.error !== 'no-speech' && event.error !== 'aborted') {
+        console.error('Live transcription error:', event.error)
+      }
+    }
+
+    recognition.onend = () => {
+      if (isRecording) startLiveRecognition()
+    }
+
+    recognitionRef.current = recognition
+    try {
+      recognition.start()
+    } catch (err) {
+      console.error('Could not start live transcription:', err)
+    }
+  }
+
+  const stopLiveRecognition = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.onend = null // don't auto-restart on a deliberate stop
+      recognitionRef.current.stop()
+      recognitionRef.current = null
+    }
+  }
+
   const startRecording = async () => {
     setVoiceError(null)
     setVoiceResult(null)
     setHasRecording(false)
+    setLiveTranscript('')
     recordedBlobRef.current = null
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -396,6 +514,7 @@ export default function Hifdh({ user = null }) {
       mediaRecorderRef.current = recorder
       recorder.start()
       setIsRecording(true)
+      startLiveRecognition()
     } catch (err) {
       console.error('Microphone access failed:', err)
       setVoiceError('Could not access your microphone. Check your browser permissions, or type your answer instead.')
@@ -406,6 +525,7 @@ export default function Hifdh({ user = null }) {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop()
       setIsRecording(false)
+      stopLiveRecognition()
     }
   }
 
@@ -417,6 +537,7 @@ export default function Hifdh({ user = null }) {
   const discardRecording = () => {
     recordedBlobRef.current = null
     setHasRecording(false)
+    setLiveTranscript('')
     setVoiceError(null)
   }
 
@@ -468,6 +589,7 @@ export default function Hifdh({ user = null }) {
       setVoiceResult(null)
       setVoiceError(null)
       setHasRecording(false)
+      setLiveTranscript('')
       recordedBlobRef.current = null
     } else {
       let updated = progress
@@ -604,6 +726,11 @@ export default function Hifdh({ user = null }) {
                     <p style={{ fontSize: '0.82rem', color: '#4a6080', width: '100%', margin: 0 }}>
                       Recording ready. Not happy with it? Re-record instead of submitting.
                     </p>
+                    {liveTranscript && (
+                      <p className="arabic" style={{ fontSize: '0.85rem', color: '#8a9ab0', width: '100%', margin: '0 0 4px' }}>
+                        Rough preview: {liveTranscript}
+                      </p>
+                    )}
                     <button className="hifdh-btn" onClick={discardRecording} disabled={voiceChecking}>
                       🔄 Re-record
                     </button>
@@ -612,13 +739,25 @@ export default function Hifdh({ user = null }) {
                     </button>
                   </div>
                 ) : (
-                  <button
-                    className="hifdh-btn"
-                    onClick={isRecording ? stopRecording : startRecording}
-                    disabled={voiceChecking}
-                  >
-                    {isRecording ? '⏹ Stop Recording' : '🎤 Recite Instead'}
-                  </button>
+                  <>
+                    <button
+                      className="hifdh-btn"
+                      onClick={isRecording ? stopRecording : startRecording}
+                      disabled={voiceChecking}
+                    >
+                      {isRecording ? '⏹ Stop Recording' : '🎤 Recite Instead'}
+                    </button>
+                    {isRecording && liveSupported && (
+                      <p className="arabic" style={{ fontSize: '0.95rem', color: '#094570', marginTop: 8, minHeight: '1.4em' }}>
+                        {liveTranscript || '…'}
+                      </p>
+                    )}
+                    {isRecording && !liveSupported && (
+                      <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginTop: 8 }}>
+                        Listening… (live preview isn't available in this browser, but recording and checking still work)
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -831,6 +970,42 @@ export default function Hifdh({ user = null }) {
           </div>
         )
       })()}
+
+      {dueItems.length > 0 && (
+        <div className="card" style={{ padding: '16px 18px', marginBottom: 14 }}>
+          <p style={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#4a6080', marginBottom: 10 }}>
+            Review Mode
+          </p>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {Object.entries(SESSION_MODES).map(([key, m]) => {
+              const active = sessionMode === key
+              return (
+                <button
+                  key={key}
+                  onClick={() => setSessionMode(key)}
+                  data-a11y-label={`${m.label}${active ? ', currently selected' : ''}. ${m.desc(collection)}`}
+                  style={{
+                    flex: '1 1 140px',
+                    padding: '10px 14px',
+                    borderRadius: 10,
+                    border: active ? '2px solid #094570' : '2px solid #c8d8e8',
+                    background: active ? '#ffffff' : '#f5f8fb',
+                    color: active ? '#094570' : '#6a8090',
+                    fontWeight: 700,
+                    fontSize: '0.82rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {active ? '✓ ' : ''}{m.label}
+                </button>
+              )
+            })}
+          </div>
+          <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginTop: 8 }}>
+            {SESSION_MODES[sessionMode].desc(collection)}
+          </p>
+        </div>
+      )}
 
       {dueItems.length > 0 ? (
         <button className="hifdh-btn hifdh-btn--primary hifdh-start" onClick={startSession}>

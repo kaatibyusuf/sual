@@ -509,6 +509,7 @@ export default function Spaces({ user }) {
   const [pairMsgInput, setPairMsgInput] = useState('')
   const [postingPairMsg, setPostingPairMsg] = useState(false)
   const [availableMembers, setAvailableMembers] = useState([])
+  const [lastPair, setLastPair] = useState(null) // most recently-ended pair, shown only while currently unpaired
   const [roster, setRoster] = useState([])
   const [accountabilityLoading, setAccountabilityLoading] = useState(false)
   const [accountabilityError, setAccountabilityError] = useState(null)
@@ -764,8 +765,17 @@ export default function Spaces({ user }) {
         const { data: avail } = await supabase.rpc('get_available_accountability_members')
         setAvailableMembers(avail || [])
         setPairMessages([])
+
+        const { data: lastPairData, error: lastPairError } = await supabase.rpc('get_my_last_accountability_pair')
+        if (lastPairError) {
+          console.error('Failed to load last accountability pair:', lastPairError)
+          setLastPair(null)
+        } else {
+          setLastPair(Array.isArray(lastPairData) ? (lastPairData[0] || null) : (lastPairData || null))
+        }
       } else {
         setAvailableMembers([])
+        setLastPair(null)
         fetchPairMessages(pair.pair_id)
       }
 
@@ -1711,6 +1721,35 @@ export default function Spaces({ user }) {
         </>
       ) : (
         <>
+          {lastPair && (
+            <div
+              className="spaces-section-intro card"
+              style={{ borderLeftColor: '#8a9ab0', marginBottom: 16 }}
+              data-a11y-label={`Previously paired with ${lastPair.full_name || 'a member'}${lastPair.gender ? `, ${lastPair.gender}` : ''}. ${
+                lastPair.end_reason === 'subscription_lapsed' ? 'Ended because their subscription lapsed.'
+                : lastPair.end_reason === 'gender_policy' ? 'Ended for a policy correction.'
+                : 'Ended when you unpaired.'
+              }${availableMembers.some(m => m.user_id === lastPair.partner_id) ? ' They are available again — you can pair up below.' : ''}`}
+            >
+              <h3 className="spaces-section-intro-title">Previously Paired</h3>
+              <p className="spaces-section-intro-text">
+                You were paired with{' '}
+                <strong>{lastPair.full_name || 'a member'}</strong>
+                {lastPair.gender && (
+                  <span style={{ textTransform: 'capitalize' }}> ({lastPair.gender})</span>
+                )} —{' '}
+                {lastPair.end_reason === 'subscription_lapsed'
+                  ? 'ended because their subscription lapsed.'
+                  : lastPair.end_reason === 'gender_policy'
+                    ? 'ended for a policy correction.'
+                    : 'ended when you unpaired.'}
+                {availableMembers.some(m => m.user_id === lastPair.partner_id) && (
+                  <> They're available again — you can pair up below.</>
+                )}
+              </p>
+            </div>
+          )}
+
           <p className="spaces-available-label">Members without a partner — choose one to pair up</p>
           {availableMembers.length === 0 ? (
             <div className="spaces-empty card">
