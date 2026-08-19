@@ -329,8 +329,8 @@ export default function Home({ user }) {
           {!continueLoading && primaryContinue ? (
             <Link to="/stories" className="hm-standing-card hm-standing-card--link">
               <span className="hm-standing-icon hm-standing-icon--emerald">{ICONS.book}</span>
-              <p className="hm-standing-label">Continue Reading</p>
-              <p className="hm-standing-value">{primaryContinue.story.name}</p>
+              <p className="hm-standing-label">Stories</p>
+              <p className="hm-standing-value">Continue with the story of {primaryContinue.story.name}</p>
               <p className="hm-standing-tag hm-standing-tag--emerald">{primaryContinue.progress_percent}% done</p>
             </Link>
           ) : (
