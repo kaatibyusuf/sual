@@ -2630,13 +2630,13 @@ export default function Spaces({ user }) {
           <div className="spaces-features">
             {[
               { icon: 'award', text: 'Direct answers from a qualified scholar' },
-              { icon: 'arabiyyah', text: 'Structured Arabiyyah courses — Beginner to Advanced' },
-              { icon: 'hadeeth', text: 'The 42 Hadith, Umdat al-Ahkam, and Sahih al-Bukhari — each with an instant 20-question test per hadith' },
+              { icon: 'arabiyyah', text: 'Structured Arabiyyah courses from Beginner to Advanced' },
+              { icon: 'hadeeth', text: 'The 42 Hadith, Umdatul-Ahkam, and Sahih Bukhari, each with an instant 20-question test per hadith' },
               { icon: 'chat', text: 'Threaded community discussions' },
-              { icon: 'majlis', text: 'Majlis — announcements and updates from the Sual team' },
+              { icon: 'majlis', text: 'Majlis for announcements and updates' },
               { icon: 'accountability', text: 'Accountability partners and Sahaabah circles' },
               { icon: 'tafseer', text: 'A new tafseer verse and short test every day' },
-              { icon: 'weeklyTests', text: 'Weekly tests for Arabiyyah, Tafseer, and Hadeeth — graded automatically' },
+              { icon: 'weeklyTests', text: 'Weekly tests for Tafseer, and Hadeeth, graded automatically' },
             ].map((f, i) => (
               <div key={i} className="spaces-feature-item">
                 <span><TabIcon name={f.icon} /></span>

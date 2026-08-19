@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { captureReferralFromUrl, redeemStoredReferral } from './lib/referral.js'
 import { supabase } from './lib/supabase.js'
 import Sidebar from './components/Sidebar.jsx'
@@ -38,6 +38,7 @@ const Admin                = lazy(() => import('./pages/Admin.jsx'))
 const AddToHomeScreen      = lazy(() => import('./components/AddToHomeScreen.jsx'))
 const AdminClassLessons = lazy(() => import('./pages/AdminClassLessons.jsx'))
 const WomensFiqh           = lazy(() => import('./pages/WomensFiqh.jsx'))
+const Kids                  = lazy(() => import('./pages/Kids.jsx'))
 const Qiwaamah = lazy(() => import('./pages/Qiwaamah.jsx'))
 const Zakaat = lazy(() => import('./pages/Zakaat.jsx'))
 
@@ -66,6 +67,8 @@ function AppInner() {
   const [userLevel, setUserLevel] = useState(null)
   const [levelLoading, setLevelLoading] = useState(false)
   const [levelSelected, setLevelSelected] = useState(false)
+  const [isKid, setIsKid] = useState(false)
+  const [kidCheckDone, setKidCheckDone] = useState(false)
   // Both attributes are applied here, synchronously, inside the
   // lazy initializer — not in a useEffect. useEffect only runs AFTER
   // the browser's first paint, so with the old effect-based version
@@ -141,6 +144,49 @@ function AppInner() {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Determines whether this account is hard-gated to the Kids
+  // section. Runs independently of the userLevel fetch above (kids
+  // never go through LevelSelect at all — see the render fork below,
+  // which checks isKid before levelSelected). Age is preferred over
+  // date_of_birth when both exist, since it's already the exact
+  // number rather than something to compute; date_of_birth is the
+  // fallback for accounts that only have that.
+  useEffect(() => {
+    if (!user) {
+      setIsKid(false)
+      setKidCheckDone(false)
+      return
+    }
+    let cancelled = false
+    supabase
+      .from('profiles')
+      .select('age, date_of_birth')
+      .eq('id', user.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return
+        if (error) {
+          console.error('Failed to load age for kids-section check:', error)
+          setIsKid(false)
+          setKidCheckDone(true)
+          return
+        }
+        let computedAge = data?.age ?? null
+        if (computedAge == null && data?.date_of_birth) {
+          const dob = new Date(data.date_of_birth)
+          const now = new Date()
+          computedAge = now.getFullYear() - dob.getFullYear()
+          const hadBirthdayThisYear =
+            now.getMonth() > dob.getMonth() ||
+            (now.getMonth() === dob.getMonth() && now.getDate() >= dob.getDate())
+          if (!hadBirthdayThisYear) computedAge -= 1
+        }
+        setIsKid(computedAge != null && computedAge < 12)
+        setKidCheckDone(true)
+      })
+    return () => { cancelled = true }
+  }, [user])
+
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     setUser(null)
@@ -174,6 +220,39 @@ function AppInner() {
     return (
       <Suspense fallback={<RouteFallback />}>
         <Auth onAuth={setUser} />
+      </Suspense>
+    )
+  }
+
+  if (!kidCheckDone) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(160deg, #062f4a, #094570)',
+      }}>
+        <div style={{ fontFamily: 'Amiri, serif', fontSize: '3rem', color: '#ffffff' }}>
+          سُؤَال
+        </div>
+      </div>
+    )
+  }
+
+  // Hard gate: an under-12 account only ever sees the Kids section,
+  // full stop — no Disciplines, Spaces, Quiz, or anything else, and
+  // no Sidebar/Toolbar/BottomNav/NotificationBell chrome either.
+  // Checked before levelLoading/LevelSelect on purpose: a kid account
+  // skips the adult level-selection onboarding entirely, not just the
+  // main app afterward.
+  if (isKid) {
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/kids" element={<Kids user={user} onSignOut={handleSignOut} />} />
+          <Route path="*" element={<Navigate to="/kids" replace />} />
+        </Routes>
       </Suspense>
     )
   }

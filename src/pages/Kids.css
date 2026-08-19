@@ -1,0 +1,302 @@
+/* ============================================
+   Kids — same structural architecture as WomensFiqh.jsx (topic-card
+   grid → back button → detail-header → stacked section cards) and
+   Home's hero + icon-tile grid for the landing screen. Strictly
+   navy/sky/white throughout — no per-category accent colors. Every
+   icon circle, border, and accent text uses the same two blues
+   (#094570 navy, #85CCFF sky) already used everywhere else in Sual,
+   swapping the same way between light and dark mode as the rest of
+   the app does.
+   ============================================ */
+
+.kids-page {
+  padding: 28px 20px 48px;
+  min-height: 100vh;
+  background: #f5f8fb;
+  font-family: var(--font-ui);
+}
+
+.kids-icon {
+  display: inline-flex;
+  width: 1em;
+  height: 1em;
+}
+
+.kids-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Hero (mirrors Home's .hm-hero) ────────────────────────────── */
+.kids-hero {
+  background: linear-gradient(160deg, #094570, #1a6fa8);
+  border-radius: 20px;
+  padding: 24px 22px 26px;
+  margin-bottom: 22px;
+  color: #ffffff;
+}
+
+.kids-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.kids-hero-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.kids-hero-signout {
+  padding: 6px 14px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.kids-hero-signout:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.kids-hero-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.kids-hero-sub {
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+}
+
+/* ── Tile grid (mirrors Home's .hm-tiles) ──────────────────────── */
+.kids-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .kids-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.kids-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 10px 16px;
+  background: #ffffff;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 18px;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.kids-tile:hover {
+  border-color: #094570;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(9, 69, 112, 0.12);
+}
+
+.kids-tile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #094570;
+  color: #ffffff;
+}
+
+.kids-tile-icon .kids-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.kids-tile-label {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #094570;
+  text-align: center;
+}
+
+.kids-tile-arabic {
+  font-size: 0.95rem;
+  color: #094570;
+}
+
+/* ── Back button (mirrors .wf-back) ────────────────────────────── */
+.kids-back {
+  display: inline-block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #094570;
+  padding: 0;
+  margin-bottom: 18px;
+  font-family: var(--font-ui);
+}
+
+/* ── Detail header (mirrors .wf-detail-header) ─────────────────── */
+.kids-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 20px;
+  background: #094570;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+
+.kids-detail-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.kids-detail-icon .kids-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.kids-detail-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 2px;
+}
+
+.kids-detail-arabic {
+  font-size: 1.15rem;
+  color: #85CCFF;
+  margin: 0;
+}
+
+/* ── Section cards (mirrors .wf-section) ───────────────────────── */
+.kids-section {
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1.5px solid #eef1f4;
+  border-radius: 16px;
+  margin-bottom: 12px;
+}
+
+.kids-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #094570;
+  margin: 0 0 10px;
+}
+
+.kids-section-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #094570;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.kids-section-arabic {
+  font-size: 1.3rem;
+  color: #094570;
+  margin: 0 0 6px;
+}
+
+.kids-section-translit {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: #6a8090;
+  margin: 0 0 10px;
+}
+
+.kids-section-body {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #2a3a4a;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.kids-section-source {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: #8a9ab0;
+}
+
+/* ── Dark mode — same navy/sky swap used everywhere else in Sual:
+   navy accents in light mode become sky in dark mode. The hero and
+   detail header are already navy/white in light mode, so they carry
+   over unchanged into dark mode too — only the tiles and section
+   cards need the standard dark-card treatment. ── */
+[data-theme="dark"] .kids-page {
+  background: #0a1825;
+}
+
+[data-theme="dark"] .kids-tile,
+[data-theme="dark"] .kids-section {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .kids-tile:hover {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .kids-tile-icon {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .kids-tile-label,
+[data-theme="dark"] .kids-tile-arabic,
+[data-theme="dark"] .kids-section-title {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .kids-section-num {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .kids-section-arabic {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .kids-section-body {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .kids-back {
+  color: #85CCFF;
+}
