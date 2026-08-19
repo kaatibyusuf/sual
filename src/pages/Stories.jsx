@@ -36,6 +36,7 @@ export default function Stories({ user }) {
   const [progressMap, setProgressMap] = useState({}) // story_id -> { progress_percent, completed }
   const saveTimeoutRef = useRef(null)
   const latestProgressRef = useRef(0) // avoids stale closures inside the scroll listener
+  const restoreTargetRef = useRef(null) // percent to scroll to on open, or null for a fresh story
 
   const fetchProgress = useCallback(async () => {
     if (!user) return
@@ -91,8 +92,32 @@ export default function Stories({ user }) {
   // 0–100 percent of the full page height. Flushes any pending save
   // immediately when leaving the story (closing or unmounting), so a
   // quick visit isn't lost to the debounce timer.
+  //
+  // FIX: this previously called handleScroll() synchronously right
+  // after mount, before any restore happened — since openStory forced
+  // scrollTo(0, 0) first, that call read scrollY as 0 and immediately
+  // scheduled a save of 0% over whatever progress was actually
+  // stored. That's the real bug behind "closing and reopening a story
+  // restarts it" — it wasn't just failing to resume, it was actively
+  // overwriting the saved progress back to 0 on every reopen. Now the
+  // saved position (captured by openStory into restoreTargetRef) is
+  // restored first, via requestAnimationFrame so the story's content
+  // has actually painted before we compute scrollHeight, and only
+  // THEN does scroll tracking/saving begin.
   useEffect(() => {
     if (!selected) return
+
+    const target = restoreTargetRef.current
+    latestProgressRef.current = target || 0
+
+    const restoreFrame = requestAnimationFrame(() => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      if (target && docHeight > 0) {
+        window.scrollTo(0, Math.round((target / 100) * docHeight))
+      } else {
+        window.scrollTo(0, 0)
+      }
+    })
 
     const handleScroll = () => {
       const scrollTop = window.scrollY
@@ -109,9 +134,9 @@ export default function Stories({ user }) {
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // capture initial position (e.g. reopening a story already scrolled via anchor)
 
     return () => {
+      cancelAnimationFrame(restoreFrame)
       window.removeEventListener('scroll', handleScroll)
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current)
@@ -121,8 +146,11 @@ export default function Stories({ user }) {
   }, [selected, scheduleSave, saveProgress])
 
   const openStory = (s) => {
+    const existing = progressMap[s.id]
+    restoreTargetRef.current = (existing && !existing.completed && existing.progress_percent > 0)
+      ? existing.progress_percent
+      : null
     setSelected(s)
-    window.scrollTo(0, 0)
   }
 
   const closeStory = () => {

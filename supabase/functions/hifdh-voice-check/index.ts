@@ -30,7 +30,10 @@ const DAILY_CAP = parseInt(Deno.env.get('HIFDH_VOICE_DAILY_CAP') ?? '30', 10)
 const supabaseAdmin = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
 
 // Rough word-overlap bar the earlier scoping call landed on — "was
-// the right verse attempted," not pronunciation grading.
+// the right verse attempted," not pronunciation grading. Only used
+// directly for passages longer than 4 words now — see the
+// requiredMatches comment below for why short ones get their own
+// rule instead of this flat percentage.
 const MATCH_THRESHOLD = 0.6
 
 function corsHeaders() {
@@ -139,7 +142,18 @@ serve(async (req) => {
     const heardWords = new Set(words(transcript))
     const matched = expectedWords.filter(w => heardWords.has(w)).length
     const overlap = expectedWords.length > 0 ? matched / expectedWords.length : 0
-    const correct = overlap >= MATCH_THRESHOLD
+
+    // A flat 60% threshold leaves almost no room for a single
+    // mistranscribed word on short passages — for a 2-word tail
+    // (the shortest Hifdh.jsx allows), 60% rounds up to requiring
+    // BOTH words perfect, zero tolerance for the transcription model
+    // slipping on one syllable. Allowing exactly one miss on short
+    // passages keeps the bar at "did you recite the right thing,"
+    // not "did gpt-4o-mini-transcribe catch every word perfectly."
+    const requiredMatches = expectedWords.length <= 4
+      ? Math.max(1, expectedWords.length - 1)
+      : Math.ceil(expectedWords.length * MATCH_THRESHOLD)
+    const correct = matched >= requiredMatches
 
     await supabaseAdmin.from('hifdh_voice_checks').insert({ user_id: userId })
 

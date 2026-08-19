@@ -13,6 +13,7 @@
 
 import { supabase } from './supabase.js'
 import { storageKey, loadProgress as loadLocal, saveProgress as saveLocal } from './spacedRepetition.js'
+import { COLLECTIONS } from '../data/collections.js'
 
 const LOCAL_PREFIX = 'sual-hifdh'
 
@@ -72,22 +73,24 @@ async function pushProgress(user, collectionId, progress) {
 
 // Used by Journey to summarize across every collection at once
 // without each page needing to know the sync details.
+//
+// FIX: this previously ran its own separate Supabase-only query with
+// no localStorage fallback and no first-sync migration — unlike
+// getHifdhProgress above, which has both. That asymmetry was the
+// actual bug behind "the simulator shows 16/61 strong, the dashboard
+// shows 0/61 for the same collection": a collection whose progress
+// still only lived in localStorage (not yet migrated to Supabase)
+// would read correctly wherever getHifdhProgress was called — the
+// simulator's per-collection screen — but come back as 0 here, since
+// this function had no idea localStorage existed. Delegating to
+// getHifdhProgress per collection means this can no longer drift out
+// of sync with it: same fallback, same migration, same numbers,
+// because it's now literally the same code path.
 export async function getAllHifdhProgress(user) {
-  if (!user) return {}
-  try {
-    const { data, error } = await supabase
-      .from('hifdh_progress')
-      .select('collection_id, item_key, box, due')
-      .eq('user_id', user.id)
-    if (error) throw error
-    const byCollection = {}
-    ;(data || []).forEach(row => {
-      if (!byCollection[row.collection_id]) byCollection[row.collection_id] = {}
-      byCollection[row.collection_id][row.item_key] = { box: row.box, due: row.due }
-    })
-    return byCollection
-  } catch (err) {
-    console.error('Failed to load hifdh progress for Journey:', err)
-    return {}
-  }
+  const entries = await Promise.all(
+    COLLECTIONS.map(c => getHifdhProgress(user, c.id).then(progress => [c.id, progress]))
+  )
+  const byCollection = {}
+  entries.forEach(([id, progress]) => { byCollection[id] = progress })
+  return byCollection
 }

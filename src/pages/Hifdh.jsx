@@ -12,26 +12,29 @@ import { surahToJuz, ayahToJuz } from '../lib/quranJuz.js'
 import { supabase } from '../lib/supabase.js'
 import './Hifdh.css'
 
-// How many items go into one review batch, and how many questions
-// each due item gets.
 const SESSION_SIZE = 10
 const QUESTIONS_PER_ITEM = 3
-
-// Every MCQ question type below produces exactly 1 correct answer +
-// 4 distractors, so the position cycler is fixed at 5 slots.
 const MCQ_OPTION_COUNT = 5
 
-// ── Helpers ─────────────────────────────────────────────────────
+// How much gets shown before the blank, and how much has to be
+// typed from memory, is capped rather than left as a straight 55/45
+// split of the whole passage. For a short hadith or short ayah that
+// changes nothing. For a long one (a full Umdatul-Ahkam entry can run
+// well past 50 words), an uncapped split means a long wall of Arabic
+// to read through before reaching the input, and then a long
+// remainder to type — both of which get worse the longer the source
+// passage is, which is backwards: the point is testing whether the
+// next few words come to mind, not reproducing an entire hadith.
+const MAX_RECALL_LEAD_WORDS = 18
+const MAX_RECALL_TAIL_WORDS = 14
+
 function words(text) {
   return (text || '').split(/\s+/).filter(Boolean)
 }
 
-// Strip Arabic diacritics (tashkeel) and normalize alef/ya/ta-marbuta
-// variants so typed answers can be checked without requiring the
-// person to type harakat, which almost nobody does on a keyboard.
 function normalizeArabic(str) {
   return (str || '')
-    .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '') // diacritics + tatweel
+    .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
     .replace(/[إأآا]/g, 'ا')
     .replace(/ى/g, 'ي')
     .replace(/ة/g, 'ه')
@@ -39,13 +42,6 @@ function normalizeArabic(str) {
     .trim()
 }
 
-// A pure random shuffle is statistically unbiased over the long run,
-// but over a short 10-30 question session it can easily clump — the
-// correct answer landing in the same slot 3-4 times in a row is
-// common by chance, and it reads as a bug even though it isn't one.
-// This cycler guarantees every slot (0..size-1) is used exactly once
-// before any slot repeats, so the position feels evenly distributed
-// across a session instead of merely "random on average."
 function createPositionCycler(size) {
   let queue = []
   return function next() {
@@ -56,8 +52,6 @@ function createPositionCycler(size) {
   }
 }
 
-// Places `correct` at `position` and fills the remaining slots with a
-// shuffled order of `distractors`.
 function assembleOptions(correct, distractors, position) {
   const shuffledDistractors = shuffle(distractors)
   const options = new Array(distractors.length + 1)
@@ -71,18 +65,6 @@ function assembleOptions(correct, distractors, position) {
   return options
 }
 
-// ── Question generators ─────────────────────────────────────────
-// These all operate on the generic item shape produced by
-// collections.js: { key, num, label, meta, arabic }. Nothing here
-// assumes "hadith" specifically, so the same generators serve the
-// Qur'an, the Arba'in, and Umdatul-Ahkam alike.
-//
-// MCQ makers return { type, itemKey, prompt, arabicPrompt, correct,
-// distractors } — raw, unpositioned — so buildSession can assign the
-// correct answer's slot via the position cycler at assembly time.
-
-// Type 1: fill the blank — one word removed, distractors matched by
-// word length so the blank can't be guessed by shape alone.
 function makeFillBlank(item, pool) {
   const w = words(item.arabic)
   const candidates = w
@@ -116,9 +98,6 @@ function makeFillBlank(item, pool) {
   }
 }
 
-// Type 2: what comes next — only the first third is shown, and
-// distractors are pulled from numerically nearby items so they're
-// thematically closer and easier to confuse.
 function makeContinuation(item, pool) {
   const w = words(item.arabic)
   if (w.length < 12) return null
@@ -152,8 +131,6 @@ function makeContinuation(item, pool) {
   }
 }
 
-// Type 3: which item — locate this item within the collection by its
-// label (e.g. "Hadith 12", "Surah An-Nas").
 function makeWhichItem(item, pool, collection) {
   const wrongLabels = shuffle(
     pool.filter(it => it.key !== item.key && it.label !== item.label)
@@ -171,10 +148,6 @@ function makeWhichItem(item, pool, collection) {
   }
 }
 
-// Type 4: meta detail — narrator/source for hadith collections,
-// whatever descriptive tag the collection provides otherwise (e.g. a
-// Qur'an surah's theme or juz). Generic on purpose: it only reads
-// item.meta, so it needs no per-collection special-casing.
 function makeMeta(item, pool, collection) {
   const otherMeta = shuffle(
     [...new Set(pool.filter(it => it.key !== item.key).map(it => it.meta))]
@@ -198,9 +171,10 @@ function makeMeta(item, pool, collection) {
 function makeCompleteRecall(item) {
   const w = words(item.arabic)
   if (w.length < 8) return null
-  const cut = Math.max(4, Math.floor(w.length * 0.55))
+  const idealCut = Math.max(4, Math.floor(w.length * 0.55))
+  const cut = Math.min(idealCut, MAX_RECALL_LEAD_WORDS)
   const lead = w.slice(0, cut).join(' ')
-  const tail = w.slice(cut).join(' ')
+  const tail = w.slice(cut, cut + MAX_RECALL_TAIL_WORDS).join(' ')
   if (words(tail).length < 2) return null
 
   return {
@@ -231,9 +205,6 @@ function buildSession(dueItems, pool, collection) {
   })
 
   const ordered = shuffle(raw)
-
-  // Assign the correct answer's slot via the position cycler so it's
-  // evenly spread across the session instead of left to raw chance.
   const cyclePosition = createPositionCycler(MCQ_OPTION_COUNT)
   return ordered.map(q => {
     if (q.type === 'complete') return q
@@ -245,7 +216,6 @@ function buildSession(dueItems, pool, collection) {
   })
 }
 
-// ── Component ───────────────────────────────────────────────────
 export default function Hifdh({ user = null }) {
   const [collectionId, setCollectionId] = useState(null)
   const collection = useMemo(
@@ -255,41 +225,30 @@ export default function Hifdh({ user = null }) {
 
   const [progress, setProgress] = useState({})
   const [progressLoading, setProgressLoading] = useState(false)
-  // Progress for every collection, used only on the picker screen to
-  // show due/strong counts without opening each collection.
   const [allProgress, setAllProgress] = useState({})
 
-  // Declared memorization scope for the open collection — a SET of
-  // item keys, not a single "up to here" boundary. null means
-  // unrestricted (full collection), matching today's behavior until
-  // someone actually engages with the picker.
   const [scopeSet, setScopeSetState] = useState(null)
   const [scopeLoading, setScopeLoading] = useState(false)
 
-  const [session, setSession] = useState(null)   // array of questions
+  const [session, setSession] = useState(null)
   const [qIndex, setQIndex] = useState(0)
-  const [selected, setSelected] = useState(null) // option index picked (MCQ types)
+  const [selected, setSelected] = useState(null)
   const [typedAnswer, setTypedAnswer] = useState('')
   const [typedSubmitted, setTypedSubmitted] = useState(false)
   const [typedCorrect, setTypedCorrect] = useState(false)
-  const [results, setResults] = useState({})     // itemKey -> all-correct boolean
+  const [results, setResults] = useState({})
   const [finished, setFinished] = useState(false)
 
-  // Voice recitation check — an alternate way to answer 'complete'
-  // type questions, using the browser's MediaRecorder to capture a
-  // short clip and hifdh-voice-check (Whisper-family transcription)
-  // to score it against the same expected text the typed path checks
-  // against. Falls back invisibly to typing-only when unsupported.
   const [voiceSupported] = useState(() => typeof window !== 'undefined' && !!(navigator.mediaDevices && window.MediaRecorder))
   const [isRecording, setIsRecording] = useState(false)
+  const [hasRecording, setHasRecording] = useState(false) // stopped, not yet submitted — lets the take be discarded and redone
   const [voiceChecking, setVoiceChecking] = useState(false)
-  const [voiceResult, setVoiceResult] = useState(null) // { correct, transcript }
+  const [voiceResult, setVoiceResult] = useState(null)
   const [voiceError, setVoiceError] = useState(null)
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
+  const recordedBlobRef = useRef(null)
 
-  // Load this collection's saved progress whenever the selected
-  // collection changes.
   useEffect(() => {
     if (!collectionId) return
     let cancelled = false
@@ -303,7 +262,6 @@ export default function Hifdh({ user = null }) {
     return () => { cancelled = true }
   }, [collectionId, user])
 
-  // Load the declared memorization scope for this collection.
   useEffect(() => {
     if (!collectionId) return
     let cancelled = false
@@ -317,8 +275,6 @@ export default function Hifdh({ user = null }) {
     return () => { cancelled = true }
   }, [collectionId, user])
 
-  // Load a lightweight progress summary for every collection up
-  // front, for the picker screen's due/strong counts.
   useEffect(() => {
     let cancelled = false
     Promise.all(COLLECTIONS.map(c => getHifdhProgress(user, c.id).then(p => [c.id, p])))
@@ -331,20 +287,12 @@ export default function Hifdh({ user = null }) {
     return () => { cancelled = true }
   }, [user])
 
-  // The items actually in play — everything if no scope is set at
-  // all, or only the specific items the user has checked off.
-  // Distractors, due-counting, and stats all derive from this rather
-  // than the raw collection, so nothing outside a user's own
-  // memorization scope leaks into their review session.
   const scopedItems = useMemo(() => {
     if (!collection) return []
     if (scopeSet === null) return collection.items
     return collection.items.filter(it => scopeSet.has(it.key))
   }, [collection, scopeSet])
 
-  // Persists a full replacement set. `null` clears the scope entirely
-  // (back to unrestricted); an array (possibly empty) becomes the new
-  // exact set of memorized items.
   const persistScopeSet = async (newSetOrNull) => {
     setScopeSetState(newSetOrNull)
     if (newSetOrNull === null) {
@@ -354,10 +302,6 @@ export default function Hifdh({ user = null }) {
     }
   }
 
-  // Toggling starts from an empty working set the first time someone
-  // interacts with the picker, not from "everything" — engaging with
-  // the picker means "I'm now declaring exactly what I know," not
-  // "remove one thing from an assumed-complete set."
   const toggleItemKeys = (keys, forceState) => {
     const current = scopeSet === null ? new Set() : new Set(scopeSet)
     const allCurrentlyIn = keys.every(k => current.has(k))
@@ -395,6 +339,8 @@ export default function Hifdh({ user = null }) {
     setTypedCorrect(false)
     setVoiceResult(null)
     setVoiceError(null)
+    setHasRecording(false)
+    recordedBlobRef.current = null
     setResults({})
     setFinished(false)
   }
@@ -423,10 +369,11 @@ export default function Hifdh({ user = null }) {
     recordResult(currentQ.itemKey, correct)
   }
 
-  // ── Voice recitation check ───────────────────────────────────
   const startRecording = async () => {
     setVoiceError(null)
     setVoiceResult(null)
+    setHasRecording(false)
+    recordedBlobRef.current = null
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       const mimeType = MediaRecorder.isTypeSupported('audio/webm')
@@ -435,10 +382,16 @@ export default function Hifdh({ user = null }) {
       const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream)
       audioChunksRef.current = []
       recorder.ondataavailable = e => { if (e.data.size > 0) audioChunksRef.current.push(e.data) }
+      // FIX: this used to call checkRecitation() here immediately,
+      // meaning the instant you tapped stop, that single take was
+      // final — no way to discard a flubbed attempt (e.g. having to
+      // back up mid-recitation to re-say a phrase) before it got
+      // scored. Now stopping just ends capture; the person reviews
+      // and explicitly chooses to submit or re-record.
       recorder.onstop = () => {
         stream.getTracks().forEach(t => t.stop())
-        const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || 'audio/webm' })
-        checkRecitation(blob)
+        recordedBlobRef.current = new Blob(audioChunksRef.current, { type: recorder.mimeType || 'audio/webm' })
+        setHasRecording(true)
       }
       mediaRecorderRef.current = recorder
       recorder.start()
@@ -454,6 +407,21 @@ export default function Hifdh({ user = null }) {
       mediaRecorderRef.current.stop()
       setIsRecording(false)
     }
+  }
+
+  // Discards the just-recorded take without submitting it for
+  // checking, so a messy attempt never gets scored — the direct fix
+  // for "going back to re-recite makes your answer wrong": now there
+  // was never a wrong answer recorded in the first place, just a
+  // discarded take.
+  const discardRecording = () => {
+    recordedBlobRef.current = null
+    setHasRecording(false)
+    setVoiceError(null)
+  }
+
+  const submitRecording = () => {
+    if (recordedBlobRef.current) checkRecitation(recordedBlobRef.current)
   }
 
   const blobToBase64 = (blob) => new Promise((resolve, reject) => {
@@ -499,8 +467,9 @@ export default function Hifdh({ user = null }) {
       setTypedCorrect(false)
       setVoiceResult(null)
       setVoiceError(null)
+      setHasRecording(false)
+      recordedBlobRef.current = null
     } else {
-      // Session over: move boxes and save
       let updated = progress
       Object.entries(results).forEach(([key, allCorrect]) => {
         updated = advanceBox(updated, key, allCorrect)
@@ -530,7 +499,6 @@ export default function Hifdh({ user = null }) {
     setFinished(false)
   }
 
-  // ── Collection picker screen ──
   if (!collection) {
     return (
       <div className="page-content hifdh-page">
@@ -563,7 +531,6 @@ export default function Hifdh({ user = null }) {
     )
   }
 
-  // ── Session finished screen ──
   if (session && finished) {
     const strong = Object.values(results).filter(Boolean).length
     const total = Object.keys(results).length
@@ -596,7 +563,6 @@ export default function Hifdh({ user = null }) {
     )
   }
 
-  // ── Active question screen ──
   if (session && currentQ) {
     return (
       <div className="page-content hifdh-page">
@@ -628,13 +594,32 @@ export default function Hifdh({ user = null }) {
             {voiceSupported && !typedSubmitted && (
               <div style={{ marginTop: 10 }}>
                 {voiceError && <p style={{ color: '#c0392b', fontSize: '0.82rem', marginBottom: 6 }}>{voiceError}</p>}
-                <button
-                  className="hifdh-btn"
-                  onClick={isRecording ? stopRecording : startRecording}
-                  disabled={voiceChecking}
-                >
-                  {voiceChecking ? 'Checking your recitation…' : isRecording ? '⏹ Stop & Check' : '🎤 Recite Instead'}
-                </button>
+
+                {hasRecording ? (
+                  // Reviewing a stopped take before it's scored — this
+                  // is the actual fix for "going back to re-recite
+                  // makes your answer wrong": a flubbed attempt is
+                  // discarded here, never submitted, never scored.
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                    <p style={{ fontSize: '0.82rem', color: '#4a6080', width: '100%', margin: 0 }}>
+                      Recording ready. Not happy with it? Re-record instead of submitting.
+                    </p>
+                    <button className="hifdh-btn" onClick={discardRecording} disabled={voiceChecking}>
+                      🔄 Re-record
+                    </button>
+                    <button className="hifdh-btn hifdh-btn--primary" onClick={submitRecording} disabled={voiceChecking}>
+                      {voiceChecking ? 'Checking your recitation…' : '✓ Submit Recitation'}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="hifdh-btn"
+                    onClick={isRecording ? stopRecording : startRecording}
+                    disabled={voiceChecking}
+                  >
+                    {isRecording ? '⏹ Stop Recording' : '🎤 Recite Instead'}
+                  </button>
+                )}
               </div>
             )}
 
@@ -693,7 +678,6 @@ export default function Hifdh({ user = null }) {
     )
   }
 
-  // ── Overview screen (per selected collection) ──
   return (
     <div className="page-content hifdh-page">
       <div className="hifdh-session-top">
@@ -725,27 +709,14 @@ export default function Hifdh({ user = null }) {
         </div>
       </div>
 
-      {/* Memorization scope. No rows at all for this collection means
-          unrestricted — same as before this existed. Once someone
-          engages with the picker, it's a real SET of memorized items,
-          not a single boundary — needed because real hifdh order is
-          often not front-to-back (Juz Amma first, then working
-          backward, is extremely common). */}
       {(() => {
         const isQuranCollection = collection.id === 'quran-starter'
         const isUnrestricted = scopeSet === null
         const scopeCount = isUnrestricted ? collection.items.length : scopeSet.size
 
-        // `it.num` is a sequential position within this loaded set,
-        // NOT the real mushaf surah number — the real number lives in
-        // `it.key`, built elsewhere as 'q' + the actual surah number.
         const realSurah = (it) => parseInt(String(it.key).replace(/^q/, ''), 10)
 
         if (isQuranCollection) {
-          // Ayah count per surah is embedded in `meta`, e.g.
-          // "Surah 2 · Madani · 286 ayat" — parsed here so a surah's
-          // full covered Juz range can be computed, not just where
-          // it starts.
           const totalAyatOf = (it) => {
             const m = String(it.meta || '').match(/(\d+)\s*ayat/i)
             return m ? parseInt(m[1], 10) : 1
@@ -759,13 +730,6 @@ export default function Hifdh({ user = null }) {
           })
           const startJuzNumbers = Object.keys(juzGroups).map(Number).sort((a, b) => a - b)
 
-          // Every Juz number 1–30 is covered by exactly one of these
-          // groups by construction — a surah's own starting Juz is
-          // always a group key (the surah IS that item), and its
-          // range extends through wherever its last ayah actually
-          // falls, absorbing any Juz that starts mid-surah with no
-          // new surah of its own (Juz 2 and 3 inside Al-Baqarah, Juz
-          // 5 inside An-Nisa) rather than leaving them unrepresented.
           const juzRanges = startJuzNumbers.map(startJ => {
             const items = juzGroups[startJ]
             const endJ = Math.max(...items.map(it => ayahToJuz(realSurah(it), totalAyatOf(it))))
@@ -825,12 +789,6 @@ export default function Hifdh({ user = null }) {
           )
         }
 
-        // Non-Qur'an collections: hadith is studied in order in
-        // practice (Nawawi 1–42, Umdatul-Ahkam in sequence), so a
-        // simple contiguous "up to here" slider stays the natural
-        // control here — it still writes into the same set-based
-        // storage underneath, just filling everything from the start
-        // through the chosen point in one action.
         const nums = collection.items.map(it => it.num)
         const minNum = nums.length ? Math.min(...nums) : 0
         const maxNum = nums.length ? Math.max(...nums) : 0
