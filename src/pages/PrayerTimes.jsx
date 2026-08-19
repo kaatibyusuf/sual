@@ -3,6 +3,69 @@ import { toHijriString } from '../lib/hijri.js'
 import { getPrayerStatus } from '../lib/prayerTimes.js'
 import './PrayerTimes.css'
 
+const ICONS = {
+  location: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z" />
+      <circle cx="12" cy="11" r="2" />
+    </svg>
+  ),
+  fajr: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3a5 5 0 1 0 5 5c0-.3 0-.6-.1-.9A5 5 0 0 1 12 3z" />
+      <line x1="4" y1="19" x2="20" y2="19" />
+    </svg>
+  ),
+  sunrise: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 18a5 5 0 0 0-10 0" />
+      <line x1="12" y1="9" x2="12" y2="2" />
+      <line x1="4.2" y1="10.2" x2="5.6" y2="11.6" />
+      <line x1="19.8" y1="10.2" x2="18.4" y2="11.6" />
+      <line x1="1" y1="18" x2="23" y2="18" />
+      <polyline points="8 6 12 2 16 6" />
+    </svg>
+  ),
+  sun: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.2" y1="4.2" x2="5.6" y2="5.6" />
+      <line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.2" y1="19.8" x2="5.6" y2="18.4" />
+      <line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
+    </svg>
+  ),
+  sunset: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 18a5 5 0 0 0-10 0" />
+      <line x1="12" y1="9" x2="12" y2="2" />
+      <line x1="4.2" y1="10.2" x2="5.6" y2="11.6" />
+      <line x1="19.8" y1="10.2" x2="18.4" y2="11.6" />
+      <line x1="1" y1="18" x2="23" y2="18" />
+      <polyline points="16 6 12 2 8 6" />
+    </svg>
+  ),
+  isha: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      <path d="M19 3v4M17 5h4" />
+    </svg>
+  ),
+}
+
+const PRAYER_ICON = {
+  fajr: 'fajr',
+  sunrise: 'sunrise',
+  dhuhr: 'sun',
+  asr: 'sun',
+  maghrib: 'sunset',
+  isha: 'isha',
+}
+
 export default function PrayerTimes() {
   const [time, setTime] = useState(new Date())
   const [lat, setLat] = useState(6.5244)
@@ -10,11 +73,9 @@ export default function PrayerTimes() {
   const [tzOffset, setTzOffset] = useState(1)
   const [locationName, setLocationName] = useState('Lagos, Nigeria')
   const [locationLoading, setLocationLoading] = useState(true)
-  const clockDrawn = useRef(false)
   const intervalRef = useRef(null)
 
   useEffect(() => {
-    // Get user location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -30,7 +91,6 @@ export default function PrayerTimes() {
             })
             .catch(() => {})
           setLocationLoading(false)
-          clockDrawn.current = false
         },
         () => setLocationLoading(false)
       )
@@ -44,131 +104,62 @@ export default function PrayerTimes() {
 
   const { prayerMins, currentPrayer, nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
 
-  const h = time.getHours()
-  const m = time.getMinutes()
-  const s = time.getSeconds()
-  const secDeg  = s * 6
-  const minDeg  = m * 6 + s * 0.1
-  const hourDeg = (h % 12) * 30 + m * 0.5
-
-  function handCoords(deg, length) {
-    const rad = (deg - 90) * Math.PI / 180
-    return { x: 150 + length * Math.cos(rad), y: 150 + length * Math.sin(rad) }
-  }
-
-  const hourHand   = handCoords(hourDeg, 70)
-  const minuteHand = handCoords(minDeg, 95)
-  const secondHand = handCoords(secDeg, 105)
-
-  const colors = ['#85CCFF','#ffd700','#7ecfff','#85CCFF','#ff9f43','#c8a2ff']
+  // The hero leads with whichever prayer window we're currently in
+  // (falling back to the next one if, e.g., it's the small window
+  // before Fajr with nothing yet "current") — same information the
+  // reference design leads with, rather than a live ticking clock.
+  const focusPrayer = currentPrayer || nextPrayer
 
   return (
     <div className="page-content pt-page">
-      <h1 className="page-title">Prayer Times</h1>
-      <p className="page-subtitle">مَوَاقِيتُ الصَّلَاة — {locationName}</p>
+      <h1 className="pt-sr-only">Prayer Times</h1>
 
-      {locationLoading && (
-        <div className="pt-location-banner">
-          🌍 Detecting your location...
-        </div>
-      )}
-
-      <div className="pt-wrapper">
-        {/* Clock */}
-        <div className="pt-clock-wrapper">
-          <div className="pt-clock-face">
-            <svg viewBox="0 0 300 300" className="pt-clock-svg">
-              <circle cx="150" cy="150" r="145" fill="none" stroke="#094570" strokeWidth="3" opacity="0.2"/>
-              <circle cx="150" cy="150" r="135" fill="rgba(9,69,112,0.04)" stroke="#094570" strokeWidth="1.5" opacity="0.3"/>
-
-              {/* Hour markers */}
-              {Array.from({length:12}).map((_,i) => {
-                const angle=(i*30-90)*Math.PI/180
-                const r=125
-                return (
-                  <line key={i}
-                    x1={150+(r-8)*Math.cos(angle)} y1={150+(r-8)*Math.sin(angle)}
-                    x2={150+r*Math.cos(angle)}     y2={150+r*Math.sin(angle)}
-                    stroke="rgba(133,204,255,0.4)" strokeWidth={i%3===0?2.5:1}
-                  />
-                )
-              })}
-
-              {/* Prayer dots and labels */}
-              {prayerMins.map((p, i) => {
-                if (p.minutes === null) return null
-                const angle = (p.minutes/(12*60))*360-90
-                const rad = angle*Math.PI/180
-                const r = 125
-                const dx = 150+r*Math.cos(rad)
-                const dy = 150+r*Math.sin(rad)
-                const lx = 150+(r-26)*Math.cos(rad)
-                const ly = 150+(r-26)*Math.sin(rad)
-                return (
-                  <g key={p.key}>
-                    <circle cx={dx} cy={dy} r="4" fill={colors[i]} opacity="0.9"/>
-                    <text x={lx} y={ly} textAnchor="middle" dominantBaseline="middle"
-                      fontFamily="Amiri,serif" fontSize="10" fill={colors[i]} opacity="0.9">
-                      {p.arabic}
-                    </text>
-                  </g>
-                )
-              })}
-
-              {/* Hands */}
-              <line x1="150" y1="150" x2={hourHand.x}   y2={hourHand.y}   stroke="#094570" strokeWidth="5" strokeLinecap="round"/>
-              <line x1="150" y1="150" x2={minuteHand.x} y2={minuteHand.y} stroke="#1a6fa8" strokeWidth="3" strokeLinecap="round"/>
-              <line x1="150" y1="150" x2={secondHand.x} y2={secondHand.y} stroke="#85CCFF" strokeWidth="1.5" strokeLinecap="round"/>
-
-              {/* Center */}
-              <circle cx="150" cy="150" r="6" fill="#094570"/>
-              <circle cx="150" cy="150" r="3" fill="#85CCFF"/>
-            </svg>
-          </div>
+      <div className="pt-hero">
+        <div className="pt-hero-top">
+          <span className="pt-hero-location">
+            <span className="pt-hero-location-icon">{ICONS.location}</span>
+            {locationLoading ? 'Detecting…' : locationName}
+          </span>
         </div>
 
-        {/* Panel */}
-        <div className="pt-panel">
-          {/* Time display */}
-          <div className="pt-time-display">
-            <div className="pt-time">
-              {String(h).padStart(2,'0')}:{String(m).padStart(2,'0')}:{String(s).padStart(2,'0')}
-            </div>
-            <div className="pt-date">
-              {time.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
-            </div>
-            <div className="pt-hijri arabic">{toHijriString(time)}</div>
-          </div>
+        {focusPrayer && (
+          <>
+            <p className="pt-hero-prayer-name arabic">{focusPrayer.arabic}</p>
+            <p className="pt-hero-prayer-en">{focusPrayer.en}</p>
+            <p className="pt-hero-time">{focusPrayer.timeStr}</p>
+          </>
+        )}
 
-          {/* Next prayer */}
-          {nextPrayer && (
-            <div className="pt-next">
-              <div className="pt-next-label">Next Prayer</div>
-              <div className="pt-next-name arabic">{nextPrayer.arabic}</div>
-              <div className="pt-next-countdown">in {countdown}</div>
-            </div>
-          )}
+        {nextPrayer && (
+          <p className="pt-hero-countdown">
+            Next prayer <span className="arabic">{nextPrayer.arabic}</span> in <span className="pt-hero-countdown-value">{countdown}</span>
+          </p>
+        )}
+      </div>
 
-          {/* Prayer list */}
-          <div className="pt-prayer-list">
-            {prayerMins.map(p => {
-              const isActive = currentPrayer?.key === p.key
-              const isNext   = nextPrayer?.key === p.key
-              return (
-                <div key={p.key} className={`pt-prayer-row ${isActive?'pt-prayer-row--active':''} ${isNext&&!isActive?'pt-prayer-row--next':''}`}>
-                  <div>
-                    <div className="pt-prayer-arabic arabic">{p.arabic}</div>
-                    <div className="pt-prayer-en">{p.en}</div>
-                  </div>
-                  <div className="pt-prayer-right">
-                    {isActive && <span className="pt-badge pt-badge--now">Now</span>}
-                    {isNext && !isActive && <span className="pt-badge pt-badge--next">Next</span>}
-                    <div className="pt-prayer-time">{p.timeStr}</div>
-                  </div>
+      <div className="pt-panel">
+        <p className="pt-panel-hijri arabic">{toHijriString(time)}</p>
+
+        <div className="pt-prayer-list">
+          {prayerMins.map(p => {
+            const isActive = currentPrayer?.key === p.key
+            const isNext   = nextPrayer?.key === p.key
+            const iconKey  = PRAYER_ICON[p.en?.toLowerCase()] || 'sun'
+            return (
+              <div key={p.key} className={`pt-prayer-row ${isActive ? 'pt-prayer-row--active' : ''}`}>
+                <span className="pt-prayer-icon">{ICONS[iconKey]}</span>
+                <div className="pt-prayer-names">
+                  <span className="pt-prayer-arabic arabic">{p.arabic}</span>
+                  <span className="pt-prayer-en">{p.en}</span>
                 </div>
-              )
-            })}
-          </div>
+                <div className="pt-prayer-right">
+                  {isActive && <span className="pt-badge pt-badge--now">Now</span>}
+                  {isNext && !isActive && <span className="pt-badge pt-badge--next">Next</span>}
+                  <span className="pt-prayer-time">{p.timeStr}</span>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>

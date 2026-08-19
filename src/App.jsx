@@ -66,17 +66,27 @@ function AppInner() {
   const [userLevel, setUserLevel] = useState(null)
   const [levelLoading, setLevelLoading] = useState(false)
   const [levelSelected, setLevelSelected] = useState(false)
+  // Both attributes are applied here, synchronously, inside the
+  // lazy initializer — not in a useEffect. useEffect only runs AFTER
+  // the browser's first paint, so with the old effect-based version
+  // there was a real window on every load/reload where the page
+  // rendered at the CSS default (font-size: 16px / light theme)
+  // before snapping to whatever was actually saved — visible as the
+  // whole app suddenly resizing or re-tinting itself a beat after
+  // it first appeared, for anyone whose saved preference wasn't the
+  // default. Setting the attribute here runs during the initial
+  // render, before that first paint, so the correct size/theme is
+  // what actually gets painted the first time.
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('sual-darkmode') === 'true'
+    const stored = localStorage.getItem('sual-darkmode') === 'true'
+    document.documentElement.setAttribute('data-theme', stored ? 'dark' : 'light')
+    return stored
   })
   const [fontSize, setFontSize] = useState(() => {
-    return localStorage.getItem('sual-fontsize') || 'medium'
+    const stored = localStorage.getItem('sual-fontsize') || 'medium'
+    document.documentElement.setAttribute('data-fontsize', stored)
+    return stored
   })
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
-    document.documentElement.setAttribute('data-fontsize', fontSize)
-  }, [])
 
   useEffect(() => {
     localStorage.setItem('sual-darkmode', darkMode)
@@ -213,8 +223,6 @@ function AppInner() {
         <Toolbar
           darkMode={darkMode}
           setDarkMode={setDarkMode}
-          fontSize={fontSize}
-          setFontSize={setFontSize}
         />
         <main className="main-content">
           <Suspense fallback={<RouteFallback />}>
@@ -231,7 +239,7 @@ function AppInner() {
               <Route path="/tajweed" element={<Tajweed />} />
               <Route path="/fiqh" element={<Fiqh />} />
               <Route path="/tawheed" element={<Tawheed />} />
-              <Route path="/profile" element={<Profile user={user} userLevel={userLevel} setUserLevel={setUserLevel} />} />
+              <Route path="/profile" element={<Profile user={user} userLevel={userLevel} setUserLevel={setUserLevel} fontSize={fontSize} setFontSize={setFontSize} />} />
               <Route path="/dashboard" element={<Journey user={user} />} />
               <Route path="/spaces" element={<Spaces user={user} />} />
               <Route path="/prayer-times" element={<PrayerTimes />} />

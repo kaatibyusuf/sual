@@ -1,114 +1,117 @@
 /* ============================================
-   Toolbar
+   Toolbar — now just the theme switch
+
+   The old version was a full-width sticky bar holding four controls
+   (A-/A/A+ plus the toggle). With the font-size buttons moved to
+   Profile → Display, a full-width bar for one small switch would
+   look even more sparse/misplaced than before, so this is no longer
+   a bar at all — it's a small floating control, positioned next to
+   NotificationBell.jsx (top-right, position: fixed) so the two read
+   as one tidy cluster of page-level controls instead of a mostly-
+   empty strip running the width of the screen.
+
+   NotificationBell.jsx sits at top: 16px; right: 20px; and is 40px
+   wide — this sits immediately to its left.
    ============================================ */
 
 .toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: var(--shadow-sm);
+  position: fixed;
+  top: 16px;
+  right: 68px;
+  z-index: 500;
 }
 
-.toolbar-group {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.toolbar-btn {
-  padding: 5px 10px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 0.8rem;
-  font-weight: 700;
+/* ── Sliding switch ─────────────────────────────────────────── */
+.theme-switch {
+  border: none;
+  background: none;
+  padding: 0;
   cursor: pointer;
-  transition: all 0.15s ease;
-  line-height: 1;
+  display: block;
 }
 
-.toolbar-btn:hover:not(:disabled) {
-  background: var(--pastel-blue);
-  border-color: var(--pastel-blue);
-  color: var(--regal-blue);
+.theme-switch-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 52px;
+  height: 28px;
+  padding: 3px;
+  border-radius: 100px;
+  background: #dbe9f6;
+  border: 1px solid var(--border, #d0e8f8);
+  transition: background 0.2s ease;
 }
 
-.toolbar-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
+.theme-switch--dark .theme-switch-track {
+  background: #0a1825;
+  border-color: #1e3448;
 }
 
-.toolbar-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  padding: 0 4px;
-  min-width: 16px;
-  text-align: center;
-}
-
-.toolbar-divider {
-  width: 1px;
+.theme-switch-icon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
   height: 20px;
-  background: var(--border);
-  margin: 0 4px;
+  flex: 1;
 }
 
-/* Dark mode toggle */
-.toolbar-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
+.theme-switch-icon svg {
+  width: 13px;
+  height: 13px;
 }
 
-.toolbar-toggle:hover {
-  background: var(--pastel-blue);
-  border-color: var(--pastel-blue);
+.theme-switch-icon--sun {
+  color: #b07d1f;
 }
 
-.toolbar-toggle--active {
-  background: var(--regal-blue);
-  border-color: var(--regal-blue);
-  color: white;
+.theme-switch-icon--moon {
+  color: #7d93a6;
 }
 
-.toolbar-toggle--active:hover {
-  background: var(--regal-blue);
-  opacity: 0.9;
+.theme-switch--dark .theme-switch-icon--sun {
+  color: #4a6080;
 }
 
-.toolbar-toggle-icon {
-  font-size: 0.9rem;
+.theme-switch--dark .theme-switch-icon--moon {
+  color: #85CCFF;
 }
 
-.toolbar-toggle-label {
-  font-size: 0.78rem;
+.theme-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(9, 69, 112, 0.3);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
 }
 
-/* Mobile */
+.theme-switch--dark .theme-switch-knob {
+  transform: translateX(24px);
+  background: #094570;
+}
+
+.theme-switch:focus-visible {
+  outline: 2px solid #85CCFF;
+  outline-offset: 3px;
+  border-radius: 100px;
+}
+
+/* Mobile — stacked directly above the accessibility toggle (which
+   sits bottom-left at ~14px/48px+safe-area+14px, ~52px tall) rather
+   than sharing its exact position, and away from the notification
+   bell which floats bottom-right on mobile. */
 @media (max-width: 768px) {
   .toolbar {
-    padding: 6px 12px;
-    gap: 6px;
-  }
-
-  .toolbar-toggle-label {
-    display: none;
+    top: auto;
+    bottom: calc(48px + env(safe-area-inset-bottom, 0px) + 14px + 52px + 10px);
+    left: 14px;
+    right: auto;
   }
 }

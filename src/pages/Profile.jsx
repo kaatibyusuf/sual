@@ -54,7 +54,14 @@ const LEVELS = [
   { key: 'advanced',     label: 'Advanced',     arabic: 'مُتَقَدِّم', color: '#6a1b9a' },
 ]
 
-export default function Profile({ user, userLevel, setUserLevel }) {
+const FONT_SIZES = [
+  { key: 'small',  label: 'Small',  sample: 'A' },
+  { key: 'medium', label: 'Medium', sample: 'A' },
+  { key: 'large',  label: 'Large',  sample: 'A' },
+  { key: 'xlarge', label: 'X-Large', sample: 'A' },
+]
+
+export default function Profile({ user, userLevel, setUserLevel, fontSize, setFontSize }) {
   const { announce } = useAccessibility()
   const [name, setName] = useState(user?.user_metadata?.full_name || '')
   const [avatarUrl, setAvatarUrl] = useState(null)
@@ -443,6 +450,60 @@ export default function Profile({ user, userLevel, setUserLevel }) {
           })}
         </div>
       </div>
+
+      {/* Display card — text size used to live as A-/A/A+ buttons in
+          the top toolbar on every page; moved here since it's a
+          set-once-and-forget preference, not something that needs
+          reaching from everywhere. */}
+      {typeof fontSize !== 'undefined' && setFontSize && (
+        <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
+          <p style={{
+            fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
+          }}>
+            Display
+          </p>
+          <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
+            Text size across the whole app.
+          </p>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {FONT_SIZES.map(fs => {
+              const active = fontSize === fs.key
+              return (
+                <button
+                  key={fs.key}
+                  onClick={() => setFontSize(fs.key)}
+                  disabled={active}
+                  data-a11y-label={`${fs.label} text size${active ? ', currently selected' : ''}`}
+                  style={{
+                    flex: '1 1 110px',
+                    padding: '10px 14px',
+                    borderRadius: 10,
+                    border: active ? '2px solid #094570' : '2px solid #c8d8e8',
+                    background: active ? '#ffffff' : '#f5f8fb',
+                    color: active ? '#094570' : '#6a8090',
+                    fontWeight: 700,
+                    fontSize: '0.85rem',
+                    cursor: active ? 'default' : 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
+                  <span style={{
+                    fontSize: fs.key === 'small' ? '0.9rem' : fs.key === 'medium' ? '1.1rem' : fs.key === 'large' ? '1.3rem' : '1.5rem',
+                    fontWeight: 800,
+                  }}>
+                    {active ? '✓ ' : ''}{fs.sample}
+                  </span>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 500 }}>{fs.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="profile-tabs">
