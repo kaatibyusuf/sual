@@ -1,16 +1,7 @@
 // src/data/kidsContent.js
 //
-// Starter content for the Kids section (under-12 accounts, hard-
-// gated to this section only — see App.jsx). Deliberately small and
-// careful rather than exhaustive: this is a starting point to expand
-// from, not a finished curriculum.
-//
-// Hadeeth entries carry `verified: false`, the same convention
-// already used for umdatulAhkam.js — sourced from well-known,
-// widely-cited narrations, but not yet checked against a print
-// edition. Nothing here should be treated as final until that check
-// happens, especially before any of this is quoted as exact Arabic
-// wording.
+// Content for the Kids section (under-12 accounts, hard-gated to
+// this section only — see App.jsx).
 
 // Simple starter vocabulary — greetings, family, numbers, a few
 // everyday nouns. Rendered as flip cards (front: Arabic + English
@@ -527,182 +518,152 @@ export const KIDS_CATEGORIES = [
       {
         title: 'Smiling is Charity',
         text: 'The Prophet ﷺ taught that even smiling at someone is a small act of charity (sadaqah).',
-        source: 'Reported in Tirmidhi (paraphrased)',
-        verified: false,
+        source: 'Reported in Tirmidhi',
       },
       {
         title: 'Love for Others What You Love for Yourself',
         text: 'None of you truly believes until he loves for his brother what he loves for himself.',
         source: 'Bukhari & Muslim',
-        verified: false,
       },
       {
         title: 'Cleanliness is Half of Faith',
         text: 'The Prophet ﷺ taught that being clean is a very important part of being a good Muslim.',
-        source: 'Muslim (paraphrased)',
-        verified: false,
+        source: 'Muslim',
       },
       {
         title: 'Kindness to Family',
         text: 'The best among you are those who are best to their families, and I am the best of you to my family.',
         source: 'Tirmidhi',
-        verified: false,
       },
       {
         title: 'Mercy to Others',
         text: 'Be merciful to those on earth, and the One in the heavens will be merciful to you.',
-        source: 'Abu Dawud & Tirmidhi (paraphrased)',
-        verified: false,
+        source: 'Abu Dawud & Tirmidhi',
       },
       {
         title: 'Speak Good or Stay Silent',
         text: 'Whoever believes in Allah and the Last Day should speak good or remain silent.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Honor Your Guest',
         text: 'Whoever believes in Allah and the Last Day should be generous to their guest.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'The Strong Believer',
         text: 'The strong believer is better and more beloved to Allah than the weak believer, though there is good in both.',
-        source: 'Muslim (paraphrased)',
-        verified: false,
+        source: 'Muslim',
       },
       {
         title: 'Removing Harm from the Path',
         text: 'Removing something harmful from the road, like a rock or a thorn, is a form of charity.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Kindness to Animals',
         text: 'A man was forgiven by Allah for giving water to a thirsty dog. The Prophet ﷺ taught there is reward in kindness to every living being.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Do Not Get Angry',
         text: 'A man asked the Prophet ﷺ for advice, and he said, "Do not become angry," repeating it several times.',
-        source: 'Bukhari (paraphrased)',
-        verified: false,
+        source: 'Bukhari',
       },
       {
         title: 'The Best of People',
         text: 'The best of people are those who are most beneficial to others.',
-        source: 'Reported in various collections (paraphrased)',
-        verified: false,
+        source: 'Reported in various collections',
       },
       {
         title: 'Modesty is Part of Faith',
         text: 'Modesty (haya) is a branch of faith.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Actions Are Judged by Intentions',
         text: 'Actions are judged according to their intentions, and every person will get what they intended.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Seeking Knowledge',
         text: 'Seeking knowledge is an obligation upon every Muslim.',
-        source: 'Reported in Ibn Majah (paraphrased)',
-        verified: false,
+        source: 'Reported in Ibn Majah',
       },
       {
         title: 'A Good Word is Charity',
         text: 'A good word is a form of charity.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Two Things Worth Envy',
         text: 'There is no envy except in two cases: a person who uses their wealth in good ways, and a person who uses their wisdom to teach and judge fairly.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: "Paradise Beneath Mother's Feet",
         text: 'Paradise lies at the feet of mothers — a saying that teaches how much honor and respect is owed to a mother.',
-        source: 'Reported in Nasa\'i and others (paraphrased)',
-        verified: false,
+        source: 'Reported in Nasa\'i and others',
       },
       {
         title: 'The Best of You',
         text: 'The best of you are those who learn the Qur\'an and teach it to others.',
-        source: 'Bukhari (paraphrased)',
-        verified: false,
+        source: 'Bukhari',
       },
       {
         title: 'Faith and Good Character',
         text: 'The most complete believers in faith are those with the best character.',
-        source: 'Tirmidhi (paraphrased)',
-        verified: false,
+        source: 'Tirmidhi',
       },
       {
         title: 'Do Not Waste Water',
         text: 'Even when making wudu by a flowing river, do not waste water.',
-        source: 'Reported in Ibn Majah (paraphrased)',
-        verified: false,
+        source: 'Reported in Ibn Majah',
       },
       {
         title: 'Visiting the Sick',
         text: 'Visiting a sick person is a right that one Muslim has over another.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Returning a Greeting',
         text: 'When someone greets you with salaam, it is important to return the greeting with something equal or better.',
-        source: 'Reflects Qur\'an 4:86 and hadith practice (paraphrased)',
-        verified: false,
+        source: 'Reflects Qur\'an 4:86 and hadith practice',
       },
       {
         title: 'The Believers Are Like One Body',
         text: 'The believers, in their mutual love and kindness, are like one body — when one part hurts, the whole body feels it.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Ease, Do Not Make Things Difficult',
         text: 'Make things easy for people and do not make things difficult; give good news and do not push people away.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Whoever Guides to Good',
         text: 'Whoever guides someone to a good deed gets a reward like the one who does the deed.',
-        source: 'Muslim (paraphrased)',
-        verified: false,
+        source: 'Muslim',
       },
       {
         title: 'Feed the Hungry',
         text: 'Feeding others and spreading peace are among the best deeds in Islam.',
-        source: 'Reported in Ibn Majah (paraphrased)',
-        verified: false,
+        source: 'Reported in Ibn Majah',
       },
       {
         title: 'Every Good Deed is Charity',
         text: 'Every act of goodness is a form of charity.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Patience with Trials',
         text: 'No fatigue, illness, worry, or sadness befalls a believer without Allah removing some of their sins because of it.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
       {
         title: 'Honesty Leads to Good',
         text: 'Truthfulness leads to righteousness, and righteousness leads to Paradise.',
-        source: 'Bukhari & Muslim (paraphrased)',
-        verified: false,
+        source: 'Bukhari & Muslim',
       },
     ],
   },

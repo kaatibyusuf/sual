@@ -254,6 +254,89 @@
   color: #8a9ab0;
 }
 
+/* ── Flashcards (Arabiyyah) ─────────────────────────────────── */
+.kids-flashcards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.kids-flashcard-progress {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6a8090;
+  margin: 0;
+}
+
+.kids-flashcard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 340px;
+  min-height: 200px;
+  padding: 32px 20px;
+  background: #094570;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.kids-flashcard-arabic {
+  font-size: 2.4rem;
+  color: #ffffff;
+}
+
+.kids-flashcard-translit {
+  font-size: 1rem;
+  font-style: italic;
+  color: #85CCFF;
+}
+
+.kids-flashcard-meaning {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.kids-flashcard-hint {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.kids-flashcard-nav {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.kids-flashcard-navbtn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 100px;
+  border: 1.5px solid #c8d8e8;
+  background: #ffffff;
+  color: #094570;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.kids-flashcard-navbtn:hover:not(:disabled) {
+  border-color: #094570;
+}
+
+.kids-flashcard-navbtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* ── Dark mode — same navy/sky swap used everywhere else in Sual:
    navy accents in light mode become sky in dark mode. The hero and
    detail header are already navy/white in light mode, so they carry
@@ -298,5 +381,11 @@
 }
 
 [data-theme="dark"] .kids-back {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .kids-flashcard-navbtn {
+  background: #0f1f2e;
+  border-color: #1e3448;
   color: #85CCFF;
 }

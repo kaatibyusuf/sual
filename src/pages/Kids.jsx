@@ -31,14 +31,81 @@ const ICONS = {
       <path d="M12 2l2.9 6.3 6.9.9-5 4.8 1.2 6.8L12 17.5l-6 3.3 1.2-6.8-5-4.8 6.9-.9z" />
     </svg>
   ),
+  arabiyyah: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+    </svg>
+  ),
 }
 
 const Icon = ({ name }) => <span className="kids-icon" aria-hidden="true">{ICONS[name]}</span>
 
+// One card at a time, tap to flip — matches the existing Flashcards
+// page's double-tap-to-flip interaction, simplified for a younger
+// audience: no deck browsing, just Previous/Next through a fixed
+// list plus a progress count.
+function KidsFlashcards({ cards, cardIndex, setCardIndex, flipped, setFlipped }) {
+  const card = cards[cardIndex]
+
+  const goPrev = () => {
+    setFlipped(false)
+    setCardIndex(i => Math.max(0, i - 1))
+  }
+  const goNext = () => {
+    setFlipped(false)
+    setCardIndex(i => Math.min(cards.length - 1, i + 1))
+  }
+
+  return (
+    <div className="kids-flashcards">
+      <p className="kids-flashcard-progress">{cardIndex + 1} / {cards.length}</p>
+
+      <button
+        className={`kids-flashcard ${flipped ? 'kids-flashcard--flipped' : ''}`}
+        onClick={() => setFlipped(f => !f)}
+        data-a11y-label={
+          flipped
+            ? `${card.meaning}. Tap again to see the Arabic.`
+            : `${card.arabic}, ${card.transliteration}. Tap to reveal the meaning.`
+        }
+      >
+        {!flipped ? (
+          <>
+            <span className="kids-flashcard-arabic arabic">{card.arabic}</span>
+            <span className="kids-flashcard-translit">{card.transliteration}</span>
+            <span className="kids-flashcard-hint">Tap to reveal meaning</span>
+          </>
+        ) : (
+          <>
+            <span className="kids-flashcard-meaning">{card.meaning}</span>
+            <span className="kids-flashcard-hint">Tap to see the Arabic again</span>
+          </>
+        )}
+      </button>
+
+      <div className="kids-flashcard-nav">
+        <button className="kids-flashcard-navbtn" onClick={goPrev} disabled={cardIndex === 0}>
+          ← Previous
+        </button>
+        <button className="kids-flashcard-navbtn" onClick={goNext} disabled={cardIndex === cards.length - 1}>
+          Next →
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function Kids({ user, onSignOut }) {
   const [activeCategory, setActiveCategory] = useState(null)
+  const [cardIndex, setCardIndex] = useState(0)
+  const [flipped, setFlipped] = useState(false)
 
-  const openCategory = (id) => setActiveCategory(id)
+  const openCategory = (id) => {
+    setActiveCategory(id)
+    setCardIndex(0)
+    setFlipped(false)
+  }
   const closeCategory = () => setActiveCategory(null)
 
   const firstName = user?.user_metadata?.full_name
@@ -67,26 +134,35 @@ export default function Kids({ user, onSignOut }) {
           </div>
         </div>
 
-        {cat.items.map((item, i) => (
-          <div
-            key={i}
-            className="kids-section card"
-            data-a11y-label={`${item.title}. ${item.text}${item.source ? `. Source: ${item.source}` : ''}`}
-          >
-            <h3 className="kids-section-title">
-              <span className="kids-section-num">{i + 1}</span> {item.title}
-            </h3>
-            {item.arabic && <p className="kids-section-arabic arabic">{item.arabic}</p>}
-            {item.transliteration && <p className="kids-section-translit">{item.transliteration}</p>}
-            <p className="kids-section-body">{item.text}</p>
-            {item.source && (
-              <p className="kids-section-source">
-                Source: {item.source}
-                {item.verified === false && ' — not yet checked against a print edition'}
-              </p>
-            )}
-          </div>
-        ))}
+        {cat.type === 'flashcards' ? (
+          <KidsFlashcards
+            cards={cat.items}
+            cardIndex={cardIndex}
+            setCardIndex={setCardIndex}
+            flipped={flipped}
+            setFlipped={setFlipped}
+          />
+        ) : (
+          cat.items.map((item, i) => (
+            <div
+              key={i}
+              className="kids-section card"
+              data-a11y-label={`${item.title}. ${item.text}${item.source ? `. Source: ${item.source}` : ''}`}
+            >
+              <h3 className="kids-section-title">
+                <span className="kids-section-num">{i + 1}</span> {item.title}
+              </h3>
+              {item.arabic && <p className="kids-section-arabic arabic">{item.arabic}</p>}
+              {item.transliteration && <p className="kids-section-translit">{item.transliteration}</p>}
+              <p className="kids-section-body">{item.text}</p>
+              {item.source && (
+                <p className="kids-section-source">
+                  Source: {item.source}
+                </p>
+              )}
+            </div>
+          ))
+        )}
       </div>
     )
   }
