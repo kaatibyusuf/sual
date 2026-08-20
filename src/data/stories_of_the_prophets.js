@@ -341,7 +341,7 @@ Almighty Allah revealed: "And remember when Ibrahim said: 'My Lord! Show me how 
       '"Allah alone is sufficient for us, and He is the best Disposer of affairs" — the trust Ibrahim عليه السلام embodied while bound and cast into the fire is held up in the Quran as the standard of reliance upon Allah in the face of real, physical danger.',
       'Even Ibrahim عليه السلام, having witnessed the resurrection of birds himself, asked to see it not because he doubted, but so that, in his own words, his "heart may be at rest" — showing that seeking greater certainty in faith is not the same thing as lacking faith.',
     ],
-    sources: ['Surah al-An\'am (6:74-83)', 'Surah al-Anbiya (21:51-70)', 'Surah Maryam (19:41-50)', 'Surah ash-Shu\'ara (26:69-89)', 'Surah as-Saffat (37:83-98)', 'Surah al-Baqarah (2:258-260)', 'Surah al-'Ankabut (29:16-27)', 'Surah Al 'Imran (3:173-175)', 'Sahih al-Bukhari', 'Qisas al-Anbiya by Ibn Kathir', 'Tafsir Ibn Kathir on the relevant verses', 'Al-Bidayah wan-Nihayah by Ibn Kathir'],
+    sources: ['Surah al-An\'am (6:74-83)', 'Surah al-Anbiya (21:51-70)', 'Surah Maryam (19:41-50)', 'Surah ash-Shu\'ara (26:69-89)', 'Surah as-Saffat (37:83-98)', 'Surah al-Baqarah (2:258-260)', 'Surah al-\'Ankabut (29:16-27)', 'Surah Al \'Imran (3:173-175)', 'Sahih al-Bukhari', 'Qisas al-Anbiya by Ibn Kathir', 'Tafsir Ibn Kathir on the relevant verses', 'Al-Bidayah wan-Nihayah by Ibn Kathir'],
   },
 
   {
