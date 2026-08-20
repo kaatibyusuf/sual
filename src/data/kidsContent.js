@@ -890,6 +890,101 @@ export const KIDS_CATEGORIES = [
     ],
   },
   {
+    // Full text as supplied directly, unabridged — kept at its
+    // original length and detail per explicit direction, not
+    // simplified to match the rest of this file's reading level the
+    // way every other category here was. Order preserved as given.
+    id: 'wives',
+    title: "Mothers of the Believers",
+    arabicTitle: 'أُمَّهَاتُ الْمُؤْمِنِينَ',
+    subtitle: 'The wives of the Prophet ﷺ',
+    icon: 'wives',
+    items: [
+      {
+        title: "Sawdah bint Zam'a",
+        text: `Sawdah was the second woman from Quraish who the Prophet ﷺ married. Before this he ﷺ had remained unmarried for two years after the death of Khadijah, indicating the great love and attachment he had for her. It was around this time that the female companion Khawla bint Hakeem approached the Prophet ﷺ and suggested he ﷺ marry again. She returned with two choices: one virgin and one mature woman. The virgin was Aisha, the daughter of Abu Bakr and the mature woman was Sawdah, a widow from a prestigious clan of Quraish. The Prophet accepted the suggestion of Sawdah who agreed immediately and so they married in 621 CE in the 11th year of prophethood.
+
+Sawdah was of noble lineage but had suffered in her previous marriage. Her previous husband was a drunkard who died on his return from the migration to Abyssinia. She was mature, some historians state 50 years of age, and was very wise. She would sometimes joke with the Prophet that his prostrations during the night prayer were too lengthy, causing her a nosebleed when she followed him.
+
+She died during Umar's khalifate.`,
+      },
+      {
+        title: 'Khadeejah bint Khuwaylid',
+        text: `(c. 555-619 CE) The first wife of the Prophet who endured many of the burdens of the call to Islam with the Prophet at the beginning of his message. She was a wealthy trader, known to the people as 'The Pure & Chaste one'. After having Muhammad ﷺ work as her business agent she was so impressed with his character that she proposed marriage to him ﷺ; when he ﷺ was twenty-five and she was around forty. They had four daughters and two sons, both of whom died in infancy. She was sixty-five when she passed away; a year known in the prophet's life as: The Year of Sorrow.`,
+      },
+      {
+        title: 'Hafsah bint Umar',
+        text: `(d. 45-665) The fourth wife of the Prophet ﷺ and the daughter of the khalif 'Umar bin al-Khattab. She was married to Khunays who was martyred at the Battle of Badr, before she married the Prophet ﷺ.
+
+She was known for her piety and righteousness, as well as her beauty.`,
+      },
+      {
+        title: "Aa'ishah bint Abi Bakr",
+        text: `The third wife of the Prophet ﷺ and the daughter of Abu Bakr, she was one of the great people of Islamic jurisprudence among the Companions. Many of the disciples would rely upon her juristic understanding when dealing with cases after the death of the Prophet ﷺ. She is also one of the six most prolific narrators of prophetic traditions, the Hadith.
+
+She spent nearly nine years at the Prophet's ﷺ side and was the wife he loved the most after Khadijah. Indeed the Prophet ﷺ passed away in her arms and was buried in her apartment.`,
+      },
+      {
+        title: 'Umm Salamah',
+        text: `After Zaynab Um ul-Masakeen the Prophet ﷺ married Um Salamah also known as Hind bint Umayyah, also a widow, in 4AH.
+
+It is said that she was the most intelligent and wise of all the wives of the Prophet. She was born 28 years before hijra. She too was a widow who had been married to Abu Salama and had emigrated to Abyssinia with him, being forced by the Quraysh to leave her young son behind. Out of her immense love for Abu Salamah she asked for a mutual covenant that even after one of them die the other would not remarry. However Abu Salamah in his great wisdom made a supplication, "O Allah! grant Um Salamah after me a man, who is better than me, one who will cause her no sadness and no hurt".
+
+She died during the reign of Yazid I in 59/678 and was the last of the wives of the Prophet ﷺ to pass away.`,
+      },
+      {
+        title: 'Zaynab Bint Khuzaymah',
+        text: `When 'Ubaydah had died after his single combat with 'Utbah at the beginning of the battle of Badr, he had left a widow who was very much younger than himself, Zaynab, the daughter of Khuzaymah. She was of a very generous nature, and already before the days of Islam she had been known as "the mother of the poor". A year after being widowed she was still unmarried, and when the Prophet ﷺ asked her to marry him she gladly accepted.
+
+The Prophet ﷺ married her in 4 AH, she died 2 or 8 months later. Thus, Zainab bint Khuzaymah and Khadijah are the only two wives of the Prophet ﷺ to have died during his lifetime.
+
+She was a woman of noble lineage and a widow who had been married twice before; both of her husbands were cousins of the Prophet ﷺ.`,
+      },
+      {
+        title: 'Juwayriyyah bint Haarith',
+        text: `The next wife of the Prophet ﷺ after Zainab bint Jahash was Juwayriah bint al-Harith. Her father was the chieftain the Banu Mustaliq, a branch of the Banu Khuza'a tribe residing in the region of Hijaz.
+
+She was captured and taken as a prisoner of war when the Muslims went to war with Banu Khuza'a. She approached the Prophet ﷺ and pleaded for her release to which the Prophet ﷺ agreed and then proposed to her. When she agreed, all the prisoners from her tribe were set free out of respect for the new wife of the Prophet ﷺ. She was extremely beautiful and was twenty years old at the time.
+
+She died in 56AH/676 at the age of sixty-five.`,
+      },
+      {
+        title: 'Zainab bint Jahsh',
+        text: `(d. 20AH/641) the cousin and wife of the Prophet ﷺ whose original name was Barra. She was one the first emigrants to Madinah. She had firstly been married to Zayd ibn Haritha. He divorced her and then the Prophet ﷺ married her. She was thirty-five at the time.
+
+Aisha would later speak of Zainab saying, "She was the one who was somewhat equal in rank with me in the eyes of the Messenger of Allah ﷺ. I have never seen a woman better in piety than Zainab, or more fearing of God, or more true in speech, or more faithful in upholding the ties of kinship, or more generous in giving charity, or humble enough to work with her hands in order to earn money that she could spend for the sake of God. However, she was hot-tempered and quick to anger, but she would soon cool down and then take the matter no further."`,
+      },
+      {
+        title: 'Safiyyah bint Huyayy',
+        text: `(d. 50AH/670CE) The Prophet ﷺ married Safiyyah bint Huyaay in the 8th year after hijra or migration to Madinah. Safiyyah was a descendent of the Prophet Aron and was able to directly trace her genealogy back to him. She was also the daughter of the Jewish tribal leader Huyayy ibn Akhtab.
+
+On one occasion Safiyyah came to the Prophet upset as the other wives had called her a Jewess. The Prophet ﷺ said: "Tell them my husband, father and uncle are all Prophets", he meant by that the Prophet Aron and the Prophet Moses respectively.
+
+The great jurist an-Nawawi once said that Safiyyah was the most intellectual among the learned women.`,
+      },
+      {
+        title: 'Umm Habeebah',
+        text: `After Juwayriah the Prophet ﷺ married Umm Habiba, also known as Ramla, and she was the sister of Mu'awiya and the aunt of Uthman ibn 'Affan. She was one of the first people to accept the prophetic message of Islam. Her former husband, 'Ubaydullah ibn Jahsh, denounced Islam and became a christian, effectively ending their marriage in divorce whilst they were living in Abyssinia.
+
+A short while after this the servant of the Najashee, named Abraha, approached her and said that the Prophet ﷺ had heard of her misfortune and had asked the Najashee for her hand in marriage. She instantly agreed and in her joy took off her silver bangles and rings and gave them as a gift to Abraha. The Najashee gathered the Muslims for the wedding ceremony and gave an eloquent speech as the representative of the prophet ﷺ, declaring that indeed Jesus had given glad tidings of the Prophet's coming to his people.
+
+Umm Habiba was very generous and pious woman, full of wisdom. She died in 44 AH.`,
+      },
+      {
+        title: 'Maymuunah bint Haarith',
+        text: `After Safiyyah bint Huyyay the Prophet ﷺ married Maymoona bint Al-Harith in the eighth year of the Islamic calendar.
+
+Maymoona had been married twice before. In the first marriage she was divorced and then her second husband has died. She accepted Islam and she knew the Prophet ﷺ was coming to Makkah in the 8 AH and so she told Umm al-Fadl (the wife of Abbas) of her wish to marry the Prophet ﷺ. Umm al-Fadl told Abbas and he approached the Prophet ﷺ who accepted the proposal. She met the Prophet whilst he was entering Makkah and she was riding on a camel and she said the camel and what is on it is for you, hence she is the wife who gifted herself to the Prophet ﷺ.
+
+She was the third most prolific female narrator of hadeeth after Aisha and Um Salamah.
+
+She has at least six hadeeth in the two most authentic books of hadith.
+
+The Prophet's ﷺ marriage to Maymoonah was his last marriage.`,
+      },
+    ],
+  },
+  {
     // Verses below are written from memory at high confidence, but
     // this is direct Qur'anic text, not paraphrase — a categorically
     // higher accuracy bar than anything else in this file. Strongly

@@ -45,6 +45,15 @@ const ICONS = {
       <path d="M13 20c0-2 1.5-4 4-4s5 2 5 4" />
     </svg>
   ),
+  wives: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M12 4a4 4 0 0 1 0 8" />
+      <path d="M8 8a4 4 0 0 1 8 0" />
+      <path d="M12 12v9" />
+      <path d="M8 17h8" />
+    </svg>
+  ),
   surahs: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z" />
@@ -125,6 +134,9 @@ function KidsFlashcards({ cards, cardIndex, setCardIndex, flipped, setFlipped })
       >
         {!flipped ? (
           <>
+            {card.image && (
+              <img className="kids-flashcard-image" src={card.image} alt={card.meaning} loading="lazy" />
+            )}
             <span className="kids-flashcard-arabic arabic">{card.arabic}</span>
             <span className="kids-flashcard-translit">{card.transliteration}</span>
             <span className="kids-flashcard-hint">Tap to reveal meaning</span>
@@ -302,6 +314,9 @@ export default function Kids({ user, onSignOut }) {
               <h3 className="kids-section-title">
                 <span className="kids-section-num">{i + 1}</span> {item.title}
               </h3>
+              {item.image && (
+                <img className="kids-section-image" src={item.image} alt={item.title} loading="lazy" />
+              )}
               {item.arabic && <p className="kids-section-arabic arabic">{item.arabic}</p>}
               {item.transliteration && <p className="kids-section-translit">{item.transliteration}</p>}
               <p className="kids-section-body">{item.text}</p>
@@ -344,7 +359,13 @@ export default function Kids({ user, onSignOut }) {
             onClick={() => openCategory(cat.id)}
             data-a11y-label={`${cat.title}. ${cat.subtitle}`}
           >
-            <span className="kids-tile-icon"><Icon name={cat.icon} /></span>
+            <span className="kids-tile-icon">
+              {cat.image ? (
+                <img className="kids-tile-image" src={cat.image} alt="" loading="lazy" />
+              ) : (
+                <Icon name={cat.icon} />
+              )}
+            </span>
             <span className="kids-tile-label">{cat.title}</span>
             <span className="kids-tile-arabic arabic">{cat.arabicTitle}</span>
           </button>
