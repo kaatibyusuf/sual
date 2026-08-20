@@ -77,7 +77,7 @@ export const KNOWLEDGE_BASE = {
       id: 'f3',
       question: 'What is Zakah, and what is its nisab for gold and silver?',
       answer: 'Zakah is the third pillar of Islam — an obligatory annual levy on qualifying wealth. Its nisab is: For gold: 85 grams. For silver: 595 grams. For cash: equivalent to the nisab of silver. The rate is 2.5% of total qualifying wealth held for one lunar year (hawl).',
-      source: 'Fiqh al-Zakah, Dr. Yusuf al-Qaradawi',
+      source: 'Fiqh az-Zakah,',
       tags: ['zakah', 'pillars', 'ibadah'],
     },
     {
@@ -250,11 +250,11 @@ export const KNOWLEDGE_BASE = {
     },
     {
       id: 'f28',
-      question: 'What is the ruling on music and musical instruments in Islam?',
-      answer: 'This is a point of significant scholarly disagreement. The majority position (Hanafi, Maliki, Shafii, Hanbali): most musical instruments are prohibited, particularly those associated with frivolity and sin (e.g., string instruments, wind instruments). The evidence includes the hadith of al-Bukhari (5590) reporting the Prophet\'s warning against those who make music permissible along with silk and wine. The exception: the duff (hand drum) is permitted for weddings and Eid by consensus. A minority of contemporary scholars (e.g., Yusuf al-Qaradawi) permit music that does not lead to sin and carries wholesome content.',
-      source: 'Sahih al-Bukhari 5590; Ighathat al-Lahfan, Ibn al-Qayyim',
-      tags: ['music', 'khilaf', 'contemporary fiqh'],
-    },
+    question: 'What is the ruling on music and musical instruments in Islam?',
+    answer: 'Music and musical instruments are impermissible (haraam) in Islam. This is the position of the four schools of jurisprudence — Hanafi, Maliki, Shafii, and Hanbali — based on the hadith of al-Bukhari (5590), in which the Prophet ﷺ warns against those who make musical instruments permissible alongside silk and wine. The one established exception is the duff (hand drum), which is permitted for occasions such as weddings and Eid by consensus.',
+    source: 'Sahih al-Bukhari 5590; Ighathat al-Lahfan, Ibn al-Qayyim',
+    tags: ['music', 'contemporary fiqh'],
+  },
     {
       id: 'f29',
       question: 'What is Waqf, and what are its conditions?',
@@ -369,11 +369,11 @@ export const KNOWLEDGE_BASE = {
     },
     {
       id: 'f45',
-      question: 'What is the Islamic ruling on voting and political participation?',
-      answer: 'This is a contemporary fiqh question. Scholars who permit participation argue: (1) It is a form of shura (consultation); (2) Choosing the lesser of two evils to prevent greater harm is a recognized fiqh principle; (3) Muslims have an obligation to benefit their communities. Scholars who restrict or prohibit it argue: (1) Participating in secular democratic systems implies approval of man-made law; (2) It may compromise Islamic values. The dominant contemporary position of major fatwa bodies (including the European Council for Fatwa and Research and many scholars in the West) is that political participation — including voting — is permissible and even obligatory where it protects Muslim interests and prevents harm.',
-      source: 'Fatawa al-Qaradawi; ECFR Resolutions; Al-Siyasah al-Shariyyah, Ibn Taymiyyah',
-      tags: ['voting', 'politics', 'contemporary fiqh'],
-    },
+    question: 'What is the ruling on wiping over khuffayn (leather socks or boots) during wudu, instead of washing the feet?',
+    answer: 'Wiping over khuffayn is permissible and well-established by the Sunnah, agreed upon across the four schools of jurisprudence. The practice is established by numerous authentic hadith, including the report of al-Mughirah ibn Shubah, who saw the Prophet ﷺ wipe over his khuffayn rather than remove them to wash his feet. The condition is that the khuffayn must have been put on in a state of purity (after a complete wudu). A resident may wipe for one day and night, while a traveler may wipe for up to three days and nights, after which point the feet must be washed as normal. The four schools differ on some secondary details — such as whether thin socks (as opposed to leather khuffayn) qualify, and the exact area of the foot to be wiped — but the core permissibility of wiping is not disputed.',
+    source: 'Sahih al-Bukhari 206; Sahih Muslim 274; al-Mughni, Ibn Qudamah',
+    tags: ['wudu', 'taharah', 'khuffayn'],
+  },
     {
       id: 'f46',
       question: 'What is the ruling on a Muslim working in a bank that deals in interest?',
@@ -383,10 +383,10 @@ export const KNOWLEDGE_BASE = {
     },
     {
       id: 'f47',
-      question: 'What is the Islamic ruling on buying a house through a mortgage?',
-      answer: 'A conventional mortgage involves a loan with interest, which is Riba al-Nasi ah — prohibited by the Quran and Sunnah. The majority of scholars prohibit it. However, many contemporary scholars (including Yusuf al-Qaradawi and the ECFR) have issued fatawa permitting it for Muslim minorities living in non-Muslim countries under the principle of darurah (necessity) or hajah ammah (general need), arguing that housing is an essential need with no Islamic alternative available. The conditions: no Islamic mortgage alternative exists in that country, renting is not a viable long-term option, and it is limited to a primary residence. The preferred option is always a Shariah-compliant alternative (murabahah, diminishing musharakah).',
-      source: 'ECFR Resolution on Mortgages; Fatawa al-Qaradawi; Sahih Muslim 1598',
-      tags: ['mortgage', 'riba', 'darurah', 'contemporary fiqh'],
+      question: 'Is it permissible to take out life insurance in a non-Muslim country?',
+      answer: 'Conventional life insurance involves elements of gharar (excessive uncertainty), maysir (gambling), and riba (interest, since premiums are invested in interest-bearing instruments) — all of which are prohibited. The majority of scholars therefore consider conventional insurance impermissible. Takaful (Islamic cooperative insurance) is the recommended Shariah-compliant alternative, as it is based on mutual assistance and donation (tabarru) rather than a contract of sale involving uncertainty. However, some contemporary scholars and fiqh councils permit conventional life insurance in cases of darurah (necessity) or hajah ammah (general need) — for example, where it is legally mandated (such as employer-provided coverage) or where no takaful alternative is available and the coverage protects dependents from genuine hardship. The conditions generally cited: no Islamic alternative exists, the need is genuine and not merely preferential, and the policy is limited to what covers the actual need.',
+      source: 'AAOIFI Shariah Standards on Takaful; Sahih Muslim 1598',
+      tags: ['insurance', 'takaful', 'gharar', 'contemporary fiqh'],
     },
     {
       id: 'f48',
@@ -1446,10 +1446,10 @@ export const KNOWLEDGE_BASE = {
     },
     {
       id: 'u48',
-      question: 'What is the concept of Fath al-Dharai (opening the means) as the positive counterpart of Sadd al-Dharai?',
+      question: 'What is the concept of Fath ad-Dharai (opening the means) as the positive counterpart of Sadd ad-Dharai?',
       answer: 'While Sadd al-Dharai prohibits permissible acts that lead to harm, Fath al-Dharai mandates permissible (or even otherwise discouraged) acts that are the necessary means to achieving an obligation. Ibn al-Qayyim in Ilam al-Muwaqqiin argued that Fath al-Dharai is equally important but less discussed: "If the path to a wajib is blocked, the wajib itself is blocked — and blocking a wajib is haram." Examples: (1) If a community needs doctors and no one trains, those capable of studying medicine are obligated (fard kifayah) — the path to saving life must be opened. (2) Commercial transactions (buying and selling) that might seem worldly are "opened" because they are the means to sustaining life (a darurah). (3) Marriage, though containing elements of desire, is encouraged as a means to chastity and progeny.',
-      source: 'Ilam al-Muwaqqiin, Ibn al-Qayyim; Al-Muwafaqat, al-Shatibi',
-      tags: ['fath al-dharai', 'sadd al-dharai', 'advanced'],
+      source: 'Ilam al-Muwaqqiin, Ibn al-Qayyim; Al-Muwafaqat, as-Shatibi',
+      tags: ['fath ad-dharai', 'sadd ad-dharai', 'advanced'],
     },
     {
       id: 'u49',
@@ -1460,10 +1460,10 @@ export const KNOWLEDGE_BASE = {
     },
     {
       id: 'u50',
-      question: 'What is the contemporary issue of Fiqh al-Aqalliyyat (fiqh of Muslim minorities) and what are its key principles?',
-      answer: 'Fiqh al-Aqalliyyat (jurisprudence of Muslim minorities) is a contemporary field addressing the unique legal challenges of Muslims living as minorities in non-Muslim majority countries. Key principles: (1) Al-Hajah al-Ammah (general need) — conditions facing minorities may elevate hajah (need) to the level of darurah, permitting what would otherwise be prohibited (e.g., taking out a mortgage in a country with no Islamic financing). (2) Taysir (facilitation) — minority Muslims face compounded hardships not experienced by majority communities; greater leniency is appropriate. (3) Context-sensitivity — fatwas must account for the political, social, and legal context of the minority, not simply transplant majority-country rulings. (4) Preserving Islamic identity — measures that enable Muslims to maintain their religious practice and identity are given priority. The European Council for Fatwa and Research (ECFR) and scholars like Yusuf al-Qaradawi have been central to developing this field.',
-      source: 'Fiqh al-Aqalliyyat, Yusuf al-Qaradawi; ECFR Resolutions',
-      tags: ['fiqh aqalliyyat', 'minorities', 'contemporary', 'advanced'],
+      question: 'What is the ruling on combining two prayers (Jam) while traveling, and what conditions must be met?',
+      answer: 'Combining prayers (Jam bayn al-Salatayn) is a concession (rukhsah) permitted for a musafir (traveler) who has embarked on a journey of a distance recognized by the majority of scholars as qasr-eligible (traditionally around 48 miles / 81km, though scholars differ). Dhuhr may be combined with Asr, and Maghrib with Isha, either Jam Taqdim (performing the second prayer early, at the time of the first) or Jam Ta\'khir (delaying the first prayer to the time of the second). Conditions generally cited: (1) the traveler must actually be journeying or have reached the destination but intends to stay less than the period scholars specify for a traveler\'s concession to lapse (opinions range from 3 to 15 days); (2) the combination should not become a constant habit at a place of residence; (3) some scholars also permit combining for reasons of hardship, illness, or heavy rain even without travel, per the Hanbali and a view within the Shafi\'i school. Fajr is never combined with any other prayer.',
+      source: 'Sahih Muslim 705; Sahih al-Bukhari 1107',
+      tags: ['salah', 'travel', 'jam', 'everyday fiqh'],
     },
   ],
   sarf: [
