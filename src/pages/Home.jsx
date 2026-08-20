@@ -18,19 +18,27 @@ function getGreeting() {
 }
 
 // Counts consecutive days (ending today or yesterday) with at least
-// one quiz taken. Based only on quiz_history — a user who's active in
-// other ways (reading, LMS) but hasn't quizzed recently won't show a
-// streak here. Good enough for a light nudge, not a full activity log.
-function computeQuizStreak(history) {
-  if (history.length === 0) return 0
-  const days = [...new Set(history.map(r => new Date(r.taken_at).toDateString()))]
-    .map(d => new Date(d))
-    .sort((a, b) => b - a)
+// one real engagement event — a quiz taken OR a story touched. Two
+// separate date sources get merged into one set of "active day"
+// strings before the streak math runs, so a day counts once whether
+// someone quizzed, read, or did both. Deliberately NOT built from
+// the existing continueStories query (that only ever holds the 3
+// currently in-progress stories' most recent touch, which would
+// silently undercount real activity — a broader story_reading_progress
+// fetch, unfiltered by completed/progress, feeds this instead).
+function computeActivityStreak(quizHistory, storyRows) {
+  const dateStrings = new Set([
+    ...quizHistory.map(r => new Date(r.taken_at).toDateString()),
+    ...storyRows.map(r => new Date(r.updated_at).toDateString()),
+  ])
+  if (dateStrings.size === 0) return { streak: 0, activeDates: dateStrings }
+
+  const days = [...dateStrings].map(d => new Date(d)).sort((a, b) => b - a)
 
   const today = new Date(); today.setHours(0, 0, 0, 0)
   const mostRecent = days[0]
   const dayDiff = Math.round((today - mostRecent) / 86400000)
-  if (dayDiff > 1) return 0 // streak broken — most recent quiz wasn't today or yesterday
+  if (dayDiff > 1) return { streak: 0, activeDates: dateStrings } // broken — nothing today or yesterday
 
   let streak = 1
   for (let i = 1; i < days.length; i++) {
@@ -38,7 +46,7 @@ function computeQuizStreak(history) {
     if (diff === 1) streak++
     else break
   }
-  return streak
+  return { streak, activeDates: dateStrings }
 }
 
 function disciplineName(id) {
@@ -176,6 +184,12 @@ export default function Home({ user }) {
   const [continueStories, setContinueStories] = useState([])
   const [continueLoading, setContinueLoading] = useState(true)
 
+  // Broader than continueStories on purpose — every story_reading_
+  // progress row for this user, completed or not, just for computing
+  // which days had real activity. continueStories stays scoped to
+  // its own narrow "what to show in the Continue Reading card" job.
+  const [storyActivityRows, setStoryActivityRows] = useState([])
+
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 30000)
     return () => clearInterval(interval)
@@ -255,17 +269,53 @@ export default function Home({ user }) {
     loadContinue()
   }, [user])
 
+  useEffect(() => {
+    if (!user) return
+    const loadStoryActivity = async () => {
+      try {
+        // Unfiltered on purpose — completed stories and old touches
+        // still count as a day of real activity, unlike the
+        // continueStories query above which only cares about what's
+        // currently unfinished.
+        const { data, error } = await supabase
+          .from('story_reading_progress')
+          .select('updated_at')
+          .eq('user_id', user.id)
+        if (error) throw error
+        setStoryActivityRows(data || [])
+      } catch (err) {
+        console.error('Failed to load story activity for streak:', err)
+        setStoryActivityRows([])
+      }
+    }
+    loadStoryActivity()
+  }, [user])
+
   const totalQuizzes = history.length
   const avgScore = totalQuizzes > 0
     ? Math.round(history.reduce((s, r) => s + r.percentage, 0) / totalQuizzes)
     : 0
   const currentLevel = levelData?.current_level || 'beginner'
-  const streak = computeQuizStreak(history)
+  const { streak, activeDates } = computeActivityStreak(history, storyActivityRows)
   const firstName = fullName ? fullName.trim().split(/\s+/)[0] : null
 
   const { nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
   const primaryContinue = continueStories[0] || null
   const recentQuizzes = history.slice(0, 4)
+
+  // Last 7 calendar days (oldest to newest, today last), each marked
+  // active/inactive from the same date set the streak count itself
+  // comes from — the week strip and the number can never disagree.
+  const weekStrip = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date()
+    d.setHours(0, 0, 0, 0)
+    d.setDate(d.getDate() - (6 - i))
+    return {
+      label: d.toLocaleDateString('en-US', { weekday: 'narrow' }),
+      isToday: i === 6,
+      active: activeDates.has(d.toDateString()),
+    }
+  })
 
   return (
     <div className="page-content home-page">
@@ -293,6 +343,31 @@ export default function Home({ user }) {
         <div className="hm-hero-actions">
           <Link to="/quiz" className="hm-hero-btn hm-hero-btn--fill">{ICONS.quiz} Take a Quiz</Link>
           <Link to="/dashboard" className="hm-hero-btn">{ICONS.dashboard} View Progress</Link>
+        </div>
+      </div>
+
+      {/* ── Streak: a proper daily-engagement card, not just the
+          small hero badge — counts a day as active from either a
+          quiz taken or a story touched, not quiz-taking alone. ── */}
+      <div className="hm-streak">
+        <div className="hm-streak-top">
+          <span className="hm-streak-flame">{ICONS.flame}</span>
+          <div>
+            <p className="hm-streak-count">{streak > 0 ? `${streak}-day streak` : 'No streak yet'}</p>
+            <p className="hm-streak-sub">
+              {streak > 0
+                ? 'Come back tomorrow to keep it going.'
+                : 'Take a quiz or read a story today to start one.'}
+            </p>
+          </div>
+        </div>
+        <div className="hm-streak-week">
+          {weekStrip.map((d, i) => (
+            <div key={i} className="hm-streak-day">
+              <span className={`hm-streak-dot ${d.active ? 'hm-streak-dot--active' : ''} ${d.isToday ? 'hm-streak-dot--today' : ''}`} />
+              <span className="hm-streak-day-label">{d.label}</span>
+            </div>
+          ))}
         </div>
       </div>
 

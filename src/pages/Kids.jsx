@@ -37,9 +37,62 @@ const ICONS = {
       <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
     </svg>
   ),
+  prophets: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="7" r="3" />
+      <circle cx="16" cy="10" r="3" />
+      <path d="M3 20c0-3 3-5 6-5s6 2 6 5" />
+      <path d="M13 20c0-2 1.5-4 4-4s5 2 5 4" />
+    </svg>
+  ),
+  surahs: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z" />
+      <line x1="12" y1="6" x2="12" y2="19" />
+    </svg>
+  ),
 }
 
 const Icon = ({ name }) => <span className="kids-icon" aria-hidden="true">{ICONS[name]}</span>
+
+function shuffle(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+// Builds a fresh set of multiple-choice questions from a category's
+// own items — no separate question data needed. Two shapes:
+// Arabiyyah ("tap the right meaning": prompt is the Arabic word,
+// options are meanings) and every other category ("which one is
+// this": prompt is a snippet of the item's own text, options are
+// titles from the same category) — the same generic "which X is
+// this" pattern the adult Hifdh Simulator already uses, reusing
+// fields every item already has rather than needing dedicated
+// quiz-question data written per category.
+function buildQuiz(cat) {
+  const isArabiyyah = cat.type === 'flashcards'
+  const pool = cat.items
+
+  return shuffle(pool).map(item => {
+    const correctText = isArabiyyah ? item.meaning : item.title
+    const distractors = shuffle(pool.filter(p => p !== item))
+      .slice(0, 3)
+      .map(d => (isArabiyyah ? d.meaning : d.title))
+    const options = shuffle([
+      { text: correctText, correct: true },
+      ...distractors.map(text => ({ text, correct: false })),
+    ])
+    return {
+      prompt: isArabiyyah ? item.arabic : item.text,
+      promptTranslit: isArabiyyah ? item.transliteration : null,
+      options,
+    }
+  })
+}
 
 // One card at a time, tap to flip — matches the existing Flashcards
 // page's double-tap-to-flip interaction, simplified for a younger
@@ -96,15 +149,104 @@ function KidsFlashcards({ cards, cardIndex, setCardIndex, flipped, setFlipped })
   )
 }
 
+// One question at a time. Tapping an option locks it in and reveals
+// correct/wrong (reuses the app's existing established pass/fail
+// green/red — the same colors the adult Quiz and Hifdh Simulator
+// already use for this exact purpose, not a new color introduced
+// here). A results screen with a "Play Again" (fresh shuffle) caps
+// it off.
+function KidsQuiz({ cat, onExit }) {
+  const [questions, setQuestions] = useState(() => buildQuiz(cat))
+  const [qIndex, setQIndex] = useState(0)
+  const [selected, setSelected] = useState(null)
+  const [correctCount, setCorrectCount] = useState(0)
+  const [finished, setFinished] = useState(false)
+
+  const q = questions[qIndex]
+
+  const pick = (i) => {
+    if (selected !== null) return
+    setSelected(i)
+    if (questions[qIndex].options[i].correct) setCorrectCount(c => c + 1)
+  }
+
+  const next = () => {
+    if (qIndex + 1 < questions.length) {
+      setQIndex(qIndex + 1)
+      setSelected(null)
+    } else {
+      setFinished(true)
+    }
+  }
+
+  const playAgain = () => {
+    setQuestions(buildQuiz(cat))
+    setQIndex(0)
+    setSelected(null)
+    setCorrectCount(0)
+    setFinished(false)
+  }
+
+  if (finished) {
+    return (
+      <div className="kids-quiz-done">
+        <p className="kids-quiz-done-score">{correctCount} / {questions.length}</p>
+        <p className="kids-quiz-done-text">
+          {correctCount === questions.length ? 'Perfect! Ma sha Allah!' : 'Good try! Play again to do even better.'}
+        </p>
+        <div className="kids-quiz-done-actions">
+          <button className="kids-flashcard-navbtn" onClick={onExit}>Back to Lessons</button>
+          <button className="kids-quiz-primary" onClick={playAgain}>Play Again</button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="kids-quiz">
+      <p className="kids-flashcard-progress">{qIndex + 1} / {questions.length}</p>
+
+      <div className="kids-quiz-prompt">
+        <p className="kids-quiz-prompt-arabic arabic">{q.prompt}</p>
+        {q.promptTranslit && <p className="kids-quiz-prompt-translit">{q.promptTranslit}</p>}
+      </div>
+
+      <div className="kids-quiz-options">
+        {q.options.map((opt, i) => {
+          let cls = 'kids-quiz-option'
+          if (selected !== null) {
+            if (opt.correct) cls += ' kids-quiz-option--correct'
+            else if (i === selected) cls += ' kids-quiz-option--wrong'
+            else cls += ' kids-quiz-option--faded'
+          }
+          return (
+            <button key={i} className={cls} onClick={() => pick(i)} disabled={selected !== null}>
+              {opt.text}
+            </button>
+          )
+        })}
+      </div>
+
+      {selected !== null && (
+        <button className="kids-quiz-primary" onClick={next}>
+          {qIndex + 1 < questions.length ? 'Next →' : 'See My Score'}
+        </button>
+      )}
+    </div>
+  )
+}
+
 export default function Kids({ user, onSignOut }) {
   const [activeCategory, setActiveCategory] = useState(null)
   const [cardIndex, setCardIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
+  const [quizzing, setQuizzing] = useState(false)
 
   const openCategory = (id) => {
     setActiveCategory(id)
     setCardIndex(0)
     setFlipped(false)
+    setQuizzing(false)
   }
   const closeCategory = () => setActiveCategory(null)
 
@@ -134,7 +276,15 @@ export default function Kids({ user, onSignOut }) {
           </div>
         </div>
 
-        {cat.type === 'flashcards' ? (
+        {!quizzing && (
+          <button className="kids-quiz-toggle" onClick={() => setQuizzing(true)}>
+            🎯 Quiz Me
+          </button>
+        )}
+
+        {quizzing ? (
+          <KidsQuiz cat={cat} onExit={() => setQuizzing(false)} />
+        ) : cat.type === 'flashcards' ? (
           <KidsFlashcards
             cards={cat.items}
             cardIndex={cardIndex}
@@ -170,8 +320,7 @@ export default function Kids({ user, onSignOut }) {
   // ── Landing: a hero card (matching Home's .hm-hero — navy
   // gradient, greeting, sign-out as a translucent pill button) plus
   // an icon-tile grid below it (matching Home's .hm-tiles — icon
-  // centered top, label below, not a horizontal list row). The
-  // per-category color still shows on each tile's icon circle. ──
+  // centered top, label below, not a horizontal list row). ──
   return (
     <div className="kids-page">
       <div className="kids-hero">

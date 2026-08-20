@@ -137,6 +137,87 @@
   background: rgba(255, 255, 255, 0.9);
 }
 
+/* ── Streak card ────────────────────────────────────────────── */
+.hm-streak {
+  background: #ffffff;
+  border: 1.5px solid #e0e8f0;
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+}
+
+.hm-streak-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.hm-streak-flame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(46, 138, 99, 0.12);
+  color: #2e8a63;
+  flex-shrink: 0;
+}
+
+.hm-streak-flame svg {
+  width: 20px;
+  height: 20px;
+}
+
+.hm-streak-count {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--hm-navy);
+  margin: 0;
+}
+
+.hm-streak-sub {
+  font-size: 0.78rem;
+  color: #6a8090;
+  margin: 2px 0 0;
+}
+
+.hm-streak-week {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hm-streak-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.hm-streak-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #eef1f4;
+  border: 1.5px solid #e0e8f0;
+}
+
+.hm-streak-dot--active {
+  background: #2e8a63;
+  border-color: #2e8a63;
+}
+
+.hm-streak-dot--today {
+  box-shadow: 0 0 0 2px #85CCFF;
+}
+
+.hm-streak-day-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #8a9ab0;
+}
+
 /* ── Section shell ──────────────────────────────────────────── */
 .hm-section {
   margin-bottom: 24px;
@@ -492,6 +573,7 @@
 [data-theme="dark"] .hm-tile,
 [data-theme="dark"] .hm-standing-card,
 [data-theme="dark"] .hm-activity-card,
+[data-theme="dark"] .hm-streak,
 [data-theme="dark"] .hm-referral {
   background: #0f1f2e;
   border: 1px solid #1e3448;
@@ -525,6 +607,30 @@
 [data-theme="dark"] .hm-standing-label,
 [data-theme="dark"] .hm-activity-date {
   color: #7d93a6;
+}
+
+[data-theme="dark"] .hm-streak-count {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .hm-streak-sub,
+[data-theme="dark"] .hm-streak-day-label {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .hm-streak-dot {
+  background: #1e3448;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .hm-streak-dot--active {
+  background: #7fc98a;
+  border-color: #7fc98a;
+}
+
+[data-theme="dark"] .hm-streak-flame {
+  background: rgba(127, 201, 138, 0.15);
+  color: #7fc98a;
 }
 
 [data-theme="dark"] .hm-activity-row {

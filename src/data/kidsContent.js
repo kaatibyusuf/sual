@@ -797,6 +797,169 @@ export const KIDS_CATEGORIES = [
     ],
   },
   {
+    id: 'prophets',
+    title: 'Prophets',
+    arabicTitle: 'الأَنْبِيَاء',
+    subtitle: 'Stories of the messengers of Allah',
+    icon: 'prophets',
+    items: [
+      {
+        title: 'Adam — The First Human',
+        text: 'Adam was the first human being that Allah created. Allah taught him the names of things and made the angels bow to him in respect. Adam and his wife Hawwa lived in Paradise before coming to live on Earth.',
+      },
+      {
+        title: 'Nuh — The Great Flood',
+        text: 'Prophet Nuh called his people to worship Allah alone for many, many years, but only a few believed him. Allah commanded him to build a huge ark. When a great flood came, Nuh and the believers were saved, while those who refused to believe were not.',
+      },
+      {
+        title: 'Hud — Warning His People',
+        text: "Prophet Hud was sent to a strong and powerful people called 'Aad. He warned them to stop worshipping idols and turn to Allah, but most of them refused and were proud of their strength.",
+      },
+      {
+        title: 'Salih — The She-Camel',
+        text: "Prophet Salih was sent to the people of Thamud. Allah gave them a special she-camel as a sign, but some of the people harmed her, disobeying Allah's command to leave her be.",
+      },
+      {
+        title: 'Ibrahim — The Friend of Allah',
+        text: 'Prophet Ibrahim grew up questioning why his people worshipped idols made of stone. He bravely taught them that only Allah deserves worship. Allah loved him so much that he is called "the Friend of Allah."',
+      },
+      {
+        title: 'Ibrahim and the Fire',
+        text: 'When Ibrahim broke the idols his people worshipped, they threw him into a huge fire to punish him. But Allah commanded the fire to become cool and safe, and Ibrahim was not harmed at all.',
+      },
+      {
+        title: 'Ismail — The Patient Son',
+        text: 'Ismail was the son of Ibrahim. When his father told him about a dream where he had to sacrifice him, young Ismail patiently agreed, trusting Allah. At the last moment, Allah replaced him with a ram instead.',
+      },
+      {
+        title: 'Building the Kaaba',
+        text: 'Ibrahim and his son Ismail built the Kaaba in Makkah together, the first house built for the worship of Allah alone. Muslims all over the world still face this direction when they pray.',
+      },
+      {
+        title: "Ishaq and Ya'qub",
+        text: "Ishaq was another son of Ibrahim, and his own son was Ya'qub, who was also a prophet. Ya'qub had twelve sons, one of whom was Yusuf.",
+      },
+      {
+        title: 'Yusuf — Sold by His Brothers',
+        text: "Yusuf's brothers were jealous of him and threw him into a well, then he was sold far from home. Even after this hardship, Yusuf remained patient and trusted Allah throughout his life.",
+      },
+      {
+        title: 'Yusuf in Egypt',
+        text: 'Yusuf eventually became a trusted leader in Egypt. Years later, his brothers came to Egypt during a famine, not recognizing him, and Yusuf forgave them with kindness instead of taking revenge.',
+      },
+      {
+        title: 'Ayyub — Patience Through Hardship',
+        text: 'Prophet Ayyub was tested with a long illness and the loss of much of what he had, yet he remained patient and never stopped thanking Allah. Because of his patience, Allah healed him and blessed him again.',
+      },
+      {
+        title: 'Musa — Baby in the River',
+        text: "When Musa was a baby, his mother placed him in a basket on the river to protect him from a cruel king. He was found and raised in that king's own palace, safe from harm.",
+      },
+      {
+        title: 'Musa and the Staff',
+        text: "Allah gave Musa a miracle: his staff could turn into a snake. He used it to show Pharaoh and his people a sign of Allah's power.",
+      },
+      {
+        title: 'Musa Parts the Sea',
+        text: "When Pharaoh's army chased Musa and his people, Allah commanded the sea to split apart, letting them cross safely, before the sea closed again behind them.",
+      },
+      {
+        title: "Harun — Musa's Helper",
+        text: 'Harun was Musa\'s brother and was also a prophet. He helped Musa speak clearly to Pharaoh and supported him throughout his mission.',
+      },
+      {
+        title: 'Dawud — A Beautiful Voice',
+        text: 'Prophet Dawud had such a beautiful voice that when he recited praises to Allah, even birds and mountains would join him. Allah also gave him great wisdom to judge fairly between people.',
+      },
+      {
+        title: 'Sulaiman — Understanding Animals',
+        text: 'Prophet Sulaiman, the son of Dawud, was given the special gift of understanding the language of animals and birds, along with great wisdom and a powerful kingdom.',
+      },
+      {
+        title: 'Yunus — Inside the Whale',
+        text: 'Prophet Yunus left his people before Allah commanded him to, and he ended up swallowed by a huge whale. Inside it, he called out to Allah in repentance, and Allah saved him.',
+      },
+      {
+        title: 'Zakariya and Yahya',
+        text: 'Prophet Zakariya prayed for a child even in his old age. Allah blessed him with a son, Yahya, who grew up to be a righteous prophet as well.',
+      },
+      {
+        title: 'Isa — Born as a Miracle',
+        text: 'Prophet Isa was born to Maryam as a miracle from Allah, without a father. He spoke to defend his mother as a baby and later taught people to worship Allah alone.',
+      },
+    ],
+  },
+  {
+    // Verses below are written from memory at high confidence, but
+    // this is direct Qur'anic text, not paraphrase — a categorically
+    // higher accuracy bar than anything else in this file. Strongly
+    // recommend checking every ayah here against a printed mushaf
+    // before treating this category as final. Kept to the shortest,
+    // most universally memorized surahs specifically because
+    // confidence is highest on these.
+    id: 'surahs',
+    title: 'Short Surahs',
+    arabicTitle: 'قِصَار السُّوَر',
+    subtitle: 'A few short surahs to learn',
+    icon: 'surahs',
+    items: [
+      {
+        title: 'Al-Fatiha — The Opening',
+        arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾',
+        transliteration: 'Al-Fatihah',
+        text: 'We say this surah in every single prayer. It praises Allah and asks Him to guide us on the straight path.',
+      },
+      {
+        title: 'Al-Ikhlas — Sincerity',
+        arabic: 'قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾',
+        transliteration: 'Al-Ikhlas',
+        text: 'This short surah tells us that Allah is One, He has no children and was not born, and nothing is equal to Him.',
+      },
+      {
+        title: 'Al-Falaq — The Daybreak',
+        arabic: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾',
+        transliteration: 'Al-Falaq',
+        text: 'This surah teaches us to ask Allah to protect us from harm — in the darkness, and from anyone who wishes us ill.',
+      },
+      {
+        title: 'An-Nas — Mankind',
+        arabic: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾',
+        transliteration: 'An-Nas',
+        text: 'This surah teaches us to ask Allah, the King and God of mankind, to protect us from whispers that try to lead us astray.',
+      },
+      {
+        title: 'Al-Kawthar — Abundance',
+        arabic: 'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ ﴿١﴾ فَصَلِّ لِرَبِّكَ وَانْحَرْ ﴿٢﴾ إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ ﴿٣﴾',
+        transliteration: 'Al-Kawthar',
+        text: 'The shortest surah in the Qur\'an. It tells the Prophet ﷺ that Allah gave him abundant good, so he should pray and be thankful.',
+      },
+      {
+        title: 'An-Nasr — The Help',
+        arabic: 'إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ ﴿١﴾ وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا ﴿٢﴾ فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ إِنَّهُ كَانَ تَوَّابًا ﴿٣﴾',
+        transliteration: 'An-Nasr',
+        text: "This surah speaks of Allah's help and victory, and reminds us to praise Allah and ask for His forgiveness.",
+      },
+      {
+        title: 'Al-Asr — Time',
+        arabic: 'وَالْعَصْرِ ﴿١﴾ إِنَّ الْإِنْسَانَ لَفِي خُسْرٍ ﴿٢﴾ إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ ﴿٣﴾',
+        transliteration: "Al-'Asr",
+        text: 'A short but powerful surah: people lose out in life unless they believe, do good deeds, and encourage each other in truth and patience.',
+      },
+      {
+        title: 'Quraysh',
+        arabic: 'لِإِيلَافِ قُرَيْشٍ ﴿١﴾ إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ ﴿٢﴾ فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ ﴿٣﴾ الَّذِي أَطْعَمَهُمْ مِنْ جُوعٍ وَآمَنَهُمْ مِنْ خَوْفٍ ﴿٤﴾',
+        transliteration: 'Quraysh',
+        text: 'This surah reminds the Quraysh tribe of Makkah to thank and worship Allah, who fed them and kept them safe.',
+      },
+      {
+        title: 'Al-Fil — The Elephant',
+        arabic: 'أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ ﴿١﴾ أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ ﴿٢﴾ وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ ﴿٣﴾ تَرْمِيهِمْ بِحِجَارَةٍ مِنْ سِجِّيلٍ ﴿٤﴾ فَجَعَلَهُمْ كَعَصْفٍ مَأْكُولٍ ﴿٥﴾',
+        transliteration: 'Al-Fil',
+        text: 'This surah tells the story of the army with elephants that came to attack the Kaaba, and how Allah defeated them with flocks of birds — the same event told in our Seerah lesson.',
+      },
+    ],
+  },
+  {
     id: 'arabiyyah',
     title: 'Arabiyyah',
     arabicTitle: 'العَرَبِيَّة',

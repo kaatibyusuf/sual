@@ -337,6 +337,137 @@
   cursor: not-allowed;
 }
 
+/* ── Quiz mode ──────────────────────────────────────────────── */
+.kids-quiz-toggle {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto 18px;
+  padding: 12px 16px;
+  border-radius: 100px;
+  border: 1.5px solid #094570;
+  background: #ffffff;
+  color: #094570;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.kids-quiz-toggle:hover {
+  background: #094570;
+  color: #ffffff;
+}
+
+.kids-quiz,
+.kids-quiz-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.kids-quiz-prompt {
+  width: 100%;
+  max-width: 340px;
+  padding: 26px 20px;
+  background: #094570;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.kids-quiz-prompt-arabic {
+  font-size: 1.6rem;
+  color: #ffffff;
+}
+
+.kids-quiz-prompt-translit {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #85CCFF;
+}
+
+.kids-quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.kids-quiz-option {
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1.5px solid #c8d8e8;
+  background: #ffffff;
+  color: #094570;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.kids-quiz-option:hover:not(:disabled) {
+  border-color: #094570;
+}
+
+/* Correct/wrong feedback reuses the app's already-established
+   pass/fail colors (same green/red the adult Quiz and Hifdh
+   Simulator already use for this exact purpose) — not a new color
+   introduced for the Kids section. */
+.kids-quiz-option--correct {
+  border-color: #2e7d32;
+  background: rgba(46, 125, 50, 0.1);
+  color: #2e7d32;
+}
+
+.kids-quiz-option--wrong {
+  border-color: #c0392b;
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+}
+
+.kids-quiz-option--faded {
+  opacity: 0.5;
+}
+
+.kids-quiz-primary {
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: none;
+  background: #094570;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.kids-quiz-primary:hover {
+  background: #0b5488;
+}
+
+.kids-quiz-done-score {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #094570;
+  margin: 0;
+}
+
+.kids-quiz-done-text {
+  font-size: 1rem;
+  color: #4a6080;
+  margin: 0;
+  text-align: center;
+}
+
+.kids-quiz-done-actions {
+  display: flex;
+  gap: 10px;
+}
+
 /* ── Dark mode — same navy/sky swap used everywhere else in Sual:
    navy accents in light mode become sky in dark mode. The hero and
    detail header are already navy/white in light mode, so they carry
@@ -388,4 +519,54 @@
   background: #0f1f2e;
   border-color: #1e3448;
   color: #85CCFF;
+}
+
+[data-theme="dark"] .kids-quiz-toggle {
+  background: #0f1f2e;
+  border-color: #85CCFF;
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .kids-quiz-toggle:hover {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .kids-quiz-option {
+  background: #0f1f2e;
+  border-color: #1e3448;
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .kids-quiz-option:hover:not(:disabled) {
+  border-color: #85CCFF;
+}
+
+[data-theme="dark"] .kids-quiz-option--correct {
+  border-color: #7fc98a;
+  background: rgba(46, 125, 50, 0.15);
+  color: #7fc98a;
+}
+
+[data-theme="dark"] .kids-quiz-option--wrong {
+  border-color: #e57373;
+  background: rgba(192, 57, 43, 0.15);
+  color: #e57373;
+}
+
+[data-theme="dark"] .kids-quiz-primary {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .kids-quiz-primary:hover {
+  background: #a3d8ff;
+}
+
+[data-theme="dark"] .kids-quiz-done-score {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .kids-quiz-done-text {
+  color: #a8c0d8;
 }
