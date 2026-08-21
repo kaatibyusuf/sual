@@ -79,11 +79,30 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
   const [subLoading, setSubLoading] = useState(true)
   const fileRef = useRef()
 
+  // Username — powers the weekly leaderboard specifically. Shown
+  // there ONLY for members who've set one (see
+  // get_weekly_quiz_leaderboard), so leaving this blank just means
+  // not appearing on that list, nothing else breaks.
+  const [username, setUsernameState] = useState(null)
+  const [usernameInput, setUsernameInput] = useState('')
+  const [usernameLoading, setUsernameLoading] = useState(false)
+
+  // Coins — earned automatically per quiz question (see the
+  // award_quiz_coins trigger on quiz_history), never spent or reset.
+  // merchCode is null until the running total first crosses 5,000,
+  // at which point the same trigger generates it once, permanently.
+  const [coinBalance, setCoinBalance] = useState(0)
+  const [merchCode, setMerchCode] = useState(null)
+  const [coinsLoading, setCoinsLoading] = useState(true)
+  const [codeCopied, setCodeCopied] = useState(false)
+
   useEffect(() => {
     if (!user) return
     fetchAvatar()
     fetchSubscription()
     fetchGender()
+    fetchUsername()
+    fetchCoins()
   }, [user])
 
   // All hooks are declared above this line, unconditionally, before
@@ -120,6 +139,65 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
       setGenderState(data?.gender || null)
     } catch (err) {
       console.error('Failed to load gender:', err)
+    }
+  }
+
+  const fetchUsername = async () => {
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', user.id)
+        .maybeSingle()
+      setUsernameState(data?.username || null)
+      setUsernameInput(data?.username || '')
+    } catch (err) {
+      console.error('Failed to load username:', err)
+    }
+  }
+
+  const fetchCoins = async () => {
+    setCoinsLoading(true)
+    try {
+      const { data, error } = await supabase.rpc('get_my_coins_and_code')
+      if (error) throw error
+      const row = Array.isArray(data) ? data[0] : data
+      setCoinBalance(row?.balance || 0)
+      setMerchCode(row?.merch_code || null)
+    } catch (err) {
+      console.error('Failed to load coin balance:', err)
+    } finally {
+      setCoinsLoading(false)
+    }
+  }
+
+  const handleCopyCode = () => {
+    if (!merchCode) return
+    navigator.clipboard.writeText(merchCode)
+    setCodeCopied(true)
+    setTimeout(() => setCodeCopied(false), 2000)
+  }
+
+  // Delegates format/uniqueness validation to set_my_username itself
+  // (server-side, defense in depth) rather than duplicating those
+  // rules here — the RPC raises a specific, friendly error message
+  // for either failure, which lands in err.message the same way
+  // every other RPC error in this file already does.
+  const handleSetUsername = async () => {
+    const trimmed = usernameInput.trim()
+    if (!trimmed || trimmed === username || usernameLoading) return
+    setUsernameLoading(true)
+    setError(null)
+    setSuccess(null)
+    try {
+      const { error } = await supabase.rpc('set_my_username', { new_username: trimmed })
+      if (error) throw error
+      setUsernameState(trimmed)
+      flashSuccess('Username saved.')
+    } catch (err) {
+      flashError(err.message)
+    } finally {
+      setUsernameLoading(false)
     }
   }
 
@@ -356,6 +434,103 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
               Subscribe for ₦2,500/month →
             </a>
           </div>
+        )}
+      </div>
+
+      {/* Username — powers the weekly quiz leaderboard specifically.
+          Set once, changeable anytime; leaving it blank just means
+          not appearing on that one list, nothing else in the app
+          depends on it. */}
+      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
+        <p style={{
+          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
+          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
+        }}>
+          Username
+        </p>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
+          {username
+            ? 'Shown on the weekly leaderboard instead of your name.'
+            : 'Set a username to appear on the weekly leaderboard. 3-20 characters — letters, numbers, and underscores only.'}
+        </p>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <input
+            type="text"
+            className="profile-input"
+            value={usernameInput}
+            onChange={e => setUsernameInput(e.target.value)}
+            placeholder="e.g. student_of_ilm"
+            maxLength={20}
+            style={{ flex: 1 }}
+          />
+          <button
+            className="profile-save-btn"
+            onClick={handleSetUsername}
+            disabled={usernameLoading || !usernameInput.trim() || usernameInput.trim() === username}
+            style={{ flexShrink: 0 }}
+          >
+            {usernameLoading ? 'Saving…' : 'Save'}
+          </button>
+        </div>
+      </div>
+
+      {/* Coins — 1 per question attempted in a quiz, awarded
+          automatically via a database trigger the moment a quiz
+          completes. Never spent or reset; crossing 5,000 once
+          permanently unlocks a redemption code below. */}
+      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
+        <p style={{
+          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
+          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
+        }}>
+          Coins
+        </p>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
+          Earned automatically — 1 coin per quiz question. Reach 5,000 to unlock a
+          merchandise redemption code, no shipping needed, just send us the code.
+        </p>
+
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 12 }}>
+          <span style={{ fontSize: '2rem', fontWeight: 800, color: '#094570' }}>
+            {coinsLoading ? '—' : coinBalance.toLocaleString()}
+          </span>
+          <span style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>/ 5,000 coins</span>
+        </div>
+
+        <div style={{ height: 8, borderRadius: 100, background: '#eef1f4', overflow: 'hidden', marginBottom: 16 }}>
+          <div style={{
+            height: '100%',
+            width: `${Math.min(100, (coinBalance / 5000) * 100)}%`,
+            background: merchCode ? '#2e7d32' : '#094570',
+            borderRadius: 100,
+            transition: 'width 0.3s ease',
+          }} />
+        </div>
+
+        {merchCode ? (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
+            padding: '12px 16px', borderRadius: 10, background: 'rgba(46,125,50,0.08)',
+            border: '1.5px solid rgba(46,125,50,0.25)',
+          }}>
+            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#2e7d32', letterSpacing: '0.04em' }}>
+              {merchCode}
+            </span>
+            <button
+              onClick={handleCopyCode}
+              style={{
+                padding: '6px 14px', borderRadius: 100, border: '1.5px solid #2e7d32',
+                background: '#ffffff', color: '#2e7d32', fontWeight: 700, fontSize: '0.8rem',
+                cursor: 'pointer',
+              }}
+            >
+              {codeCopied ? '✓ Copied' : 'Copy code'}
+            </button>
+          </div>
+        ) : !coinsLoading && (
+          <p style={{ fontSize: '0.8rem', color: '#8a9ab0' }}>
+            {(5000 - coinBalance).toLocaleString()} coins to go.
+          </p>
         )}
       </div>
 

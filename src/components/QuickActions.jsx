@@ -70,6 +70,15 @@ const ICONS = {
       <circle cx="19" cy="8" r="1.4" fill="currentColor" stroke="none" />
     </svg>
   ),
+  leaderboard: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 21h8" />
+      <path d="M12 17v4" />
+      <path d="M7 4h10v5a5 5 0 0 1-10 0V4z" />
+      <path d="M7 6H4a2 2 0 0 0 2 4h1" />
+      <path d="M17 6h3a2 2 0 0 1-2 4h-1" />
+    </svg>
+  ),
   puzzle: (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 2a4 4 0 0 0-4 4c0 1 .4 1.9 1 2.6-.7.3-1.3.8-1.7 1.4H4a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h3.3c.4.6 1 1.1 1.7 1.4-.6.7-1 1.6-1 2.6a4 4 0 0 0 8 0c0-1-.4-1.9-1-2.6.7-.3 1.3-.8 1.7-1.4H20a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-3.3c-.4-.6-1-1.1-1.7-1.4.6-.7 1-1.6 1-2.6a4 4 0 0 0-4-4z" />
@@ -115,6 +124,14 @@ const ACTIONS = [
     iconColor: '#f8e3b0',
     title: 'Quiz',
     desc: 'Test yourself',
+  },
+  {
+    to: '/leaderboard',
+    icon: 'leaderboard',
+    color: '#7a5518',
+    iconColor: '#f5dfa0',
+    title: 'Leaderboard',
+    desc: 'This week',
   },
   {
     to: '/duas',

@@ -1,0 +1,139 @@
+/* ============================================
+   Weekly Leaderboard
+   ============================================ */
+
+.leaderboard-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: #6a8090;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: #ffffff;
+  border: 1.5px solid #e0e8f0;
+  border-radius: 14px;
+}
+
+.leaderboard-row--me {
+  border-color: #094570;
+  background: rgba(9, 69, 112, 0.04);
+}
+
+.leaderboard-rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #eef1f4;
+  color: #6a8090;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.leaderboard-rank--1,
+.leaderboard-rank--2,
+.leaderboard-rank--3 {
+  background: #094570;
+  color: #ffffff;
+}
+
+.leaderboard-name {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0d1b2a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.leaderboard-you-tag {
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: #094570;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.leaderboard-attempts {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #094570;
+  flex-shrink: 0;
+}
+
+.leaderboard-myrank {
+  padding: 14px 18px;
+  text-align: center;
+  color: #4a6080;
+  font-size: 0.9rem;
+}
+
+.leaderboard-myrank strong {
+  color: #094570;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────── */
+[data-theme="dark"] .leaderboard-row {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .leaderboard-row--me {
+  border-color: #85CCFF;
+  background: rgba(133, 204, 255, 0.06);
+}
+
+[data-theme="dark"] .leaderboard-rank {
+  background: #16283a;
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .leaderboard-rank--1,
+[data-theme="dark"] .leaderboard-rank--2,
+[data-theme="dark"] .leaderboard-rank--3 {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .leaderboard-name {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .leaderboard-you-tag {
+  background: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .leaderboard-attempts {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .leaderboard-myrank {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .leaderboard-myrank strong {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .leaderboard-empty {
+  color: #7d93a6;
+}

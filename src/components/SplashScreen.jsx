@@ -16,7 +16,8 @@ export default function SplashScreen({ onDone }) {
 
       {/* Original geometric lattice, drawn in CSS — an 8-point star
           motif repeated as a faint background texture, not copied
-          from any existing pattern or artwork. */}
+          from any existing pattern or artwork. Kept very faint so it
+          reads as texture. */}
       <div className="splash-lattice" aria-hidden="true" />
 
       {/* Soft floating light particles */}
@@ -28,9 +29,31 @@ export default function SplashScreen({ onDone }) {
 
       <div className={`splash-content ${phase !== 'enter' ? 'splash-content--visible' : ''}`}>
 
-        {/* Concentric decorative rings */}
+        {/* Concentric decorative rings — now draw/expand in as part of
+            the reveal (see .splash-ring's entrance transform in CSS)
+            instead of just pulsing already at full size from the
+            start, so the opening has an actual arrival moment. */}
         <div className="splash-ring splash-ring--outer" />
         <div className="splash-ring splash-ring--inner" />
+
+        {/* Crescent + star — a real iconographic anchor beyond the
+            wordmark alone. Non-figurative, no depiction concerns:
+            just the crescent-and-star motif, the same one already
+            used for Home's night sky. Pure CSS/SVG, no image file. */}
+        <svg
+          className="splash-mark"
+          viewBox="0 0 100 100"
+          aria-hidden="true"
+        >
+          <path
+            className="splash-mark-crescent"
+            d="M58 20a32 32 0 1 0 0 60 26 26 0 1 1 0-60z"
+          />
+          <path
+            className="splash-mark-star"
+            d="M78 38l3.2 7.8L89 49l-7.8 3.2L78 60l-3.2-7.8L67 49l7.8-3.2z"
+          />
+        </svg>
 
         {/* Arabic word */}
         <div className="splash-arabic">

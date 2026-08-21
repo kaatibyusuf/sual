@@ -29,6 +29,15 @@ const ICONS = {
       <rect x="6" y="8" width="14" height="10" rx="2" />
     </svg>
   ),
+  leaderboard: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 21h8" />
+      <path d="M12 17v4" />
+      <path d="M7 4h10v5a5 5 0 0 1-10 0V4z" />
+      <path d="M7 6H4a2 2 0 0 0 2 4h1" />
+      <path d="M17 6h3a2 2 0 0 1-2 4h-1" />
+    </svg>
+  ),
   stories: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 4h9a3 3 0 0 1 3 3v13H8a2 2 0 0 1-2-2V4z" />
@@ -151,6 +160,7 @@ const NAV_GROUPS = [
     items: [
       { path: '/quiz', label: 'Quiz', icon: 'quiz' },
       { path: '/flashcards', label: 'Flashcards', icon: 'flashcards' },
+      { path: '/leaderboard', label: 'Leaderboard', icon: 'leaderboard' },
     ],
   },
   {

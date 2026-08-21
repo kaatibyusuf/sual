@@ -151,6 +151,15 @@ const ICONS = {
       <path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
     </svg>
   ),
+  trophy: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 21h8" />
+      <path d="M12 17v4" />
+      <path d="M7 4h10v5a5 5 0 0 1-10 0V4z" />
+      <path d="M7 6H4a2 2 0 0 0 2 4h1" />
+      <path d="M17 6h3a2 2 0 0 1-2 4h-1" />
+    </svg>
+  ),
 }
 
 // The tiles below the hero — same destinations as before, now
@@ -484,6 +493,17 @@ export default function Home({ user }) {
           <span className="hm-referral-icon hm-referral-icon--coins">{ICONS.coins}</span>
         </span>
         <span className="hm-referral-text">Refer and get free access to Spaces</span>
+        <span className="hm-referral-arrow" aria-hidden="true">→</span>
+      </Link>
+
+      {/* ── Points to the weekly leaderboard. Same visual pattern as
+          the referral banner above, just a single trophy icon
+          instead of two overlapping ones. ── */}
+      <Link to="/leaderboard" className="hm-referral">
+        <span className="hm-referral-icons">
+          <span className="hm-referral-icon hm-referral-icon--single">{ICONS.trophy}</span>
+        </span>
+        <span className="hm-referral-text">Want to see how you're currently ranking? Check the leaderboard</span>
         <span className="hm-referral-arrow" aria-hidden="true">→</span>
       </Link>
 
