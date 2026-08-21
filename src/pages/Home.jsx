@@ -323,72 +323,29 @@ export default function Home({ user }) {
   // anyone should rely on for prayer timing.
   const isNight = time.getHours() >= 18 || time.getHours() < 6
 
-  const nightStars = [
-    { top: '12%', left: '18%', delay: '0s' },
-    { top: '22%', left: '78%', delay: '0.6s' },
-    { top: '34%', left: '45%', delay: '1.2s' },
-    { top: '15%', left: '58%', delay: '1.8s' },
-    { top: '40%', left: '85%', delay: '0.3s' },
-    { top: '28%', left: '8%', delay: '2.1s' },
-  ]
+  // Saved locally in public/images/home/ — no longer hotlinked to
+  // Unsplash's CDN, so this no longer depends on an external host
+  // staying reachable.
+  const HERO_PHOTOS = {
+    day: '/images/home/hero-day.jpg',
+    night: '/images/home/hero-night.jpg',
+  }
 
   return (
     <div className="page-content home-page">
       {/* ── Hero: standing, at a glance — the one card everything
           else on this page sits beneath, the way a balance card
-          anchors a banking app. ── */}
-      <div className="hm-hero">
-        <div className="hm-hero-sky" aria-hidden="true">
-          {isNight ? (
-            <>
-              {nightStars.map((s, i) => (
-                <span key={i} className="hm-hero-star" style={{ top: s.top, left: s.left, animationDelay: s.delay }} />
-              ))}
-              <span className="hm-hero-moon" />
-              <svg className="hm-hero-treeline" viewBox="0 0 200 40" preserveAspectRatio="none">
-                <rect x="0" y="26" width="200" height="14" fill="#0a2e1f" opacity="0.55" />
-                <polygon points="20,10 28,26 12,26" fill="#0a2e1f" opacity="0.7" />
-                <polygon points="20,4 26,16 14,16" fill="#0a2e1f" opacity="0.7" />
-                <polygon points="60,12 67,26 53,26" fill="#0a2e1f" opacity="0.6" />
-                <polygon points="60,6 65,17 55,17" fill="#0a2e1f" opacity="0.6" />
-                <rect x="98" y="20" width="3" height="8" fill="#0a2e1f" opacity="0.7" />
-                <circle cx="99.5" cy="16" r="8" fill="#0a2e1f" opacity="0.7" />
-                <polygon points="140,10 148,26 132,26" fill="#0a2e1f" opacity="0.65" />
-                <polygon points="140,4 146,16 134,16" fill="#0a2e1f" opacity="0.65" />
-                <rect x="168" y="18" width="3" height="10" fill="#0a2e1f" opacity="0.7" />
-                <circle cx="169.5" cy="14" r="7" fill="#0a2e1f" opacity="0.7" />
-              </svg>
-            </>
-          ) : (
-            <>
-              <span className="hm-hero-sun" />
-              <span className="hm-hero-cloud hm-hero-cloud--1" />
-              <span className="hm-hero-cloud hm-hero-cloud--2" />
-              <svg className="hm-hero-river" viewBox="0 0 200 40" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="hmRiverGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#bfe3ff" stopOpacity="0.5" />
-                    <stop offset="50%" stopColor="#eaf6ff" stopOpacity="0.75" />
-                    <stop offset="100%" stopColor="#bfe3ff" stopOpacity="0.5" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M0,20 C30,10 50,30 80,20 C110,10 130,30 160,20 C180,14 190,22 200,18 L200,40 L0,40 Z"
-                  fill="url(#hmRiverGrad)"
-                />
-                <path
-                  className="hm-hero-river-shimmer"
-                  d="M0,20 C30,10 50,30 80,20 C110,10 130,30 160,20 C180,14 190,22 200,18"
-                  fill="none"
-                  stroke="#ffffff"
-                  strokeOpacity="0.4"
-                  strokeWidth="1.2"
-                />
-              </svg>
-            </>
-          )}
-        </div>
-
+          anchors a banking app. Background is a real photo (river by
+          day, moon over trees by night), with a navy gradient overlay
+          so the existing white text/buttons stay legible on top. ── */}
+      <div
+        className="hm-hero"
+        style={{
+          backgroundImage: `linear-gradient(rgba(9,69,112,0.55), rgba(9,69,112,0.45)), url(${isNight ? HERO_PHOTOS.night : HERO_PHOTOS.day})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <p className="hm-hero-bismillah arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</p>
         <div className="hm-hero-top">
           <span className="hm-hero-greeting">{getGreeting()}{firstName ? `, ${firstName}` : ''}</span>
