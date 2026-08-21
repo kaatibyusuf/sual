@@ -34,6 +34,105 @@
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(9, 69, 112, 0.18);
   transition: background 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Hero sky decoration — purely visual, aria-hidden. Absolute and
+   first in DOM order with no z-index tricks needed: default CSS
+   paint order already puts the normal-flow content after it in the
+   markup on top, since both sit at the same stacking level. ── */
+.hm-hero-sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hm-hero-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: hm-twinkle 2.6s ease-in-out infinite;
+}
+
+@keyframes hm-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.6); }
+}
+
+.hm-hero-moon {
+  position: absolute;
+  top: 14%;
+  right: 8%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f5f0dc;
+  box-shadow: -8px 0 0 0 var(--hm-navy) inset, 0 0 18px rgba(245, 240, 220, 0.35);
+}
+
+.hm-hero-sun {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe9a8 0%, #ffd76a 60%, rgba(255, 215, 106, 0) 100%);
+  box-shadow: 0 0 30px 6px rgba(255, 215, 106, 0.35);
+  animation: hm-sun-arc 20s ease-in-out infinite, hm-pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes hm-sun-arc {
+  0%   { top: 62%; left: 4%; }
+  25%  { top: 10%; left: 28%; }
+  50%  { top: 2%;  left: 55%; }
+  75%  { top: 10%; left: 82%; }
+  100% { top: 62%; left: 4%; }
+}
+
+@keyframes hm-pulse-glow {
+  0%, 100% { box-shadow: 0 0 30px 6px rgba(255, 215, 106, 0.3); }
+  50% { box-shadow: 0 0 40px 10px rgba(255, 215, 106, 0.5); }
+}
+
+.hm-hero-cloud {
+  position: absolute;
+  width: 70px;
+  height: 20px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.12);
+  filter: blur(2px);
+  animation: hm-drift 22s linear infinite;
+}
+
+.hm-hero-cloud--1 {
+  top: 20%;
+  left: -20%;
+}
+
+.hm-hero-cloud--2 {
+  top: 45%;
+  left: -35%;
+  width: 50px;
+  height: 14px;
+  animation-duration: 30s;
+  animation-delay: -8s;
+}
+
+@keyframes hm-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(420px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-hero-star,
+  .hm-hero-sun,
+  .hm-hero-cloud {
+    animation: none;
+  }
 }
 
 .hm-hero-bismillah {

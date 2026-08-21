@@ -317,12 +317,44 @@ export default function Home({ user }) {
     }
   })
 
+  // Simple clock-hour approximation, not tied to actual sunrise/
+  // sunset (unlike the real prayer times below) — a reasonable
+  // tradeoff for a purely decorative background, not something
+  // anyone should rely on for prayer timing.
+  const isNight = time.getHours() >= 18 || time.getHours() < 6
+
+  const nightStars = [
+    { top: '12%', left: '18%', delay: '0s' },
+    { top: '22%', left: '78%', delay: '0.6s' },
+    { top: '34%', left: '45%', delay: '1.2s' },
+    { top: '15%', left: '58%', delay: '1.8s' },
+    { top: '40%', left: '85%', delay: '0.3s' },
+    { top: '28%', left: '8%', delay: '2.1s' },
+  ]
+
   return (
     <div className="page-content home-page">
       {/* ── Hero: standing, at a glance — the one card everything
           else on this page sits beneath, the way a balance card
           anchors a banking app. ── */}
       <div className="hm-hero">
+        <div className="hm-hero-sky" aria-hidden="true">
+          {isNight ? (
+            <>
+              {nightStars.map((s, i) => (
+                <span key={i} className="hm-hero-star" style={{ top: s.top, left: s.left, animationDelay: s.delay }} />
+              ))}
+              <span className="hm-hero-moon" />
+            </>
+          ) : (
+            <>
+              <span className="hm-hero-sun" />
+              <span className="hm-hero-cloud hm-hero-cloud--1" />
+              <span className="hm-hero-cloud hm-hero-cloud--2" />
+            </>
+          )}
+        </div>
+
         <p className="hm-hero-bismillah arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</p>
         <div className="hm-hero-top">
           <span className="hm-hero-greeting">{getGreeting()}{firstName ? `, ${firstName}` : ''}</span>
