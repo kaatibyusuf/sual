@@ -3,6 +3,10 @@ import { STORIES } from '../data/stories.js'
 import { supabase } from '../lib/supabase.js'
 import './Stories.css'
 
+// Saved locally in public/images/stories/ — no longer hotlinked to
+// Unsplash's CDN.
+const STORIES_BG = '/images/stories/stories-bg.jpg'
+
 // Filter buttons correspond directly to a story's `era` field.
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -189,6 +193,16 @@ export default function Stories({ user }) {
     const p = progressMap[s.id]
     return (
       <div className="page-content stories-page">
+        <div
+          className="stories-bg"
+          style={{
+            backgroundImage: `linear-gradient(rgba(6,47,74,0.55), rgba(9,69,112,0.5)), url(${STORIES_BG})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+          aria-hidden="true"
+        />
+
         {user && (
           <div className="story-reading-bar" aria-hidden="true">
             <div className="story-reading-bar-fill" style={{ width: `${p?.progress_percent ?? 0}%` }} />
@@ -272,6 +286,16 @@ export default function Stories({ user }) {
 
   return (
     <div className="page-content stories-page">
+      <div
+        className="stories-bg"
+        style={{
+          backgroundImage: `linear-gradient(rgba(6,47,74,0.55), rgba(9,69,112,0.5)), url(${STORIES_BG})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+        aria-hidden="true"
+      />
+
       <h1 className="page-title">Stories of the Salaf</h1>
       <p className="page-subtitle">سِيَر السَّلَف الصَّالِح — The lives of the Prophets, the Companions, and their Successors</p>
 
@@ -343,8 +367,6 @@ export default function Stories({ user }) {
                 <h3 className="story-card-name">{s.name}</h3>
                 <p className="story-card-arabic arabic">{s.arabicName}</p>
                 <p className="story-card-title">{s.title}</p>
-                <p className="story-card-lifespan">{s.lifespan}</p>
-                <p className="story-card-summary">{s.summary}</p>
                 {user && renderCardProgress(s.id)}
                 <div className="story-card-footer">
                   <span className="story-card-read">Read Story →</span>
