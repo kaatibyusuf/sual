@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { KIDS_CATEGORIES, getKidsCategory } from '../data/kidsContent.js'
+import { supabase } from '../lib/supabase.js'
 import './Kids.css'
 
 // Same icon-wrapper pattern as WomensFiqh's <Icon name="..." />.
@@ -254,6 +255,45 @@ export default function Kids({ user, onSignOut }) {
   const [flipped, setFlipped] = useState(false)
   const [quizzing, setQuizzing] = useState(false)
 
+  // Escape hatch for a wrongly-gated adult account: if a birth date
+  // was mistyped at signup, there is otherwise no way out of the
+  // Kids section from in here — Profile isn't reachable, and signing
+  // out and back in just lands them right back here since the wrong
+  // date is still in the profile. Deliberately unobtrusive (a small
+  // link, not a prominent button) so it's findable for a confused
+  // adult without being an inviting "get me out of here" button for
+  // an actual child — though since age here is self-reported with no
+  // verification, a determined child typing a fake date could also
+  // use this. Same unavoidable limitation any self-reported age gate
+  // has; this isn't meant to close that door, only to fix genuine
+  // mistakes.
+  const [showFixDob, setShowFixDob] = useState(false)
+  const [dobInput, setDobInput] = useState('')
+  const [savingDob, setSavingDob] = useState(false)
+  const [dobError, setDobError] = useState(null)
+
+  const submitFixDob = async (e) => {
+    e.preventDefault()
+    if (!dobInput) return
+    setSavingDob(true)
+    setDobError(null)
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ date_of_birth: dobInput, age: null })
+        .eq('id', user.id)
+      if (error) throw error
+      // Full reload so App.jsx's age check re-runs from scratch
+      // against the corrected date, rather than trying to sync
+      // isKid state across component boundaries.
+      window.location.reload()
+    } catch (err) {
+      console.error('Failed to update birth date:', err)
+      setDobError('Something went wrong. Please try again.')
+      setSavingDob(false)
+    }
+  }
+
   const openCategory = (id) => {
     setActiveCategory(id)
     setCardIndex(0)
@@ -370,6 +410,48 @@ export default function Kids({ user, onSignOut }) {
             <span className="kids-tile-arabic arabic">{cat.arabicTitle}</span>
           </button>
         ))}
+      </div>
+
+      <div className="kids-dob-fix">
+        {!showFixDob ? (
+          <button className="kids-dob-fix-card" onClick={() => setShowFixDob(true)}>
+            <span className="kids-dob-fix-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="5" width="18" height="16" rx="2" />
+                <path d="M8 3v4M16 3v4M3 10h18" />
+              </svg>
+            </span>
+            <span className="kids-dob-fix-card-text">Wrong account? Update birth date</span>
+          </button>
+        ) : (
+          <form className="kids-dob-fix-form" onSubmit={submitFixDob}>
+            <p className="kids-dob-fix-label">
+              If your birth date was entered incorrectly, correct it here.
+            </p>
+            <input
+              type="date"
+              className="kids-dob-fix-input"
+              value={dobInput}
+              onChange={e => setDobInput(e.target.value)}
+              max={new Date().toISOString().split('T')[0]}
+              required
+            />
+            {dobError && <p className="kids-dob-fix-error">{dobError}</p>}
+            <div className="kids-dob-fix-actions">
+              <button
+                type="button"
+                className="kids-flashcard-navbtn"
+                onClick={() => { setShowFixDob(false); setDobError(null) }}
+                disabled={savingDob}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="kids-quiz-primary" disabled={savingDob || !dobInput}>
+                {savingDob ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   )
