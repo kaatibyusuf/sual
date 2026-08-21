@@ -43,14 +43,12 @@ const LEVELS = [
     bg: 'rgba(46,125,50,0.08)',
     border: 'rgba(46,125,50,0.25)',
     rtl: false,
-    description: 'You are new to the Islamic sciences or want to build a solid foundation. Start here with the essentials of Fiqh, Seerah, and Arabic.',
+    description: 'New to the Islamic sciences? Start here with the essentials of Fiqh, Seerah, and Arabic.',
     includesTitle: 'What you will study:',
     includes: [
       'Core Fiqh — Taharah, Salah, Zakah, Sawm, Hajj',
       'Foundational Seerah — Birth to Hijrah',
       'Basic Arabic — Root system, verb forms',
-      'Introduction to Tajweed',
-      '50 beginner Q&As per discipline',
     ],
     requirementLabel: 'Requirement:',
     requirement: 'No prior requirement — start immediately',
@@ -65,14 +63,12 @@ const LEVELS = [
     bg: 'rgba(230,81,0,0.08)',
     border: 'rgba(230,81,0,0.25)',
     rtl: true,
-    description: 'إن كنت قد درست الأساسيات وأصبحت مستعدًا للتعمق أكثر، فهذا المستوى لك. تفاعل مع أقوال العلماء، والأحكام المعقدة، والنصوص الكلاسيكية.',
+    description: 'لمن أتمّ الأساسيات ويريد التعمّق في أقوال العلماء والنصوص الكلاسيكية.',
     includesTitle: 'ما ستدرسه:',
     includes: [
       'الفقه المتقدم — الخلاف، المقاصد، المعاملات',
       'السيرة التفصيلية — العهد المدني، الغزوات، الصحابة',
-      'النحو والصرف — قواعد متوسطة',
       'أصول الفقه — مبادئ الاجتهاد والاستنباط',
-      '٥٠ سؤالًا متوسط المستوى لكل علم',
     ],
     requirementLabel: 'الشرط:',
     requirement: 'إتمام جميع محتوى المستوى المبتدئ بمعدل ٧٠٪ في الاختبارات',
@@ -92,15 +88,17 @@ const LEVELS = [
     includes: [
       'فقه النوازل — الأحكام المعاصرة',
       'التفسير — المنهج الكلاسيكي والتحليلي',
-      'أصول متقدمة — الاجتهاد، القياس، المصلحة',
       'علوم الحديث — المصطلح، الرجال، التخريج',
-      '٥٠ سؤالًا متقدمًا لكل علم',
     ],
     requirementLabel: 'الشرط:',
     requirement: 'إتمام جميع محتوى المستوى المتوسط بمعدل ٧٥٪ في الاختبارات',
     cta: '← ابدأ كمتقدم',
   },
 ]
+
+// Saved locally in public/images/level-select/ — no longer hotlinked
+// to Unsplash's CDN.
+const LEVEL_SELECT_BG = '/images/level-select/bg.jpg'
 
 export default function LevelSelect({ user, onLevelSelected }) {
   const [saving, setSaving] = useState(null)
@@ -127,9 +125,21 @@ export default function LevelSelect({ user, onLevelSelected }) {
 
   return (
     <div className="level-select-page">
-      <div className="level-select-bg">
-        <div className="level-select-bg-arabic">سُؤَال</div>
-      </div>
+      {/* Real photo background (crescent moon over mountain) replacing
+          the old giant faint "سُؤَال" text watermark. Gradient overlay
+          plus text-shadow on the header text below — learned from
+          Home's hero that either alone isn't reliable across a photo
+          with variable brightness; using both together this time
+          instead of re-tuning one repeatedly. */}
+      <div
+        className="level-select-bg"
+        style={{
+          backgroundImage: `linear-gradient(rgba(6,47,74,0.72), rgba(9,69,112,0.68)), url(${LEVEL_SELECT_BG})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+        aria-hidden="true"
+      />
 
       <div className="level-select-inner">
         <div className="level-select-header">
