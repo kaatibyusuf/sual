@@ -345,12 +345,46 @@ export default function Home({ user }) {
                 <span key={i} className="hm-hero-star" style={{ top: s.top, left: s.left, animationDelay: s.delay }} />
               ))}
               <span className="hm-hero-moon" />
+              <svg className="hm-hero-treeline" viewBox="0 0 200 40" preserveAspectRatio="none">
+                <rect x="0" y="26" width="200" height="14" fill="#0a2e1f" opacity="0.55" />
+                <polygon points="20,10 28,26 12,26" fill="#0a2e1f" opacity="0.7" />
+                <polygon points="20,4 26,16 14,16" fill="#0a2e1f" opacity="0.7" />
+                <polygon points="60,12 67,26 53,26" fill="#0a2e1f" opacity="0.6" />
+                <polygon points="60,6 65,17 55,17" fill="#0a2e1f" opacity="0.6" />
+                <rect x="98" y="20" width="3" height="8" fill="#0a2e1f" opacity="0.7" />
+                <circle cx="99.5" cy="16" r="8" fill="#0a2e1f" opacity="0.7" />
+                <polygon points="140,10 148,26 132,26" fill="#0a2e1f" opacity="0.65" />
+                <polygon points="140,4 146,16 134,16" fill="#0a2e1f" opacity="0.65" />
+                <rect x="168" y="18" width="3" height="10" fill="#0a2e1f" opacity="0.7" />
+                <circle cx="169.5" cy="14" r="7" fill="#0a2e1f" opacity="0.7" />
+              </svg>
             </>
           ) : (
             <>
               <span className="hm-hero-sun" />
               <span className="hm-hero-cloud hm-hero-cloud--1" />
               <span className="hm-hero-cloud hm-hero-cloud--2" />
+              <svg className="hm-hero-river" viewBox="0 0 200 40" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="hmRiverGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#bfe3ff" stopOpacity="0.5" />
+                    <stop offset="50%" stopColor="#eaf6ff" stopOpacity="0.75" />
+                    <stop offset="100%" stopColor="#bfe3ff" stopOpacity="0.5" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0,20 C30,10 50,30 80,20 C110,10 130,30 160,20 C180,14 190,22 200,18 L200,40 L0,40 Z"
+                  fill="url(#hmRiverGrad)"
+                />
+                <path
+                  className="hm-hero-river-shimmer"
+                  d="M0,20 C30,10 50,30 80,20 C110,10 130,30 160,20 C180,14 190,22 200,18"
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeOpacity="0.4"
+                  strokeWidth="1.2"
+                />
+              </svg>
             </>
           )}
         </div>

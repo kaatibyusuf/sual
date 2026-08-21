@@ -127,10 +127,29 @@
   to { transform: translateX(420px); }
 }
 
+.hm-hero-treeline,
+.hm-hero-river {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 42%;
+}
+
+.hm-hero-river-shimmer {
+  stroke-dasharray: 6 10;
+  animation: hm-river-flow 3s linear infinite;
+}
+
+@keyframes hm-river-flow {
+  to { stroke-dashoffset: -32; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hm-hero-star,
   .hm-hero-sun,
-  .hm-hero-cloud {
+  .hm-hero-cloud,
+  .hm-hero-river-shimmer {
     animation: none;
   }
 }
