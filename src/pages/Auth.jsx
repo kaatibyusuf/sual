@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { supabase } from '../lib/supabase.js'
+import { getStagedReferralCode, setManualReferralCode } from '../lib/referral.js'
 import './Auth.css'
 
 // Raw browser-level network errors (offline, DNS failure, CORS block,
@@ -60,6 +61,11 @@ export default function Auth({ onAuth }) {
   const [age, setAge] = useState('')
   const [gender, setGender] = useState('')
   const [country, setCountry] = useState('')
+  // Pre-filled from localStorage if the person arrived via a ?ref=
+  // link (captureReferralFromUrl already ran in App.jsx before this
+  // component ever mounts) — otherwise starts empty for a manually
+  // typed code.
+  const [referralCode, setReferralCode] = useState(() => getStagedReferralCode())
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [info, setInfo] = useState(null)
@@ -152,7 +158,10 @@ export default function Auth({ onAuth }) {
 
   // Reset signup-only state whenever the user switches tabs, so a
   // stale mismatch error or half-filled field doesn't linger across
-  // modes.
+  // modes. Referral code is re-read from localStorage rather than
+  // cleared — a manually typed code (or one picked up from a ?ref=
+  // link) should still be there if the user taps Sign In then comes
+  // back to Create Account.
   const switchMode = (nextMode) => {
     if (nextMode === mode) return
     setMode(nextMode)
@@ -162,8 +171,14 @@ export default function Auth({ onAuth }) {
     setAge('')
     setGender('')
     setCountry('')
+    setReferralCode(getStagedReferralCode())
     setError(null)
     setInfo(null)
+  }
+
+  const handleReferralCodeChange = (value) => {
+    setReferralCode(value)
+    setManualReferralCode(value)
   }
 
   const passwordsMismatch =
@@ -319,6 +334,20 @@ export default function Auth({ onAuth }) {
                   ))}
                 </select>
               </div>
+            </div>
+
+            <div className="auth-field">
+              <label className="auth-label" htmlFor="auth-referral">Referral Code (optional)</label>
+              <input
+                id="auth-referral"
+                type="text"
+                className="auth-input"
+                style={{ textTransform: 'uppercase' }}
+                value={referralCode}
+                onChange={e => handleReferralCodeChange(e.target.value)}
+                placeholder="e.g. WEOW822"
+                autoCapitalize="characters"
+              />
             </div>
           </>
         )}

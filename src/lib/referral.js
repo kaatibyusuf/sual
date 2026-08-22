@@ -14,6 +14,30 @@ export function captureReferralFromUrl() {
   }
 }
 
+// Call this when the sign-up form's referral code field changes.
+// Writes to the SAME storage key captureReferralFromUrl uses, so a
+// manually-typed code and a ?ref= link both flow through the one
+// redeemStoredReferral() call below — no separate manual-code path
+// to keep in sync. An empty string clears it (e.g. the user typed
+// something then deleted it), rather than leaving a stale value
+// that a later real link visit wouldn't otherwise get to overwrite
+// in the same session.
+export function setManualReferralCode(code) {
+  const trimmed = code.trim().toUpperCase()
+  if (trimmed) {
+    localStorage.setItem(STORAGE_KEY, trimmed)
+  } else {
+    localStorage.removeItem(STORAGE_KEY)
+  }
+}
+
+// Lets the sign-up form show whatever code is currently staged
+// (e.g. pre-fill the field if the user arrived via a ?ref= link,
+// so they see it was picked up instead of an empty box).
+export function getStagedReferralCode() {
+  return localStorage.getItem(STORAGE_KEY) || ''
+}
+
 // Call this once, right after a brand-new signup succeeds (not on a
 // normal login) — it's a no-op if there's no stored code, and the
 // edge function itself guards against a code being redeemed twice.
