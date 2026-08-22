@@ -96,6 +96,14 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
   const [coinsLoading, setCoinsLoading] = useState(true)
   const [codeCopied, setCodeCopied] = useState(false)
 
+  // Coin history — lazy-loaded only when the person actually expands
+  // it, not on every Profile page load, since most visits won't need
+  // it.
+  const [showCoinHistory, setShowCoinHistory] = useState(false)
+  const [coinHistory, setCoinHistory] = useState([])
+  const [coinHistoryLoading, setCoinHistoryLoading] = useState(false)
+  const [coinHistoryLoaded, setCoinHistoryLoaded] = useState(false)
+
   useEffect(() => {
     if (!user) return
     fetchAvatar()
@@ -169,6 +177,26 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
     } finally {
       setCoinsLoading(false)
     }
+  }
+
+  const fetchCoinHistory = async () => {
+    setCoinHistoryLoading(true)
+    try {
+      const { data, error } = await supabase.rpc('get_my_coin_history', { limit_count: 30 })
+      if (error) throw error
+      setCoinHistory(data || [])
+      setCoinHistoryLoaded(true)
+    } catch (err) {
+      console.error('Failed to load coin history:', err)
+    } finally {
+      setCoinHistoryLoading(false)
+    }
+  }
+
+  const toggleCoinHistory = () => {
+    const opening = !showCoinHistory
+    setShowCoinHistory(opening)
+    if (opening && !coinHistoryLoaded) fetchCoinHistory()
   }
 
   const handleCopyCode = () => {
@@ -531,6 +559,53 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
           <p style={{ fontSize: '0.8rem', color: '#8a9ab0' }}>
             {(5000 - coinBalance).toLocaleString()} coins to go.
           </p>
+        )}
+
+        {coinBalance > 0 && (
+          <div style={{ marginTop: 14 }}>
+            <button
+              onClick={toggleCoinHistory}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                fontSize: '0.8rem', fontWeight: 700, color: '#094570', textDecoration: 'underline',
+              }}
+            >
+              {showCoinHistory ? 'Hide history' : 'View history'}
+            </button>
+
+            {showCoinHistory && (
+              <div style={{ marginTop: 10 }}>
+                {coinHistoryLoading ? (
+                  <p style={{ fontSize: '0.8rem', color: '#8a9ab0' }}>Loading…</p>
+                ) : coinHistory.length === 0 ? (
+                  <p style={{ fontSize: '0.8rem', color: '#8a9ab0' }}>No history yet.</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {coinHistory.map(row => (
+                      <div
+                        key={row.id}
+                        style={{
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                          padding: '8px 12px', borderRadius: 8, background: '#f5f8fb',
+                          fontSize: '0.8rem',
+                        }}
+                      >
+                        <span style={{ color: '#4a6080' }}>
+                          {row.discipline
+                            ? `${row.discipline.charAt(0).toUpperCase() + row.discipline.slice(1)} quiz`
+                            : 'Quiz attempt'}
+                          <span style={{ color: '#8a9ab0', marginLeft: 8 }}>
+                            {new Date(row.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                          </span>
+                        </span>
+                        <span style={{ fontWeight: 700, color: '#2e7d32' }}>+{row.amount}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         )}
       </div>
 

@@ -93,6 +93,33 @@
   color: inherit;
 }
 
+/* ── Next-level teaser ────────────────────────────────────────
+   Shown below the level tabs when a locked level exists beyond
+   what's currently visible — a count only, never the actual
+   questions, so it motivates without exposing content that hasn't
+   been unlocked yet. Sits between the tabs and search, its own
+   distinct row rather than inside either. */
+.disc-next-level-teaser {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: #f5f8fb;
+  border: 1px solid #e0e8f0;
+  color: #6a8090;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.disc-next-level-teaser .icon-inline {
+  flex-shrink: 0;
+  width: 0.9em;
+  height: 0.9em;
+  color: #8a9ab0;
+}
+
 /* ============================================
    Search
    ============================================ */
@@ -417,6 +444,16 @@
 [data-theme="dark"] .disc-level-tab--active {
   background: #0a1825;
   box-shadow: 0 2px 8px rgba(133, 204, 255, 0.10);
+}
+
+[data-theme="dark"] .disc-next-level-teaser {
+  background: #0f1f2e;
+  border-color: #1e3448;
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .disc-next-level-teaser .icon-inline {
+  color: #5a7590;
 }
 
 [data-theme="dark"] .discipline-search-input {

@@ -157,6 +157,19 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
     return false
   }
 
+  // Users only ever see tabs for levels they've actually unlocked —
+  // no more clicking into a locked level to see a "Level Locked"
+  // message. The tabs a user CAN'T access simply aren't rendered at
+  // all now, rather than rendered-but-disabled.
+  const visibleLevels = LEVELS.filter(lv => !isLocked(lv.key))
+
+  // The very next level up from what's unlocked, if one exists — used
+  // for a small "X waiting" teaser below, distinct from the tabs
+  // themselves. Shows a count only, never the actual questions, so it
+  // motivates without exposing content that hasn't been earned yet.
+  const nextLockedLevel = LEVELS.find(lv => isLocked(lv.key))
+  const nextLockedCount = nextLockedLevel ? (levelMap[nextLockedLevel.key] || []).length : 0
+
   const allQAs = levelMap[activeLevel] || []
 
   const filtered = allQAs.filter(qa =>
@@ -182,27 +195,29 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
       </div>
 
       <div className="disc-level-tabs">
-        {LEVELS.map(lv => {
-          const locked = isLocked(lv.key)
+        {visibleLevels.map(lv => {
           const active = activeLevel === lv.key
           return (
             <button
               key={lv.key}
-              className={[
-                'disc-level-tab',
-                active ? 'disc-level-tab--active' : '',
-                locked ? 'disc-level-tab--locked' : '',
-              ].join(' ').trim()}
+              className={`disc-level-tab ${active ? 'disc-level-tab--active' : ''}`}
               style={active ? { borderColor: lv.color, color: lv.color, background: '#fff' } : {}}
-              onClick={() => { if (!locked) setActiveLevel(lv.key) }}
-              title={locked ? 'Complete previous level to unlock' : lv.label}
+              onClick={() => setActiveLevel(lv.key)}
+              title={lv.label}
             >
-              {locked ? <IconInline name="lock" /> : ''}{lv.label}
+              {lv.label}
               <span className="disc-level-tab-arabic arabic">{lv.arabic}</span>
             </button>
           )
         })}
       </div>
+
+      {nextLockedLevel && (
+        <p className="disc-next-level-teaser" data-a11y-label={`${nextLockedLevel.label} is locked. ${nextLockedCount} questions waiting once you unlock it.`}>
+          <IconInline name="lock" /> {nextLockedLevel.label}: {nextLockedCount} Q&amp;A{nextLockedCount !== 1 ? 's' : ''} waiting —
+          reach a 70% quiz average to unlock.
+        </p>
+      )}
 
       <div className="discipline-search">
         <input
@@ -224,17 +239,7 @@ export default function Discipline({ userLevel = 'beginner', user = null }) {
         )}
       </p>
 
-      {isLocked(activeLevel) ? (
-        <div className="disc-locked-msg">
-          <div className="disc-locked-icon"><IconInline name="lock" /></div>
-          <h3>Level Locked</h3>
-          <p>
-            Complete all Beginner content and achieve a 70% quiz average
-            to unlock {activeLevel.charAt(0).toUpperCase() + activeLevel.slice(1)}.
-          </p>
-        </div>
-
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <div className="discipline-empty">
           <p>{search ? 'No results found. Try a different search.' : 'Content coming soon for this level.'}</p>
         </div>

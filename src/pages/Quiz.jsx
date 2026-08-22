@@ -70,6 +70,12 @@ const ICONS = {
       <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" />
     </svg>
   ),
+  coin: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v10M9 9.5a2.5 2.5 0 0 1 2.5-1.5h1a2 2 0 0 1 0 4h-1a2 2 0 0 0 0 4h1a2.5 2.5 0 0 0 2.5-1.5" />
+    </svg>
+  ),
 }
 
 const IconInline = ({ name }) => <span className="icon-inline">{ICONS[name]}</span>
@@ -95,24 +101,12 @@ const ADVANCED_QUIZ_ALL = {
 
 const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced']
 
-// ── LocalStorage progress persistence (defense-in-depth against
-// pull-to-refresh / accidental reload wiping an in-progress quiz) ──
-// This complements the overscroll-behavior CSS fix and the touch
-// fallback — it's a second line of defense in case a reload still
-// slips through despite those. Saves the full resumable state
-// (including the already-shuffled questions, since a fresh call to
-// buildQuizPool/randomizeSession would reshuffle order and option
-// positions, making "resume" show different questions than the user
-// was mid-way through).
 const saveProgress = (quizKey, state) => {
   try {
     localStorage.setItem(`sual-quiz-progress-${quizKey}`, JSON.stringify({
       ...state, savedAt: Date.now(),
     }))
-  } catch {
-    // localStorage can fail (private browsing, storage full) — this
-    // is defense-in-depth, not a hard requirement, so fail silently.
-  }
+  } catch {}
 }
 
 const loadSavedProgress = (quizKey) => {
@@ -120,8 +114,6 @@ const loadSavedProgress = (quizKey) => {
     const raw = localStorage.getItem(`sual-quiz-progress-${quizKey}`)
     if (!raw) return null
     const saved = JSON.parse(raw)
-    // Expire anything older than a few hours — a stale, half-finished
-    // attempt from days ago is more confusing to resume than useful.
     if (Date.now() - saved.savedAt > 6 * 60 * 60 * 1000) return null
     return saved
   } catch {
@@ -135,17 +127,6 @@ const clearProgress = (quizKey) => {
   } catch {}
 }
 
-// ── Answer-position shuffling ─────────────────────────────────
-// The question data has a fixed `correct` index baked in per
-// question (e.g. many were authored with the right answer at index
-// 1 / option B). Shuffling the *order of questions* does nothing to
-// fix that — the correct answer still lands on the same letter every
-// time a given question appears. These helpers reshuffle each
-// question's own options at quiz-start time and remap `correct` to
-// match, using a position cycler so the correct slot is spread
-// evenly across a 10-question session instead of left to chance
-// (plain per-question randomness can still clump on one letter over
-// a short session).
 function shuffle(arr) {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -165,9 +146,6 @@ function createPositionCycler(size) {
   }
 }
 
-// Moves the correct option to `position`, shuffling the rest into the
-// remaining slots, and returns a new question object with `correct`
-// updated to match.
 function randomizeQuestionOptions(q, position) {
   const correctText = q.options[q.correct]
   const others = q.options.filter((_, i) => i !== q.correct)
@@ -183,8 +161,6 @@ function randomizeQuestionOptions(q, position) {
   return { ...q, options, correct: position }
 }
 
-// One cycler per distinct option-count (almost always 4, but this
-// stays correct even if some question sets use a different count).
 function randomizeSession(questions) {
   const cyclers = {}
   return questions.map(q => {
@@ -231,18 +207,25 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   const [answers,            setAnswers]            = useState([])
   const [unlockMsg,          setUnlockMsg]          = useState(null)
 
+  // Coins earned THIS quiz specifically, and whether a merch code was
+  // just unlocked by it — both computed in saveScore() by diffing the
+  // coin balance before/after the quiz_history insert that triggers
+  // award_quiz_coins(), rather than assumed as questions.length. The
+  // daily coin cap can mean fewer coins actually landed than the
+  // question count would suggest, so showing the real diff avoids
+  // overstating the reward.
+  const [coinsEarned, setCoinsEarned] = useState(0)
+  const [merchCodeUnlocked, setMerchCodeUnlocked] = useState(null)
+
   const [noQuestionsMsg, setNoQuestionsMsg] = useState(null)
   const [savedProgress,  setSavedProgress]  = useState(null)
 
-  // Check for a resumable attempt whenever the discipline/level
-  // selection changes on the select screen.
   useEffect(() => {
     if (phase !== 'select') return
     const quizKey = `${selectedDiscipline}-${selectedLevel}`
     setSavedProgress(loadSavedProgress(quizKey))
   }, [phase, selectedDiscipline, selectedLevel])
 
-  // Autosave on every relevant change while a quiz is active.
   useEffect(() => {
     if (phase !== 'active' || questions.length === 0) return
     const quizKey = `${selectedDiscipline}-${selectedLevel}`
@@ -267,6 +250,8 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setChosen(null)
     setRevealed(false)
     setUnlockMsg(null)
+    setCoinsEarned(0)
+    setMerchCodeUnlocked(null)
     setPhase('active')
   }, [selectedDiscipline, selectedLevel])
 
@@ -293,6 +278,21 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     if (!user) return
     const percentage = Math.round((finalScore / total) * 100)
 
+    // Snapshot balance/code BEFORE this attempt is recorded, so the
+    // amount actually awarded can be shown accurately once it lands
+    // (the insert below fires award_quiz_coins() as a DB trigger —
+    // this file never computes the coin amount itself).
+    let beforeBalance = 0
+    let hadCodeBefore = false
+    try {
+      const { data } = await supabase.rpc('get_my_coins_and_code')
+      const row = Array.isArray(data) ? data[0] : data
+      beforeBalance = row?.balance || 0
+      hadCodeBefore = !!row?.merch_code
+    } catch (err) {
+      console.error('Failed to snapshot coin balance:', err)
+    }
+
     try {
       await supabase.from('quiz_history').insert({
         user_id:    user.id,
@@ -304,6 +304,18 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     } catch (err) {
       console.error('Failed to save score:', err)
       return
+    }
+
+    try {
+      const { data } = await supabase.rpc('get_my_coins_and_code')
+      const row = Array.isArray(data) ? data[0] : data
+      const afterBalance = row?.balance || 0
+      setCoinsEarned(Math.max(0, afterBalance - beforeBalance))
+      if (row?.merch_code && !hadCodeBefore) {
+        setMerchCodeUnlocked(row.merch_code)
+      }
+    } catch (err) {
+      console.error('Failed to load updated coin balance:', err)
     }
 
     try {
@@ -353,24 +365,11 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     const q = questions[currentIdx]
     const isCorrect = idx === q.correct
     if (isCorrect) setScore(s => s + 1)
-    // The color change that marks correct/wrong on screen has no
-    // spoken equivalent otherwise — this is the one moment on this
-    // page where something important happens without the user
-    // navigating anywhere, so it needs an explicit announcement.
     announce(isCorrect
       ? 'Correct.'
       : `Incorrect. The correct answer was: ${q.options[q.correct]}`)
   }
 
-  // FIX: this previously recomputed and added credit for the final
-  // question a second time on top of what selectAnswer() already
-  // added the moment it was answered — score is the single source of
-  // truth for every question by the time this runs, including the
-  // last one, so the finishing branch now just trusts it instead of
-  // adding another point when the last question was correct. That
-  // extra point was exactly why an all-correct run showed 11/10, and
-  // any run showed one more than the true count whenever the final
-  // question specifically was answered correctly.
   const nextQuestion = () => {
     const q = questions[currentIdx]
     const newAnswers = [...answers, {
@@ -409,7 +408,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     return                         { msg: 'Keep studying! استمر في الدراسة', color: '#c0392b' }
   }
 
-  // ── SELECT ───────────────────────────────────────────────────
   if (phase === 'select') {
     const selectedInfo = discInfo(selectedDiscipline)
     return (
@@ -514,7 +512,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     )
   }
 
-  // ── ACTIVE ───────────────────────────────────────────────────
   if (phase === 'active') {
     const q        = questions[currentIdx]
     const progress = (currentIdx / questions.length) * 100
@@ -578,7 +575,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     )
   }
 
-  // ── RESULT ───────────────────────────────────────────────────
   const { msg, color } = scoreMsg()
 
   return (
@@ -591,6 +587,19 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
           <div className="quiz-result-percent" style={{ color }}>{scorePercent}%</div>
           <div className="quiz-result-msg">{msg}</div>
         </div>
+
+        {coinsEarned > 0 && (
+          <div className="quiz-unlock-banner" data-a11y-label={`You earned ${coinsEarned} coin${coinsEarned !== 1 ? 's' : ''} from this quiz.`}>
+            <IconInline name="coin" /> +{coinsEarned} coin{coinsEarned !== 1 ? 's' : ''} earned
+          </div>
+        )}
+
+        {merchCodeUnlocked && (
+          <div className="quiz-unlock-banner" data-a11y-label="You have reached 5,000 coins and unlocked a merchandise redemption code.">
+            <IconInline name="sparkle" /> You've reached 5,000 coins! Your redemption code is waiting in your{' '}
+            <Link to="/profile" style={{ textDecoration: 'underline' }}>Profile</Link>.
+          </div>
+        )}
 
         {unlockMsg && (
           <div className="quiz-unlock-banner">
