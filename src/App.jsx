@@ -42,6 +42,7 @@ const Kids                  = lazy(() => import('./pages/Kids.jsx'))
 const Qiwaamah = lazy(() => import('./pages/Qiwaamah.jsx'))
 const Zakaat = lazy(() => import('./pages/Zakaat.jsx'))
 const Leaderboard = lazy(() => import('./pages/Leaderboard.jsx'))
+const Rewards = lazy(() => import('./pages/Rewards.jsx'))
 
 function RouteFallback() {
   return (
@@ -335,6 +336,7 @@ function AppInner() {
               <Route path="*" element={<Home user={user} />} />
               <Route path="/stories" element={<Stories user={user} />} />
               <Route path="/leaderboard" element={<Leaderboard user={user} />} />
+              <Route path="/rewards" element={<Rewards user={user} />} />
             </Routes>
           </Suspense>
         </main>

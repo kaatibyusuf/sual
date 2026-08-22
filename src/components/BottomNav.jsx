@@ -114,6 +114,13 @@ const ICONS = {
       <circle cx="19" cy="8" r="1.4" fill="currentColor" stroke="none" />
     </svg>
   ),
+  rewards: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8v8" />
+      <path d="M9 10.3c0-1 1.2-1.6 3-1.6s3 .8 3 2-1.2 1.5-3 1.5-3 .7-3 1.9 1.3 1.9 3 1.9 3-.5 3-1.5" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -138,6 +145,7 @@ const MORE_ITEMS = [
   { to: '/spaces', icon: 'spaces', label: 'Spaces' },
   { to: '/hifdh', icon: 'hifdh', label: 'Hifdh' },
   { to: '/journey', icon: 'journey', label: 'Journey' },
+  { to: '/rewards', icon: 'rewards', label: 'Rewards' },
   { to: '/zakaat', icon: 'zakaat', label: 'Everything Zakaat' },
 ]
 

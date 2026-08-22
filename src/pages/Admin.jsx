@@ -42,26 +42,12 @@ const EMPTY_EXAM_TOPIC = { board: 'utme', subject: 'islamic_studies', title: '',
 const EMPTY_MCQ_QUESTION = { question_type: 'mcq', question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' }
 const EMPTY_THEORY_QUESTION = { question_type: 'theory', question: '', model_answer: '' }
 
-// LMS now uses a two-level structure under each course: sections (ordered
-// chapters) contain items (audio | reading | quiz | discussion), each
-// individually trackable and publishable. This replaces the old flat
-// "chapter" model — see admin-manage-lms edge function for the matching
-// action set (list_sections, add_section, list_items, add_item, update_item,
-// list_item_questions, generate_draft_notes/questions on { item }).
 const EMPTY_LMS_ITEM = { item_number: '', item_type: 'reading', title: '', arabic_text: '', transliteration: '', translation: '', notes: '' }
 
-// ── Weekly Spaces Tests (Arabiyyah / Tafseer / Hadeeth) ─────────
-// Separate content model from Exam Prep (UTME/JUPEB) — these are
-// weekly tests for Spaces members, one per track per week, created
-// and published the same way Daily Class Lessons are.
 const EMPTY_WEEKLY_TEST = { track: 'arabiyyah', publish_date: '', title: '', description: '' }
 const EMPTY_WEEKLY_MCQ = { question_type: 'mcq', question: '', options: ['', '', '', ''], correct_index: 0, explanation: '' }
 const EMPTY_WEEKLY_THEORY = { question_type: 'theory', question: '', model_answer: '' }
 
-// ── Subscriptions table helpers ──────────────────────────────────
-// Days-remaining badge for the admin-facing "when does each
-// subscription end" table. Colour bands: expired (grey), <=3 days
-// (critical/red), <=7 days (warning/orange), otherwise fine (green).
 function daysUntil(expiresAt) {
   if (!expiresAt) return null
   const diff = new Date(expiresAt).getTime() - Date.now()
@@ -113,7 +99,6 @@ export default function Admin({ user }) {
   const [majlisBody, setMajlisBody] = useState('')
   const [postingMajlis, setPostingMajlis] = useState(false)
 
-  // ── LMS state ─────────────────────────────────────────────────
   const [lmsCourses, setLmsCourses] = useState([])
   const [lmsCoursesLoading, setLmsCoursesLoading] = useState(false)
   const [lmsSelectedCourse, setLmsSelectedCourse] = useState(null)
@@ -136,7 +121,6 @@ export default function Admin({ user }) {
   const [lmsAudioUploading, setLmsAudioUploading] = useState(false)
   const [lmsAudioUploadError, setLmsAudioUploadError] = useState(null)
 
-  // ── Exam Prep state ─────────────────────────────────────────
   const [examTopics, setExamTopics] = useState([])
   const [examTopicsLoading, setExamTopicsLoading] = useState(false)
   const [examSelectedTopic, setExamSelectedTopic] = useState(null)
@@ -147,11 +131,10 @@ export default function Admin({ user }) {
   const [examGenerating, setExamGenerating] = useState(false)
   const [examNewTopic, setExamNewTopic] = useState(EMPTY_EXAM_TOPIC)
   const [examManualNote, setExamManualNote] = useState('')
-  const [examQuestionMode, setExamQuestionMode] = useState('mcq') // mcq | theory — governs both manual form and AI generation target
+  const [examQuestionMode, setExamQuestionMode] = useState('mcq')
   const [examManualQuestion, setExamManualQuestion] = useState(EMPTY_MCQ_QUESTION)
   const [examParsing, setExamParsing] = useState(false)
 
-  // ── Weekly Spaces Tests state ────────────────────────────────
   const [weeklyTests, setWeeklyTests] = useState([])
   const [weeklyTestsLoading, setWeeklyTestsLoading] = useState(false)
   const [weeklyTestForm, setWeeklyTestForm] = useState(EMPTY_WEEKLY_TEST)
@@ -163,8 +146,17 @@ export default function Admin({ user }) {
   const [weeklyQuestionMode, setWeeklyQuestionMode] = useState('mcq')
   const [weeklyManualQuestion, setWeeklyManualQuestion] = useState(EMPTY_WEEKLY_MCQ)
 
-  // ── Subscriptions table state ────────────────────────────────
   const [subscriberSearch, setSubscriberSearch] = useState('')
+
+  // ── Merch code lookup state ──────────────────────────────────
+  const [merchQuery, setMerchQuery] = useState('')
+  const [merchQueryType, setMerchQueryType] = useState('code') // 'code' | 'email'
+  const [merchLookupLoading, setMerchLookupLoading] = useState(false)
+  const [merchResult, setMerchResult] = useState(null)
+  const [merchError, setMerchError] = useState(null)
+  const [merchFulfilling, setMerchFulfilling] = useState(false)
+  const [merchPending, setMerchPending] = useState([])
+  const [merchPendingLoading, setMerchPendingLoading] = useState(false)
 
   const fetchStats = async () => {
     setLoading(true)
@@ -316,7 +308,6 @@ export default function Admin({ user }) {
     }
   }
 
-  // ── Class daily lessons (Arabiyyah + Hadeeth) ────────────────
   const fetchClassLessonList = async () => {
     setClassLessonListLoading(true)
     try {
@@ -467,7 +458,6 @@ export default function Admin({ user }) {
     }
   }
 
-  // ── Exam Prep functions ──────────────────────────────────────
   const fetchExamTopics = async () => {
     setExamTopicsLoading(true)
     try {
@@ -587,7 +577,6 @@ export default function Admin({ user }) {
     }
   }
 
-  // ── LMS functions ─────────────────────────────────────────────
   const fetchLmsCourses = async () => {
     setLmsCoursesLoading(true)
     try {
@@ -809,9 +798,6 @@ export default function Admin({ user }) {
     else openLmsItem(lmsSelectedItem)
   }
 
-  // PDF and plain .txt only — Word .docx would need a separate
-  // library (mammoth.js) not currently installed. Only produces MCQ
-  // questions — past-question documents are objective by nature.
   const handleExamDocUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file || !examSelectedTopic) return
@@ -869,7 +855,6 @@ export default function Admin({ user }) {
     openExamTopic(examSelectedTopic)
   }
 
-  // ── Weekly Spaces Tests functions ─────────────────────────────
   const fetchWeeklyTests = async () => {
     setWeeklyTestsLoading(true)
     try {
@@ -983,12 +968,68 @@ export default function Admin({ user }) {
     }
   }
 
+  // ── Merch code lookup functions ──────────────────────────────
+  const lookupMerchCode = async () => {
+    if (!merchQuery.trim()) return
+    setMerchLookupLoading(true)
+    setMerchError(null)
+    setMerchResult(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-merch', {
+        body: { action: 'lookup', [merchQueryType]: merchQuery.trim() },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setMerchResult(data)
+    } catch (err) {
+      setMerchError(err.message)
+    } finally {
+      setMerchLookupLoading(false)
+    }
+  }
+
+  const markMerchFulfilled = async (userId) => {
+    if (!window.confirm('Confirm the item has actually been sent before marking this fulfilled.')) return
+    setMerchFulfilling(true)
+    setMerchError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-merch', {
+        body: { action: 'mark_fulfilled', user_id: userId },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      lookupMerchCode()
+      fetchMerchPending()
+    } catch (err) {
+      setMerchError(err.message)
+    } finally {
+      setMerchFulfilling(false)
+    }
+  }
+
+  const fetchMerchPending = async () => {
+    setMerchPendingLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-manage-merch', {
+        body: { action: 'list_pending' },
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setMerchPending(data.pending || [])
+    } catch (err) {
+      console.error('Failed to load pending merch codes:', err)
+    } finally {
+      setMerchPendingLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchStats()
     fetchTafseerList()
     fetchClassLessonList()
     fetchExamTopics()
     fetchWeeklyTests()
+    fetchMerchPending()
   }, [])
 
   if (!user) return null
@@ -1292,6 +1333,91 @@ export default function Admin({ user }) {
           >
             {granting ? 'Granting…' : 'Grant Access'}
           </button>
+        </div>
+      </div>
+
+      {/* Merch Code Lookup */}
+      <div className="card" style={{ marginTop: 20, padding: 20 }}>
+        <h3 style={{ marginBottom: 6 }}>Merch Code Lookup</h3>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
+          A member emails in a SUAL-XXXXXX code (or you search by their email) — verify it's real and
+          unfulfilled, send the item, then mark it fulfilled so it can't be redeemed twice.
+        </p>
+
+        {merchError && <div className="admin-error" style={{ marginBottom: 12 }}>{merchError}</div>}
+
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
+          <select
+            value={merchQueryType}
+            onChange={e => setMerchQueryType(e.target.value)}
+            style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid #d0e0ec' }}
+          >
+            <option value="code">Code</option>
+            <option value="email">Email</option>
+          </select>
+          <input
+            type="text"
+            placeholder={merchQueryType === 'code' ? 'SUAL-XXXXXX' : 'member@email.com'}
+            value={merchQuery}
+            onChange={e => setMerchQuery(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && lookupMerchCode()}
+            style={{ flex: '1 1 240px', padding: '10px 14px', borderRadius: 8, border: '1px solid #d0e0ec', fontSize: '0.9rem' }}
+          />
+          <button className="btn btn-primary" onClick={lookupMerchCode} disabled={merchLookupLoading || !merchQuery.trim()}>
+            {merchLookupLoading ? 'Looking up…' : 'Look Up'}
+          </button>
+        </div>
+
+        {merchResult && (
+          <div className="card" style={{ padding: '14px 16px', background: '#f5f8fb', marginBottom: 16 }}>
+            {!merchResult.found ? (
+              <p style={{ fontSize: '0.85rem', color: '#c0392b' }}>{merchResult.reason}</p>
+            ) : !merchResult.hasCode ? (
+              <p style={{ fontSize: '0.85rem', color: '#c0392b' }}>{merchResult.reason}</p>
+            ) : (
+              <>
+                <p style={{ fontSize: '0.9rem', marginBottom: 6 }}>
+                  <strong>{merchResult.email}</strong> — {merchResult.coins} coins
+                </p>
+                <p style={{ fontSize: '0.85rem', marginBottom: 6 }}>
+                  Code: <strong>{merchResult.merch_code}</strong>
+                </p>
+                {merchResult.fulfilled_at ? (
+                  <p style={{ fontSize: '0.85rem', color: '#2e7d32' }}>
+                    ✓ Fulfilled {new Date(merchResult.fulfilled_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} by {merchResult.fulfilled_by}
+                  </p>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => markMerchFulfilled(merchResult.user_id)}
+                    disabled={merchFulfilling}
+                  >
+                    {merchFulfilling ? 'Marking…' : 'Mark Fulfilled'}
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        <div style={{ marginTop: 8, paddingTop: 16, borderTop: '1px solid #e8f0f8' }}>
+          <p style={{ fontSize: '0.78rem', color: '#6a8090', marginBottom: 10 }}>
+            Pending (unfulfilled) — {merchPending.length}
+          </p>
+          {merchPendingLoading ? (
+            <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>Loading…</p>
+          ) : merchPending.length === 0 ? (
+            <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>No pending codes.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {merchPending.map(p => (
+                <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: 8, background: '#f5f8fb', fontSize: '0.85rem' }}>
+                  <span><strong>{p.merch_redemption_code}</strong> — {p.email} ({p.coins} coins)</span>
+                  <button className="btn btn-ghost" onClick={() => markMerchFulfilled(p.id)} disabled={merchFulfilling}>Mark Fulfilled</button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

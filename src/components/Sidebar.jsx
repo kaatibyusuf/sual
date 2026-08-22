@@ -38,6 +38,13 @@ const ICONS = {
       <path d="M17 6h3a2 2 0 0 1-2 4h-1" />
     </svg>
   ),
+  rewards: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8v8" />
+      <path d="M9 10.3c0-1 1.2-1.6 3-1.6s3 .8 3 2-1.2 1.5-3 1.5-3 .7-3 1.9 1.3 1.9 3 1.9 3-.5 3-1.5" />
+    </svg>
+  ),
   stories: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 4h9a3 3 0 0 1 3 3v13H8a2 2 0 0 1-2-2V4z" />
@@ -161,6 +168,7 @@ const NAV_GROUPS = [
       { path: '/quiz', label: 'Quiz', icon: 'quiz' },
       { path: '/flashcards', label: 'Flashcards', icon: 'flashcards' },
       { path: '/leaderboard', label: 'Leaderboard', icon: 'leaderboard' },
+      { path: '/rewards', label: 'Rewards', icon: 'rewards' },
     ],
   },
   {
