@@ -100,23 +100,45 @@ const LEVELS = [
 // to Unsplash's CDN.
 const LEVEL_SELECT_BG = '/images/level-select/bg.jpg'
 
+// Turns the RPC's { failing: [{ discipline, attempts, average }] }
+// array into a readable sentence fragment for the error banner, e.g.
+// "nahw (0 attempts, 0% avg), sarf (3 attempts, 61.5% avg)" — so a
+// rejected level-up tells the user exactly which discipline(s) still
+// need work, rather than a bare "requirement not met."
+function describeFailingDisciplines(failing) {
+  if (!Array.isArray(failing) || failing.length === 0) return null
+  return failing
+    .map(f => `${f.discipline} (${f.attempts} attempt${f.attempts === 1 ? '' : 's'}, ${f.average}% avg)`)
+    .join(', ')
+}
+
 export default function LevelSelect({ user, onLevelSelected }) {
   const [saving, setSaving] = useState(null)
   const [error, setError] = useState(null)
 
+  // FIX: this used to upsert user_levels directly from the client
+  // with whatever level was clicked — no server-side check of the
+  // stated 70%/75% quiz-average requirement existed anywhere, so any
+  // signed-in user could set current_level to 'advanced' immediately.
+  // Now routed through request_level_up(), a SECURITY DEFINER
+  // Postgres function that independently checks quiz_history before
+  // writing anything — the client can no longer just assert a level.
   const choose = async (levelKey) => {
     if (saving) return
     setSaving(levelKey)
     setError(null)
     try {
-      const { error } = await supabase.from('user_levels').upsert({
-        user_id: user.id,
-        current_level: levelKey,
-        level_selected: true,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'user_id' })
+      const { data, error } = await supabase.rpc('request_level_up', { target_level: levelKey })
       if (error) throw error
-      onLevelSelected(levelKey)
+
+      if (!data.ok) {
+        const detail = describeFailingDisciplines(data.failing)
+        setError(detail ? `${data.reason}: ${detail}` : (data.reason || 'That level is not available yet.'))
+        setSaving(null)
+        return
+      }
+
+      onLevelSelected(data.level)
     } catch (err) {
       setError(err.message)
       setSaving(null)
