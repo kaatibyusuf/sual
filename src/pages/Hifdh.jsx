@@ -108,6 +108,44 @@ function makeFillBlank(item, pool) {
   }
 }
 
+// Drill 2 of 9: triple word gap — the same idea as makeFillBlank but
+// three consecutive words are blanked as one span, tested as a
+// single phrase rather than a single word. Distractor phrases are
+// pulled the same way (a same-length span from elsewhere in the
+// pool), not just three random unrelated words, so a wrong option
+// still reads as a plausible phrase rather than an obvious non-answer.
+function makeTripleBlank(item, pool) {
+  const w = words(item.arabic)
+  if (w.length < 7) return null
+  const maxStart = w.length - 3
+  if (maxStart < 1) return null
+  const startIdx = 1 + Math.floor(Math.random() * maxStart)
+  if (startIdx + 3 > w.length) return null
+
+  const targetPhrase = w.slice(startIdx, startIdx + 3).join(' ')
+  const blanked = [...w.slice(0, startIdx), '______', ...w.slice(startIdx + 3)].join(' ')
+
+  const distractorPhrases = []
+  for (const it of shuffle(pool.filter(other => other.key !== item.key))) {
+    const iw = words(it.arabic)
+    if (iw.length < 3) continue
+    const s = Math.floor(Math.random() * (iw.length - 2))
+    const phrase = iw.slice(s, s + 3).join(' ')
+    if (phrase !== targetPhrase && !distractorPhrases.includes(phrase)) distractorPhrases.push(phrase)
+    if (distractorPhrases.length >= 4) break
+  }
+  if (distractorPhrases.length < 4) return null
+
+  return {
+    type: 'blank3',
+    itemKey: item.key,
+    prompt: 'Which three words complete this passage?',
+    arabicPrompt: blanked,
+    correct: { text: targetPhrase },
+    distractors: distractorPhrases.map(text => ({ text })),
+  }
+}
+
 function makeContinuation(item, pool) {
   const w = words(item.arabic)
   if (w.length < 12) return null
@@ -137,6 +175,46 @@ function makeContinuation(item, pool) {
     prompt: 'How does this passage continue?',
     arabicPrompt: shown + ' ...',
     correct: { text: continuation },
+    distractors,
+  }
+}
+
+// Drill 4 of 9: endings — the mirror of continuation. Shown the tail
+// of a passage, guess how it begins, rather than shown the start and
+// asked how it continues. This catches memorization that only flows
+// forward: someone who can always complete a passage once they're
+// given the opening words, but couldn't place it if they came across
+// the ending first, hasn't fully secured it either way round.
+function makeEnding(item, pool) {
+  const w = words(item.arabic)
+  if (w.length < 12) return null
+  const split = Math.max(4, Math.floor(w.length / 3))
+  const shownTail = w.slice(w.length - split).join(' ')
+  const leadCount = Math.min(6, w.length - split)
+  const beginning = w.slice(0, leadCount).join(' ')
+  if (words(beginning).length < 2) return null
+
+  const nearby = pool.filter(
+    it => it.key !== item.key && Math.abs(it.num - item.num) <= 4 && words(it.arabic).length >= 12
+  )
+  const far = pool.filter(
+    it => it.key !== item.key && Math.abs(it.num - item.num) > 4 && words(it.arabic).length >= 12
+  )
+  const sourcePool = [...shuffle(nearby), ...shuffle(far)]
+
+  const distractors = sourcePool.slice(0, 4).map(it => {
+    const iw = words(it.arabic)
+    return { text: iw.slice(0, Math.min(6, iw.length)).join(' ') }
+  })
+
+  if (distractors.length < 4) return null
+
+  return {
+    type: 'ending',
+    itemKey: item.key,
+    prompt: 'This passage ends as shown below — how does it begin?',
+    arabicPrompt: '... ' + shownTail,
+    correct: { text: beginning },
     distractors,
   }
 }
@@ -196,16 +274,114 @@ function makeCompleteRecall(item) {
   }
 }
 
+// Drill 5 of 9: backward recall. Shown an anchor point partway
+// through a passage, the answer required is the words that come
+// BEFORE it, typed starting with the word immediately preceding the
+// anchor and working backward from there — not just "what came
+// before" in forward reading order. This is graded with the same
+// exact-string comparison submitTyped already uses for `complete`
+// (currentQ.answer stores the words pre-reversed into the required
+// order), which is why it's deliberately typed-only — see the note
+// on the mic UI further down for why voice isn't offered for this
+// drill specifically.
+function makeBackwardRecall(item) {
+  const w = words(item.arabic)
+  if (w.length < 8) return null
+
+  const minCut = 3
+  const maxCut = Math.min(w.length - 1, minCut + MAX_RECALL_LEAD_WORDS + 6)
+  if (maxCut <= minCut) return null
+  const cut = minCut + Math.floor(Math.random() * (maxCut - minCut + 1))
+
+  const precedingCount = Math.min(cut, MAX_RECALL_TAIL_WORDS)
+  const preceding = w.slice(cut - precedingCount, cut)
+  if (preceding.length < 2) return null
+
+  const anchorContext = w.slice(cut, Math.min(cut + 4, w.length)).join(' ')
+  if (words(anchorContext).length === 0) return null
+
+  return {
+    type: 'backward',
+    itemKey: item.key,
+    prompt: 'Starting from this point, recite backward — type the word immediately before it, then the one before that, and so on.',
+    arabicPrompt: anchorContext + ' ...',
+    answer: [...preceding].reverse().join(' '),
+  }
+}
+
+// Drill 8 & 9 of 9: collection sequence (forward and reverse) and
+// segment reconstruction share one underlying question shape — a set
+// of shuffled Arabic pieces that have to be tapped back into their
+// correct order — so they share one render branch (`type: 'order'`)
+// and one pair of maker functions below, rather than being two
+// separate UIs for what's mechanically the same task at two
+// different scales (across items vs. within one passage).
+//
+// Deliberately NOT shown: the item's label or number on the piece
+// buttons. Showing "Ayah 4" / "Hadith 7" would turn this into
+// sorting visible numbers, not a memorization test — the piece text
+// is always a short snippet of the actual Arabic, so ordering it
+// correctly requires actually knowing the sequence.
+function makeCollectionSequence(dueItems, pool, collection, reverse) {
+  const eligible = dueItems.filter(it => typeof it.num === 'number')
+  if (eligible.length < 3) return null
+  const count = Math.min(4, eligible.length)
+  const chosenInOrder = shuffle(eligible).slice(0, count).sort((a, b) => a.num - b.num)
+  const correctSequence = reverse ? [...chosenInOrder].reverse() : chosenInOrder
+
+  const pieces = shuffle(chosenInOrder.map(it => {
+    const w = words(it.arabic)
+    const snippet = w.slice(0, 6).join(' ') + (w.length > 6 ? '…' : '')
+    return { id: it.key, text: snippet }
+  }))
+
+  return {
+    type: 'order',
+    itemKeys: chosenInOrder.map(it => it.key),
+    prompt: reverse
+      ? `Tap these ${collection.itemNounPlural} into order, latest to earliest.`
+      : `Tap these ${collection.itemNounPlural} into order, earliest to latest.`,
+    pieces,
+    correctOrder: correctSequence.map(it => it.key),
+  }
+}
+
+function makeSegmentReconstruction(item, collection) {
+  const w = words(item.arabic)
+  if (w.length < 16) return null
+  const chunkCount = w.length >= 24 ? 4 : 3
+  const chunkSize = Math.ceil(w.length / chunkCount)
+
+  const chunks = []
+  for (let i = 0; i < chunkCount; i++) {
+    const slice = w.slice(i * chunkSize, i * chunkSize + chunkSize)
+    if (slice.length === 0) break
+    chunks.push(slice.join(' '))
+  }
+  if (chunks.length < 3) return null
+
+  const pieces = shuffle(chunks.map((text, i) => ({ id: `${item.key}__seg${i}`, text })))
+  const correctOrder = chunks.map((_, i) => `${item.key}__seg${i}`)
+
+  return {
+    type: 'order',
+    itemKeys: [item.key],
+    prompt: `Reassemble this ${collection.itemNoun} in its correct order.`,
+    pieces,
+    correctOrder,
+  }
+}
+
 // Focused review modes — each restricts which question generators
-// buildSession draws from, instead of always mixing all five. This
+// buildSession draws from, instead of always mixing all types. This
 // is the direct answer to "quizzes about guessing the surah" and
 // "complete this ayah without knowing the surah first": the
 // underlying question types (makeWhichItem, makeContinuation,
 // makeCompleteRecall) already existed and already never reveal which
 // surah/hadith you're on during an active question — what was
 // actually missing was a way to CHOOSE to drill one of them
-// specifically, instead of it being one of five types that might or
-// might not come up for a given item.
+// specifically, instead of it being one of several types that might
+// or might not come up for a given item.
 const SESSION_MODES = {
   mixed:    { label: 'Mixed Review',   desc: () => 'A blend of every question type — the default.' },
   identify: { label: 'Identify',       desc: (c) => `Guess which ${c.itemNoun} a passage is from — no context given.` },
@@ -224,10 +400,13 @@ function makersForMode(mode, item, pool, collection) {
   }
   return shuffle([
     () => makeFillBlank(item, pool),
+    () => makeTripleBlank(item, pool),
     () => makeContinuation(item, pool),
+    () => makeEnding(item, pool),
     () => makeWhichItem(item, pool, collection),
     () => makeMeta(item, pool, collection),
     () => makeCompleteRecall(item),
+    () => makeBackwardRecall(item),
   ])
 }
 
@@ -247,10 +426,29 @@ function buildSession(dueItems, pool, collection, mode = 'mixed') {
     }
   })
 
+  // Segment reconstruction and collection sequence span multiple
+  // words/items rather than being generated per due item, so they're
+  // appended once per session (mixed mode only) instead of through
+  // the per-item loop above. Capped at one of each so the hardest
+  // drill in the set doesn't dominate a session — it's meant to show
+  // up occasionally once the basics are solid, not every review.
+  if (mode === 'mixed') {
+    for (const item of shuffle(dueItems)) {
+      const q = makeSegmentReconstruction(item, collection)
+      if (q) { raw.push(q); break }
+    }
+
+    if (dueItems.length >= 3) {
+      const reverse = Math.random() < 0.5
+      const q = makeCollectionSequence(dueItems, pool, collection, reverse)
+      if (q) raw.push(q)
+    }
+  }
+
   const ordered = shuffle(raw)
   const cyclePosition = createPositionCycler(MCQ_OPTION_COUNT)
   return ordered.map(q => {
-    if (q.type === 'complete') return q
+    if (q.type === 'complete' || q.type === 'backward' || q.type === 'order') return q
     const position = cyclePosition()
     return {
       ...q,
@@ -282,6 +480,14 @@ export default function Hifdh({ user = null }) {
   const [typedCorrect, setTypedCorrect] = useState(false)
   const [results, setResults] = useState({})
   const [finished, setFinished] = useState(false)
+
+  // State for the 'order' question type (collection sequence,
+  // segment reconstruction) — tracks which pieces have been tapped
+  // and in what order, separately from the MCQ `selected` and typed
+  // `typedAnswer`/`typedSubmitted` state above, since it's neither.
+  const [orderPicked, setOrderPicked] = useState([])
+  const [orderSubmitted, setOrderSubmitted] = useState(false)
+  const [orderCorrect, setOrderCorrect] = useState(false)
 
   const [voiceSupported] = useState(() => typeof window !== 'undefined' && !!(navigator.mediaDevices && window.MediaRecorder))
   // Live word-by-word preview, using the browser's native speech
@@ -412,6 +618,9 @@ export default function Hifdh({ user = null }) {
     setHasRecording(false)
     setLiveTranscript('')
     recordedBlobRef.current = null
+    setOrderPicked([])
+    setOrderSubmitted(false)
+    setOrderCorrect(false)
     setResults({})
     setFinished(false)
   }
@@ -438,6 +647,31 @@ export default function Hifdh({ user = null }) {
     setTypedCorrect(correct)
     setTypedSubmitted(true)
     recordResult(currentQ.itemKey, correct)
+  }
+
+  // ── 'order' question handlers (collection sequence, segment
+  // reconstruction) — tap pieces into a sequence, undo the last tap,
+  // check the final sequence against currentQ.correctOrder exactly.
+  const pickPiece = (id) => {
+    if (orderSubmitted || orderPicked.includes(id)) return
+    setOrderPicked(prev => [...prev, id])
+  }
+
+  const undoLastPiece = () => {
+    if (orderSubmitted) return
+    setOrderPicked(prev => prev.slice(0, -1))
+  }
+
+  const submitOrder = () => {
+    if (orderSubmitted || orderPicked.length !== currentQ.correctOrder.length) return
+    const correct = orderPicked.every((id, i) => id === currentQ.correctOrder[i])
+    setOrderCorrect(correct)
+    setOrderSubmitted(true)
+    // 'order' questions span several items (collection sequence) or
+    // stand for one item split into pieces (segment reconstruction),
+    // so every key in itemKeys gets the same result recorded, unlike
+    // every other question type which only ever touches one.
+    currentQ.itemKeys.forEach(key => recordResult(key, correct))
   }
 
   // Starts (or restarts) the live preview recognizer. A separate
@@ -587,7 +821,7 @@ export default function Hifdh({ user = null }) {
     }
   }
 
-  const answered = selected !== null || typedSubmitted
+  const answered = selected !== null || typedSubmitted || orderSubmitted
 
   const next = () => {
     if (qIndex + 1 < session.length) {
@@ -601,6 +835,9 @@ export default function Hifdh({ user = null }) {
       setHasRecording(false)
       setLiveTranscript('')
       recordedBlobRef.current = null
+      setOrderPicked([])
+      setOrderSubmitted(false)
+      setOrderCorrect(false)
     } else {
       let updated = progress
       Object.entries(results).forEach(([key, allCorrect]) => {
@@ -696,6 +933,9 @@ export default function Hifdh({ user = null }) {
   }
 
   if (session && currentQ) {
+    const isTypedType = currentQ.type === 'complete' || currentQ.type === 'backward'
+    const isOrderType = currentQ.type === 'order'
+
     return (
       <div className="page-content hifdh-page">
         <div className="hifdh-session-top">
@@ -708,10 +948,12 @@ export default function Hifdh({ user = null }) {
 
         <div className="hifdh-question card">
           <p className="hifdh-question-prompt">{currentQ.prompt}</p>
-          <p className="hifdh-question-arabic arabic">{currentQ.arabicPrompt}</p>
+          {currentQ.arabicPrompt && (
+            <p className="hifdh-question-arabic arabic">{currentQ.arabicPrompt}</p>
+          )}
         </div>
 
-        {currentQ.type === 'complete' ? (
+        {isTypedType ? (
           <div className="hifdh-typed">
             <textarea
               className="hifdh-typed-input arabic"
@@ -723,7 +965,17 @@ export default function Hifdh({ user = null }) {
               disabled={typedSubmitted}
             />
 
-            {voiceSupported && !typedSubmitted && (
+            {/* Voice recitation is offered for 'complete' only, not
+                'backward'. hifdh-voice-check grades by word overlap
+                (a set membership check), not word order — fine for
+                'complete', where the point is "did you recall the
+                right words," but backward recall's whole point is
+                ORDER, and a set-based check would happily accept the
+                words recited forward, defeating the drill. Typed
+                answers are graded with an exact string comparison,
+                so they stay order-sensitive; voice doesn't, so it's
+                scoped out here rather than silently graded wrong. */}
+            {voiceSupported && !typedSubmitted && currentQ.type === 'complete' && (
               <div style={{ marginTop: 10 }}>
                 {voiceError && <p style={{ color: '#c0392b', fontSize: '0.82rem', marginBottom: 6 }}>{voiceError}</p>}
 
@@ -772,6 +1024,12 @@ export default function Hifdh({ user = null }) {
               </div>
             )}
 
+            {currentQ.type === 'backward' && !typedSubmitted && (
+              <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginTop: 8 }}>
+                Type only — order matters here, so voice recitation isn't checked for this drill yet.
+              </p>
+            )}
+
             {!typedSubmitted ? (
               <button
                 className="hifdh-btn hifdh-btn--primary"
@@ -783,12 +1041,93 @@ export default function Hifdh({ user = null }) {
               </button>
             ) : (
               <div className={`hifdh-typed-feedback ${typedCorrect ? 'hifdh-typed-feedback--correct' : 'hifdh-typed-feedback--wrong'}`}>
-                <p>{typedCorrect ? 'Correct — exact recall.' : 'Not quite. The correct continuation is:'}</p>
+                <p>{typedCorrect ? 'Correct — exact recall.' : 'Not quite. The correct answer is:'}</p>
                 {!typedCorrect && <p className="arabic hifdh-typed-answer">{currentQ.answer}</p>}
                 {voiceResult && (
                   <p style={{ fontSize: '0.8rem', color: '#8a9ab0', marginTop: 6 }}>
                     Heard: <span className="arabic">{voiceResult.transcript}</span>
                   </p>
+                )}
+              </div>
+            )}
+          </div>
+        ) : isOrderType ? (
+          <div className="hifdh-order">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+              {currentQ.pieces.map(p => {
+                const used = orderPicked.includes(p.id)
+                return (
+                  <button
+                    key={p.id}
+                    className="arabic"
+                    onClick={() => pickPiece(p.id)}
+                    disabled={used || orderSubmitted}
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: 10,
+                      border: '2px solid #c8d8e8',
+                      background: used ? '#f0f4f8' : '#ffffff',
+                      color: used ? '#a8b8c8' : '#0d1b2a',
+                      fontSize: '0.95rem',
+                      opacity: used ? 0.5 : 1,
+                      cursor: used || orderSubmitted ? 'default' : 'pointer',
+                    }}
+                  >
+                    {p.text}
+                  </button>
+                )
+              })}
+            </div>
+
+            <p style={{ fontSize: '0.78rem', fontWeight: 700, color: '#4a6080', marginBottom: 6 }}>
+              Your order:
+            </p>
+            <div style={{
+              display: 'flex', flexWrap: 'wrap', gap: 8, minHeight: 44,
+              padding: 10, border: '1.5px dashed #c8d8e8', borderRadius: 10, marginBottom: 10,
+            }}>
+              {orderPicked.length === 0 && (
+                <span style={{ color: '#a8b8c8', fontSize: '0.85rem' }}>Tap pieces above, in order</span>
+              )}
+              {orderPicked.map((id, i) => {
+                const piece = currentQ.pieces.find(p => p.id === id)
+                return (
+                  <span key={id} className="arabic" style={{
+                    padding: '6px 10px', borderRadius: 8, background: '#094570', color: '#ffffff', fontSize: '0.85rem',
+                  }}>
+                    {i + 1}. {piece?.text}
+                  </span>
+                )
+              })}
+            </div>
+
+            {!orderSubmitted ? (
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="hifdh-btn" onClick={undoLastPiece} disabled={orderPicked.length === 0}>
+                  ↩ Undo
+                </button>
+                <button
+                  className="hifdh-btn hifdh-btn--primary"
+                  onClick={submitOrder}
+                  disabled={orderPicked.length !== currentQ.pieces.length}
+                >
+                  Check
+                </button>
+              </div>
+            ) : (
+              <div className={`hifdh-typed-feedback ${orderCorrect ? 'hifdh-typed-feedback--correct' : 'hifdh-typed-feedback--wrong'}`}>
+                <p>{orderCorrect ? 'Correct order!' : 'Not quite. The correct order is:'}</p>
+                {!orderCorrect && (
+                  <div style={{ marginTop: 6 }}>
+                    {currentQ.correctOrder.map((id, i) => {
+                      const piece = currentQ.pieces.find(p => p.id === id)
+                      return (
+                        <p key={id} className="arabic hifdh-typed-answer" style={{ margin: '2px 0' }}>
+                          {i + 1}. {piece?.text}
+                        </p>
+                      )
+                    })}
+                  </div>
                 )}
               </div>
             )}
@@ -1050,7 +1389,7 @@ export default function Hifdh({ user = null }) {
         })}
       </div>
       <p className="hifdh-coming">
-        All {collection.items.length} {collection.itemNounPlural} are loaded. Reviews mix blanks, detail drills, and full-line recall typing — recognition alone won't carry you through.
+        All {collection.items.length} {collection.itemNounPlural} are loaded. Reviews mix blanks, detail drills, order-reconstruction, and full-line recall typing — recognition alone won't carry you through.
       </p>
       </>
       )}
