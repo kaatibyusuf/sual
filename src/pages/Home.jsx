@@ -21,11 +21,11 @@ function getGreeting() {
 // one real engagement event — a quiz taken OR a story touched. Two
 // separate date sources get merged into one set of "active day"
 // strings before the streak math runs, so a day counts once whether
-// someone quizzed, read, or did both. Deliberately NOT built from
-// the existing continueStories query (that only ever holds the 3
-// currently in-progress stories' most recent touch, which would
-// silently undercount real activity — a broader story_reading_progress
-// fetch, unfiltered by completed/progress, feeds this instead).
+// someone quizzed, read, or did both. Fed by the UNCAPPED statsHistory
+// array (see the loader below) — this previously ran on a 50-row-
+// capped quiz_history query, which meant taking more quizzes today
+// could push older days' quizzes out of the window entirely and
+// shrink the streak as a side effect of using the app more.
 function computeActivityStreak(quizHistory, storyRows) {
   const dateStrings = new Set([
     ...quizHistory.map(r => new Date(r.taken_at).toDateString()),
@@ -181,7 +181,18 @@ export default function Home({ user }) {
   const [lng, setLng] = useState(3.3792)
   const [tzOffset, setTzOffset] = useState(1)
 
+  // `history` is now ONLY the 4 most recent quizzes, used solely for
+  // the "Recent Activity" card — it is no longer used for the total
+  // count or the streak/average calculations, since capping it was
+  // the root cause of the streak shrinking as more quizzes were taken
+  // and the total count freezing once it hit the old limit of 50.
   const [history, setHistory] = useState([])
+  // Uncapped: every quiz's date + percentage, feeding avgScore and
+  // the streak calculation.
+  const [statsHistory, setStatsHistory] = useState([])
+  // Exact total quiz count, from a dedicated count query — never
+  // derived from the length of a capped array.
+  const [totalQuizCount, setTotalQuizCount] = useState(0)
   const [levelData, setLevelData] = useState(null)
   const [fullName, setFullName] = useState(null)
   const [statsLoading, setStatsLoading] = useState(true)
@@ -217,25 +228,36 @@ export default function Home({ user }) {
     }
   }, [])
 
-  // Fetches quiz history, level, and profile independently via
-  // Promise.allSettled — a failure in any ONE of the three (e.g.
-  // user_levels having zero rows) no longer blanks out the other
-  // two. Previously this used Promise.all + .single(), where
-  // .single() throws on zero rows and Promise.all rejects the whole
-  // batch the moment any one promise rejects — meaning a single
-  // missing user_levels row would silently wipe quiz history and
-  // the display name too, making a perfectly healthy quiz count
-  // look like it "stopped updating."
+  // Five independent queries via Promise.allSettled — a failure in
+  // any one no longer blanks out the others (previously Promise.all
+  // + .single() meant one bad lookup could wipe everything).
+  //
+  // Split into a dedicated count query, an uncapped stats query, and
+  // a small capped "recent activity" query, instead of one 50-row-
+  // capped query serving all three jobs. The old single capped query
+  // caused two confirmed bugs: taking more quizzes today pushed
+  // older days out of the 50-row window, shrinking the streak as a
+  // side effect of app usage; and totalQuizzes (history.length) could
+  // never exceed 50, so the count froze once a user crossed that
+  // threshold even though real quizzes kept being recorded.
   useEffect(() => {
     if (!user) { setStatsLoading(false); return }
     const load = async () => {
-      const [histResult, lvlResult, profileResult] = await Promise.allSettled([
+      const [countResult, statsResult, recentResult, lvlResult, profileResult] = await Promise.allSettled([
+        supabase
+          .from('quiz_history')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id),
+        supabase
+          .from('quiz_history')
+          .select('taken_at, percentage')
+          .eq('user_id', user.id),
         supabase
           .from('quiz_history')
           .select('*')
           .eq('user_id', user.id)
           .order('taken_at', { ascending: false })
-          .limit(50),
+          .limit(4),
         supabase
           .from('user_levels')
           .select('*')
@@ -248,10 +270,22 @@ export default function Home({ user }) {
           .maybeSingle(),
       ])
 
-      if (histResult.status === 'fulfilled' && !histResult.value.error) {
-        setHistory(histResult.value.data || [])
+      if (countResult.status === 'fulfilled' && !countResult.value.error) {
+        setTotalQuizCount(countResult.value.count || 0)
       } else {
-        console.error('Failed to load quiz history:', histResult.reason || histResult.value?.error)
+        console.error('Failed to load quiz count:', countResult.reason || countResult.value?.error)
+      }
+
+      if (statsResult.status === 'fulfilled' && !statsResult.value.error) {
+        setStatsHistory(statsResult.value.data || [])
+      } else {
+        console.error('Failed to load quiz stats history:', statsResult.reason || statsResult.value?.error)
+      }
+
+      if (recentResult.status === 'fulfilled' && !recentResult.value.error) {
+        setHistory(recentResult.value.data || [])
+      } else {
+        console.error('Failed to load recent quiz activity:', recentResult.reason || recentResult.value?.error)
       }
 
       if (lvlResult.status === 'fulfilled' && !lvlResult.value.error) {
@@ -320,17 +354,17 @@ export default function Home({ user }) {
     loadStoryActivity()
   }, [user])
 
-  const totalQuizzes = history.length
-  const avgScore = totalQuizzes > 0
-    ? Math.round(history.reduce((s, r) => s + r.percentage, 0) / totalQuizzes)
+  const totalQuizzes = totalQuizCount
+  const avgScore = statsHistory.length > 0
+    ? Math.round(statsHistory.reduce((s, r) => s + r.percentage, 0) / statsHistory.length)
     : 0
   const currentLevel = levelData?.current_level || 'beginner'
-  const { streak, activeDates } = computeActivityStreak(history, storyActivityRows)
+  const { streak, activeDates } = computeActivityStreak(statsHistory, storyActivityRows)
   const firstName = fullName ? fullName.trim().split(/\s+/)[0] : null
 
   const { nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
   const primaryContinue = continueStories[0] || null
-  const recentQuizzes = history.slice(0, 4)
+  const recentQuizzes = history // already capped to 4 by the query itself
 
   // Last 7 calendar days (oldest to newest, today last), each marked
   // active/inactive from the same date set the streak count itself
