@@ -10,7 +10,7 @@
   "navigationColorDark": "#000000",
   "navigationDividerColor": "#000000",
   "navigationDividerColorDark": "#000000",
-  "backgroundColor": "#094570",
+  "backgroundColor": "#FFFFFF",
   "enableNotifications": true,
   "startUrl": "/",
   "iconUrl": "https://app.usesual.com/icons/icon-512.png",
@@ -21,7 +21,7 @@
     "alias": "sual"
   },
   "appVersionName": "1.1.0",
-  "appVersionCode": 9,
+  "appVersionCode": 10,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://app.usesual.com/manifest.json",
