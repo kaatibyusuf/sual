@@ -47,10 +47,20 @@ function corsHeaders() {
 // deliberately — strips diacritics/tatweel and folds alef/ya/ta-marbuta
 // variants so a transcript that's correct but not diacritically
 // perfect (which Whisper output essentially never is) still matches.
+//
+// FIX: the alef-folding class was missing ٱ (U+0671, ARABIC LETTER
+// ALEF WASLA) — the character Tanzil's Uthmani Qur'an text uses for
+// the definite article and hamzat-wasl forms (ٱللَّه, ٱلصِّرَٰطَ,
+// ٱلَّذِينَ, etc). gpt-4o-mini-transcribe returns ordinary orthography
+// (ا) for what it hears, so any expected passage using ٱ — which is
+// most of them, since it covers the definite article — normalized to
+// two DIFFERENT strings on the expected side vs. the transcript side,
+// failing an otherwise word-perfect recitation. Fixed here and in
+// Hifdh.jsx's copy together, since they're meant to stay identical.
 function normalizeArabic(str: string) {
   return (str || '')
     .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
-    .replace(/[إأآا]/g, 'ا')
+    .replace(/[إأآاٱ]/g, 'ا')
     .replace(/ى/g, 'ي')
     .replace(/ة/g, 'ه')
     .replace(/\s+/g, ' ')

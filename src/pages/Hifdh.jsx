@@ -32,10 +32,20 @@ function words(text) {
   return (text || '').split(/\s+/).filter(Boolean)
 }
 
+// FIX: the alef-folding class was missing ٱ (U+0671, ARABIC LETTER
+// ALEF WASLA) — the character Tanzil's Uthmani Qur'an text uses for
+// the definite article and hamzat-wasl forms (ٱللَّه, ٱلصِّرَٰطَ,
+// ٱلَّذِينَ, etc). A spoken recitation transcribed by gpt-4o-mini-transcribe
+// comes back in ordinary orthography (ا), so any passage using ٱ —
+// which is most of them, since it covers the definite article —
+// normalized to two DIFFERENT strings on the expected side vs the
+// transcript side, failing an otherwise word-perfect answer. See
+// hifdh-voice-check/index.ts, which mirrors this function and had
+// the exact same gap; both were fixed together.
 function normalizeArabic(str) {
   return (str || '')
     .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
-    .replace(/[إأآا]/g, 'ا')
+    .replace(/[إأآاٱ]/g, 'ا')
     .replace(/ى/g, 'ي')
     .replace(/ة/g, 'ه')
     .replace(/\s+/g, ' ')
