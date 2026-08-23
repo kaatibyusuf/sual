@@ -217,36 +217,56 @@ export default function Home({ user }) {
     }
   }, [])
 
+  // Fetches quiz history, level, and profile independently via
+  // Promise.allSettled — a failure in any ONE of the three (e.g.
+  // user_levels having zero rows) no longer blanks out the other
+  // two. Previously this used Promise.all + .single(), where
+  // .single() throws on zero rows and Promise.all rejects the whole
+  // batch the moment any one promise rejects — meaning a single
+  // missing user_levels row would silently wipe quiz history and
+  // the display name too, making a perfectly healthy quiz count
+  // look like it "stopped updating."
   useEffect(() => {
     if (!user) { setStatsLoading(false); return }
     const load = async () => {
-      try {
-        const [{ data: hist }, { data: lvl }, { data: profile }] = await Promise.all([
-          supabase
-            .from('quiz_history')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('taken_at', { ascending: false })
-            .limit(50),
-          supabase
-            .from('user_levels')
-            .select('*')
-            .eq('user_id', user.id)
-            .single(),
-          supabase
-            .from('profiles')
-            .select('full_name')
-            .eq('id', user.id)
-            .maybeSingle(),
-        ])
-        setHistory(hist || [])
-        setLevelData(lvl || null)
-        setFullName(profile?.full_name || null)
-      } catch (err) {
-        console.error('Home stats load error:', err)
-      } finally {
-        setStatsLoading(false)
+      const [histResult, lvlResult, profileResult] = await Promise.allSettled([
+        supabase
+          .from('quiz_history')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('taken_at', { ascending: false })
+          .limit(50),
+        supabase
+          .from('user_levels')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle(),
+        supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', user.id)
+          .maybeSingle(),
+      ])
+
+      if (histResult.status === 'fulfilled' && !histResult.value.error) {
+        setHistory(histResult.value.data || [])
+      } else {
+        console.error('Failed to load quiz history:', histResult.reason || histResult.value?.error)
       }
+
+      if (lvlResult.status === 'fulfilled' && !lvlResult.value.error) {
+        setLevelData(lvlResult.value.data || null)
+      } else {
+        console.error('Failed to load user level:', lvlResult.reason || lvlResult.value?.error)
+      }
+
+      if (profileResult.status === 'fulfilled' && !profileResult.value.error) {
+        setFullName(profileResult.value.data?.full_name || null)
+      } else {
+        console.error('Failed to load profile:', profileResult.reason || profileResult.value?.error)
+      }
+
+      setStatsLoading(false)
     }
     load()
   }, [user])
