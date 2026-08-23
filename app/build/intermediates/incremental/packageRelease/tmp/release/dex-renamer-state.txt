@@ -1,4 +1,4 @@
-#Thu Aug 06 00:12:35 WAT 2026
+#Sun Aug 23 18:09:23 WAT 2026
 base.0=C\:\\Users\\owner\\sual\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex
