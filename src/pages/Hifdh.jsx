@@ -52,6 +52,58 @@ function normalizeArabic(str) {
     .trim()
 }
 
+// Word-level diff between what was typed/heard and the correct
+// answer, via a standard LCS alignment on the normalized word
+// sequences. Returns the CORRECT answer's words each tagged with
+// whether the person actually produced that word (in order), plus a
+// count of extra words they typed/said that don't belong anywhere in
+// the correct sequence — used to highlight specifically which words
+// were missed rather than just re-showing the whole correct answer
+// as an undifferentiated block after a wrong attempt.
+function diffWords(attemptText, correctText) {
+  const attemptWords = words(attemptText)
+  const correctWordsArr = words(correctText)
+  const a = attemptWords.map(normalizeArabic)
+  const b = correctWordsArr.map(normalizeArabic)
+  const m = a.length
+  const n = b.length
+
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0))
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1])
+    }
+  }
+
+  const matchedCorrect = new Array(n).fill(false)
+  let i = m
+  let j = n
+  while (i > 0 && j > 0) {
+    if (a[i - 1] === b[j - 1]) {
+      matchedCorrect[j - 1] = true
+      i--
+      j--
+    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+      i--
+    } else {
+      j--
+    }
+  }
+
+  return {
+    correctDiff: correctWordsArr.map((word, idx) => ({ word, matched: matchedCorrect[idx] })),
+    extraCount: attemptWords.length - dp[m][n],
+  }
+}
+
+// Turns a chapter slug like "purification" or "hunting_and_slaughter"
+// into a readable heading when grouping the non-Qur'an scope chips
+// below by chapter — a plain fallback rather than assuming a display
+// label lookup exists for every collection's chapters.
+function prettifyChapterSlug(slug) {
+  return String(slug).replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+}
+
 function createPositionCycler(size) {
   let queue = []
   return function next() {
@@ -489,6 +541,15 @@ export default function Hifdh({ user = null }) {
   const [orderSubmitted, setOrderSubmitted] = useState(false)
   const [orderCorrect, setOrderCorrect] = useState(false)
 
+  // A mistakes-review round (started from the "Review N missed"
+  // button on the finished screen) reuses the exact same session
+  // machinery as a normal review, but is a low-stakes redo: it does
+  // NOT touch the Leitner box or write to hifdh_progress, since
+  // scoring it the same way a real due-review is scored would let a
+  // single missed item silently get re-scheduled twice for one
+  // actual lapse. It exists purely for immediate reinforcement.
+  const [isPracticeSession, setIsPracticeSession] = useState(false)
+
   const [voiceSupported] = useState(() => typeof window !== 'undefined' && !!(navigator.mediaDevices && window.MediaRecorder))
   // Live word-by-word preview, using the browser's native speech
   // recognition where available — Chrome/Edge only in practice, no
@@ -608,6 +669,37 @@ export default function Hifdh({ user = null }) {
     const qs = buildSession(due, scopedItems, collection, sessionMode)
     if (qs.length === 0) return
     setSession(qs)
+    setIsPracticeSession(false)
+    setQIndex(0)
+    setSelected(null)
+    setTypedAnswer('')
+    setTypedSubmitted(false)
+    setTypedCorrect(false)
+    setVoiceResult(null)
+    setVoiceError(null)
+    setHasRecording(false)
+    setLiveTranscript('')
+    recordedBlobRef.current = null
+    setOrderPicked([])
+    setOrderSubmitted(false)
+    setOrderCorrect(false)
+    setResults({})
+    setFinished(false)
+  }
+
+  // Rebuilds a fresh mini-session from just the items missed in the
+  // session that's ending, using the full mixed-mode question pool
+  // rather than replaying identical questions — reinforcement via a
+  // different angle on the same item, not rote repetition of the
+  // exact question that was just gotten wrong.
+  const startMistakeReview = () => {
+    const missedKeys = Object.entries(results).filter(([, allCorrect]) => !allCorrect).map(([key]) => key)
+    const missedItems = scopedItems.filter(it => missedKeys.includes(it.key))
+    if (missedItems.length === 0) return
+    const qs = buildSession(missedItems, scopedItems, collection, 'mixed')
+    if (qs.length === 0) return
+    setSession(qs)
+    setIsPracticeSession(true)
     setQIndex(0)
     setSelected(null)
     setTypedAnswer('')
@@ -838,6 +930,11 @@ export default function Hifdh({ user = null }) {
       setOrderPicked([])
       setOrderSubmitted(false)
       setOrderCorrect(false)
+    } else if (isPracticeSession) {
+      // Deliberately no advanceBox/saveHifdhProgress here — see the
+      // isPracticeSession state comment above for why a mistakes-review
+      // round shouldn't touch the Leitner schedule.
+      setFinished(true)
     } else {
       let updated = progress
       Object.entries(results).forEach(([key, allCorrect]) => {
@@ -903,10 +1000,16 @@ export default function Hifdh({ user = null }) {
   if (session && finished) {
     const strong = Object.values(results).filter(Boolean).length
     const total = Object.keys(results).length
+    const missedCount = total - strong
     return (
       <div className="page-content hifdh-page">
         <h1 className="page-title">{collection.title} Review</h1>
         <div className="hifdh-done card">
+          {isPracticeSession && (
+            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#e65100', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
+              Practice round — doesn't affect your review schedule
+            </p>
+          )}
           <div className="hifdh-done-icon">{strong === total ? '🌟' : '📚'}</div>
           <h2 className="hifdh-done-title">
             {strong === total ? 'Ma shaa Allah — perfect review' : 'Review complete'}
@@ -921,7 +1024,12 @@ export default function Hifdh({ user = null }) {
             <button className="hifdh-btn hifdh-btn--primary" onClick={() => setSession(null)}>
               Back to Overview
             </button>
-            {dueItems.length > 0 && (
+            {missedCount > 0 && (
+              <button className="hifdh-btn" onClick={startMistakeReview}>
+                Review {missedCount} missed {missedCount === 1 ? collection.itemNoun : collection.itemNounPlural} →
+              </button>
+            )}
+            {!isPracticeSession && dueItems.length > 0 && (
               <button className="hifdh-btn" onClick={startSession}>
                 Review Again
               </button>
@@ -1041,8 +1149,36 @@ export default function Hifdh({ user = null }) {
               </button>
             ) : (
               <div className={`hifdh-typed-feedback ${typedCorrect ? 'hifdh-typed-feedback--correct' : 'hifdh-typed-feedback--wrong'}`}>
-                <p>{typedCorrect ? 'Correct — exact recall.' : 'Not quite. The correct answer is:'}</p>
-                {!typedCorrect && <p className="arabic hifdh-typed-answer">{currentQ.answer}</p>}
+                <p>{typedCorrect ? 'Correct — exact recall.' : 'Not quite. Here is the correct answer — words you missed are marked:'}</p>
+                {!typedCorrect && (() => {
+                  // Diffed against whichever attempt actually produced the
+                  // wrong result: the transcript if this was a voice
+                  // submission, otherwise what was typed. Highlighting the
+                  // correct answer's OWN words (rather than the attempt's)
+                  // keeps the passage readable in its real word order even
+                  // when the attempt was badly out of order.
+                  const attempt = voiceResult ? voiceResult.transcript : typedAnswer
+                  const { correctDiff, extraCount } = diffWords(attempt, currentQ.answer)
+                  return (
+                    <>
+                      <p className="arabic hifdh-typed-answer">
+                        {correctDiff.map((d, idx) => (
+                          <span
+                            key={idx}
+                            style={d.matched ? undefined : { color: '#c0392b', fontWeight: 700, textDecoration: 'underline' }}
+                          >
+                            {d.word}{idx < correctDiff.length - 1 ? ' ' : ''}
+                          </span>
+                        ))}
+                      </p>
+                      {extraCount > 0 && (
+                        <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginTop: 4 }}>
+                          Underlined words above are the ones you missed. You also {voiceResult ? 'said' : 'typed'} {extraCount} word{extraCount === 1 ? '' : 's'} that {extraCount === 1 ? "isn't" : "aren't"} part of this passage.
+                        </p>
+                      )}
+                    </>
+                  )
+                })()}
                 {voiceResult && (
                   <p style={{ fontSize: '0.8rem', color: '#8a9ab0', marginTop: 6 }}>
                     Heard: <span className="arabic">{voiceResult.transcript}</span>
@@ -1116,18 +1252,41 @@ export default function Hifdh({ user = null }) {
               </div>
             ) : (
               <div className={`hifdh-typed-feedback ${orderCorrect ? 'hifdh-typed-feedback--correct' : 'hifdh-typed-feedback--wrong'}`}>
-                <p>{orderCorrect ? 'Correct order!' : 'Not quite. The correct order is:'}</p>
+                <p>{orderCorrect ? 'Correct order!' : 'Not quite. Here is what you tapped, and the correct order below it:'}</p>
                 {!orderCorrect && (
-                  <div style={{ marginTop: 6 }}>
-                    {currentQ.correctOrder.map((id, i) => {
-                      const piece = currentQ.pieces.find(p => p.id === id)
-                      return (
-                        <p key={id} className="arabic hifdh-typed-answer" style={{ margin: '2px 0' }}>
-                          {i + 1}. {piece?.text}
-                        </p>
-                      )
-                    })}
-                  </div>
+                  <>
+                    <p style={{ fontSize: '0.78rem', fontWeight: 700, color: '#4a6080', marginTop: 8, marginBottom: 4 }}>
+                      Your order (right position in green, wrong in red):
+                    </p>
+                    <div style={{ marginBottom: 10 }}>
+                      {orderPicked.map((id, i) => {
+                        const piece = currentQ.pieces.find(p => p.id === id)
+                        const rightSpot = currentQ.correctOrder[i] === id
+                        return (
+                          <p
+                            key={id}
+                            className="arabic hifdh-typed-answer"
+                            style={{ margin: '2px 0', color: rightSpot ? '#2e7d32' : '#c0392b', fontWeight: rightSpot ? 400 : 700 }}
+                          >
+                            {i + 1}. {piece?.text}
+                          </p>
+                        )
+                      })}
+                    </div>
+                    <p style={{ fontSize: '0.78rem', fontWeight: 700, color: '#4a6080', marginBottom: 4 }}>
+                      Correct order:
+                    </p>
+                    <div>
+                      {currentQ.correctOrder.map((id, i) => {
+                        const piece = currentQ.pieces.find(p => p.id === id)
+                        return (
+                          <p key={id} className="arabic hifdh-typed-answer" style={{ margin: '2px 0' }}>
+                            {i + 1}. {piece?.text}
+                          </p>
+                        )
+                      })}
+                    </div>
+                  </>
                 )}
               </div>
             )}
@@ -1287,11 +1446,28 @@ export default function Hifdh({ user = null }) {
         const currentItem = collection.items.find(it => it.num === sliderValue)
         const label = sliderValue < minNum ? 'None yet' : (currentItem?.label || sliderValue)
 
+        // Grouped by chapter when the collection's items carry one
+        // (e.g. Umdatul-Ahkam's purification/prayer/... chapters) so
+        // a ~430-item collection is scannable in sections rather than
+        // one enormous flat grid of numbers. Collections without a
+        // natural grouping (e.g. the 42 Hadith) fall back to a single
+        // unlabeled group, so this works either way without assuming
+        // every collection carries the same shape.
+        const hasChapters = collection.items.some(it => it.chapter)
+        const chipGroups = hasChapters
+          ? Object.values(collection.items.reduce((acc, it) => {
+              const key = it.chapter || 'other'
+              if (!acc[key]) acc[key] = { chapter: key, items: [] }
+              acc[key].items.push(it)
+              return acc
+            }, {}))
+          : [{ chapter: null, items: collection.items }]
+
         return (
           <div className="card" style={{ padding: '18px 20px', marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
               <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#094570' }}>
-                I've memorized up to: <span style={{ fontWeight: 800 }}>{label}</span>
+                Quick-fill up to: <span style={{ fontWeight: 800 }}>{label}</span>
               </p>
               <p style={{ fontSize: '0.78rem', color: '#8a9ab0' }}>
                 {scopeCount} of {collection.items.length} in scope
@@ -1311,8 +1487,59 @@ export default function Hifdh({ user = null }) {
                   persistScopeSet(new Set(keys))
                 }
               }}
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginBottom: 16 }}
             />
+
+            <p style={{ fontSize: '0.78rem', fontWeight: 700, color: '#4a6080', marginBottom: 8 }}>
+              Or tap individual {collection.itemNounPlural} — any combination, any order, same as the Qur'an's Juz picker:
+            </p>
+            {chipGroups.map(group => {
+              const groupKeys = group.items.map(it => it.key)
+              const groupFilled = !isUnrestricted && groupKeys.every(k => scopeSet.has(k))
+              return (
+                <div key={group.chapter ?? 'flat'} style={{ marginBottom: 12 }}>
+                  {group.chapter && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0d1b2a' }}>
+                        {prettifyChapterSlug(group.chapter)}
+                      </span>
+                      <button
+                        onClick={() => toggleItemKeys(groupKeys, !groupFilled)}
+                        style={{ fontSize: '0.72rem', color: '#094570', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                      >
+                        {groupFilled ? 'Clear chapter' : 'Mark whole chapter'}
+                      </button>
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                    {group.items.map(it => {
+                      const filled = !isUnrestricted && scopeSet.has(it.key)
+                      return (
+                        <button
+                          key={it.key}
+                          onClick={() => toggleItemKeys([it.key])}
+                          title={it.label}
+                          style={{
+                            minWidth: 30,
+                            padding: '4px 7px',
+                            borderRadius: 7,
+                            border: filled ? '2px solid #2e7d32' : '2px solid #c8d8e8',
+                            background: filled ? '#eaf5ea' : '#f5f8fb',
+                            color: filled ? '#2e7d32' : '#6a8090',
+                            fontWeight: 700,
+                            fontSize: '0.7rem',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          {it.num}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+
             <p style={{ fontSize: '0.78rem', color: '#8a9ab0', marginTop: 6 }}>
               Reviews, distractors, and the map below only draw from what's in scope.
             </p>
