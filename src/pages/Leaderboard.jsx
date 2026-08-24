@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import './Leaderboard.css'
 
-// Ranks by quiz ATTEMPTS in the current calendar week only — not
+// Ranks by quiz ATTEMPTS in the current calendar year only — not
 // score or accuracy. The whole leaderboard is "automatic" in the
 // sense that matters here: nothing resets it, nothing schedules it.
-// get_weekly_quiz_leaderboard() filters quiz_history to this week
-// every time it's called, so a new week starting is just the query's
-// own date_trunc('week', now()) naturally moving forward — no cron
-// job, no snapshot to maintain.
+// get_weekly_quiz_leaderboard() filters quiz_history to this year
+// every time it's called, so a new year starting is just the query's
+// own date_trunc('year', now()) naturally moving forward — no cron
+// job, no snapshot to maintain. Resets for everyone simultaneously
+// at midnight on January 1st.
 export default function Leaderboard({ user }) {
   const [entries, setEntries] = useState([])
   const [myRank, setMyRank] = useState(null)
@@ -41,7 +42,7 @@ export default function Leaderboard({ user }) {
         setMyRank(rankRow || null)
         setMyUsername(myProfileResult.data?.username || null)
       } catch (err) {
-        console.error('Failed to load weekly leaderboard:', err)
+        console.error('Failed to load annual leaderboard:', err)
         if (!cancelled) setError('Could not load the leaderboard right now.')
       } finally {
         if (!cancelled) setLoading(false)
@@ -56,18 +57,18 @@ export default function Leaderboard({ user }) {
 
   return (
     <div className="page-content leaderboard-page">
-      <h1 className="page-title">Weekly Leaderboard</h1>
+      <h1 className="page-title">Annual Leaderboard</h1>
       <p className="page-subtitle">
-        لَوْحَةُ الصَّدَارَة الأُسْبُوعِيَّة — Most quiz attempts this week. Resets every Monday.
+        لَوْحَةُ الصَّدَارَة السَّنَوِيَّة — Most quiz attempts this year. Resets every January 1st.
       </p>
 
       {loading ? (
-        <div className="leaderboard-empty card"><p>Loading this week's leaderboard…</p></div>
+        <div className="leaderboard-empty card"><p>Loading this year's leaderboard…</p></div>
       ) : error ? (
         <div className="leaderboard-empty card"><p>{error}</p></div>
       ) : entries.length === 0 ? (
         <div className="leaderboard-empty card">
-          <p>No one with a username has taken a quiz this week yet. Set a username in your Profile and take one to be the first.</p>
+          <p>No one with a username has taken a quiz this year yet. Set a username in your Profile and take one to be the first.</p>
         </div>
       ) : (
         <>
@@ -79,7 +80,7 @@ export default function Leaderboard({ user }) {
                 <div
                   key={e.user_id}
                   className={`leaderboard-row card ${isMe ? 'leaderboard-row--me' : ''}`}
-                  data-a11y-label={`Rank ${rank}. ${e.username}. ${e.attempts} quiz attempts this week.${isMe ? ' This is you.' : ''}`}
+                  data-a11y-label={`Rank ${rank}. ${e.username}. ${e.attempts} quiz attempts this year.${isMe ? ' This is you.' : ''}`}
                 >
                   <span className={`leaderboard-rank ${rank <= 3 ? `leaderboard-rank--${rank}` : ''}`}>
                     {rank}
@@ -97,7 +98,7 @@ export default function Leaderboard({ user }) {
           {user && myRank && !iAmInTop && (
             <div className="leaderboard-myrank card">
               <p>
-                Your rank this week: <strong>#{myRank.rank}</strong> with {myRank.attempts} attempt{myRank.attempts !== 1 ? 's' : ''}.
+                Your rank this year: <strong>#{myRank.rank}</strong> with {myRank.attempts} attempt{myRank.attempts !== 1 ? 's' : ''}.
                 {!myUsername && ' Set a username in your Profile to appear on the list above with everyone else.'}
               </p>
             </div>
