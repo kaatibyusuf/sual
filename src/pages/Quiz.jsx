@@ -76,6 +76,13 @@ const ICONS = {
       <path d="M12 7v10M9 9.5a2.5 2.5 0 0 1 2.5-1.5h1a2 2 0 0 1 0 4h-1a2 2 0 0 0 0 4h1a2.5 2.5 0 0 0 2.5-1.5" />
     </svg>
   ),
+  warning: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  ),
 }
 
 const IconInline = ({ name }) => <span className="icon-inline">{ICONS[name]}</span>
@@ -217,6 +224,19 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   const [coinsEarned, setCoinsEarned] = useState(0)
   const [merchCodeUnlocked, setMerchCodeUnlocked] = useState(null)
 
+  // FIX: previously, a failed quiz_history insert was completely
+  // invisible — the .insert() call resolves normally on a DB-level
+  // rejection (RLS denial, trigger exception, etc.), it does not
+  // throw, and the old code never checked the returned `error` at
+  // all. That meant a quiz could finish, show a normal results
+  // screen, and simply never be recorded — no log, no user-facing
+  // sign anything went wrong. This is very likely why some users
+  // saw their quiz count not update and their streak reset despite
+  // having genuinely taken a quiz that day. saveError now surfaces
+  // that failure directly, with a retry path, instead of hiding it.
+  const [saveError, setSaveError] = useState(null)
+  const [retryingSave, setRetryingSave] = useState(false)
+
   const [noQuestionsMsg, setNoQuestionsMsg] = useState(null)
   const [savedProgress,  setSavedProgress]  = useState(null)
 
@@ -252,6 +272,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setUnlockMsg(null)
     setCoinsEarned(0)
     setMerchCodeUnlocked(null)
+    setSaveError(null)
     setPhase('active')
   }, [selectedDiscipline, selectedLevel])
 
@@ -265,6 +286,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setRevealed(savedProgress.revealed)
     setUnlockMsg(null)
     setNoQuestionsMsg(null)
+    setSaveError(null)
     setPhase('active')
   }, [savedProgress])
 
@@ -274,9 +296,14 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setSavedProgress(null)
   }, [selectedDiscipline, selectedLevel])
 
+  // Returns true on a confirmed successful insert, false otherwise —
+  // callers use this to decide whether to proceed with the
+  // coin/level-unlock follow-up calls, which only make sense if the
+  // attempt actually got recorded.
   const saveScore = async (finalScore, total) => {
-    if (!user) return
+    if (!user) return false
     const percentage = Math.round((finalScore / total) * 100)
+    setSaveError(null)
 
     // Snapshot balance/code BEFORE this attempt is recorded, so the
     // amount actually awarded can be shown accurately once it lands
@@ -293,17 +320,26 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
       console.error('Failed to snapshot coin balance:', err)
     }
 
-    try {
-      await supabase.from('quiz_history').insert({
-        user_id:    user.id,
-        discipline: selectedDiscipline,
-        score:      finalScore,
-        total,
-        percentage,
-      })
-    } catch (err) {
-      console.error('Failed to save score:', err)
-      return
+    // FIX: .insert() resolves normally even when the database
+    // rejects the row (RLS, a constraint, an exception raised inside
+    // a trigger like award_quiz_coins) — it does not throw for that.
+    // The old code destructured nothing and never looked at `error`,
+    // so a rejected insert was silently treated as a success. Now
+    // both the network-failure path (catch) and the DB-rejection
+    // path (error) are handled, and either one surfaces a real
+    // message to the user instead of vanishing.
+    const { error: insertError } = await supabase.from('quiz_history').insert({
+      user_id:    user.id,
+      discipline: selectedDiscipline,
+      score:      finalScore,
+      total,
+      percentage,
+    })
+
+    if (insertError) {
+      console.error('Failed to save score:', insertError)
+      setSaveError(insertError.message || 'Your score could not be saved. Please try again.')
+      return false
     }
 
     try {
@@ -327,10 +363,10 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
         .order('taken_at', { ascending: false })
         .limit(5)
 
-      if (!history || history.length < 1) return
+      if (!history || history.length < 1) return true
 
       const avg = history.reduce((sum, r) => sum + r.percentage, 0) / history.length
-      if (avg < 70) return
+      if (avg < 70) return true
 
       const { data: levelData } = await supabase
         .from('user_levels')
@@ -338,10 +374,10 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
         .eq('user_id', user.id)
         .single()
 
-      if (!levelData) return
+      if (!levelData) return true
 
       const currentIdx = LEVEL_ORDER.indexOf(levelData.current_level)
-      if (currentIdx >= LEVEL_ORDER.length - 1) return
+      if (currentIdx >= LEVEL_ORDER.length - 1) return true
 
       const nextLevel = LEVEL_ORDER[currentIdx + 1]
 
@@ -356,6 +392,19 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     } catch (err) {
       console.error('Level unlock check failed:', err)
     }
+
+    return true
+  }
+
+  // Lets someone retry saving a completed quiz without retaking it —
+  // score/questions.length are still in state at the result screen,
+  // so this replays saveScore with the same values rather than
+  // asking the user to redo the whole quiz over a transient failure.
+  const retrySave = async () => {
+    if (retryingSave) return
+    setRetryingSave(true)
+    await saveScore(score, questions.length)
+    setRetryingSave(false)
   }
 
   const selectAnswer = (idx) => {
@@ -587,6 +636,28 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
           <div className="quiz-result-percent" style={{ color }}>{scorePercent}%</div>
           <div className="quiz-result-msg">{msg}</div>
         </div>
+
+        {saveError && (
+          <div
+            className="quiz-unlock-banner"
+            style={{
+              background: 'rgba(231,76,60,0.08)',
+              border: '1px solid rgba(231,76,60,0.25)',
+              color: '#c0392b',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 10,
+              flexWrap: 'wrap',
+            }}
+            data-a11y-label={`This quiz was not saved. ${saveError}`}
+          >
+            <span><IconInline name="warning" /> This quiz wasn't saved — it won't count toward your quizzes taken or your streak. {saveError}</span>
+            <button className="btn btn-ghost" onClick={retrySave} disabled={retryingSave} style={{ color: '#c0392b', borderColor: 'rgba(231,76,60,0.4)' }}>
+              {retryingSave ? 'Retrying…' : 'Retry Save'}
+            </button>
+          </div>
+        )}
 
         {coinsEarned > 0 && (
           <div className="quiz-unlock-banner" data-a11y-label={`You earned ${coinsEarned} coin${coinsEarned !== 1 ? 's' : ''} from this quiz.`}>
