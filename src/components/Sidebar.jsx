@@ -139,6 +139,11 @@ const ICONS = {
       <path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
     </svg>
   ),
+    newMuslim: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 14.6 9 22 9.3 16 14 18 21.5 12 17.3 6 21.5 8 14 2 9.3 9.4 9" />
+    </svg>
+  ),
 }
 
 // ── Six-pillar grouping ───────────────────────────────────────
@@ -186,6 +191,7 @@ const NAV_GROUPS = [
       { path: '/womens-fiqh', label: "Women's Fiqh", icon: 'womensFiqh' },
       { path: '/qiwaamah', label: 'Qiwaamah', icon: 'qiwaamah' },
       { path: '/zakaat', label: 'Everything Zakaat', icon: 'zakaat' },
+      { path: '/new-muslim', label: 'New Muslim Path', icon: 'newMuslim' },
     ],
   },
   {

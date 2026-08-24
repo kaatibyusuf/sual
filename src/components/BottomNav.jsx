@@ -121,6 +121,11 @@ const ICONS = {
       <path d="M9 10.3c0-1 1.2-1.6 3-1.6s3 .8 3 2-1.2 1.5-3 1.5-3 .7-3 1.9 1.3 1.9 3 1.9 3-.5 3-1.5" />
     </svg>
   ),
+    newMuslim: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 14.6 9 22 9.3 16 14 18 21.5 12 17.3 6 21.5 8 14 2 9.3 9.4 9" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -147,6 +152,7 @@ const MORE_ITEMS = [
   { to: '/journey', icon: 'journey', label: 'Journey' },
   { to: '/rewards', icon: 'rewards', label: 'Rewards' },
   { to: '/zakaat', icon: 'zakaat', label: 'Everything Zakaat' },
+  { to: '/new-muslim', icon: 'newMuslim', label: 'New Muslim Path' },
 ]
 
 export default function BottomNav() {
