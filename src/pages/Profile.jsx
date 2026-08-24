@@ -150,13 +150,25 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
     }
   }
 
+  // FIX: previously only `data` was destructured from this query —
+  // a failed SELECT (network hiccup, transient auth/session timing,
+  // anything) produced `data === undefined`, which silently rendered
+  // exactly the same as "no username set," clearing the field on
+  // refresh even when a username had genuinely been saved
+  // successfully. That's indistinguishable from real data loss from
+  // the user's side, which matches the "goes blank on refresh"
+  // report directly. Now a failed fetch leaves whatever was already
+  // in state alone (from a prior successful load, or the initial
+  // empty state) instead of overwriting a possibly-correct value
+  // with a blank one.
   const fetchUsername = async () => {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('username')
         .eq('id', user.id)
         .maybeSingle()
+      if (error) throw error
       setUsernameState(data?.username || null)
       setUsernameInput(data?.username || '')
     } catch (err) {
