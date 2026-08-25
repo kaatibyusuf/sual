@@ -124,22 +124,145 @@ function welcomeEmailHtml(product: 'spaces' | 'bookquiz' | 'tajweed', plan?: str
 
   // product === 'spaces'
   const lifetimeLine = plan === 'lifetime'
-    ? `<p>Your membership is a one-time lifetime purchase — no renewal, ever.</p>`
+    ? `
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+        <tr>
+          <td style="padding:14px 16px; background:#fdf3dd; border:1px solid #ecd9a8; border-radius:10px;">
+            <p style="font-size:14px; color:#7a5a13; margin:0; line-height:1.6; font-weight:700;">
+              🔓 Your access is lifetime — one payment, no renewal, ever.
+            </p>
+          </td>
+        </tr>
+      </table>
+    `
     : ''
+
   return `
-    <h1>Assalamu alaykum, and welcome to Spaces</h1>
-    <p>Your Spaces subscription is now active. You have full access to:</p>
-    <ul>
-      <li>Threaded discussions across all six categories, including scholar-answered posts</li>
-      <li>The Arabiyyah programme (Duruus al-Lughah through the Alfiyyah of Ibn Malik)</li>
-      <li>The Hadeeth programme (the Arba'in through Sahih al-Bukhari with Fath al-Bari)</li>
-      <li>Live class sessions — Hadeeth on Saturdays, Arabiyyah on Sundays, 9–10pm</li>
-    </ul>
-    ${lifetimeLine}
-    <p>If anything about your access looks wrong, just reply to this email — this message
-    is our record that your subscription was confirmed and access was granted.</p>
-    <p>بارك الله فيك</p>
-    <p>— The Sual team</p>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Sual Spaces</title>
+    </head>
+    <body style="margin:0; padding:0; background:#F0F8FF; font-family:Arial, Helvetica, sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F0F8FF; padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="max-width:520px; width:100%; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(9,69,112,0.1);">
+
+            <!-- Header -->
+            <tr>
+              <td style="background:#094570; padding:32px 24px; text-align:center;">
+                <div style="font-size:32px; color:#85CCFF; font-weight:700; margin-bottom:4px; line-height:1.2;">سُؤَال</div>
+                <div style="font-size:18px; color:#ffffff; font-weight:800; letter-spacing:2px;">SUAL</div>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td style="padding:32px 28px;">
+                <p style="font-size:12px; font-weight:700; color:#094570; text-transform:uppercase; letter-spacing:1.5px; margin:0 0 12px;">
+                  Spaces — Access Confirmed
+                </p>
+
+                <h1 style="font-size:22px; color:#0d1b2a; margin:0 0 16px; line-height:1.4; font-weight:700;">
+                  Assalamu alaykum, welcome to Spaces
+                </h1>
+
+                <p style="font-size:15px; color:#24374a; line-height:1.8; margin:0 0 20px;">
+                  Your Spaces subscription is now active. Here's what that actually means for you:
+                </p>
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+                  <tr>
+                    <td style="padding:10px 14px; background:#f5f8fb; border-radius:10px 10px 0 0;">
+                      <p style="font-size:14px; color:#24374a; margin:0; line-height:1.6;">
+                        <strong style="color:#094570;">💬 A real community, not just content</strong><br>
+                        Ask questions, discuss, and get answers directly from qualified scholars — not just search results
+                      </p>
+                    </td>
+                  </tr>
+                  <tr><td style="height:2px; background:#ffffff;"></td></tr>
+                  <tr>
+                    <td style="padding:10px 14px; background:#f5f8fb;">
+                      <p style="font-size:14px; color:#24374a; margin:0; line-height:1.6;">
+                        <strong style="color:#094570;">📖 A clear path forward in Arabic</strong><br>
+                        Structured progress from your very first lesson to real fluency, at a pace that builds
+                      </p>
+                    </td>
+                  </tr>
+                  <tr><td style="height:2px; background:#ffffff;"></td></tr>
+                  <tr>
+                    <td style="padding:10px 14px; background:#f5f8fb;">
+                      <p style="font-size:14px; color:#24374a; margin:0; line-height:1.6;">
+                        <strong style="color:#094570;">📿 Confidence in the Sunnah</strong><br>
+                        Move from knowing a few hadith to genuinely understanding the tradition behind them
+                      </p>
+                    </td>
+                  </tr>
+                  <tr><td style="height:2px; background:#ffffff;"></td></tr>
+                  <tr>
+                    <td style="padding:10px 14px; background:#f5f8fb; border-radius:0 0 10px 10px;">
+                      <p style="font-size:14px; color:#24374a; margin:0; line-height:1.6;">
+                        <strong style="color:#094570;">🎙️ Live, weekly accountability</strong><br>
+                        Real class sessions to keep you consistent, not just self-paced content you might postpone
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Lifetime-only note -->
+                ${lifetimeLine}
+
+                <!-- CTA -->
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td align="center" style="padding-bottom:12px;">
+                      <a href="https://app.usesual.com/spaces"
+                         style="display:inline-block; background:#094570; color:#ffffff; font-size:15px; font-weight:700; text-decoration:none; padding:14px 32px; border-radius:100px; font-family:Arial, Helvetica, sans-serif;">
+                        Go to Spaces →
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center" style="padding-bottom:24px;">
+                      <p style="font-size:12px; color:#8a9ab0; margin:0;">
+                        Or copy this link: <a href="https://app.usesual.com/spaces" style="color:#094570;">app.usesual.com/spaces</a>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+
+                <div style="border-top:1px solid #e8f0f8; padding-top:18px; margin-bottom:20px;">
+                  <p style="font-size:13px; color:#8a9ab0; line-height:1.7; margin:0;">
+                    If anything about your access looks wrong, just reply to this email — this message is our
+                    record that your subscription was confirmed and access was granted.
+                  </p>
+                </div>
+
+                <p style="font-size:13px; color:#8a9ab0; line-height:1.7; margin:0; text-align:center;">
+                  بَارَكَ اللَّهُ فِيك
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background:#06304d; padding:24px; text-align:center;">
+                <div style="font-size:20px; color:#85CCFF; margin-bottom:4px;">سُؤَال</div>
+                <p style="font-size:12px; color:rgba(255,255,255,0.5); margin:0;">
+                  Sual | سُؤَال — Built for the students of Islamic knowledge.
+                </p>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+    </body>
+    </html>
   `
 }
 
