@@ -1,3 +1,5 @@
+import DailyReminder, { useDailyReminderVisible } from '../components/DailyReminder.jsx'
+import MilestoneCelebration, { checkStreakMilestone } from '../components/MilestoneCelebration.jsx'
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
@@ -181,34 +183,21 @@ export default function Home({ user }) {
   const [lng, setLng] = useState(3.3792)
   const [tzOffset, setTzOffset] = useState(1)
 
-  // `history` is now ONLY the 4 most recent quizzes, used solely for
-  // the "Recent Activity" card — it is no longer used for the total
-  // count or the streak/average calculations, since capping it was
-  // the root cause of the streak shrinking as more quizzes were taken
-  // and the total count freezing once it hit the old limit of 50.
   const [history, setHistory] = useState([])
-  // Uncapped: every quiz's date + percentage, feeding avgScore and
-  // the streak calculation.
   const [statsHistory, setStatsHistory] = useState([])
-  // Exact total quiz count, from a dedicated count query — never
-  // derived from the length of a capped array.
   const [totalQuizCount, setTotalQuizCount] = useState(0)
   const [levelData, setLevelData] = useState(null)
   const [fullName, setFullName] = useState(null)
   const [statsLoading, setStatsLoading] = useState(true)
 
-  // "Continue where you left off" — Stories only for now, since that's
-  // the only content type with reading-progress tracking built. Slots
-  // in cleanly for hadith collections later once similar tracking
-  // exists for those (see story_reading_progress for the pattern).
   const [continueStories, setContinueStories] = useState([])
   const [continueLoading, setContinueLoading] = useState(true)
 
-  // Broader than continueStories on purpose — every story_reading_
-  // progress row for this user, completed or not, just for computing
-  // which days had real activity. continueStories stays scoped to
-  // its own narrow "what to show in the Continue Reading card" job.
   const [storyActivityRows, setStoryActivityRows] = useState([])
+
+  // ── Daily reminder + milestone celebration ──────────────────
+  const { visible: reminderVisible, dismiss: dismissReminder } = useDailyReminderVisible()
+  const [milestone, setMilestone] = useState(null)
 
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 30000)
@@ -228,18 +217,6 @@ export default function Home({ user }) {
     }
   }, [])
 
-  // Five independent queries via Promise.allSettled — a failure in
-  // any one no longer blanks out the others (previously Promise.all
-  // + .single() meant one bad lookup could wipe everything).
-  //
-  // Split into a dedicated count query, an uncapped stats query, and
-  // a small capped "recent activity" query, instead of one 50-row-
-  // capped query serving all three jobs. The old single capped query
-  // caused two confirmed bugs: taking more quizzes today pushed
-  // older days out of the 50-row window, shrinking the streak as a
-  // side effect of app usage; and totalQuizzes (history.length) could
-  // never exceed 50, so the count froze once a user crossed that
-  // threshold even though real quizzes kept being recorded.
   useEffect(() => {
     if (!user) { setStatsLoading(false); return }
     const load = async () => {
@@ -320,7 +297,7 @@ export default function Home({ user }) {
         if (error) throw error
         const withStoryData = (data || [])
           .map(row => ({ ...row, story: STORIES.find(s => s.id === row.story_id) }))
-          .filter(row => row.story) // drop rows whose story no longer exists in the data file
+          .filter(row => row.story)
         setContinueStories(withStoryData)
       } catch (err) {
         console.error('Failed to load continue-reading stories:', err)
@@ -336,10 +313,6 @@ export default function Home({ user }) {
     if (!user) return
     const loadStoryActivity = async () => {
       try {
-        // Unfiltered on purpose — completed stories and old touches
-        // still count as a day of real activity, unlike the
-        // continueStories query above which only cares about what's
-        // currently unfinished.
         const { data, error } = await supabase
           .from('story_reading_progress')
           .select('updated_at')
@@ -362,13 +335,21 @@ export default function Home({ user }) {
   const { streak, activeDates } = computeActivityStreak(statsHistory, storyActivityRows)
   const firstName = fullName ? fullName.trim().split(/\s+/)[0] : null
 
+  // Fires the milestone celebration overlay whenever the computed
+  // streak lands on one of the defined milestone values (see
+  // MilestoneCelebration.jsx) — checkStreakMilestone itself dedupes
+  // via localStorage so the same milestone doesn't re-fire on every
+  // render/reload once it's already been shown.
+  useEffect(() => {
+    if (statsLoading) return
+    const m = checkStreakMilestone(streak)
+    if (m) setMilestone(m)
+  }, [streak, statsLoading])
+
   const { nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
   const primaryContinue = continueStories[0] || null
-  const recentQuizzes = history // already capped to 4 by the query itself
+  const recentQuizzes = history
 
-  // Last 7 calendar days (oldest to newest, today last), each marked
-  // active/inactive from the same date set the streak count itself
-  // comes from — the week strip and the number can never disagree.
   const weekStrip = Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
     d.setHours(0, 0, 0, 0)
@@ -380,15 +361,8 @@ export default function Home({ user }) {
     }
   })
 
-  // Simple clock-hour approximation, not tied to actual sunrise/
-  // sunset (unlike the real prayer times below) — a reasonable
-  // tradeoff for a purely decorative background, not something
-  // anyone should rely on for prayer timing.
   const isNight = time.getHours() >= 18 || time.getHours() < 6
 
-  // Saved locally in public/images/home/ — no longer hotlinked to
-  // Unsplash's CDN, so this no longer depends on an external host
-  // staying reachable.
   const HERO_PHOTOS = {
     day: '/images/home/hero-day.jpg',
     night: '/images/home/hero-night.jpg',
@@ -396,11 +370,6 @@ export default function Home({ user }) {
 
   return (
     <div className="page-content home-page">
-      {/* ── Hero: standing, at a glance — the one card everything
-          else on this page sits beneath, the way a balance card
-          anchors a banking app. Background is a real photo (river by
-          day, moon over trees by night), with a navy gradient overlay
-          so the existing white text/buttons stay legible on top. ── */}
       <div
         className="hm-hero"
         style={{
@@ -432,9 +401,6 @@ export default function Home({ user }) {
         </div>
       </div>
 
-      {/* ── Streak: a proper daily-engagement card, not just the
-          small hero badge — counts a day as active from either a
-          quiz taken or a story touched, not quiz-taking alone. ── */}
       <div className="hm-streak">
         <div className="hm-streak-top">
           <span className="hm-streak-flame">{ICONS.flame}</span>
@@ -457,8 +423,6 @@ export default function Home({ user }) {
         </div>
       </div>
 
-      {/* ── Explore: the same destinations as before, as a tile
-          grid. ── */}
       <div className="hm-section">
         <div className="hm-section-head">
           <p className="hm-section-title">Explore <span className="arabic">اِسْتَكْشِف</span></p>
@@ -473,8 +437,6 @@ export default function Home({ user }) {
         </div>
       </div>
 
-      {/* ── Standing: today's date/prayer, and where you left off,
-          side by side. ── */}
       <div className="hm-section">
         <div className="hm-section-head">
           <p className="hm-section-title">Today <span className="arabic">اليَوْم</span></p>
@@ -505,7 +467,6 @@ export default function Home({ user }) {
         </div>
       </div>
 
-      {/* ── Recent activity: your last few quiz attempts. ── */}
       {recentQuizzes.length > 0 && (
         <div className="hm-section">
           <div className="hm-section-head">
@@ -537,10 +498,6 @@ export default function Home({ user }) {
         </div>
       )}
 
-      {/* ── Refer a friend, get free access to Spaces. Links to
-          Profile, where the existing referral link/progress
-          (ReferralProgress) already lives. Padlock = unlocked
-          access, coins = the reward itself. ── */}
       <Link to="/profile" className="hm-referral">
         <span className="hm-referral-icons">
           <span className="hm-referral-icon hm-referral-icon--lock">{ICONS.unlock}</span>
@@ -550,9 +507,6 @@ export default function Home({ user }) {
         <span className="hm-referral-arrow" aria-hidden="true">→</span>
       </Link>
 
-      {/* ── Points to the weekly leaderboard. Same visual pattern as
-          the referral banner above, just a single trophy icon
-          instead of two overlapping ones. ── */}
       <Link to="/leaderboard" className="hm-referral">
         <span className="hm-referral-icons">
           <span className="hm-referral-icon hm-referral-icon--single">{ICONS.trophy}</span>
@@ -562,6 +516,9 @@ export default function Home({ user }) {
       </Link>
 
       <SpacesCTA user={user} variant="default" />
+
+      {reminderVisible && <DailyReminder onDismiss={dismissReminder} firstName={firstName} />}
+      {milestone && <MilestoneCelebration milestone={milestone} onDismiss={() => setMilestone(null)} />}
     </div>
   )
 }
