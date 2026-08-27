@@ -37,18 +37,19 @@ function NotificationToggle({ user }) {
   }
 
   if (!supported) {
-    return <p style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>Notifications aren't supported in this browser. On iPhone, make sure Sual is added to your Home Screen first.</p>
+    return <p className="profile-note">Notifications aren't supported in this browser. On iPhone, make sure Sual is added to your Home Screen first.</p>
   }
 
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div className="profile-notif-toggle">
       <button className="btn btn-primary" onClick={handleToggle} disabled={loading}>
         {loading ? '…' : permission === 'granted' ? '🔔 Notifications on — tap to turn off' : '🔕 Turn on daily reminders'}
       </button>
-      {error && <p style={{ color: '#c0392b', fontSize: '0.82rem', marginTop: 6 }}>{error}</p>}
+      {error && <p className="profile-inline-error">{error}</p>}
     </div>
   )
 }
+
 const LEVELS = [
   { key: 'beginner',     label: 'Beginner',     arabic: 'مُبْتَدِئ',  color: '#2e7d32' },
   { key: 'intermediate', label: 'Intermediate', arabic: 'مُتَوَسِّط', color: '#e65100' },
@@ -80,26 +81,15 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
   const [subLoading, setSubLoading] = useState(true)
   const fileRef = useRef()
 
-  // Username — powers the weekly leaderboard specifically. Shown
-  // there ONLY for members who've set one (see
-  // get_weekly_quiz_leaderboard), so leaving this blank just means
-  // not appearing on that list, nothing else breaks.
   const [username, setUsernameState] = useState(null)
   const [usernameInput, setUsernameInput] = useState('')
   const [usernameLoading, setUsernameLoading] = useState(false)
 
-  // Coins — earned automatically per quiz question (see the
-  // award_quiz_coins trigger on quiz_history), never spent or reset.
-  // merchCode is null until the running total first crosses 5,000,
-  // at which point the same trigger generates it once, permanently.
   const [coinBalance, setCoinBalance] = useState(0)
   const [merchCode, setMerchCode] = useState(null)
   const [coinsLoading, setCoinsLoading] = useState(true)
   const [codeCopied, setCodeCopied] = useState(false)
 
-  // Coin history — lazy-loaded only when the person actually expands
-  // it, not on every Profile page load, since most visits won't need
-  // it.
   const [showCoinHistory, setShowCoinHistory] = useState(false)
   const [coinHistory, setCoinHistory] = useState([])
   const [coinHistoryLoading, setCoinHistoryLoading] = useState(false)
@@ -114,18 +104,8 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
     fetchCoins()
   }, [user])
 
-  // All hooks are declared above this line, unconditionally, before
-  // any early return — required so this component stays safe to
-  // render even if a future change ever calls it before `user` is
-  // guaranteed to exist.
   if (!user) return null
 
-  // Success/error text renders as a plain banner div, which a native
-  // screen reader will happily pick up in DOM order — but for
-  // touch-explore, and for anyone not actively re-scanning the
-  // screen, these outcomes need to be spoken proactively the moment
-  // they happen, the same way the chat/quiz pages announce their own
-  // state changes.
   const flashSuccess = (msg) => { setSuccess(msg); setError(null); announce(msg) }
   const flashError = (msg) => { setError(msg); setSuccess(null); announce(msg) }
 
@@ -355,45 +335,67 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
     ? Math.max(0, Math.ceil((new Date(subscription.expires_at) - new Date()) / (1000 * 60 * 60 * 24)))
     : 0
 
+  const currentLevelMeta = LEVELS.find(l => l.key === userLevel)
+
   return (
     <div className="page-content profile-page">
-      <h1 className="page-title">My Profile</h1>
-      <p className="page-subtitle">حِسَابِي — Manage your account and settings</p>
-
-      {/* Avatar section */}
-      <div className="profile-hero card" data-a11y-label={`${name || user?.email}. ${user?.email}. Member since ${memberSince}.`}>
-        <div className="profile-avatar-wrapper">
-          {avatarUrl ? (
-            <img src={avatarUrl} alt="Profile" className="profile-avatar-img" />
-          ) : (
-            <div className="profile-avatar-initials">{initials}</div>
-          )}
-          {avatarLoading && (
-            <div className="profile-avatar-loading">
-              <div className="profile-spinner" />
-            </div>
-          )}
+      {/* ── Hero ── */}
+      <div
+        className="profile-hero"
+        data-a11y-label={`${name || user?.email}. ${user?.email}. Member since ${memberSince}.`}
+      >
+        <div className="profile-hero-top">
+          <div className="profile-avatar-wrapper">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Profile" className="profile-avatar-img" />
+            ) : (
+              <div className="profile-avatar-initials">{initials}</div>
+            )}
+            {avatarLoading && (
+              <div className="profile-avatar-loading">
+                <div className="profile-spinner" />
+              </div>
+            )}
+          </div>
+          <div className="profile-hero-info">
+            <h1 className="profile-display-name">{name || user?.email}</h1>
+            <p className="profile-email">{user?.email}</p>
+            <p className="profile-member-since">Member since {memberSince}</p>
+          </div>
         </div>
-        <div className="profile-hero-info">
-          <h2 className="profile-display-name">{name || user?.email}</h2>
-          <p className="profile-email">{user?.email}</p>
-          <p className="profile-member-since">Member since {memberSince}</p>
-          <button
-            className="profile-avatar-btn"
-            onClick={() => fileRef.current.click()}
-            disabled={avatarLoading}
-          >
-            {avatarLoading ? 'Uploading...' : '📷 Change Photo'}
-          </button>
-          <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
+        <button
+          className="profile-avatar-btn"
+          onClick={() => fileRef.current.click()}
+          disabled={avatarLoading}
+        >
+          {avatarLoading ? 'Uploading...' : '📷 Change Photo'}
+        </button>
+        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
+      </div>
+
+      {/* ── Quick-glance stat strip ── */}
+      <div className="profile-stat-strip">
+        <div className="profile-stat-chip">
+          <span className="profile-stat-chip-label">Level</span>
+          <span className="profile-stat-chip-value" style={{ color: currentLevelMeta?.color }}>
+            {currentLevelMeta?.label || 'Beginner'}
+          </span>
+        </div>
+        <div className="profile-stat-chip">
+          <span className="profile-stat-chip-label">Coins</span>
+          <span className="profile-stat-chip-value">{coinsLoading ? '—' : coinBalance.toLocaleString()}</span>
+        </div>
+        <div className="profile-stat-chip">
+          <span className="profile-stat-chip-label">Spaces</span>
+          <span className={`profile-stat-chip-value ${isPaid ? 'profile-stat-chip-value--good' : 'profile-stat-chip-value--muted'}`}>
+            {isPaid ? 'Active' : 'Free'}
+          </span>
         </div>
       </div>
 
-      {/* Badges — previously declared as a bare expression outside
-          the returned JSX, so it never actually rendered. Fixed here. */}
       <BadgesSection user={user} />
 
-      {/* Subscription card */}
+      {/* ── Subscription ── */}
       <div
         className={`profile-sub-card ${isPaid ? 'profile-sub-card--active' : 'profile-sub-card--inactive'}`}
         data-a11y-label={isPaid
@@ -403,15 +405,15 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
         <div className="profile-sub-top">
           <div>
             <p className="profile-sub-label">Spaces Membership</p>
-            <p className="profile-sub-status">
-              {isPaid ? '✅ Active' : '⭕ Inactive'}
-            </p>
+            <p className="profile-sub-status">{isPaid ? '✅ Active' : '⭕ Inactive'}</p>
           </div>
-          <div className="profile-sub-badge" style={{ background: isPaid ? 'rgba(13,110,74,0.15)' : 'rgba(192,57,43,0.1)', color: isPaid ? '#0d6e4a' : '#c0392b' }}>
+          <div className={`profile-sub-badge ${isPaid ? 'profile-sub-badge--active' : 'profile-sub-badge--inactive'}`}>
             {isPaid ? 'Subscribed' : 'Not Subscribed'}
           </div>
         </div>
-<ReferralProgress user={user} />
+
+        <ReferralProgress user={user} />
+
         {isPaid && !subLoading && (
           <div className="profile-sub-details">
             <div className="profile-sub-detail-item">
@@ -424,7 +426,7 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
             </div>
             <div className="profile-sub-detail-item">
               <p className="profile-sub-detail-label">Days Left</p>
-              <p className="profile-sub-detail-value" style={{ color: daysLeft <= 5 ? '#c0392b' : '#0d6e4a' }}>
+              <p className={`profile-sub-detail-value ${daysLeft <= 5 ? 'profile-sub-detail-value--warn' : 'profile-sub-detail-value--good'}`}>
                 {daysLeft} {daysLeft === 1 ? 'day' : 'days'}
               </p>
             </div>
@@ -433,10 +435,7 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
 
         {isPaid && (
           <div className="profile-sub-bar-wrapper">
-            <div
-              className="profile-sub-bar"
-              style={{ width: Math.min(100, (daysLeft / 30) * 100) + '%' }}
-            />
+            <div className="profile-sub-bar" style={{ width: Math.min(100, (daysLeft / 30) * 100) + '%' }} />
           </div>
         )}
 
@@ -445,318 +444,218 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
             <p className="profile-sub-cta-text">
               Join Spaces to access the exclusive community, ask scholars, and learn with serious students.
             </p>
-            <a href="/spaces" className="profile-sub-cta-btn">
-              Subscribe for ₦2,500/month →
-            </a>
+            <a href="/spaces" className="profile-sub-cta-btn">Subscribe for ₦2,500/month →</a>
           </div>
         )}
       </div>
 
-      {/* Username — powers the weekly quiz leaderboard specifically.
-          Set once, changeable anytime; leaving it blank just means
-          not appearing on that one list, nothing else in the app
-          depends on it. */}
-      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
-        <p style={{
-          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
-        }}>
-          Username
-        </p>
-        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
-          {username
-            ? 'Shown on the weekly leaderboard instead of your name.'
-            : 'Set a username to appear on the weekly leaderboard. 3-20 characters — letters, numbers, and underscores only.'}
-        </p>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <input
-            type="text"
-            className="profile-input"
-            value={usernameInput}
-            onChange={e => setUsernameInput(e.target.value)}
-            placeholder="e.g. student_of_ilm"
-            maxLength={20}
-            style={{ flex: 1 }}
-          />
-          <button
-            className="profile-save-btn"
-            onClick={handleSetUsername}
-            disabled={usernameLoading || !usernameInput.trim() || usernameInput.trim() === username}
-            style={{ flexShrink: 0 }}
-          >
-            {usernameLoading ? 'Saving…' : 'Save'}
-          </button>
+      {/* ── Account section: username + gender ── */}
+      <div className="profile-section">
+        <p className="profile-section-title">Account</p>
+
+        <div className="profile-settings-card">
+          <div className="profile-setting-row profile-setting-row--stack">
+            <div className="profile-setting-copy">
+              <p className="profile-setting-label">Username</p>
+              <p className="profile-setting-desc">
+                {username
+                  ? 'Shown on the leaderboard instead of your name.'
+                  : 'Set a username to appear on the leaderboard. 3-20 characters — letters, numbers, underscores only.'}
+              </p>
+            </div>
+            <div className="profile-setting-input-row">
+              <input
+                type="text"
+                className="profile-input"
+                value={usernameInput}
+                onChange={e => setUsernameInput(e.target.value)}
+                placeholder="e.g. student_of_ilm"
+                maxLength={20}
+              />
+              <button
+                className="profile-inline-btn"
+                onClick={handleSetUsername}
+                disabled={usernameLoading || !usernameInput.trim() || usernameInput.trim() === username}
+              >
+                {usernameLoading ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          </div>
+
+          <div className="profile-setting-divider" />
+
+          <div className="profile-setting-row profile-setting-row--stack">
+            <div className="profile-setting-copy">
+              <p className="profile-setting-label">Gender</p>
+              <p className="profile-setting-desc">
+                Required for Accountability Partners in Spaces — pairing only ever matches the same gender.
+              </p>
+            </div>
+            <div className="profile-choice-row">
+              {['male', 'female'].map(g => {
+                const active = gender === g
+                return (
+                  <button
+                    key={g}
+                    className={`profile-choice-btn ${active ? 'profile-choice-btn--active' : ''}`}
+                    onClick={() => handleSetGender(g)}
+                    disabled={genderLoading || active}
+                    data-a11y-label={`${g}${active ? ', currently selected' : ''}`}
+                  >
+                    {active ? '✓ ' : ''}{g.charAt(0).toUpperCase() + g.slice(1)}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Coins — 1 per question attempted in a quiz, awarded
-          automatically via a database trigger the moment a quiz
-          completes. Never spent or reset; crossing 5,000 once
-          permanently unlocks a redemption code below. */}
-      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
-        <p style={{
-          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
-        }}>
-          Coins
-        </p>
-        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
-          Earned automatically — 1 coin per quiz question. Reach 5,000 to unlock a
-          merchandise redemption code, no shipping needed, just send us the code.
-        </p>
-
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 12 }}>
-          <span style={{ fontSize: '2rem', fontWeight: 800, color: '#094570' }}>
-            {coinsLoading ? '—' : coinBalance.toLocaleString()}
-          </span>
-          <span style={{ fontSize: '0.85rem', color: '#8a9ab0' }}>/ 5,000 coins</span>
-        </div>
-
-        <div style={{ height: 8, borderRadius: 100, background: '#eef1f4', overflow: 'hidden', marginBottom: 16 }}>
-          <div style={{
-            height: '100%',
-            width: `${Math.min(100, (coinBalance / 5000) * 100)}%`,
-            background: merchCode ? '#2e7d32' : '#094570',
-            borderRadius: 100,
-            transition: 'width 0.3s ease',
-          }} />
-        </div>
-
-        {merchCode ? (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
-            padding: '12px 16px', borderRadius: 10, background: 'rgba(46,125,50,0.08)',
-            border: '1.5px solid rgba(46,125,50,0.25)',
-          }}>
-            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#2e7d32', letterSpacing: '0.04em' }}>
-              {merchCode}
-            </span>
-            <button
-              onClick={handleCopyCode}
-              style={{
-                padding: '6px 14px', borderRadius: 100, border: '1.5px solid #2e7d32',
-                background: '#ffffff', color: '#2e7d32', fontWeight: 700, fontSize: '0.8rem',
-                cursor: 'pointer',
-              }}
-            >
-              {codeCopied ? '✓ Copied' : 'Copy code'}
-            </button>
+      {/* ── Learning section ── */}
+      <div className="profile-section">
+        <p className="profile-section-title">Learning</p>
+        <div className="profile-settings-card">
+          <div className="profile-setting-row profile-setting-row--stack">
+            <div className="profile-setting-copy">
+              <p className="profile-setting-label">Level</p>
+              <p className="profile-setting-desc">
+                Switch anytime, including back down. Quiz performance still unlocks higher levels the normal way.
+              </p>
+            </div>
+            <div className="profile-level-row">
+              {LEVELS.map(lv => {
+                const active = userLevel === lv.key
+                return (
+                  <button
+                    key={lv.key}
+                    className={`profile-level-btn ${active ? 'profile-level-btn--active' : ''}`}
+                    onClick={() => handleChangeLevel(lv.key)}
+                    disabled={levelLoading || active}
+                    data-a11y-label={`${lv.label}${active ? ', currently selected' : ''}`}
+                    style={active ? { borderColor: lv.color, color: lv.color } : {}}
+                  >
+                    <span>{active ? '✓ ' : ''}{lv.label}</span>
+                    <span className="profile-level-arabic arabic">{lv.arabic}</span>
+                  </button>
+                )
+              })}
+            </div>
           </div>
-        ) : !coinsLoading && (
-          <p style={{ fontSize: '0.8rem', color: '#8a9ab0' }}>
-            {(5000 - coinBalance).toLocaleString()} coins to go.
+        </div>
+      </div>
+
+      {/* ── Rewards section: coins ── */}
+      <div className="profile-section">
+        <p className="profile-section-title">Rewards</p>
+        <div className="profile-settings-card">
+          <p className="profile-setting-desc" style={{ marginBottom: 16 }}>
+            Earned automatically — 1 coin per quiz question. Reach 5,000 to unlock a merchandise
+            redemption code, no shipping needed, just send us the code.
           </p>
-        )}
 
-        {coinBalance > 0 && (
-          <div style={{ marginTop: 14 }}>
-            <button
-              onClick={toggleCoinHistory}
-              style={{
-                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-                fontSize: '0.8rem', fontWeight: 700, color: '#094570', textDecoration: 'underline',
-              }}
-            >
-              {showCoinHistory ? 'Hide history' : 'View history'}
-            </button>
+          <div className="profile-coin-row">
+            <span className="profile-coin-value">{coinsLoading ? '—' : coinBalance.toLocaleString()}</span>
+            <span className="profile-coin-max">/ 5,000 coins</span>
+          </div>
 
-            {showCoinHistory && (
-              <div style={{ marginTop: 10 }}>
-                {coinHistoryLoading ? (
-                  <p style={{ fontSize: '0.8rem', color: '#8a9ab0' }}>Loading…</p>
-                ) : coinHistory.length === 0 ? (
-                  <p style={{ fontSize: '0.8rem', color: '#8a9ab0' }}>No history yet.</p>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {coinHistory.map(row => (
-                      <div
-                        key={row.id}
-                        style={{
-                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                          padding: '8px 12px', borderRadius: 8, background: '#f5f8fb',
-                          fontSize: '0.8rem',
-                        }}
-                      >
-                        <span style={{ color: '#4a6080' }}>
+          <div className="profile-coin-track">
+            <div
+              className={`profile-coin-fill ${merchCode ? 'profile-coin-fill--done' : ''}`}
+              style={{ width: `${Math.min(100, (coinBalance / 5000) * 100)}%` }}
+            />
+          </div>
+
+          {merchCode ? (
+            <div className="profile-merch-code">
+              <span className="profile-merch-code-text">{merchCode}</span>
+              <button className="profile-inline-btn profile-inline-btn--outline" onClick={handleCopyCode}>
+                {codeCopied ? '✓ Copied' : 'Copy code'}
+              </button>
+            </div>
+          ) : !coinsLoading && (
+            <p className="profile-note">{(5000 - coinBalance).toLocaleString()} coins to go.</p>
+          )}
+
+          {coinBalance > 0 && (
+            <div className="profile-coin-history-wrap">
+              <button className="profile-text-link" onClick={toggleCoinHistory}>
+                {showCoinHistory ? 'Hide history' : 'View history'}
+              </button>
+
+              {showCoinHistory && (
+                <div className="profile-coin-history-list">
+                  {coinHistoryLoading ? (
+                    <p className="profile-note">Loading…</p>
+                  ) : coinHistory.length === 0 ? (
+                    <p className="profile-note">No history yet.</p>
+                  ) : (
+                    coinHistory.map(row => (
+                      <div key={row.id} className="profile-coin-history-row">
+                        <span className="profile-coin-history-label">
                           {row.discipline
                             ? `${row.discipline.charAt(0).toUpperCase() + row.discipline.slice(1)} quiz`
                             : 'Quiz attempt'}
-                          <span style={{ color: '#8a9ab0', marginLeft: 8 }}>
+                          <span className="profile-coin-history-date">
                             {new Date(row.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                           </span>
                         </span>
-                        <span style={{ fontWeight: 700, color: '#2e7d32' }}>+{row.amount}</span>
+                        <span className="profile-coin-history-amount">+{row.amount}</span>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Preferences section: security + display ── */}
+      <div className="profile-section">
+        <p className="profile-section-title">Preferences</p>
+        <div className="profile-settings-card">
+          <div className="profile-setting-row profile-setting-row--stack">
+            <p className="profile-setting-label">Security</p>
+            <BiometricLockToggle user={user} />
+          </div>
+
+          {typeof fontSize !== 'undefined' && setFontSize && (
+            <>
+              <div className="profile-setting-divider" />
+              <div className="profile-setting-row profile-setting-row--stack">
+                <div className="profile-setting-copy">
+                  <p className="profile-setting-label">Text Size</p>
+                  <p className="profile-setting-desc">Adjusts text size across the whole app.</p>
+                </div>
+                <div className="profile-fontsize-row">
+                  {FONT_SIZES.map(fs => {
+                    const active = fontSize === fs.key
+                    return (
+                      <button
+                        key={fs.key}
+                        className={`profile-fontsize-btn ${active ? 'profile-fontsize-btn--active' : ''}`}
+                        onClick={() => setFontSize(fs.key)}
+                        disabled={active}
+                        data-a11y-label={`${fs.label} text size${active ? ', currently selected' : ''}`}
+                      >
+                        <span
+                          className="profile-fontsize-sample"
+                          style={{ fontSize: fs.key === 'small' ? '0.9rem' : fs.key === 'medium' ? '1.1rem' : fs.key === 'large' ? '1.3rem' : '1.5rem' }}
+                        >
+                          {active ? '✓ ' : ''}{fs.sample}
+                        </span>
+                        <span className="profile-fontsize-label">{fs.label}</span>
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Gender — required before Accountability pairing works.
-          Self-declared, same as name and email; there's no
-          verification mechanism, and every comparable platform
-          handles it the same way. Used to keep pairing single-gender,
-          enforced server-side in pair_accountability_partners. */}
-      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
-        <p style={{
-          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
-        }}>
-          Gender
-        </p>
-        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
-          Required to see or use Accountability Partners in Spaces — pairing only ever
-          matches members of the same gender.
-        </p>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {['male', 'female'].map(g => {
-            const active = gender === g
-            return (
-              <button
-                key={g}
-                onClick={() => handleSetGender(g)}
-                disabled={genderLoading || active}
-                data-a11y-label={`${g}${active ? ', currently selected' : ''}`}
-                style={{
-                  flex: 1,
-                  padding: '10px 14px',
-                  borderRadius: 10,
-                  border: active ? '2px solid #094570' : '2px solid #c8d8e8',
-                  background: active ? '#ffffff' : '#f5f8fb',
-                  color: active ? '#094570' : '#6a8090',
-                  fontWeight: 700,
-                  fontSize: '0.85rem',
-                  cursor: active ? 'default' : 'pointer',
-                  textTransform: 'capitalize',
-                }}
-              >
-                {active ? '✓ ' : ''}{g}
-              </button>
-            )
-          })}
+            </>
+          )}
         </div>
       </div>
 
-      {/* Learning Level card */}
-      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
-        <p style={{
-          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
-        }}>
-          Learning Level
-        </p>
-        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
-          Switch anytime, including back down if you picked the wrong one by mistake.
-          This only changes your default level — quiz performance still unlocks higher
-          levels the normal way.
-        </p>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {LEVELS.map(lv => {
-            const active = userLevel === lv.key
-            return (
-              <button
-                key={lv.key}
-                onClick={() => handleChangeLevel(lv.key)}
-                disabled={levelLoading || active}
-                data-a11y-label={`${lv.label}${active ? ', currently selected' : ''}`}
-                style={{
-                  flex: '1 1 140px',
-                  padding: '10px 14px',
-                  borderRadius: 10,
-                  border: active ? `2px solid ${lv.color}` : '2px solid #c8d8e8',
-                  background: active ? '#ffffff' : '#f5f8fb',
-                  color: active ? lv.color : '#6a8090',
-                  fontWeight: 700,
-                  fontSize: '0.85rem',
-                  cursor: active ? 'default' : 'pointer',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 2,
-                  opacity: levelLoading && !active ? 0.6 : 1,
-                }}
-              >
-                <span>{active ? '✓ ' : ''}{lv.label}</span>
-                <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>{lv.arabic}</span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Security card — fingerprint/Face ID app lock. Sits with the
-          other device/account-level toggles rather than the tabs
-          below, since it's a standing preference, not a one-time
-          form action. */}
-      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
-        <p style={{
-          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 12,
-        }}>
-          Security
-        </p>
-        <BiometricLockToggle user={user} />
-      </div>
-
-      {/* Display card — text size used to live as A-/A/A+ buttons in
-          the top toolbar on every page; moved here since it's a
-          set-once-and-forget preference, not something that needs
-          reaching from everywhere. */}
-      {typeof fontSize !== 'undefined' && setFontSize && (
-        <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
-          <p style={{
-            fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
-            letterSpacing: '0.06em', color: '#4a6080', marginBottom: 6,
-          }}>
-            Display
-          </p>
-          <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16, lineHeight: 1.5 }}>
-            Text size across the whole app.
-          </p>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {FONT_SIZES.map(fs => {
-              const active = fontSize === fs.key
-              return (
-                <button
-                  key={fs.key}
-                  onClick={() => setFontSize(fs.key)}
-                  disabled={active}
-                  data-a11y-label={`${fs.label} text size${active ? ', currently selected' : ''}`}
-                  style={{
-                    flex: '1 1 110px',
-                    padding: '10px 14px',
-                    borderRadius: 10,
-                    border: active ? '2px solid #094570' : '2px solid #c8d8e8',
-                    background: active ? '#ffffff' : '#f5f8fb',
-                    color: active ? '#094570' : '#6a8090',
-                    fontWeight: 700,
-                    fontSize: '0.85rem',
-                    cursor: active ? 'default' : 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 2,
-                  }}
-                >
-                  <span style={{
-                    fontSize: fs.key === 'small' ? '0.9rem' : fs.key === 'medium' ? '1.1rem' : fs.key === 'large' ? '1.3rem' : '1.5rem',
-                    fontWeight: 800,
-                  }}>
-                    {active ? '✓ ' : ''}{fs.sample}
-                  </span>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 500 }}>{fs.label}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Tabs */}
+      {/* ── Edit Profile / Change Password ── */}
       <div className="profile-tabs">
         {['profile', 'password'].map(tab => (
           <button
@@ -769,11 +668,9 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
         ))}
       </div>
 
-      {/* Messages */}
       {error && <div className="profile-error"><span>⚠️</span><p>{error}</p></div>}
       {success && <div className="profile-success"><span>✅</span><p>{success}</p></div>}
 
-      {/* Profile Tab */}
       {activeTab === 'profile' && (
         <div className="profile-form card">
           <h3 className="profile-form-title">Personal Information</h3>
@@ -789,12 +686,7 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
           </div>
           <div className="profile-field">
             <label className="profile-label">Email Address</label>
-            <input
-              type="email"
-              className="profile-input profile-input--disabled"
-              value={user?.email}
-              disabled
-            />
+            <input type="email" className="profile-input profile-input--disabled" value={user?.email} disabled />
             <p className="profile-field-note">Email cannot be changed.</p>
           </div>
           <button className="profile-save-btn" onClick={handleUpdateProfile} disabled={loading}>
@@ -803,7 +695,6 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
         </div>
       )}
 
-      {/* Password Tab */}
       {activeTab === 'password' && (
         <div className="profile-form card">
           <h3 className="profile-form-title">Change Password</h3>
@@ -840,6 +731,7 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
           </button>
         </div>
       )}
+
       <AccountabilityProfileEditor user={user} />
     </div>
   )
