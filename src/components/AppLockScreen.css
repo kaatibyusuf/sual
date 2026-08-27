@@ -1,0 +1,54 @@
+.alock-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(133,204,255,0.14), transparent 60%),
+    linear-gradient(160deg, #062038 0%, #094570 45%, #0a2f52 100%);
+  padding: 24px;
+}
+
+.alock-lattice {
+  position: absolute; inset: 0; opacity: 0.05;
+  background-image:
+    linear-gradient(45deg, transparent 48%, rgba(133,204,255,0.5) 49%, rgba(133,204,255,0.5) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(133,204,255,0.5) 49%, rgba(133,204,255,0.5) 51%, transparent 52%);
+  background-size: 64px 64px;
+}
+
+.alock-content {
+  position: relative; z-index: 1; max-width: 360px; width: 100%; text-align: center;
+}
+
+.alock-wordmark { font-size: 2.4rem; color: #85CCFF; margin-bottom: 32px; opacity: 0.9; }
+
+.alock-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 72px; height: 72px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+  color: #85CCFF; margin-bottom: 24px;
+}
+.alock-icon svg { width: 34px; height: 34px; }
+.alock-icon--pulsing { animation: alockPulse 1.2s ease-in-out infinite; }
+@keyframes alockPulse { 0%,100%{ transform: scale(1); opacity: 1; } 50%{ transform: scale(1.08); opacity: 0.7; } }
+
+.alock-title { color: #ffffff; font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+.alock-sub { color: rgba(255,255,255,0.65); font-size: 0.9rem; margin-bottom: 28px; min-height: 20px; }
+
+.alock-btn {
+  display: block; width: 100%; padding: 13px; border-radius: 100px; font-weight: 700; font-size: 0.9rem;
+  cursor: pointer; border: none; background: #ffffff; color: #094570; font-family: var(--font-ui);
+  margin-bottom: 10px;
+}
+.alock-btn--secondary { background: rgba(255,255,255,0.14); color: #ffffff; border: 1px solid rgba(255,255,255,0.25); }
+.alock-btn--ghost { background: transparent; color: rgba(255,255,255,0.6); }
+
+.alock-recovery-link {
+  background: none; border: none; color: rgba(255,255,255,0.5); font-size: 0.8rem; cursor: pointer;
+  text-decoration: underline; margin-top: 8px; font-family: var(--font-ui);
+}
+
+.alock-recovery-box {
+  margin-top: 16px; padding: 16px; background: rgba(255,255,255,0.06); border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.alock-recovery-box p { color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.6; margin-bottom: 14px; }

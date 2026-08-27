@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { supabase } from '../lib/supabase.js'
 import { DUAS } from '../data/duas.js'
 import { MORNING_ADHKAR, EVENING_ADHKAR, RUQYAH, GENERAL_ADHKAR } from '../data/adhkar.js'
 import './Duas.css'
@@ -40,58 +41,8 @@ function gradeStyle(grade) {
   return GRADE_COLORS[grade] || GRADE_COLORS['Hasan']
 }
 
-// ── Progress persistence for sequential Morning/Evening sessions ──
-// Keyed per category, per calendar day, so a half-finished session
-// from a previous day never blocks a fresh start today — but
-// backgrounding the app or navigating away mid-session on the SAME
-// day resumes exactly where it left off, item and rep count intact.
-function todayKey() {
-  return new Date().toDateString()
-}
-
-function progressStorageKey(category) {
-  return `sual-adhkar-progress-${category}-${todayKey()}`
-}
-
-function completedStorageKey(category) {
-  return `sual-adhkar-completed-${category}-${todayKey()}`
-}
-
-function readProgress(category) {
-  try {
-    const raw = localStorage.getItem(progressStorageKey(category))
-    return raw ? JSON.parse(raw) : null
-  } catch {
-    return null
-  }
-}
-
-function writeProgress(category, progress) {
-  try {
-    localStorage.setItem(progressStorageKey(category), JSON.stringify(progress))
-  } catch {
-    // localStorage unavailable — session just won't resume, non-fatal
-  }
-}
-
-function clearProgress(category) {
-  try {
-    localStorage.removeItem(progressStorageKey(category))
-  } catch {}
-}
-
-function isCompletedToday(category) {
-  try {
-    return localStorage.getItem(completedStorageKey(category)) === 'true'
-  } catch {
-    return false
-  }
-}
-
-function markCompletedToday(category) {
-  try {
-    localStorage.setItem(completedStorageKey(category), 'true')
-  } catch {}
+function todayDateStr() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 // ─── Morning / Evening Card ───────────────────────────────────────────────────
@@ -224,16 +175,20 @@ function DetailView({ item, type, onBack }) {
   )
 }
 
-// ─── Continue/Start banner — shown above the Morning/Evening grid ─────────────
-// Reads progress synchronously from localStorage on every render (cheap,
-// no state duplication needed) — refreshRef lets the parent force a
-// re-render after a session ends, so the banner reflects the new state
-// immediately without needing its own effect/subscription.
-function AdhkarProgressBanner({ category, items, label, onStart, onContinue }) {
-  const completed = isCompletedToday(category)
-  const progress = readProgress(category)
+// ─── Continue/Start banner ─────────────────────────────────────────────────────
+function AdhkarProgressBanner({ label, items, progress, loading, onStart, onContinue }) {
+  if (loading) {
+    return (
+      <div className="adhkar-banner card">
+        <span className="adhkar-banner-icon">…</span>
+        <div className="adhkar-banner-text">
+          <p className="adhkar-banner-title">Checking your progress…</p>
+        </div>
+      </div>
+    )
+  }
 
-  if (completed) {
+  if (progress?.completed) {
     return (
       <div className="adhkar-banner adhkar-banner--done card">
         <span className="adhkar-banner-icon">✓</span>
@@ -248,14 +203,14 @@ function AdhkarProgressBanner({ category, items, label, onStart, onContinue }) {
     )
   }
 
-  if (progress && progress.index > 0) {
-    const percent = Math.round((progress.index / items.length) * 100)
+  if (progress && progress.item_index > 0) {
+    const percent = Math.round((progress.item_index / items.length) * 100)
     return (
       <div className="adhkar-banner card">
         <span className="adhkar-banner-icon">↻</span>
         <div className="adhkar-banner-text">
           <p className="adhkar-banner-title">Continue {label}</p>
-          <p className="adhkar-banner-sub">You stopped at {progress.index + 1} of {items.length} — {percent}% done</p>
+          <p className="adhkar-banner-sub">You stopped at {progress.item_index + 1} of {items.length} — {percent}% done</p>
         </div>
         <button className="adhkar-banner-btn" onClick={onContinue}>
           Continue →
@@ -278,20 +233,45 @@ function AdhkarProgressBanner({ category, items, label, onStart, onContinue }) {
   )
 }
 
-// ─── Sequential session view — step through Morning/Evening in order ──────────
-function AdhkarSession({ items, category, label, onExit }) {
-  const stored = readProgress(category)
-  const [index, setIndex] = useState(stored?.index ?? 0)
-  const [reps, setReps] = useState(stored?.reps ?? 0)
+// ─── Sequential session view ────────────────────────────────────────────────
+function AdhkarSession({ user, items, category, label, initialProgress, onExit }) {
+  const [index, setIndex] = useState(initialProgress?.item_index ?? 0)
+  const [reps, setReps] = useState(initialProgress?.reps ?? 0)
   const [finished, setFinished] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   const item = items[index]
   const targetReps = item?.count || 1
   const repsRemaining = Math.max(0, targetReps - reps)
 
+  const saveProgress = useCallback(async (nextIndex, nextReps, isCompleted) => {
+    if (!user) return
+    setSaving(true)
+    try {
+      await supabase.from('adhkar_progress').upsert({
+        user_id: user.id,
+        category,
+        progress_date: todayDateStr(),
+        item_index: nextIndex,
+        reps: nextReps,
+        completed: isCompleted,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id,category,progress_date' })
+    } catch (err) {
+      console.error('Failed to save adhkar progress:', err)
+    } finally {
+      setSaving(false)
+    }
+  }, [user, category])
+
+  // Save on every index/reps change — this is what makes exiting
+  // mid-session (or backgrounding the app) resumable later, on any
+  // device, since it's a real database row rather than local-only
+  // storage.
   useEffect(() => {
-    if (!finished) writeProgress(category, { index, reps })
-  }, [index, reps, category, finished])
+    if (!finished) saveProgress(index, reps, false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, reps])
 
   const tapRep = () => {
     if (reps < targetReps) setReps(r => r + 1)
@@ -299,8 +279,7 @@ function AdhkarSession({ items, category, label, onExit }) {
 
   const goNext = () => {
     if (index + 1 >= items.length) {
-      clearProgress(category)
-      markCompletedToday(category)
+      saveProgress(index, reps, true)
       setFinished(true)
     } else {
       setIndex(i => i + 1)
@@ -312,14 +291,6 @@ function AdhkarSession({ items, category, label, onExit }) {
     if (index === 0) return
     setIndex(i => i - 1)
     setReps(0)
-  }
-
-  const exitAndSave = () => {
-    // Progress is already written on every change via the effect
-    // above — exiting mid-session simply leaves that last saved
-    // state in place, which is exactly what "continue where you
-    // stopped" resumes from next time.
-    onExit()
   }
 
   if (finished) {
@@ -336,13 +307,15 @@ function AdhkarSession({ items, category, label, onExit }) {
   }
 
   const gs = gradeStyle(item.grade)
-  const percent = Math.round(((index) / items.length) * 100)
+  const percent = Math.round((index / items.length) * 100)
 
   return (
     <div className="adhkar-session">
       <div className="adhkar-session-header">
-        <button className="adhkar-session-exit" onClick={exitAndSave}>← Exit</button>
-        <span className="adhkar-session-progress-label">{index + 1} of {items.length}</span>
+        <button className="adhkar-session-exit" onClick={onExit}>← Exit</button>
+        <span className="adhkar-session-progress-label">
+          {index + 1} of {items.length}{saving ? ' · saving…' : ''}
+        </span>
       </div>
 
       <div className="adhkar-session-track">
@@ -399,14 +372,40 @@ function AdhkarSession({ items, category, label, onExit }) {
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
-export default function Duas() {
+export default function Duas({ user }) {
   const [activeTab, setActiveTab] = useState('morning')
   const [selected, setSelected] = useState(null)
   const [selectedType, setSelectedType] = useState(null)
   const [duaCategory, setDuaCategory] = useState('all')
   const [search, setSearch] = useState('')
   const [sessionCategory, setSessionCategory] = useState(null) // 'morning' | 'evening' | null
-  const [bannerRefresh, setBannerRefresh] = useState(0) // bumped to force the banner to re-read localStorage after a session ends
+
+  const [morningProgress, setMorningProgress] = useState(null)
+  const [eveningProgress, setEveningProgress] = useState(null)
+  const [progressLoading, setProgressLoading] = useState(true)
+
+  const fetchProgress = useCallback(async () => {
+    if (!user) { setProgressLoading(false); return }
+    setProgressLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('adhkar_progress')
+        .select('category, item_index, reps, completed')
+        .eq('user_id', user.id)
+        .eq('progress_date', todayDateStr())
+      if (error) throw error
+      const morning = (data || []).find(r => r.category === 'morning') || null
+      const evening = (data || []).find(r => r.category === 'evening') || null
+      setMorningProgress(morning)
+      setEveningProgress(evening)
+    } catch (err) {
+      console.error('Failed to load adhkar progress:', err)
+    } finally {
+      setProgressLoading(false)
+    }
+  }, [user])
+
+  useEffect(() => { fetchProgress() }, [fetchProgress])
 
   const handleSelect = (item, type) => {
     setSelected(item)
@@ -420,13 +419,20 @@ export default function Duas() {
 
   const endSession = () => {
     setSessionCategory(null)
-    setBannerRefresh(n => n + 1)
+    fetchProgress() // pull the freshly-saved state so the banner reflects it immediately
   }
 
   if (sessionCategory === 'morning') {
     return (
       <div className="page-content duas-page">
-        <AdhkarSession items={MORNING_ADHKAR} category="morning" label="Morning Adhkar" onExit={endSession} />
+        <AdhkarSession
+          user={user}
+          items={MORNING_ADHKAR}
+          category="morning"
+          label="Morning Adhkar"
+          initialProgress={morningProgress}
+          onExit={endSession}
+        />
       </div>
     )
   }
@@ -434,7 +440,14 @@ export default function Duas() {
   if (sessionCategory === 'evening') {
     return (
       <div className="page-content duas-page">
-        <AdhkarSession items={EVENING_ADHKAR} category="evening" label="Evening Adhkar" onExit={endSession} />
+        <AdhkarSession
+          user={user}
+          items={EVENING_ADHKAR}
+          category="evening"
+          label="Evening Adhkar"
+          initialProgress={eveningProgress}
+          onExit={endSession}
+        />
       </div>
     )
   }
@@ -475,11 +488,12 @@ export default function Duas() {
 
       {/* ── Morning ── */}
       {activeTab === 'morning' && (
-        <div key={bannerRefresh}>
+        <div>
           <AdhkarProgressBanner
-            category="morning"
-            items={MORNING_ADHKAR}
             label="Morning Adhkar"
+            items={MORNING_ADHKAR}
+            progress={morningProgress}
+            loading={progressLoading}
             onStart={() => setSessionCategory('morning')}
             onContinue={() => setSessionCategory('morning')}
           />
@@ -500,11 +514,12 @@ export default function Duas() {
 
       {/* ── Evening ── */}
       {activeTab === 'evening' && (
-        <div key={bannerRefresh}>
+        <div>
           <AdhkarProgressBanner
-            category="evening"
-            items={EVENING_ADHKAR}
             label="Evening Adhkar"
+            items={EVENING_ADHKAR}
+            progress={eveningProgress}
+            loading={progressLoading}
             onStart={() => setSessionCategory('evening')}
             onContinue={() => setSessionCategory('evening')}
           />

@@ -7,6 +7,8 @@ import Toolbar from './components/Toolbar.jsx'
 import BottomNav from './components/BottomNav.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 import NotificationBell from './components/NotificationBell.jsx'
+import AppLockScreen from './components/AppLockScreen.jsx'
+import { shouldShowLockScreen, trackVisibilityForRelock } from './lib/biometricLock.js'
 import { AccessibilityProvider } from './accessibility/AccessibilityContext.jsx'
 import TouchExploreLayer from './accessibility/TouchExploreLayer.jsx'
 import AccessibilityToggle from './accessibility/AccessibilityToggle.jsx'
@@ -72,6 +74,7 @@ function AppInner() {
   const [levelSelected, setLevelSelected] = useState(false)
   const [isKid, setIsKid] = useState(false)
   const [kidCheckDone, setKidCheckDone] = useState(false)
+  const [locked, setLocked] = useState(false)
   // Both attributes are applied here, synchronously, inside the
   // lazy initializer — not in a useEffect. useEffect only runs AFTER
   // the browser's first paint, so with the old effect-based version
@@ -190,6 +193,23 @@ function AppInner() {
     return () => { cancelled = true }
   }, [user])
 
+  // Biometric app-lock: checks whether this device session needs to
+  // be re-verified, and re-arms the lock if the app was backgrounded
+  // past RELOCK_AFTER_MS even within the same browser session. Only
+  // active once a user is known — a signed-out visitor never sees
+  // this, since there's nothing of theirs to protect yet.
+  useEffect(() => {
+    if (!user) return
+    setLocked(shouldShowLockScreen())
+
+    const handleVisibility = () => {
+      trackVisibilityForRelock()
+      if (shouldShowLockScreen()) setLocked(true)
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [user])
+
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     setUser(null)
@@ -241,6 +261,15 @@ function AppInner() {
         </div>
       </div>
     )
+  }
+
+  // Biometric lock check happens after auth/kid-check resolve, but
+  // before anything else renders — this is a local device gate, not
+  // part of the actual auth boundary, so it doesn't affect
+  // authLoading/kidCheckDone timing at all, it just sits in front of
+  // the app's content once we know who's signed in.
+  if (locked) {
+    return <AppLockScreen onUnlock={() => setLocked(false)} onSignOut={handleSignOut} />
   }
 
   // Hard gate: an under-12 account only ever sees the Kids section,
@@ -316,7 +345,7 @@ function AppInner() {
               <Route path="/quiz" element={<Quiz user={user} userLevel={userLevel} />} />
               <Route path="/flashcards" element={<Flashcards />} />
               <Route path="/stories" element={<Stories />} />
-              <Route path="/duas" element={<Duas />} />
+              <Route path="/duas" element={<Duas user={user} />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/tajweed" element={<Tajweed />} />
               <Route path="/fiqh" element={<Fiqh />} />

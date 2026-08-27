@@ -1,0 +1,26 @@
+.blt-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 16px 18px; background: #ffffff; border: 1.5px solid #c8d8e8; border-radius: 14px;
+}
+.blt-row--unsupported { opacity: 0.6; }
+.blt-title { font-size: 0.9rem; font-weight: 700; color: #094570; margin-bottom: 3px; }
+.blt-sub { font-size: 0.78rem; color: #6a8090; line-height: 1.5; }
+.blt-error { font-size: 0.75rem; color: #c0392b; margin-top: 6px; }
+
+.blt-switch {
+  flex-shrink: 0; width: 46px; height: 26px; border-radius: 100px; border: none;
+  background: #c8d8e8; cursor: pointer; position: relative; transition: background 0.2s ease;
+}
+.blt-switch--on { background: #094570; }
+.blt-switch-knob {
+  position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: #ffffff; transition: transform 0.2s ease;
+}
+.blt-switch--on .blt-switch-knob { transform: translateX(20px); }
+.blt-switch:disabled { opacity: 0.6; cursor: not-allowed; }
+
+[data-theme="dark"] .blt-row { background: #0f1f2e; border-color: #1e3448; }
+[data-theme="dark"] .blt-title { color: #85CCFF; }
+[data-theme="dark"] .blt-sub { color: #7f97ae; }
+[data-theme="dark"] .blt-switch { background: #1e3448; }
+[data-theme="dark"] .blt-switch--on { background: #85CCFF; }

@@ -5,6 +5,7 @@ import './Profile.css'
 import { BadgesSection } from '../components/Badges.jsx'
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from '../lib/pushNotifications.js'
 import AccountabilityProfileEditor from '../components/AccountabilityProfileEditor.jsx'
+import BiometricLockToggle from '../components/BiometricLockToggle.jsx'
 import { useAccessibility } from '../accessibility/AccessibilityContext.jsx'
 
 function NotificationToggle({ user }) {
@@ -150,17 +151,6 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
     }
   }
 
-  // FIX: previously only `data` was destructured from this query —
-  // a failed SELECT (network hiccup, transient auth/session timing,
-  // anything) produced `data === undefined`, which silently rendered
-  // exactly the same as "no username set," clearing the field on
-  // refresh even when a username had genuinely been saved
-  // successfully. That's indistinguishable from real data loss from
-  // the user's side, which matches the "goes blank on refresh"
-  // report directly. Now a failed fetch leaves whatever was already
-  // in state alone (from a prior successful load, or the initial
-  // empty state) instead of overwriting a possibly-correct value
-  // with a blank one.
   const fetchUsername = async () => {
     try {
       const { data, error } = await supabase
@@ -218,11 +208,6 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
     setTimeout(() => setCodeCopied(false), 2000)
   }
 
-  // Delegates format/uniqueness validation to set_my_username itself
-  // (server-side, defense in depth) rather than duplicating those
-  // rules here — the RPC raises a specific, friendly error message
-  // for either failure, which lands in err.message the same way
-  // every other RPC error in this file already does.
   const handleSetUsername = async () => {
     const trimmed = usernameInput.trim()
     if (!trimmed || trimmed === username || usernameLoading) return
@@ -241,9 +226,6 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
     }
   }
 
-  // Required before Accountability pairing works at all — the
-  // matching functions filter and enforce by this, server-side, not
-  // just in the UI. See accountability_gender_migration.sql.
   const handleSetGender = async (value) => {
     if (value === gender || genderLoading) return
     setGenderLoading(true)
@@ -335,13 +317,6 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
     }
   }
 
-  // Fully open switch, on purpose — undoing a mistaken level pick
-  // shouldn't be harder than making it. This never touches quiz
-  // history or badges, and if someone drops down but their existing
-  // quiz average still qualifies them for a higher level, the
-  // existing auto-upgrade logic in Quiz.jsx will simply bump them
-  // back up the moment they pass another quiz, so nothing about the
-  // earned-progression system is undermined by allowing this.
   const handleChangeLevel = async (newLevel) => {
     if (newLevel === userLevel || levelLoading) return
     setLevelLoading(true)
@@ -711,6 +686,20 @@ export default function Profile({ user, userLevel, setUserLevel, fontSize, setFo
             )
           })}
         </div>
+      </div>
+
+      {/* Security card — fingerprint/Face ID app lock. Sits with the
+          other device/account-level toggles rather than the tabs
+          below, since it's a standing preference, not a one-time
+          form action. */}
+      <div className="card" style={{ padding: '22px 24px', marginBottom: '20px' }}>
+        <p style={{
+          fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase',
+          letterSpacing: '0.06em', color: '#4a6080', marginBottom: 12,
+        }}>
+          Security
+        </p>
+        <BiometricLockToggle user={user} />
       </div>
 
       {/* Display card — text size used to live as A-/A/A+ buttons in
