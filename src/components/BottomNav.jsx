@@ -126,6 +126,12 @@ const ICONS = {
       <polygon points="12 2 14.6 9 22 9.3 16 14 18 21.5 12 17.3 6 21.5 8 14 2 9.3 9.4 9" />
     </svg>
   ),
+    arabicDictionary: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z" />
+      <line x1="12" y1="6" x2="12" y2="19" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -153,6 +159,7 @@ const MORE_ITEMS = [
   { to: '/rewards', icon: 'rewards', label: 'Rewards' },
   { to: '/zakaat', icon: 'zakaat', label: 'Everything Zakaat' },
   { to: '/new-muslim', icon: 'newMuslim', label: 'New Muslim Path' },
+  { to: '/arabic-dictionary', icon: 'arabicDictionary', label: 'Arabic Dictionary' },
 ]
 
 export default function BottomNav() {
