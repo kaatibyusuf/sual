@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DISCIPLINES, QUIZ_QUESTIONS } from '../data/knowledge.js'
 import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
@@ -252,15 +252,29 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     saveProgress(quizKey, { questionIndex: currentIdx, answers, questions, score, chosen, revealed })
   }, [phase, currentIdx, answers, score, chosen, revealed, questions, selectedDiscipline, selectedLevel])
 
-  const startQuiz = useCallback(() => {
-    const pool = buildQuizPool(selectedDiscipline, selectedLevel)
+  // The actual "load a pool and go" primitive, taking discipline/level
+  // as explicit arguments rather than reading them off state — this
+  // is what lets the Next Quiz suggestion cards on the result screen
+  // jump straight into a different discipline without a stale-state
+  // problem (setSelectedDiscipline + immediately relying on
+  // selectedDiscipline in the same tick wouldn't see the update yet,
+  // since React state updates aren't synchronous). startQuiz() below
+  // is now just this function called with whatever's currently
+  // selected on the picker screen.
+  const beginQuizWith = useCallback((disciplineId, level) => {
+    const pool = buildQuizPool(disciplineId, level)
     if (pool.length === 0) {
+      setSelectedDiscipline(disciplineId)
+      setSelectedLevel(level)
       setNoQuestionsMsg(
-        `No questions available yet for this discipline at ${selectedLevel} level. Try a different level or discipline.`
+        `No questions available yet for this discipline at ${level} level. Try a different level or discipline.`
       )
+      setPhase('select')
       return
     }
     setNoQuestionsMsg(null)
+    setSelectedDiscipline(disciplineId)
+    setSelectedLevel(level)
     const picked = pool.slice(0, Math.min(10, pool.length))
     const shuffled = randomizeSession(picked)
     setQuestions(shuffled)
@@ -274,7 +288,11 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setMerchCodeUnlocked(null)
     setSaveError(null)
     setPhase('active')
-  }, [selectedDiscipline, selectedLevel])
+  }, [])
+
+  const startQuiz = useCallback(() => {
+    beginQuizWith(selectedDiscipline, selectedLevel)
+  }, [selectedDiscipline, selectedLevel, beginQuizWith])
 
   const resumeQuiz = useCallback(() => {
     if (!savedProgress) return
@@ -286,7 +304,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setRevealed(savedProgress.revealed)
     setUnlockMsg(null)
     setNoQuestionsMsg(null)
-    setSaveError(null)
     setPhase('active')
   }, [savedProgress])
 
@@ -448,6 +465,23 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     const d = DISCIPLINES.find(x => x.id === id)
     return d ? { icon: DISCIPLINE_ICONS[d.icon], name: d.name } : { icon: null, name: id }
   }
+
+  // Suggestions for the "Next Quiz" section on the result screen —
+  // deliberately kept at the SAME level just completed, never a
+  // higher one, so this can never surface a level the user hasn't
+  // actually unlocked. Every candidate is checked to have real
+  // questions at that level before being offered, so a tap here can
+  // never land on an empty pool. Recomputed fresh each time the
+  // result screen is reached (dependency on phase), so retaking a
+  // quiz and finishing again gets a fresh random set of suggestions
+  // rather than the same three every time.
+  const nextQuizSuggestions = useMemo(() => {
+    if (phase !== 'result') return []
+    const candidates = ['mixed', ...DISCIPLINES.map(d => d.id)].filter(id => id !== selectedDiscipline)
+    const withQuestions = candidates.filter(id => buildQuizPool(id, selectedLevel).length > 0)
+    return shuffle(withQuestions).slice(0, 3)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, selectedDiscipline, selectedLevel])
 
   const scorePercent = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0
   const scoreMsg = () => {
@@ -705,6 +739,34 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
             )
           })}
         </div>
+
+        {/* Next Quiz — a few other disciplines at the same level,
+            each guaranteed to actually have questions, so the user
+            gets a real next step beyond "do this exact quiz again". */}
+        {nextQuizSuggestions.length > 0 && (
+          <div className="quiz-review" style={{ marginTop: 4 }}>
+            <h3 className="quiz-review-title">Next Quiz</h3>
+            <p style={{ fontSize: '0.82rem', color: '#6a8090', marginTop: -8, marginBottom: 14 }}>
+              مَزِيدٌ مِنَ التَّعَلُّم — Keep the momentum going with another discipline.
+            </p>
+            <div className="quiz-discipline-options">
+              {nextQuizSuggestions.map(id => {
+                const info = discInfo(id)
+                return (
+                  <button
+                    key={id}
+                    className="quiz-disc-btn"
+                    onClick={() => beginQuizWith(id, selectedLevel)}
+                    data-a11y-label={`Start a ${info.name} quiz, ${selectedLevel} level`}
+                  >
+                    <span className="quiz-disc-icon"><span className="icon-inline">{info.icon}</span></span>
+                    <span className="quiz-disc-name">{info.name}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="quiz-result-actions">
           <button className="btn btn-primary" onClick={startQuiz}>Retry Quiz</button>
