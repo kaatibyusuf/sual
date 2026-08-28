@@ -8,6 +8,7 @@ import { getPrayerStatus } from '../lib/prayerTimes.js'
 import { STORIES } from '../data/stories.js'
 import { DISCIPLINES } from '../data/knowledge.js'
 import SpacesCTA from '../components/SpacesCTA.jsx'
+import { generateStreakCard } from '../lib/shareCard.js'
 import './Home.css'
 
 function getGreeting() {
@@ -162,6 +163,15 @@ const ICONS = {
       <path d="M17 6h3a2 2 0 0 1-2 4h-1" />
     </svg>
   ),
+  share: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" />
+      <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+    </svg>
+  ),
 }
 
 // The tiles below the hero — same destinations as before, now
@@ -198,6 +208,16 @@ export default function Home({ user }) {
   // ── Daily reminder + milestone celebration ──────────────────
   const { visible: reminderVisible, dismiss: dismissReminder } = useDailyReminderVisible()
   const [milestone, setMilestone] = useState(null)
+
+  // ── Shareable streak card ────────────────────────────────────
+  // Generated client-side via Canvas (see lib/shareCard.js), no
+  // server round-trip and nothing persisted. sharingCard guards
+  // against double-taps while the image is being drawn/shared;
+  // shareError surfaces the rare failure case (e.g. a browser
+  // blocking the download-fallback popup) instead of the button
+  // just silently doing nothing.
+  const [sharingCard, setSharingCard] = useState(false)
+  const [shareError, setShareError] = useState(null)
 
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 30000)
@@ -368,6 +388,51 @@ export default function Home({ user }) {
     night: '/images/home/hero-night.jpg',
   }
 
+  // Generates the streak card, then hands it to the OS share sheet
+  // if the device/browser supports sharing files (navigator.share
+  // with a files array — Web Share API Level 2, available on modern
+  // mobile Chrome/Safari, which covers the Android TWA wrapper).
+  // Falls back to a plain download when file-sharing isn't
+  // available, e.g. most desktop browsers, so the feature still
+  // works everywhere, just via a different last step.
+  const handleShareStreak = async () => {
+    if (sharingCard || streak <= 0) return
+    setSharingCard(true)
+    setShareError(null)
+    try {
+      const blob = await generateStreakCard(streak)
+      const file = new File([blob], 'sual-streak.png', { type: 'image/png' })
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'My Sual Streak',
+            text: `${streak}-day streak on Sual 🔥`,
+          })
+        } catch (shareErr) {
+          // AbortError just means the user closed the share sheet —
+          // not a real failure, nothing to surface for that case.
+          if (shareErr?.name !== 'AbortError') throw shareErr
+        }
+      } else {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'sual-streak.png'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      }
+    } catch (err) {
+      console.error('Failed to generate/share streak card:', err)
+      setShareError("Couldn't create your streak image. Please try again.")
+    } finally {
+      setSharingCard(false)
+    }
+  }
+
   return (
     <div className="page-content home-page">
       <div
@@ -404,7 +469,7 @@ export default function Home({ user }) {
       <div className="hm-streak">
         <div className="hm-streak-top">
           <span className="hm-streak-flame">{ICONS.flame}</span>
-          <div>
+          <div style={{ flex: 1 }}>
             <p className="hm-streak-count">{streak > 0 ? `${streak}-day streak` : 'No streak yet'}</p>
             <p className="hm-streak-sub">
               {streak > 0
@@ -412,7 +477,35 @@ export default function Home({ user }) {
                 : 'Take a quiz or read a story today to start one.'}
             </p>
           </div>
+          {streak > 0 && (
+            <button
+              onClick={handleShareStreak}
+              disabled={sharingCard}
+              aria-label="Share your streak"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 14px',
+                borderRadius: 999,
+                border: '1.5px solid #85CCFF',
+                background: 'rgba(133,204,255,0.1)',
+                color: '#094570',
+                fontWeight: 700,
+                fontSize: '0.8rem',
+                cursor: sharingCard ? 'default' : 'pointer',
+                opacity: sharingCard ? 0.6 : 1,
+                flexShrink: 0,
+              }}
+            >
+              <span style={{ width: 15, height: 15, display: 'flex' }}>{ICONS.share}</span>
+              {sharingCard ? 'Preparing…' : 'Share'}
+            </button>
+          )}
         </div>
+        {shareError && (
+          <p style={{ fontSize: '0.78rem', color: '#c0392b', margin: '8px 0 0' }}>{shareError}</p>
+        )}
         <div className="hm-streak-week">
           {weekStrip.map((d, i) => (
             <div key={i} className="hm-streak-day">

@@ -2,16 +2,83 @@
 import { BADGES, calculateEarnedBadges, getNewlyEarned } from '../lib/badges.js'
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase.js'
+import { generateBadgeCard } from '../lib/shareCard.js'
 import './Badges.css'
+
+// Small share icon, same path used in Home.jsx's streak Share
+// button, so the affordance reads as the same action wherever it
+// shows up in the app.
+function ShareIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" />
+      <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+    </svg>
+  )
+}
+
+// Generates a badge card and hands it to the OS share sheet if the
+// device supports sharing files (Web Share API Level 2 — modern
+// mobile Chrome/Safari, including the Android TWA wrapper), falling
+// back to a plain download otherwise. Shared by both the unlock
+// toast and the badge grid's per-card share affordance below, so the
+// two moments ("just unlocked" and "revisiting an old badge") behave
+// identically rather than drifting into two slightly different
+// implementations.
+async function shareBadge(badge) {
+  const blob = await generateBadgeCard(badge)
+  const file = new File([blob], 'sual-badge.png', { type: 'image/png' })
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: `${badge.name} — Sual`,
+        text: `I just unlocked "${badge.name}" on Sual! ${badge.icon || ''}`,
+      })
+    } catch (err) {
+      // AbortError just means the user closed the share sheet — not
+      // a real failure, nothing to surface for that case.
+      if (err?.name !== 'AbortError') throw err
+    }
+  } else {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'sual-badge.png'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+}
 
 // ── Badge Notification Toast ─────────────────────────────────
 export function BadgeToast({ badge, onClose }) {
+  const [sharing, setSharing] = useState(false)
+
   useEffect(() => {
     const t = setTimeout(onClose, 4000)
     return () => clearTimeout(t)
   }, [onClose])
 
   if (!badge) return null
+
+  const handleShare = async (e) => {
+    e.stopPropagation() // don't let the click bubble into anything that might dismiss the toast early
+    if (sharing) return
+    setSharing(true)
+    try {
+      await shareBadge(badge)
+    } catch (err) {
+      console.error('Failed to share badge:', err)
+    } finally {
+      setSharing(false)
+    }
+  }
 
   return (
     <div className="badge-toast">
@@ -20,6 +87,28 @@ export function BadgeToast({ badge, onClose }) {
         <p className="badge-toast-title">Badge Unlocked!</p>
         <p className="badge-toast-name">{badge.name}</p>
         <p className="badge-toast-desc">{badge.description}</p>
+        <button
+          className="badge-toast-share"
+          onClick={handleShare}
+          disabled={sharing}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            marginTop: 8,
+            padding: '6px 12px',
+            borderRadius: 999,
+            border: '1.5px solid rgba(255,255,255,0.4)',
+            background: 'rgba(255,255,255,0.1)',
+            color: 'inherit',
+            fontWeight: 700,
+            fontSize: '0.78rem',
+            cursor: sharing ? 'default' : 'pointer',
+            opacity: sharing ? 0.6 : 1,
+          }}
+        >
+          <ShareIcon /> {sharing ? 'Preparing…' : 'Share'}
+        </button>
       </div>
       <button className="badge-toast-close" onClick={onClose}>✕</button>
     </div>
@@ -29,6 +118,20 @@ export function BadgeToast({ badge, onClose }) {
 // ── Single Badge Card ────────────────────────────────────────
 export function BadgeCard({ badge, earned }) {
   const [showTip, setShowTip] = useState(false)
+  const [sharing, setSharing] = useState(false)
+
+  const handleShare = async (e) => {
+    e.stopPropagation() // don't let this toggle showTip via the card's own touch/hover handlers
+    if (sharing) return
+    setSharing(true)
+    try {
+      await shareBadge(badge)
+    } catch (err) {
+      console.error('Failed to share badge:', err)
+    } finally {
+      setSharing(false)
+    }
+  }
 
   return (
     <div
@@ -43,6 +146,29 @@ export function BadgeCard({ badge, earned }) {
         <div className="badge-tooltip">
           <p className="badge-tooltip-text">{badge.description}</p>
           {!earned && <p className="badge-tooltip-locked">Not yet earned</p>}
+          {earned && (
+            <button
+              onClick={handleShare}
+              disabled={sharing}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                marginTop: 6,
+                padding: '4px 10px',
+                borderRadius: 999,
+                border: '1.5px solid #85CCFF',
+                background: 'rgba(133,204,255,0.1)',
+                color: '#094570',
+                fontWeight: 700,
+                fontSize: '0.72rem',
+                cursor: sharing ? 'default' : 'pointer',
+                opacity: sharing ? 0.6 : 1,
+              }}
+            >
+              <ShareIcon /> {sharing ? 'Preparing…' : 'Share'}
+            </button>
+          )}
         </div>
       )}
     </div>
