@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
+import './ripple.css'
+import { initRippleEffect } from './lib/rippleEffect.js'
 
 // Prevent pull-to-refresh from wiping in-progress app state (e.g. a
 // quiz mid-attempt) when a user accidentally scrolls down at the top
@@ -18,6 +20,12 @@ document.addEventListener('touchmove', e => {
     e.preventDefault()
   }
 }, { passive: false })
+
+// Water-drop ripple on every button press, app-wide — see
+// lib/rippleEffect.js for exactly what it does and doesn't catch.
+// A single delegated listener attached once here, not something any
+// individual component needs to import or wire up itself.
+initRippleEffect()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
