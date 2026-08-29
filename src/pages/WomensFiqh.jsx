@@ -146,6 +146,17 @@ export default function WomensFiqh({ user }) {
   const [noteInput, setNoteInput] = useState('')
   const [deletingCycleId, setDeletingCycleId] = useState(null)
 
+  // ── "Mark bleeding stopped" date picker ─────────────────────
+  // FIX: this used to be a single button that unconditionally
+  // stamped end_date as TODAY, with no way to record the actual day
+  // bleeding stopped if the user didn't open the app that exact day.
+  // Now it reveals a date input (defaulting to today, so the common
+  // "stopping today" case is still effectively one extra tap) that
+  // can be backdated to any day between the cycle's start date and
+  // today — but never before the start, and never into the future.
+  const [showStopPicker, setShowStopPicker] = useState(false)
+  const [stopDate, setStopDate] = useState('')
+
   // ── Cycle date-edit state ────────────────────────────────────
   const [editingCycleId, setEditingCycleId] = useState(null)
   const [editStartDate, setEditStartDate] = useState('')
@@ -194,10 +205,6 @@ export default function WomensFiqh({ user }) {
     return WOMENS_FIQH_CONTENT[topic]?.max_duration_days || FALLBACK_MAX_DAYS[topic]
   }
 
-  // Flatten every cycle's logged days into a lookup by date, each
-  // tagged with which ruling applied on that specific day (day count
-  // within its cycle vs. that cycle's max duration) — this is what
-  // colors each calendar cell and feeds the day-detail sheet.
   const dayLookup = (() => {
     const map = {}
     allCycles.forEach(cycle => {
@@ -264,16 +271,37 @@ export default function WomensFiqh({ user }) {
     }
   }
 
-  const markStopped = async () => {
-    if (!activeCycle) return
+  const openStopPicker = () => {
+    setStopDate(todayStr())
+    setShowStopPicker(true)
+    setTrackerError(null)
+  }
+
+  const cancelStopPicker = () => {
+    setShowStopPicker(false)
+    setStopDate('')
+  }
+
+  const confirmStopped = async () => {
+    if (!activeCycle || !stopDate) return
+    if (stopDate < activeCycle.start_date) {
+      setTrackerError("End date can't be before the start date.")
+      return
+    }
+    if (stopDate > todayStr()) {
+      setTrackerError("End date can't be in the future.")
+      return
+    }
     setStopping(true)
     setTrackerError(null)
     try {
       const { error } = await supabase
         .from('womens_fiqh_cycles')
-        .update({ end_date: todayStr(), updated_at: new Date().toISOString() })
+        .update({ end_date: stopDate, updated_at: new Date().toISOString() })
         .eq('id', activeCycle.id)
       if (error) throw error
+      setShowStopPicker(false)
+      setStopDate('')
       fetchCycles()
     } catch (err) {
       setTrackerError(err.message)
@@ -318,7 +346,6 @@ export default function WomensFiqh({ user }) {
     setDayNoteInput('')
   }
 
-  // ── Cycle date-edit handlers ─────────────────────────────────
   const startEditingCycle = (cycle) => {
     setEditingCycleId(cycle.id)
     setEditStartDate(cycle.start_date)
@@ -362,11 +389,6 @@ export default function WomensFiqh({ user }) {
     }
   }
 
-  // ── Delete cycle ─────────────────────────────────────────────
-  // Permanently removes an entire logged cycle (start date, end
-  // date if any, and every day logged within it). Used to correct
-  // mistaken/duplicate/test entries — e.g. accidentally logging two
-  // separate cycles on the same date while learning the tracker.
   const deleteCycle = async (cycle) => {
     const confirmed = window.confirm(
       `Delete this ${cycle.end_date ? 'entry' : 'ongoing entry'} (${formatDate(cycle.start_date)}${cycle.end_date ? ` – ${formatDate(cycle.end_date)}` : ''})? This can't be undone.`
@@ -389,7 +411,6 @@ export default function WomensFiqh({ user }) {
     }
   }
 
-  // ── Learn tab render ─────────────────────────────────────────
   const openTopic = (key) => setActiveTopic(key)
   const closeTopic = () => setActiveTopic(null)
 
@@ -410,9 +431,6 @@ export default function WomensFiqh({ user }) {
           </div>
 
           {Array.isArray(entry.sections) ? (
-            // Custom-titled sections (used by topics like "Be Prepared"
-            // that don't fit the definition/duration/signs/rulings
-            // shape the fiqh topics use).
             entry.sections.map(s => (
               <div key={s.key} className="wf-section card" data-a11y-label={`${s.title}: ${s.body}`}>
                 <h3 className="wf-section-title">
@@ -499,7 +517,6 @@ export default function WomensFiqh({ user }) {
     )
   }
 
-  // ── Calendar render ──────────────────────────────────────────
   const goToPrevMonth = () => {
     setCalendarMonth(m => m.month === 0 ? { year: m.year - 1, month: 11 } : { year: m.year, month: m.month - 1 })
   }
@@ -513,7 +530,7 @@ export default function WomensFiqh({ user }) {
     const { year, month } = calendarMonth
     const firstOfMonth = new Date(year, month, 1)
     const daysInMonth = new Date(year, month + 1, 0).getDate()
-    const startWeekday = firstOfMonth.getDay() // 0 = Sunday
+    const startWeekday = firstOfMonth.getDay()
     const today = todayStr()
 
     const cells = []
@@ -630,7 +647,6 @@ export default function WomensFiqh({ user }) {
     )
   }
 
-  // ── Tracker tab render ───────────────────────────────────────
   const renderTracker = () => (
     <>
       <div className="wf-section-intro card">
@@ -719,9 +735,32 @@ export default function WomensFiqh({ user }) {
                 </div>
               </>
             )}
-            <button className="btn btn-ghost" onClick={markStopped} disabled={stopping} style={{ marginTop: 12, color: '#c0392b' }}>
-              {stopping ? 'Saving…' : 'Mark bleeding stopped'}
-            </button>
+
+            {showStopPicker ? (
+              <div className="wf-edit-date-form" style={{ marginTop: 12 }}>
+                <label className="wf-edit-date-label">
+                  Bleeding ended on
+                  <input
+                    type="date"
+                    className="wf-edit-date-input"
+                    value={stopDate}
+                    min={activeCycle.start_date}
+                    max={todayStr()}
+                    onChange={e => setStopDate(e.target.value)}
+                  />
+                </label>
+                <div className="wf-edit-date-actions">
+                  <button className="btn btn-ghost" onClick={cancelStopPicker} disabled={stopping}>Cancel</button>
+                  <button className="wf-intensity-btn" onClick={confirmStopped} disabled={stopping || !stopDate}>
+                    {stopping ? 'Saving…' : 'Confirm'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button className="btn btn-ghost" onClick={openStopPicker} style={{ marginTop: 12, color: '#c0392b' }}>
+                Mark bleeding stopped
+              </button>
+            )}
           </div>
         </>
       ) : (
