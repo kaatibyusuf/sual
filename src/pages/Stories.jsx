@@ -297,7 +297,7 @@ export default function Stories({ user }) {
       />
 
       <h1 className="page-title">Stories of the Salaf</h1>
-      <p className="page-subtitle">سِيَر السَّلَف الصَّالِح — The lives of the Prophets, the Companions, and their Successors</p>
+      <p className="page-subtitle">The lives of the Prophets, the Companions, and their Successors</p>
 
       {/* Filters */}
       <div className="stories-filters">
