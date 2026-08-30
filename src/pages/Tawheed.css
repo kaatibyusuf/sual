@@ -1,10 +1,13 @@
-/* ============================================
-   Tawheed Page
-   ============================================ */
+/* src/pages/Tawheed.css
+ * Built on the same wf-style visual system as Adab Class, for
+ * consistency across the app: white cards, light-blue borders,
+ * navy accents, [data-theme="dark"] overrides (manual toggle, not
+ * prefers-color-scheme).
+ */
 
 .tw-page {
   padding-top: 32px;
-  max-width: 860px;
+  max-width: 720px;
 }
 
 .tw-back {
@@ -16,610 +19,274 @@
   font-size: 0.875rem;
   margin-bottom: 20px;
   padding: 0;
-  transition: color 0.15s;
   font-family: var(--font-ui);
 }
+.tw-back:hover { color: #094570; }
 
-.tw-back:hover {
-  color: #094570;
-}
-
-/* Intro Banner */
-.tw-intro-banner {
-  background: linear-gradient(135deg, #094570, #1a6fa8);
-  border-radius: 16px;
-  padding: 28px 32px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 24px rgba(9, 69, 112, 0.25);
-}
-
-.tw-intro-ayah {
-  font-size: 1.8rem;
-  color: #ffffff;
-  line-height: 2;
-  margin-bottom: 8px;
-  direction: rtl;
-  text-align: right;
-}
-
-.tw-intro-trans {
-  font-size: 0.9rem;
-  color: #85CCFF;
-  margin-bottom: 12px;
-  font-style: italic;
-}
-
-.tw-intro-note {
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.8);
-  line-height: 1.7;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.15);
-}
-
-/* Level Guide */
-.tw-level-guide {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
-.tw-level-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 100px;
-  font-size: 0.75rem;
-}
-
-.tw-level-dot {
-  width: 8px;
-  height: 8px;
+.tw-loading { display: flex; justify-content: center; padding: 60px 0; }
+.tw-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid #e8f0f8;
+  border-top-color: #094570;
   border-radius: 50%;
-  flex-shrink: 0;
+  animation: twSpin 0.8s linear infinite;
 }
+@keyframes twSpin { to { transform: rotate(360deg); } }
 
-/* Sections Grid */
-.tw-sections-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
-  margin-bottom: 40px;
-}
+.tw-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
+.tw-icon svg { width: 100%; height: 100%; }
 
-.tw-section-card {
+/* ── Hero ── */
+.tw-hero {
+  padding: 22px;
   background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 14px;
-  padding: 20px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-family: var(--font-ui);
+  border: 1.5px solid #094570;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+.tw-hero-title { font-size: 1.25rem; font-weight: 800; color: #0d1b2a; margin-bottom: 4px; }
+.tw-hero-sub { font-size: 0.85rem; color: #4a6080; margin-bottom: 16px; }
+
+.tw-progress-track { height: 8px; border-radius: 100px; background: #e8f0f8; overflow: hidden; margin-bottom: 8px; }
+.tw-progress-fill { height: 100%; background: #094570; border-radius: 100px; transition: width 0.3s ease; }
+.tw-progress-label { font-size: 0.8rem; color: #6a8090; margin-bottom: 14px; }
+
+.tw-hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.tw-btn-primary {
+  padding: 11px 20px; background: #094570; color: #ffffff; border: none;
+  border-radius: 100px; font-family: var(--font-ui); font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: background 0.15s ease;
+}
+.tw-btn-primary:hover { background: #0a5486; }
+.tw-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.tw-btn-secondary {
+  padding: 11px 20px; background: #ffffff; color: #094570; border: 1.5px solid #094570;
+  border-radius: 100px; font-family: var(--font-ui); font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: all 0.15s ease;
+}
+.tw-btn-secondary:hover { background: #f0f7ff; }
+.tw-btn-secondary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── List cards ── */
+.tw-cards { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+
+.tw-card {
+  display: flex; align-items: center; gap: 16px; padding: 22px;
+  background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 16px;
+  text-align: left; cursor: pointer; font-family: var(--font-ui);
+  transition: all 0.2s ease; width: 100%;
+}
+.tw-card:hover { border-color: #85CCFF; box-shadow: 0 6px 20px rgba(9,69,112,0.1); transform: translateY(-2px); }
+.tw-card--locked { cursor: pointer; opacity: 0.85; }
+.tw-card--done { border-color: #b8dfc0; }
+
+.tw-card-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px;
+  background: #094570; color: #ffffff; font-weight: 800; font-size: 1.1rem;
+}
+.tw-card-icon--locked { background: #dce4ee; color: #6a8090; }
+.tw-card-icon--done { background: #2e7d32; color: #ffffff; }
+.tw-card-icon .tw-icon { width: 22px; height: 22px; }
+
+.tw-card-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.tw-card-side { flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
+
+.tw-card-progress-pill {
+  font-size: 0.78rem; font-weight: 700; color: #6a8090; background: #f5f8fb;
+  padding: 4px 10px; border-radius: 100px; white-space: nowrap;
 }
 
-.tw-section-card:hover {
-  border-color: #85CCFF;
-  box-shadow: 0 6px 20px rgba(9, 69, 112, 0.12);
-  transform: translateY(-3px);
-}
+.tw-card-label { font-size: 1.05rem; font-weight: 800; color: #094570; line-height: 1.35; }
+.tw-card-meta { font-size: 0.72rem; font-weight: 700; color: #8a9ab0; text-transform: uppercase; letter-spacing: 0.06em; }
+.tw-card-desc { font-size: 0.82rem; color: #6a8090; line-height: 1.5; }
 
-.tw-section-card-icon {
-  font-size: 2rem;
-  margin-bottom: 4px;
-}
+.tw-card-badge { flex-shrink: 0; font-size: 0.75rem; font-weight: 700; padding: 5px 11px; border-radius: 100px; white-space: nowrap; }
+.tw-card-badge--lock { background: #fdf3dd; color: #7a5a13; }
+.tw-card-badge--quiz { background: #e8f0f8; color: #094570; }
 
-.tw-section-card-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #094570;
-  margin: 0;
-  line-height: 1.4;
-}
+.tw-card-arrow { flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; color: #c8d8e8; }
 
-.tw-section-card-arabic {
-  font-size: 0.95rem;
-  color: #4a6080;
-  margin: 0;
+/* ── Detail header ── */
+.tw-detail-header {
+  display: flex; align-items: center; gap: 16px; padding: 22px;
+  background: #f0f7ff !important; border: 1.5px solid #094570; border-radius: 16px; margin-bottom: 16px;
 }
+.tw-detail-icon {
+  display: flex; align-items: center; justify-content: center; width: 48px; height: 48px;
+  flex-shrink: 0; border-radius: 12px; background: #094570; color: #ffffff; font-weight: 800; font-size: 1.2rem;
+}
+.tw-detail-title { font-size: 1.25rem; font-weight: 800; color: #0d1b2a; margin-bottom: 2px; }
+.tw-detail-sub { font-size: 0.9rem; color: #4a6080; }
 
-.tw-section-card-overview {
+/* ── Content sections ── */
+.tw-section { padding: 20px 22px; background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 14px; margin-bottom: 14px; }
+.tw-section-title { font-size: 0.9rem; font-weight: 800; color: #094570; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; }
+.tw-section-body { font-size: 0.9rem; color: #1a2a3a; line-height: 1.8; }
+.tw-section-body p { margin: 0 0 12px; }
+.tw-section-body p:last-child { margin-bottom: 0; }
+
+/* ── Highlighted Qur'an / Hadith verse blocks ── */
+.tw-verse { margin-top: 16px; padding: 18px 18px 16px; border-radius: 12px; border: 1.5px solid; }
+.tw-verse--quran { background: #f0f7ff; border-color: #85CCFF; }
+.tw-verse--hadith { background: #fdf3dd; border-color: #e0c07a; }
+
+.tw-verse-tag {
+  display: inline-block; font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 3px 10px; border-radius: 100px; margin-bottom: 10px;
+}
+.tw-verse--quran .tw-verse-tag { background: #094570; color: #ffffff; }
+.tw-verse--hadith .tw-verse-tag { background: #b8862f; color: #ffffff; }
+
+.tw-verse-arabic {
+  font-size: 1.35rem; line-height: 2; color: #0d1b2a; text-align: right; margin: 0 0 12px;
+  font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade New', serif;
+}
+.tw-verse-english { font-size: 0.9rem; color: #2a3a4a; line-height: 1.7; font-style: italic; margin: 0 0 8px; }
+.tw-verse-source { font-size: 0.76rem; font-weight: 700; color: #6a8090; margin: 0; text-transform: uppercase; letter-spacing: 0.03em; }
+
+.tw-empty { padding: 32px 24px; background: #ffffff !important; border: 1.5px dashed #c8d8e8; border-radius: 14px; text-align: center; color: #6a8090; font-size: 0.88rem; margin-bottom: 14px; }
+
+/* ── Bottom actions ── */
+.tw-actions-row { display: flex; justify-content: center; margin: 20px 0; }
+.tw-nav-row { display: flex; gap: 8px; }
+.tw-nav-btn {
+  flex: 1; padding: 12px; border: 1.5px solid #c8d8e8; border-radius: 10px; background: #f5f8fb;
+  color: #094570; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.15s ease;
+}
+.tw-nav-btn:hover:not(:disabled) { border-color: #094570; background: #e8f0f8; }
+.tw-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Quiz ── */
+.tw-status-card { padding: 24px; background: #ffffff !important; border: 2px solid #094570; border-radius: 16px; text-align: center; margin-bottom: 16px; }
+.tw-status-card--fail { border-color: #c0392b; }
+.tw-status-value { font-size: 1.8rem; font-weight: 800; color: #094570; margin-bottom: 6px; }
+.tw-status-card--fail .tw-status-value { color: #c0392b; }
+.tw-status-note { font-size: 0.85rem; color: #6a8090; font-weight: 600; }
+
+.tw-quiz-q { padding: 20px 22px; background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 14px; margin-bottom: 14px; }
+.tw-quiz-q-text { font-size: 0.9rem; font-weight: 700; color: #0d1b2a; margin-bottom: 14px; line-height: 1.6; }
+.tw-quiz-num { color: #094570; }
+
+.tw-quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.tw-quiz-option {
+  text-align: left; padding: 12px 14px; background: #f5f8fb; border: 1.5px solid #dde8f2;
+  border-radius: 10px; font-family: var(--font-ui); font-size: 0.85rem; color: #1a2a3a; cursor: pointer; transition: all 0.15s ease;
+}
+.tw-quiz-option:hover:not(:disabled) { border-color: #094570; }
+.tw-quiz-option--selected { border-color: #094570; background: #e8f0f8; font-weight: 700; }
+.tw-quiz-option--correct { border-color: #2e7d32; background: #e6f4e8; font-weight: 700; color: #1e5c22; }
+.tw-quiz-option--wrong { border-color: #c0392b; background: rgba(231,76,60,0.08); color: #a02f22; }
+.tw-quiz-option:disabled { cursor: default; }
+
+.tw-quiz-explanation { font-size: 0.82rem; color: #6a8090; line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #dde8f2; }
+
+/* ── Bottom sheet ── */
+.tw-sheet-overlay { position: fixed; inset: 0; background: rgba(13, 27, 42, 0.45); display: flex; align-items: flex-end; justify-content: center; z-index: 100; }
+@media (min-width: 640px) { .tw-sheet-overlay { align-items: center; } }
+
+.tw-sheet { width: 100%; max-width: 420px; padding: 22px 20px; background: #ffffff !important; border-radius: 18px 18px 0 0; border: 1.5px solid #c8d8e8; }
+@media (min-width: 640px) { .tw-sheet { border-radius: 18px; } }
+
+.tw-sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.tw-sheet-title { font-size: 1.1rem; font-weight: 800; color: #094570; }
+.tw-sheet-close { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; border: none; background: #f5f8fb; color: #6a8090; cursor: pointer; font-size: 1.1rem; line-height: 1; }
+.tw-sheet-text { font-size: 0.85rem; color: #4a6080; line-height: 1.6; margin-bottom: 18px; }
+.tw-sheet-options { display: flex; flex-direction: column; gap: 10px; }
+
+.tw-sheet-option { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f5f8fb; border: 1.5px solid #dde8f2; border-radius: 12px; font-family: var(--font-ui); cursor: pointer; text-align: left; }
+.tw-sheet-option--full { border-color: #094570; background: #f0f7ff; }
+.tw-sheet-option-title { font-weight: 700; color: #0d1b2a; font-size: 0.92rem; }
+.tw-sheet-option-price { font-weight: 800; color: #094570; font-size: 1rem; }
+.tw-sheet-option-tag { position: absolute; top: -9px; left: 14px; background: #094570; color: #fff; font-size: 0.62rem; font-weight: 700; border-radius: 100px; padding: 2px 9px; letter-spacing: 0.03em; }
+
+/* ── Payment / purchase error message (shown in paywall sheet and hero) ── */
+.tw-sheet-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1.5px solid #fecaca;
+  border-radius: 10px;
+  padding: 11px 14px;
   font-size: 0.82rem;
-  color: #2a3a4a;
-  line-height: 1.6;
-  margin: 4px 0 0 0;
-  flex: 1;
-}
-
-.tw-section-card-footer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 12px;
-  border-top: 1px solid #e8f0f8;
-  margin-top: auto;
-}
-
-.tw-section-card-count {
-  font-size: 0.75rem;
-  color: #8a9ab0;
+  line-height: 1.5;
   font-weight: 600;
-}
-
-.tw-section-card-levels {
-  display: flex;
-  gap: 4px;
-  flex: 1;
-}
-
-.tw-section-level-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  opacity: 0.7;
-}
-
-.tw-section-card-read {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #094570;
-  margin-left: auto;
-}
-
-/* Section detail header */
-.tw-section-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.tw-section-icon {
-  font-size: 2.5rem;
-  flex-shrink: 0;
-}
-
-.tw-section-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #094570;
-  margin-bottom: 4px;
-}
-
-.tw-section-arabic {
-  font-size: 1.1rem;
-  color: #4a6080;
-}
-
-.tw-section-overview {
-  padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(9,69,112,0.04), #ffffff) !important;
-  border: 1.5px solid #c8d8e8;
-  border-left: 4px solid #094570;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
-
-.tw-overview-text {
-  font-size: 0.92rem;
-  color: #0d1b2a;
-  line-height: 1.8;
-}
-
-/* Filter row */
-.tw-filter-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
   margin-bottom: 16px;
 }
 
-.tw-filter-btn {
-  padding: 6px 14px;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 100px;
-  background: #ffffff;
-  color: #4a6080;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-family: var(--font-ui);
-}
-
-.tw-filter-btn:hover {
-  border-color: #094570;
-  color: #094570;
-}
-
-.tw-filter-btn--active {
-  font-weight: 700;
-}
-
-/* Rules list */
-.tw-rules-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 40px;
-}
-
-.tw-rule-card {
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-family: var(--font-ui);
-  width: 100%;
-}
-
-.tw-rule-card:hover {
-  border-color: #85CCFF;
-  box-shadow: 0 4px 16px rgba(9, 69, 112, 0.1);
-  transform: translateX(4px);
-}
-
-.tw-rule-card-top {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tw-level-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 100px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.tw-examples-count {
-  font-size: 0.72rem;
-  color: #8a9ab0;
-  font-weight: 600;
-}
-
-.tw-rule-card-name {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #094570;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.tw-rule-card-arabic {
-  font-size: 0.95rem;
-  color: #4a6080;
-  margin: 0;
-}
-
-.tw-rule-card-preview {
-  font-size: 0.82rem;
-  color: #2a3a4a;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.tw-rule-card-footer {
-  padding-top: 10px;
-  border-top: 1px solid #e8f0f8;
-}
-
-.tw-rule-card-read {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #094570;
-}
-
-/* Rule detail */
-.tw-rule-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.tw-rule-header {
-  padding: 24px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 14px;
-}
-
-.tw-rule-header-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.tw-section-ref {
-  font-size: 0.75rem;
-  color: #8a9ab0;
-  font-weight: 600;
-}
-
-.tw-rule-name {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #094570;
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-
-.tw-rule-arabic {
-  font-size: 1.2rem;
-  color: #4a6080;
-}
-
-.tw-rule-body {
-  padding: 24px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 12px;
-}
-
-.tw-section-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #4a6080;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  margin-bottom: 14px;
-}
-
-.tw-rule-para {
-  font-size: 0.92rem;
-  color: #0d1b2a;
-  line-height: 1.9;
-  margin-bottom: 14px;
-}
-
-.tw-rule-para:last-child {
-  margin-bottom: 0;
-}
-
-/* Examples */
-.tw-rule-examples {
-  padding: 24px;
-  background: #f5f8fb !important;
-  border: 1.5px solid #c8d8e8;
-  border-left: 4px solid #85CCFF;
-  border-radius: 12px;
-}
-
-.tw-examples-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tw-example-item {
-  background: #ffffff;
-  border: 1px solid #d8e8f5;
-  border-radius: 10px;
-  padding: 14px 18px;
-}
-
-.tw-example-arabic {
-  font-size: 1.6rem;
-  color: #094570;
-  line-height: 2;
-  margin-bottom: 4px;
-  direction: rtl;
-  text-align: right;
-}
-
-.tw-example-translit {
-  font-size: 0.875rem;
-  color: #4a6080;
-  font-style: italic;
-  margin-bottom: 6px;
-}
-
-.tw-example-note {
-  font-size: 0.8rem;
-  color: #0d1b2a;
-  padding: 6px 10px;
-  background: #e8f4ff;
-  border-radius: 6px;
-  line-height: 1.5;
-}
-
-/* Source */
-.tw-rule-source {
-  padding: 18px 24px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 12px;
-}
-
-.tw-source-text {
-  font-size: 0.875rem;
-  color: #4a6080;
-  font-style: italic;
-}
-
-/* Scholars */
-.tw-scholars-section {
-  margin-bottom: 48px;
-}
-
-.tw-scholars-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #4a6080;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  margin-bottom: 14px;
-}
-
-.tw-scholars-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
-}
-
-.tw-scholar-card {
-  padding: 20px;
-  background: #ffffff !important;
-  border: 1.5px solid #c8d8e8;
-  border-radius: 12px;
-}
-
-.tw-scholar-name {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #094570;
-  margin-bottom: 4px;
-}
-
-.tw-scholar-arabic {
-  font-size: 0.95rem;
-  color: #4a6080;
-  margin-bottom: 4px;
-}
-
-.tw-scholar-lifespan {
-  font-size: 0.75rem;
-  color: #8a9ab0;
-  margin-bottom: 10px;
-}
-
-.tw-scholar-contribution {
-  font-size: 0.82rem;
-  color: #0d1b2a;
-  line-height: 1.7;
-}
-
 /* ── Dark mode ── */
-[data-theme="dark"] .tw-section-card,
-[data-theme="dark"] .tw-rule-card,
-[data-theme="dark"] .tw-rule-header,
-[data-theme="dark"] .tw-rule-body,
-[data-theme="dark"] .tw-rule-source,
-[data-theme="dark"] .tw-scholar-card {
-  background: #0f1f2e !important;
-  border-color: #1e3448;
+[data-theme="dark"] .tw-hero { background: #0f1f2e !important; border-color: #1e4a70; }
+[data-theme="dark"] .tw-hero-title { color: #c8e0f5; }
+[data-theme="dark"] .tw-hero-sub { color: #7f97ae; }
+[data-theme="dark"] .tw-progress-track { background: #12283b; }
+[data-theme="dark"] .tw-progress-fill { background: #85CCFF; }
+[data-theme="dark"] .tw-progress-label { color: #7f97ae; }
+
+[data-theme="dark"] .tw-btn-primary { background: #85CCFF; color: #062338; }
+[data-theme="dark"] .tw-btn-primary:hover { background: #a3d8ff; }
+[data-theme="dark"] .tw-btn-secondary { background: transparent; color: #85CCFF; border-color: #85CCFF; }
+[data-theme="dark"] .tw-btn-secondary:hover { background: rgba(133,204,255,0.08); }
+
+[data-theme="dark"] .tw-card,
+[data-theme="dark"] .tw-section,
+[data-theme="dark"] .tw-empty,
+[data-theme="dark"] .tw-status-card,
+[data-theme="dark"] .tw-quiz-q {
+  background: #0f1f2e !important; border-color: #1e3448;
 }
+[data-theme="dark"] .tw-card--done { border-color: #1e4a2c; }
+[data-theme="dark"] .tw-card-label { color: #85CCFF; }
+[data-theme="dark"] .tw-card-meta, [data-theme="dark"] .tw-card-desc { color: #7f97ae; }
+[data-theme="dark"] .tw-card-badge--lock { background: rgba(184,134,47,0.16); color: #e0c07a; }
+[data-theme="dark"] .tw-card-badge--quiz { background: rgba(133,204,255,0.14); color: #85CCFF; }
+[data-theme="dark"] .tw-card-icon--locked { background: #2a3a4a; color: #8fa4bc; }
+[data-theme="dark"] .tw-card-progress-pill { background: #0a1825; color: #7f97ae; }
 
-[data-theme="dark"] .tw-section-overview {
-  background: linear-gradient(135deg, rgba(133,204,255,0.06), #0f1f2e) !important;
-  border-color: #1e3448;
-  border-left-color: #85CCFF;
-}
+[data-theme="dark"] .tw-detail-header { background: #0a1825 !important; border-color: #1e4a70; }
+[data-theme="dark"] .tw-detail-title { color: #c8e0f5; }
+[data-theme="dark"] .tw-detail-sub { color: #85CCFF; }
 
-[data-theme="dark"] .tw-rule-examples {
-  background: #0a1825 !important;
-  border-color: #1e3448;
-  border-left-color: #85CCFF;
-}
+[data-theme="dark"] .tw-section-title { color: #85CCFF; }
+[data-theme="dark"] .tw-section-body { color: #a8c0d8; }
+[data-theme="dark"] .tw-empty { color: #7f97ae; }
 
-[data-theme="dark"] .tw-example-item {
-  background: #0f1f2e;
-  border-color: #1e3448;
-}
+[data-theme="dark"] .tw-verse--quran { background: #0e2438; border-color: #1e5a8a; }
+[data-theme="dark"] .tw-verse--hadith { background: #2a2110; border-color: #6e5320; }
+[data-theme="dark"] .tw-verse--quran .tw-verse-tag { background: #85CCFF; color: #062338; }
+[data-theme="dark"] .tw-verse--hadith .tw-verse-tag { background: #e0c07a; color: #2a2110; }
+[data-theme="dark"] .tw-verse-arabic { color: #e8f0f8; }
+[data-theme="dark"] .tw-verse-english { color: #a8c0d8; }
+[data-theme="dark"] .tw-verse-source { color: #7f97ae; }
 
-[data-theme="dark"] .tw-example-note {
-  background: rgba(133,204,255,0.1);
-  color: #c8e0f5;
-}
+[data-theme="dark"] .tw-nav-btn { background: #0a1825; border-color: #1e3448; color: #85CCFF; }
+[data-theme="dark"] .tw-nav-btn:hover:not(:disabled) { border-color: #85CCFF; background: #12283b; }
 
-[data-theme="dark"] .tw-section-card-title,
-[data-theme="dark"] .tw-section-title,
-[data-theme="dark"] .tw-rule-name,
-[data-theme="dark"] .tw-rule-card-name,
-[data-theme="dark"] .tw-scholar-name,
-[data-theme="dark"] .tw-section-card-read,
-[data-theme="dark"] .tw-rule-card-read,
-[data-theme="dark"] .tw-example-arabic {
-  color: #85CCFF;
-}
+[data-theme="dark"] .tw-status-card { border-color: #85CCFF; }
+[data-theme="dark"] .tw-status-card--fail { border-color: #ff6b5a; }
+[data-theme="dark"] .tw-status-value { color: #85CCFF; }
+[data-theme="dark"] .tw-status-card--fail .tw-status-value { color: #ff6b5a; }
+[data-theme="dark"] .tw-status-note { color: #a8c0d8; }
 
-[data-theme="dark"] .tw-section-card-arabic,
-[data-theme="dark"] .tw-section-arabic,
-[data-theme="dark"] .tw-rule-arabic,
-[data-theme="dark"] .tw-rule-card-arabic,
-[data-theme="dark"] .tw-scholar-arabic,
-[data-theme="dark"] .tw-back,
-[data-theme="dark"] .tw-example-translit,
-[data-theme="dark"] .tw-source-text {
-  color: #7f97ae;
-}
+[data-theme="dark"] .tw-quiz-q-text { color: #c8e0f5; }
+[data-theme="dark"] .tw-quiz-num { color: #85CCFF; }
+[data-theme="dark"] .tw-quiz-option { background: #0a1825; border-color: #1e3448; color: #a8c0d8; }
+[data-theme="dark"] .tw-quiz-option--selected { background: #12283b; border-color: #85CCFF; }
+[data-theme="dark"] .tw-quiz-option--correct { background: rgba(46,125,50,0.18); border-color: #4caf50; color: #a5d6a7; }
+[data-theme="dark"] .tw-quiz-option--wrong { background: rgba(231,76,60,0.14); border-color: #ff6b5a; color: #ff8a80; }
+[data-theme="dark"] .tw-quiz-explanation { color: #7f97ae; border-top-color: #1e3448; }
 
-[data-theme="dark"] .tw-back:hover {
-  color: #85CCFF;
-}
+[data-theme="dark"] .tw-sheet { background: #0f1f2e !important; border-color: #1e3448; }
+[data-theme="dark"] .tw-sheet-title { color: #85CCFF; }
+[data-theme="dark"] .tw-sheet-close { background: #0a1825; color: #7f97ae; }
+[data-theme="dark"] .tw-sheet-text { color: #a8c0d8; }
+[data-theme="dark"] .tw-sheet-option { background: #0a1825; border-color: #1e3448; }
+[data-theme="dark"] .tw-sheet-option--full { background: #12283b; border-color: #85CCFF; }
+[data-theme="dark"] .tw-sheet-option-title { color: #c8e0f5; }
+[data-theme="dark"] .tw-sheet-option-price { color: #85CCFF; }
 
-[data-theme="dark"] .tw-section-card-overview,
-[data-theme="dark"] .tw-rule-card-preview,
-[data-theme="dark"] .tw-overview-text,
-[data-theme="dark"] .tw-rule-para,
-[data-theme="dark"] .tw-scholar-contribution {
-  color: #c8e0f5;
-}
-
-[data-theme="dark"] .tw-section-card-count,
-[data-theme="dark"] .tw-examples-count,
-[data-theme="dark"] .tw-section-ref,
-[data-theme="dark"] .tw-scholar-lifespan,
-[data-theme="dark"] .tw-section-label {
-  color: #7f97ae;
-}
-
-[data-theme="dark"] .tw-section-card-footer,
-[data-theme="dark"] .tw-rule-card-footer {
-  border-top-color: #1e3448;
-}
-
-[data-theme="dark"] .tw-filter-btn {
-  background: #0f1f2e;
-  border-color: #1e3448;
-  color: #7f97ae;
-}
-
-[data-theme="dark"] .tw-filter-btn:hover {
-  border-color: #85CCFF;
-  color: #85CCFF;
-}
-
-[data-theme="dark"] .tw-section-card:hover,
-[data-theme="dark"] .tw-rule-card:hover {
-  border-color: #85CCFF;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .tw-sections-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .tw-scholars-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .tw-intro-ayah {
-    font-size: 1.4rem;
-  }
-
-  .tw-rule-name {
-    font-size: 1.2rem;
-  }
-
-  .tw-example-arabic {
-    font-size: 1.3rem;
-  }
+[data-theme="dark"] .tw-sheet-error {
+  background: rgba(255, 107, 90, 0.12);
+  color: #ff8a80;
+  border-color: rgba(255, 107, 90, 0.4);
 }

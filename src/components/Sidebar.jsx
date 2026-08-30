@@ -150,6 +150,13 @@ const ICONS = {
       <line x1="12" y1="6" x2="12" y2="19" />
     </svg>
   ),
+    adab: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3 2 8l10 5 10-5-10-5z" />
+      <path d="M6 10.5V16c0 1.5 2.5 3 6 3s6-1.5 6-3v-5.5" />
+      <path d="M22 8v6" />
+    </svg>
+  ),
 }
 
 // ── Six-pillar grouping ───────────────────────────────────────
@@ -172,6 +179,7 @@ const NAV_GROUPS = [
       { path: '/tajweed', label: 'Tajweed', icon: 'tajweed' },
       { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
       { path: '/arabic-dictionary', label: 'Arabic Dictionary', icon: 'arabicDictionary' },
+      { path: '/adab', label: 'Adab Class', icon: 'adab' },
 
     ],
   },

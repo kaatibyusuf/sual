@@ -5,14 +5,14 @@
 // first time a subscription becomes active — sends a welcome email
 // via Resend and logs that send in email_log.
 //
-// Each row also tracks renewal_count (incremented on every
-// charge.success after the first activation, so it reflects how many
-// times a user has renewed — i.e. whether they're a recurring
-// subscriber) and renewal_reminder_sent_at (cleared on every renewal
-// so the subscription-renewal-reminder function can send a fresh
-// reminder ahead of the new expiry date).
+// Each subscription row also tracks renewal_count (incremented on
+// every charge.success after the first activation, so it reflects
+// how many times a user has renewed — i.e. whether they're a
+// recurring subscriber) and renewal_reminder_sent_at (cleared on
+// every renewal so the subscription-renewal-reminder function can
+// send a fresh reminder ahead of the new expiry date).
 //
-// Three products share this one webhook, since Paystack only supports
+// Five products share this one webhook, since Paystack only supports
 // one registered webhook URL per account:
 //   - Spaces subscriptions: reference sual_<plan>_<uuid>_<epoch ms>
 //     where <plan> is "monthly", "annual", or "lifetime"
@@ -20,9 +20,30 @@
 //     where <plan> is "monthly" or "annual"
 //   - Tajweed Course subscriptions: reference tajweed_<plan>_<uuid>_<epoch ms>
 //     where <plan> is "monthly" or "annual"
-// Each writes to its own table (subscriptions / book_quiz_subscriptions /
-// tajweed_subscriptions) so all three products stay fully independent —
-// a user can hold any combination of them.
+//   - Adab Class purchases: reference adab_<plan>_<uuid>_<epoch ms>
+//     where <plan> is "full" or a unit token like "unit2" (no hyphen —
+//     derived from the unit id 'unit-2' by stripping the hyphen so it
+//     survives the underscore-delimited reference format cleanly)
+//   - Tawheed Class purchases: reference tawheed_<plan>_<uuid>_<epoch ms>
+//     using the exact same plan format as Adab Class
+//
+// Spaces / Book Quiz / Tajweed each write to their own table
+// (subscriptions / book_quiz_subscriptions / tajweed_subscriptions)
+// with one row per user, upserted on user_id, since a user has at
+// most one active subscription state per product at a time.
+//
+// Adab Class and Tawheed Class are different: they are one-off
+// purchases, not recurring subscriptions, and a user can accumulate
+// several purchases over time (Unit 2 today, Unit 5 next month, full
+// access later). So each writes one row per purchase into its own
+// table (adab_purchases / tawheed_purchases), and gets its
+// webhook-retry idempotency from upserting on paystack_reference
+// (unique in that table) instead of on user_id. Because these are
+// one-off charges — the same as the Spaces "lifetime" plan —
+// Paystack never creates a recurring subscription object for them,
+// so the subscription.disable handler below needs no Adab- or
+// Tawheed-specific logic; that event simply never fires for these
+// purchases.
 //
 // Lifetime Spaces members get expires_at = null (never expires) and
 // plan = 'spaces_lifetime'. The frontend's isPaid check treats
@@ -63,7 +84,7 @@ async function verifySignature(rawBody: string, signature: string | null): Promi
 }
 
 // ── Reference parsing ────────────────────────────────────────
-// Returns { product: 'spaces' | 'bookquiz' | 'tajweed', userId, plan }
+// Returns { product: 'spaces' | 'bookquiz' | 'tajweed' | 'adab' | 'tawheed', userId, plan }
 // or null if the reference doesn't match any known pattern.
 function parseReference(reference: string | null) {
   if (!reference) return null
@@ -76,6 +97,12 @@ function parseReference(reference: string | null) {
 
   const tajweedMatch = reference.match(/^tajweed_(monthly|annual)_([0-9a-fA-F-]{36})_/)
   if (tajweedMatch) return { product: 'tajweed' as const, plan: tajweedMatch[1], userId: tajweedMatch[2] }
+
+  const adabMatch = reference.match(/^adab_(full|unit\d{1,2})_([0-9a-fA-F-]{36})_/)
+  if (adabMatch) return { product: 'adab' as const, plan: adabMatch[1], userId: adabMatch[2] }
+
+  const tawheedMatch = reference.match(/^tawheed_(full|unit\d{1,2})_([0-9a-fA-F-]{36})_/)
+  if (tawheedMatch) return { product: 'tawheed' as const, plan: tawheedMatch[1], userId: tawheedMatch[2] }
 
   return null
 }
@@ -96,7 +123,35 @@ async function resolveUserIdByEmail(email: string | null) {
   }
 }
 
-function welcomeEmailHtml(product: 'spaces' | 'bookquiz' | 'tajweed', plan?: string): string {
+function welcomeEmailHtml(product: 'spaces' | 'bookquiz' | 'tajweed' | 'adab' | 'tawheed', plan?: string): string {
+  if (product === 'adab') {
+    const unitLine = plan && plan !== 'full'
+      ? `<p>You now have access to the <strong>${plan}</strong> unit of the Adab Class.</p>`
+      : `<p>You now have full access to every unit of the Adab Class.</p>`
+    return `
+      <h1>Assalamu alaykum, your Adab Class purchase is confirmed</h1>
+      ${unitLine}
+      <p>If anything about your access looks wrong, just reply to this email — this message
+      is our record that your payment was confirmed and access was granted.</p>
+      <p>بارك الله فيك</p>
+      <p>— The Sual team</p>
+    `
+  }
+
+  if (product === 'tawheed') {
+    const unitLine = plan && plan !== 'full'
+      ? `<p>You now have access to the <strong>${plan}</strong> unit of the Tawheed Class.</p>`
+      : `<p>You now have full access to every unit of the Tawheed Class.</p>`
+    return `
+      <h1>Assalamu alaykum, your Tawheed Class purchase is confirmed</h1>
+      ${unitLine}
+      <p>If anything about your access looks wrong, just reply to this email — this message
+      is our record that your payment was confirmed and access was granted.</p>
+      <p>بارك الله فيك</p>
+      <p>— The Sual team</p>
+    `
+  }
+
   if (product === 'bookquiz') {
     return `
       <h1>Assalamu alaykum, and welcome to Book Quiz</h1>
@@ -266,12 +321,16 @@ function welcomeEmailHtml(product: 'spaces' | 'bookquiz' | 'tajweed', plan?: str
   `
 }
 
-async function sendWelcomeEmail(email: string, product: 'spaces' | 'bookquiz' | 'tajweed', plan?: string): Promise<{ ok: boolean; resendId: string | null; error: string | null }> {
+async function sendWelcomeEmail(email: string, product: 'spaces' | 'bookquiz' | 'tajweed' | 'adab' | 'tawheed', plan?: string): Promise<{ ok: boolean; resendId: string | null; error: string | null }> {
   try {
     const subject = product === 'bookquiz'
       ? 'Welcome to Sual Book Quiz — your access is confirmed'
       : product === 'tajweed'
       ? 'Welcome to Sual Tajweed Course — your access is confirmed'
+      : product === 'adab'
+      ? 'Your Sual Adab Class purchase is confirmed'
+      : product === 'tawheed'
+      ? 'Your Sual Tawheed Class purchase is confirmed'
       : 'Welcome to Sual Spaces — your access is confirmed'
 
     const res = await fetch('https://api.resend.com/emails', {
@@ -525,13 +584,109 @@ serve(async (req) => {
         headers: { 'Content-Type': 'application/json' },
       })
     }
+
+    if (parsed.product === 'adab') {
+      // 'full' -> unlocks every unit (unit_id stored as null).
+      // 'unit2' -> a single unit purchase; convert back to the
+      // 'unit-2' id format used throughout adab.js and adab_purchases.
+      const unitId = parsed.plan === 'full' ? null : `unit-${parsed.plan.replace('unit', '')}`
+      const amountNaira = data.amount ? Math.round(data.amount / 100) : (parsed.plan === 'full' ? 5000 : 500)
+
+      // Adab purchases are one-off, not a per-user subscription row,
+      // so idempotency against webhook retries is keyed on the
+      // unique paystack_reference rather than on user_id.
+      const { data: existingPurchase } = await supabaseAdmin
+        .from('adab_purchases')
+        .select('id')
+        .eq('paystack_reference', reference)
+        .maybeSingle()
+
+      const isNewPurchase = !existingPurchase
+
+      const { error: upsertError } = await supabaseAdmin
+        .from('adab_purchases')
+        .upsert({
+          user_id: userId,
+          unit_id: unitId,
+          amount: amountNaira,
+          paystack_reference: reference,
+          status: 'success',
+        }, { onConflict: 'paystack_reference' })
+
+      if (upsertError) {
+        console.error('Failed to record Adab purchase:', upsertError)
+        return new Response(JSON.stringify({ error: upsertError.message }), { status: 500 })
+      }
+
+      if (isNewPurchase && email) {
+        const result = await sendWelcomeEmail(email, 'adab', unitId ?? 'full')
+        await logEmail(
+          userId,
+          email,
+          unitId ? `Adab Class — ${unitId} unlocked` : 'Adab Class — full access unlocked',
+          result,
+          'adab_purchase'
+        )
+      }
+
+      return new Response(JSON.stringify({ ok: true, product: 'adab', unitId, isNewPurchase }), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (parsed.product === 'tawheed') {
+      // Same one-off purchase pattern as Adab Class, writing to its
+      // own table (tawheed_purchases) with the same idempotency
+      // approach keyed on paystack_reference.
+      const unitId = parsed.plan === 'full' ? null : `unit-${parsed.plan.replace('unit', '')}`
+      const amountNaira = data.amount ? Math.round(data.amount / 100) : (parsed.plan === 'full' ? 5000 : 500)
+
+      const { data: existingPurchase } = await supabaseAdmin
+        .from('tawheed_purchases')
+        .select('id')
+        .eq('paystack_reference', reference)
+        .maybeSingle()
+
+      const isNewPurchase = !existingPurchase
+
+      const { error: upsertError } = await supabaseAdmin
+        .from('tawheed_purchases')
+        .upsert({
+          user_id: userId,
+          unit_id: unitId,
+          amount: amountNaira,
+          paystack_reference: reference,
+          status: 'success',
+        }, { onConflict: 'paystack_reference' })
+
+      if (upsertError) {
+        console.error('Failed to record Tawheed purchase:', upsertError)
+        return new Response(JSON.stringify({ error: upsertError.message }), { status: 500 })
+      }
+
+      if (isNewPurchase && email) {
+        const result = await sendWelcomeEmail(email, 'tawheed', unitId ?? 'full')
+        await logEmail(
+          userId,
+          email,
+          unitId ? `Tawheed Class — ${unitId} unlocked` : 'Tawheed Class — full access unlocked',
+          result,
+          'tawheed_purchase'
+        )
+      }
+
+      return new Response(JSON.stringify({ ok: true, product: 'tawheed', unitId, isNewPurchase }), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
   }
 
   if (eventType === 'subscription.disable') {
-    // Lifetime and one-off charges never create a Paystack recurring
+    // Lifetime and one-off charges (including all Adab Class and
+    // Tawheed Class purchases) never create a Paystack recurring
     // subscription object, so this event simply never fires for
-    // those rows — nothing extra needed here to protect lifetime
-    // members from being deactivated by this handler.
+    // those rows — nothing extra needed here to protect them from
+    // being deactivated by this handler.
     const subscriptionCode = data.subscription_code ?? null
     if (subscriptionCode) {
       const [{ error: err1 }, { error: err2 }, { error: err3 }] = await Promise.all([

@@ -47,6 +47,7 @@ const Leaderboard = lazy(() => import('./pages/Leaderboard.jsx'))
 const Rewards = lazy(() => import('./pages/Rewards.jsx'))
 const NewMuslim = lazy(() => import('./pages/NewMuslim.jsx'))
 const ArabicDictionary = lazy(() => import('./pages/ArabicDictionary.jsx'))
+const Adab = lazy(() => import('./pages/Adab.jsx'))
 
 function RouteFallback() {
   return (
@@ -350,7 +351,7 @@ function AppInner() {
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/tajweed" element={<Tajweed />} />
               <Route path="/fiqh" element={<Fiqh />} />
-              <Route path="/tawheed" element={<Tawheed />} />
+              <Route path="/tawheed" element={<Tawheed user={user} />} />
               <Route path="/profile" element={<Profile user={user} userLevel={userLevel} setUserLevel={setUserLevel} fontSize={fontSize} setFontSize={setFontSize} />} />
               <Route path="/dashboard" element={<Journey user={user} />} />
               <Route path="/spaces" element={<Spaces user={user} />} />
@@ -370,6 +371,7 @@ function AppInner() {
               <Route path="/rewards" element={<Rewards user={user} />} />
               <Route path="/new-muslim" element={<NewMuslim user={user} />} />
               <Route path="/arabic-dictionary" element={<ArabicDictionary user={user} />} />
+              <Route path="/adab" element={<Adab user={user} />} />
             </Routes>
           </Suspense>
         </main>
