@@ -32,6 +32,15 @@ export default defineConfig({
       // cleanupOutdatedCaches (on by default) removes the stale
       // versions once the new SW activates.
       workbox: {
+        // Explicitly named rather than inferred. Vite 8 builds with
+        // Rolldown now, not Rollup, and vite-plugin-pwa's closeBundle
+        // hook has to correctly detect where Rolldown actually wrote
+        // the build output before it can glob it. Naming it directly
+        // removes that inference step entirely — if this was a
+        // detection/timing issue rather than a real glob mismatch,
+        // this line alone is the fix. Update this if build.outDir is
+        // ever changed away from Vite's default.
+        globDirectory: 'dist',
         globPatterns: ['**/*.{js,css,html,ico,svg,png,woff2}'],
         cleanupOutdatedCaches: true,
 
