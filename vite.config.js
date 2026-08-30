@@ -41,7 +41,12 @@ export default defineConfig({
         // this line alone is the fix. Update this if build.outDir is
         // ever changed away from Vite's default.
         globDirectory: 'dist',
-        globPatterns: ['**/*.{js,css,html,ico,svg,png,woff2}'],
+
+        // TEMP DIAGNOSTIC: broadened to rule out a case-sensitivity
+        // or extension mismatch between Windows (local) and Vercel's
+        // Linux build container. Revert to the narrower pattern once
+        // confirmed.
+        globPatterns: ['**/*'],
         cleanupOutdatedCaches: true,
 
         // Default is 2 MiB per file — the main index bundle is
