@@ -1,15 +1,12 @@
 /* ============================================
-   Splash Screen
+   Splash Screen — question, then presence
    ============================================ */
 
 .splash {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background:
-    radial-gradient(ellipse at 50% 30%, rgba(133, 204, 255, 0.12), transparent 60%),
-    radial-gradient(ellipse at 50% 100%, rgba(9, 30, 60, 0.6), transparent 70%),
-    linear-gradient(160deg, #062038 0%, var(--regal-blue) 45%, #0a2f52 100%);
+  background: var(--regal-blue);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,146 +22,61 @@
   pointer-events: none;
 }
 
-/* ---- Geometric lattice background ---- */
+/* ---- Geometric texture — static, never animates ---- */
 .splash-lattice {
   position: absolute;
   inset: 0;
-  opacity: 0.05;
+  opacity: 0.04;
   background-image:
     linear-gradient(45deg, transparent 48%, rgba(133, 204, 255, 0.5) 49%, rgba(133, 204, 255, 0.5) 51%, transparent 52%),
-    linear-gradient(-45deg, transparent 48%, rgba(133, 204, 255, 0.5) 49%, rgba(133, 204, 255, 0.5) 51%, transparent 52%),
-    linear-gradient(90deg, transparent 48%, rgba(133, 204, 255, 0.3) 49%, rgba(133, 204, 255, 0.3) 51%, transparent 52%),
-    linear-gradient(0deg, transparent 48%, rgba(133, 204, 255, 0.3) 49%, rgba(133, 204, 255, 0.3) 51%, transparent 52%);
+    linear-gradient(-45deg, transparent 48%, rgba(133, 204, 255, 0.5) 49%, rgba(133, 204, 255, 0.5) 51%, transparent 52%);
   background-size: 64px 64px;
   background-position: center;
-  animation: lattice-drift 60s linear infinite;
   mask-image: radial-gradient(ellipse at 50% 40%, black 0%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 0%, transparent 75%);
 }
 
-@keyframes lattice-drift {
-  from { background-position: 0 0; }
-  to   { background-position: 256px 256px; }
-}
-
-/* ---- Floating particles ---- */
-.splash-particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.splash-particle {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--pastel-blue);
-  opacity: 0;
-  animation: particle-float 6s ease-in-out infinite;
-  box-shadow: 0 0 6px rgba(133, 204, 255, 0.8);
-}
-
-.splash-particle--0  { top: 20%; left: 15%; animation-delay: 0s;   }
-.splash-particle--1  { top: 65%; left: 8%;  animation-delay: 0.5s; }
-.splash-particle--2  { top: 35%; left: 85%; animation-delay: 1s;   }
-.splash-particle--3  { top: 78%; left: 78%; animation-delay: 1.5s; }
-.splash-particle--4  { top: 12%; left: 60%; animation-delay: 2s;   }
-.splash-particle--5  { top: 88%; left: 40%; animation-delay: 2.5s; }
-.splash-particle--6  { top: 45%; left: 5%;  animation-delay: 3s;   }
-.splash-particle--7  { top: 25%; left: 92%; animation-delay: 3.5s; }
-.splash-particle--8  { top: 58%; left: 22%; animation-delay: 1.2s; }
-.splash-particle--9  { top: 8%;  left: 35%; animation-delay: 2.8s; }
-.splash-particle--10 { top: 70%; left: 60%; animation-delay: 0.8s; }
-.splash-particle--11 { top: 92%; left: 12%; animation-delay: 4s;   }
-
-@keyframes particle-float {
-  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
-  20%  { opacity: 0.7; }
-  80%  { opacity: 0.5; }
-  100% { opacity: 0; transform: translateY(-40px) scale(1); }
-}
-
-/* ---- Content block ---- */
+/* ---- Content block ----
+   Note: the parent's own opacity/transform transition below is kept
+   fast and early (it just lifts the whole block into place) — the
+   actual pacing of this concept lives in the two child timings
+   further down, not in this wrapper. */
 .splash-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
   opacity: 0;
-  transform: translateY(24px) scale(0.95);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s ease;
   position: relative;
   z-index: 1;
 }
 
 .splash-content--visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
 }
 
-/* ---- Decorative rings ---- */
-/* Now draw/expand in as part of the reveal, rather than sitting at
-   full size and only pulsing from the start. */
-.splash-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(133, 204, 255, 0.15);
-  transform: scale(0.5);
-  opacity: 0;
-  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.splash-content--visible .splash-ring {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.splash-ring--outer {
-  width: 320px;
-  height: 320px;
-  border-style: dashed;
-  border-color: rgba(133, 204, 255, 0.1);
-}
-
-.splash-content--visible .splash-ring--outer {
-  animation: pulse-ring 3.4s ease-in-out 1.1s infinite, ring-rotate 40s linear 1.1s infinite;
-}
-
-.splash-ring--inner {
-  width: 240px;
-  height: 240px;
-  transition-delay: 0.15s;
-}
-
-.splash-content--visible .splash-ring--inner {
-  animation: pulse-ring 2.6s ease-in-out 1.4s infinite;
-}
-
-@keyframes pulse-ring {
-  0%   { transform: scale(0.9); opacity: 0.4; }
-  50%  { transform: scale(1.06); opacity: 0.12; }
-  100% { transform: scale(0.9); opacity: 0.4; }
-}
-
-@keyframes ring-rotate {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-/* ---- Crescent + star mark ---- */
+/* ---- Beat one: the mark, alone ----
+   Appears once, calmly, as a single presence — not assembled from
+   two separate points, no ring or glow around it — then simply
+   holds still. The stillness between this and beat two below (from
+   roughly 0.75s to 1.3s) is deliberate silence, not a gap waiting
+   to be filled. */
 .splash-mark {
-  width: 44px;
-  height: 44px;
-  margin-bottom: 4px;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 8px;
   opacity: 0;
-  transform: translateY(-10px) scale(0.85);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.88);
 }
 
 .splash-content--visible .splash-mark {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+  animation: mark-arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+@keyframes mark-arrive {
+  0%   { opacity: 0; transform: scale(0.88); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 .splash-mark-crescent {
@@ -177,7 +89,13 @@
   opacity: 0.95;
 }
 
-/* ---- Arabic word ---- */
+/* ---- Beat two: everything else, arriving together ----
+   Every element below shares the exact same animation-delay (1.3s)
+   and duration (0.65s) with the same easing. That repetition is
+   intentional, not an oversight — it's what makes these read as one
+   arrival rather than a staggered sequence. If you ever need to
+   retime this concept, change all five delay values together, or
+   the entire point of this version is lost. */
 .splash-arabic {
   position: relative;
   z-index: 1;
@@ -187,51 +105,31 @@
 }
 
 .splash-arabic-text {
+  display: inline-block;
   color: var(--pastel-blue);
   text-shadow: 0 0 60px rgba(133, 204, 255, 0.4);
-  position: relative;
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
 }
 
-.splash-arabic-shimmer {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    100deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.9) 48%,
-    rgba(255, 255, 255, 0.9) 52%,
-    transparent 70%
-  );
-  background-size: 250% 100%;
-  background-position: -100% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer-sweep 3.2s ease-in-out 1.1s infinite;
-  pointer-events: none;
+.splash-content--visible .splash-arabic-text {
+  animation: presence-arrive 0.65s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
 }
 
-@keyframes shimmer-sweep {
-  0%   { background-position: -120% 0; }
-  35%  { background-position: 120% 0; }
-  100% { background-position: 120% 0; }
-}
-
-/* ---- Divider line ---- */
 .splash-line {
-  width: 0;
+  width: 180px;
   height: 1.5px;
   background: linear-gradient(90deg, transparent, var(--pastel-blue), transparent);
-  transition: width 0.8s ease 0.3s;
   border-radius: 100px;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: center;
 }
 
 .splash-line--drawn {
-  width: 180px;
+  animation: line-arrive 0.65s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
 }
 
-/* ---- Latin name ---- */
 .splash-latin {
   font-family: var(--font-ui);
   font-size: 1.1rem;
@@ -239,9 +137,14 @@
   color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.3em;
   text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
 }
 
-/* ---- Tagline ---- */
+.splash-content--visible .splash-latin {
+  animation: presence-arrive 0.65s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
+}
+
 .splash-tagline {
   display: flex;
   flex-direction: column;
@@ -249,8 +152,7 @@
   gap: 6px;
   margin-top: 8px;
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s;
+  transform: translateY(10px);
   font-family: var(--font-arabic);
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.85);
@@ -258,8 +160,7 @@
 }
 
 .splash-tagline--visible {
-  opacity: 1;
-  transform: translateY(0);
+  animation: presence-arrive 0.65s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
 }
 
 .splash-tagline-sub {
@@ -270,7 +171,6 @@
   font-style: italic;
 }
 
-/* ---- Bottom bismillah ---- */
 .splash-bottom {
   position: absolute;
   bottom: 40px;
@@ -278,24 +178,40 @@
   font-size: 0.9rem;
   color: rgba(133, 204, 255, 0.4);
   opacity: 0;
-  transition: opacity 0.8s ease 0.6s;
   letter-spacing: 0.02em;
   z-index: 1;
 }
 
 .splash-bottom--visible {
-  opacity: 1;
+  animation: presence-arrive 0.65s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
 }
 
-/* Reduced motion: keep the reveal, drop the ambient loops */
+@keyframes presence-arrive {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes line-arrive {
+  0%   { opacity: 0; transform: scaleX(0); }
+  100% { opacity: 1; transform: scaleX(1); }
+}
+
+/* Reduced motion: skip straight to the fully-arrived state, no
+   animated stages at all. */
 @media (prefers-reduced-motion: reduce) {
-  .splash-lattice,
-  .splash-particle,
-  .splash-content--visible .splash-ring--outer,
-  .splash-content--visible .splash-ring--inner,
-  .splash-arabic-shimmer {
+  .splash-content--visible .splash-mark,
+  .splash-content--visible .splash-arabic-text,
+  .splash-line--drawn,
+  .splash-content--visible .splash-latin,
+  .splash-tagline--visible,
+  .splash-bottom--visible {
     animation: none !important;
   }
+  .splash-mark { opacity: 1 !important; transform: scale(1) !important; }
+  .splash-arabic-text, .splash-latin, .splash-tagline, .splash-bottom {
+    opacity: 1 !important; transform: translateY(0) !important;
+  }
+  .splash-line { opacity: 1 !important; transform: scaleX(1) !important; }
 }
 
 /* Mobile */
@@ -304,18 +220,8 @@
     font-size: 4.5rem;
   }
 
-  .splash-ring--outer {
-    width: 240px;
-    height: 240px;
-  }
-
-  .splash-ring--inner {
-    width: 180px;
-    height: 180px;
-  }
-
   .splash-mark {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
   }
 }

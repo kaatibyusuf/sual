@@ -139,6 +139,23 @@ const ICONS = {
       <path d="M22 8v6" />
     </svg>
   ),
+    tawheed: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 3v18" />
+      <path d="M12 3a9 9 0 0 1 0 18" fill="none" />
+    </svg>
+  ),
+    graph: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="6" r="2.2" />
+      <circle cx="18" cy="6" r="2.2" />
+      <circle cx="12" cy="18" r="2.2" />
+      <line x1="6" y1="6" x2="12" y2="18" />
+      <line x1="18" y1="6" x2="12" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="6" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -168,6 +185,8 @@ const MORE_ITEMS = [
   { to: '/new-muslim', icon: 'newMuslim', label: 'New Muslim Path' },
   { to: '/arabic-dictionary', icon: 'arabicDictionary', label: 'Arabic Dictionary' },
   { to: '/adab', icon: 'adab', label: 'Adab Class' },
+  { to: '/tawheed', icon: 'tawheed', label: 'Tawheed Class' },
+  { to: '/knowledge-graph', icon: 'graph', label: 'Knowledge Graph' },
 ]
 
 export default function BottomNav() {

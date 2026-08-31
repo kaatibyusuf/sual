@@ -1,0 +1,158 @@
+/* src/pages/KnowledgeGraph.css
+ * Calm, deterministic layout, no motion beyond a gentle transition
+ * when recentering. Matches the same wf-style visual system as
+ * Adab Class and Tawheed Class: white cards, light-blue borders,
+ * navy accents, [data-theme="dark"] overrides.
+ */
+
+.kg-page {
+  padding-top: 24px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.kg-header { margin-bottom: 16px; }
+.kg-title { font-size: 1.3rem; font-weight: 800; color: #094570; }
+.kg-subtitle { font-size: 0.85rem; color: #6a8090; margin-top: 2px; }
+
+/* ── Search ── */
+.kg-search { position: relative; margin-bottom: 14px; }
+.kg-search-input {
+  width: 100%; padding: 11px 16px; border: 1.5px solid #c8d8e8; border-radius: 100px;
+  font-family: var(--font-ui); font-size: 0.88rem; color: #0d1b2a; background: #ffffff;
+}
+.kg-search-input:focus { outline: none; border-color: #094570; }
+.kg-search-results {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 20;
+  background: #ffffff; border: 1.5px solid #c8d8e8; border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(9,69,112,0.12); overflow: hidden;
+}
+.kg-search-result {
+  display: block; width: 100%; text-align: left; padding: 10px 16px; background: none; border: none;
+  font-family: var(--font-ui); font-size: 0.86rem; color: #0d1b2a; cursor: pointer; border-bottom: 1px solid #f0f4f8;
+}
+.kg-search-result:last-child { border-bottom: none; }
+.kg-search-result:hover { background: #f0f7ff; }
+
+/* ── Breadcrumb ── */
+.kg-breadcrumb {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+  font-size: 0.78rem; margin-bottom: 14px; color: #6a8090;
+}
+.kg-breadcrumb-link { background: none; border: none; color: #094570; font-weight: 700; cursor: pointer; padding: 2px 4px; font-family: var(--font-ui); font-size: 0.78rem; }
+.kg-breadcrumb-link:hover { text-decoration: underline; }
+.kg-breadcrumb-sep { margin: 0 2px; color: #b8c8d8; }
+.kg-breadcrumb-current { font-weight: 700; color: #0d1b2a; padding: 2px 4px; }
+
+/* ── Canvas ── */
+.kg-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.15;
+  max-height: 560px;
+  background: #ffffff;
+  border: 1.5px solid #e8f0f8;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.kg-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.kg-zone-label {
+  position: absolute; transform: translate(-50%, -50%);
+  font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+  color: #8a9ab0; background: #ffffff; padding: 2px 8px; border-radius: 100px; pointer-events: none;
+  white-space: nowrap;
+}
+.kg-zone-label--related { transform: translate(0, -50%); }
+
+.kg-center-node {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: #094570; color: #ffffff; border-radius: 16px; padding: 14px 18px;
+  text-align: center; min-width: 120px; max-width: 160px; box-shadow: 0 6px 20px rgba(9,69,112,0.28);
+  z-index: 5; transition: all 0.25s ease;
+}
+.kg-center-title { font-size: 0.95rem; font-weight: 800; line-height: 1.25; }
+.kg-center-subtitle { font-size: 0.7rem; color: #cfe4f7; margin-top: 2px; }
+
+.kg-node {
+  position: absolute; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: #ffffff; border: 1.5px solid #c8d8e8; border-radius: 12px;
+  padding: 6px 9px; cursor: pointer; font-family: var(--font-ui);
+  max-width: 92px; transition: transform 0.15s ease, box-shadow 0.15s ease;
+  z-index: 3;
+}
+.kg-node:hover { transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 4px 14px rgba(9,69,112,0.18); }
+
+.kg-node-icon { font-size: 0.85rem; line-height: 1; color: #094570; }
+.kg-node-label { font-size: 0.68rem; font-weight: 700; color: #0d1b2a; text-align: center; line-height: 1.2; }
+
+.kg-node--prerequisite { border-color: #85CCFF; }
+.kg-node--prerequisite .kg-node-icon { color: #4a9fd8; }
+.kg-node--advanced { border-color: #094570; background: #f0f7ff; }
+.kg-node--related { border-color: #c8d0d8; }
+
+.kg-node--satellite {
+  padding: 4px 7px; max-width: 74px; border-style: dashed;
+}
+.kg-node--satellite .kg-node-label { font-size: 0.6rem; }
+.kg-node--verse { border-color: #85CCFF; }
+.kg-node--hadith { border-color: #e0c07a; }
+.kg-node--lesson { border-color: #b8dfc0; }
+
+/* ── Summary card ── */
+.kg-summary-card {
+  padding: 16px 18px; background: #f0f7ff; border: 1.5px solid #85CCFF; border-radius: 14px;
+  margin-bottom: 14px;
+}
+.kg-summary-card p { font-size: 0.88rem; color: #1a2a3a; line-height: 1.6; margin: 0 0 8px; }
+.kg-summary-course {
+  display: inline-block; font-size: 0.7rem; font-weight: 700; color: #094570;
+  background: #ffffff; padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.03em;
+}
+
+/* ── Legend ── */
+.kg-legend { display: flex; flex-wrap: wrap; gap: 14px; padding: 4px 2px 20px; }
+.kg-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: #6a8090; }
+.kg-legend-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.kg-legend-dot--satellite { background: #ffffff; border: 1.5px dashed #b8c8d8; }
+
+/* ── Verse/hadith detail sheet ── */
+.kg-sheet-overlay { position: fixed; inset: 0; background: rgba(13,27,42,0.45); display: flex; align-items: flex-end; justify-content: center; z-index: 100; }
+@media (min-width: 640px) { .kg-sheet-overlay { align-items: center; } }
+.kg-sheet { width: 100%; max-width: 420px; padding: 20px; background: #ffffff; border-radius: 18px 18px 0 0; border: 1.5px solid #c8d8e8; }
+@media (min-width: 640px) { .kg-sheet { border-radius: 18px; } }
+.kg-sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.kg-sheet-tag { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background: #094570; color: #ffffff; padding: 3px 10px; border-radius: 100px; }
+.kg-sheet-close { width: 26px; height: 26px; border-radius: 50%; border: none; background: #f5f8fb; color: #6a8090; cursor: pointer; font-size: 1.05rem; }
+.kg-sheet-arabic { font-size: 1.25rem; line-height: 1.9; color: #0d1b2a; text-align: right; margin: 0 0 10px; font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade New', serif; }
+.kg-sheet-english { font-size: 0.86rem; color: #2a3a4a; line-height: 1.6; font-style: italic; margin: 0 0 8px; }
+.kg-sheet-source { font-size: 0.72rem; font-weight: 700; color: #6a8090; text-transform: uppercase; letter-spacing: 0.03em; margin: 0; }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .kg-title { color: #85CCFF; }
+[data-theme="dark"] .kg-subtitle { color: #7f97ae; }
+[data-theme="dark"] .kg-search-input { background: #0f1f2e; border-color: #1e3448; color: #e8f0f8; }
+[data-theme="dark"] .kg-search-results { background: #0f1f2e; border-color: #1e3448; }
+[data-theme="dark"] .kg-search-result { color: #e8f0f8; border-bottom-color: #1e3448; }
+[data-theme="dark"] .kg-search-result:hover { background: #12283b; }
+[data-theme="dark"] .kg-breadcrumb-current { color: #c8e0f5; }
+[data-theme="dark"] .kg-canvas { background: #0a1420; border-color: #1e3448; }
+[data-theme="dark"] .kg-zone-label { background: #0a1420; color: #7f97ae; }
+[data-theme="dark"] .kg-center-node { background: #85CCFF; color: #062338; }
+[data-theme="dark"] .kg-center-subtitle { color: #0a3a5c; }
+[data-theme="dark"] .kg-node { background: #0f1f2e; border-color: #1e3448; }
+[data-theme="dark"] .kg-node-icon { color: #85CCFF; }
+[data-theme="dark"] .kg-node-label { color: #e8f0f8; }
+[data-theme="dark"] .kg-node--advanced { background: #12283b; border-color: #85CCFF; }
+[data-theme="dark"] .kg-summary-card { background: #0e2438; border-color: #1e5a8a; }
+[data-theme="dark"] .kg-summary-card p { color: #a8c0d8; }
+[data-theme="dark"] .kg-summary-course { background: #0a1420; color: #85CCFF; }
+[data-theme="dark"] .kg-legend-item { color: #7f97ae; }
+[data-theme="dark"] .kg-sheet { background: #0f1f2e; border-color: #1e3448; }
+[data-theme="dark"] .kg-sheet-close { background: #0a1420; color: #7f97ae; }
+[data-theme="dark"] .kg-sheet-arabic { color: #e8f0f8; }
+[data-theme="dark"] .kg-sheet-english { color: #a8c0d8; }
+[data-theme="dark"] .kg-sheet-source { color: #7f97ae; }

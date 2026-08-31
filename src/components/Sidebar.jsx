@@ -157,6 +157,16 @@ const ICONS = {
       <path d="M22 8v6" />
     </svg>
   ),
+    graph: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="6" r="2.2" />
+      <circle cx="18" cy="6" r="2.2" />
+      <circle cx="12" cy="18" r="2.2" />
+      <line x1="6" y1="6" x2="12" y2="18" />
+      <line x1="18" y1="6" x2="12" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="6" />
+    </svg>
+  ),
 }
 
 // ── Six-pillar grouping ───────────────────────────────────────
@@ -180,6 +190,7 @@ const NAV_GROUPS = [
       { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
       { path: '/arabic-dictionary', label: 'Arabic Dictionary', icon: 'arabicDictionary' },
       { path: '/adab', label: 'Adab Class', icon: 'adab' },
+      { path: '/knowledge-graph', label: 'Knowledge Graph', icon: 'graph' },
 
     ],
   },

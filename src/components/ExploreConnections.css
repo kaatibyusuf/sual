@@ -1,0 +1,34 @@
+/* src/components/ExploreConnections.css */
+
+.explore-connections-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: #f0f7ff;
+  border: 1.5px solid #85CCFF;
+  border-radius: 100px;
+  color: #094570;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin: 8px 0;
+}
+.explore-connections-pill:hover {
+  background: #094570;
+  color: #ffffff;
+  border-color: #094570;
+}
+.explore-connections-icon { font-size: 0.7rem; }
+
+[data-theme="dark"] .explore-connections-pill {
+  background: #0e2438;
+  border-color: #1e5a8a;
+  color: #85CCFF;
+}
+[data-theme="dark"] .explore-connections-pill:hover {
+  background: #85CCFF;
+  color: #062338;
+}

@@ -14,37 +14,25 @@ export default function SplashScreen({ onDone }) {
   return (
     <div className={`splash ${phase === 'exit' ? 'splash--exit' : ''}`}>
 
-      {/* Original geometric lattice, drawn in CSS — an 8-point star
-          motif repeated as a faint background texture, not copied
-          from any existing pattern or artwork. Kept very faint so it
-          reads as texture. */}
+      {/* Faint, fully static geometric texture — same treatment as
+          before, never competes with the actual motion. */}
       <div className="splash-lattice" aria-hidden="true" />
-
-      {/* Soft floating light particles */}
-      <div className="splash-particles" aria-hidden="true">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <span key={i} className={`splash-particle splash-particle--${i}`} />
-        ))}
-      </div>
 
       <div className={`splash-content ${phase !== 'enter' ? 'splash-content--visible' : ''}`}>
 
-        {/* Concentric decorative rings — now draw/expand in as part of
-            the reveal (see .splash-ring's entrance transform in CSS)
-            instead of just pulsing already at full size from the
-            start, so the opening has an actual arrival moment. */}
+        {/* Two rings — this time they genuinely contract inward from
+            an oversized start rather than pulsing in place, arriving
+            at their resting size right as the glow behind the
+            wordmark peaks. This is the actual "coalescing" motion the
+            concept is built around, not ambient decoration. */}
         <div className="splash-ring splash-ring--outer" />
         <div className="splash-ring splash-ring--inner" />
 
-        {/* Crescent + star — a real iconographic anchor beyond the
-            wordmark alone. Non-figurative, no depiction concerns:
-            just the crescent-and-star motif, the same one already
-            used for Home's night sky. Pure CSS/SVG, no image file. */}
-        <svg
-          className="splash-mark"
-          viewBox="0 0 100 100"
-          aria-hidden="true"
-        >
+        {/* Crescent + star — each path now animates in from its own
+            separate starting point and settles into place, so the
+            mark reads as assembling rather than simply fading in
+            where it already sits. */}
+        <svg className="splash-mark" viewBox="0 0 100 100" aria-hidden="true">
           <path
             className="splash-mark-crescent"
             d="M58 20a32 32 0 1 0 0 60 26 26 0 1 1 0-60z"
@@ -55,10 +43,16 @@ export default function SplashScreen({ onDone }) {
           />
         </svg>
 
-        {/* Arabic word */}
-        <div className="splash-arabic">
-          <span className="splash-arabic-text">سُؤَال</span>
-          <span className="splash-arabic-shimmer" aria-hidden="true">سُؤَال</span>
+        {/* Arabic word — the wordmark resolves out of a soft glow
+            growing from the center, rather than being drawn stroke
+            by stroke. Blur and scale clear as the glow behind it
+            peaks, so the two motions genuinely meet at the moment
+            the word becomes legible. */}
+        <div className="splash-arabic-wrap">
+          <div className="splash-glow" aria-hidden="true" />
+          <div className="splash-arabic">
+            <span className="splash-arabic-text">سُؤَال</span>
+          </div>
         </div>
 
         {/* Divider line */}
