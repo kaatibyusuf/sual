@@ -49,6 +49,7 @@ const NewMuslim = lazy(() => import('./pages/NewMuslim.jsx'))
 const ArabicDictionary = lazy(() => import('./pages/ArabicDictionary.jsx'))
 const Adab = lazy(() => import('./pages/Adab.jsx'))
 const KnowledgeGraph = lazy(() => import('./pages/KnowledgeGraph.jsx'))
+const TajweedClass = lazy(() => import('./pages/TajweedClass.jsx'))
 
 function RouteFallback() {
   return (
@@ -374,6 +375,7 @@ function AppInner() {
               <Route path="/arabic-dictionary" element={<ArabicDictionary user={user} />} />
               <Route path="/adab" element={<Adab user={user} />} />
               <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
+              <Route path="/tajweed-class" element={<TajweedClass user={user} />} />
             </Routes>
           </Suspense>
         </main>

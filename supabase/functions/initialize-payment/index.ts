@@ -1,9 +1,9 @@
 // supabase/functions/initialize-payment/index.ts
 //
 // Initializes a Paystack transaction for Spaces (monthly, annual, or
-// lifetime), Book Quiz, the Tajweed Course, Adab Class, or Tawheed
-// Class. The reference format carries the plan so the webhook can
-// branch on it without a second lookup:
+// lifetime), Book Quiz, the Tajweed Course, Adab Class, Tawheed
+// Class, or Tajweed Class. The reference format carries the plan so
+// the webhook can branch on it without a second lookup:
 //   sual_<plan>_<uuid>_<epoch>          (Spaces)
 //   bookquiz_<plan>_<uuid>_<epoch>      (Book Quiz)
 //   tajweed_<plan>_<uuid>_<epoch>       (Tajweed Course)
@@ -13,6 +13,14 @@
 //                                        unit id 'unit-2')
 //   tawheed_<plan>_<uuid>_<epoch>       (Tawheed Class — same plan
 //                                        format as Adab Class)
+//   tajweedclass_<plan>_<uuid>_<epoch>  (Tajweed Class — same plan
+//                                        format as Adab Class and
+//                                        Tawheed Class; a separate
+//                                        product from the existing
+//                                        Tajweed Course subscription
+//                                        above, deliberately, so
+//                                        neither can collide with
+//                                        the other)
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -48,6 +56,13 @@ const ADAB_FULL_PRICE = 5000 * 100
 const TAWHEED_UNIT_PRICE = 500 * 100
 const TAWHEED_FULL_PRICE = 5000 * 100
 
+// Tajweed Class: same one-off pricing model and amounts as Adab
+// Class and Tawheed Class. This is a distinct product from the
+// existing 'tajweed' subscription above (Tajweed Course), not a
+// replacement for it.
+const TAJWEEDCLASS_UNIT_PRICE = 500 * 100
+const TAJWEEDCLASS_FULL_PRICE = 5000 * 100
+
 // Where the user is sent back to after paying, per product — so a
 // Tajweed purchase lands back on /tajweed, not /spaces.
 const CALLBACK_PATHS = {
@@ -56,6 +71,7 @@ const CALLBACK_PATHS = {
   tajweed: '/tajweed',
   adab: '/adab',
   tawheed: '/tawheed',
+  tajweedclass: '/tajweed-class',
 }
 
 serve(async (req) => {
@@ -108,6 +124,17 @@ serve(async (req) => {
       reference = `tawheed_${plan.replace('-', '')}_${user.id}_${Date.now()}`
     } else {
       return new Response(JSON.stringify({ error: 'Invalid Tawheed plan' }), { status: 400, headers: corsHeaders })
+    }
+  } else if (product === 'tajweedclass') {
+    if (plan === 'full') {
+      amount = TAJWEEDCLASS_FULL_PRICE
+      reference = `tajweedclass_full_${user.id}_${Date.now()}`
+    } else if (typeof plan === 'string' && /^unit-\d{1,2}$/.test(plan)) {
+      amount = TAJWEEDCLASS_UNIT_PRICE
+      // 'unit-2' -> 'unit2', same reasoning as Adab's and Tawheed's reference format.
+      reference = `tajweedclass_${plan.replace('-', '')}_${user.id}_${Date.now()}`
+    } else {
+      return new Response(JSON.stringify({ error: 'Invalid Tajweed Class plan' }), { status: 400, headers: corsHeaders })
     }
   } else {
     return new Response(JSON.stringify({ error: 'Unknown product' }), { status: 400, headers: corsHeaders })

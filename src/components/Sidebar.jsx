@@ -167,9 +167,15 @@ const ICONS = {
       <line x1="6" y1="6" x2="18" y2="6" />
     </svg>
   ),
+    tajweedClass: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
+      <path d="M9 8c1.2-.8 2.5-.4 3 .5.5-.9 1.8-1.3 3-.5" />
+    </svg>
+  ),
 }
 
-// ── Six-pillar grouping ───────────────────────────────────────
+// -- Six-pillar grouping ---------------------------------------
 // Home stays outside any group, at the very top, since it's the
 // entry point rather than a pillar. Everything else now belongs
 // to exactly one group, so the sidebar reads as a map of the app
@@ -190,6 +196,7 @@ const NAV_GROUPS = [
       { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
       { path: '/arabic-dictionary', label: 'Arabic Dictionary', icon: 'arabicDictionary' },
       { path: '/adab', label: 'Adab Class', icon: 'adab' },
+      { path: '/tajweed-class', label: 'Tajweed Class', icon: 'tajweedClass' },
       { path: '/knowledge-graph', label: 'Knowledge Graph', icon: 'graph' },
 
     ],
