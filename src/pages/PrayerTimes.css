@@ -429,6 +429,13 @@
   position: relative;
   z-index: 1;
   flex: 1;
+  min-width: 0; /* overrides the browser's default min-width:auto on flex
+                   items, which otherwise refuses to shrink a tab below
+                   its own text's natural width -- this is exactly why
+                   "Islamic Days" was rendering wider than "Prayer Time"
+                   despite both having flex:1, the longer-text tab was
+                   hitting that floor and claiming more than its equal
+                   share, leaving the shorter one with less than half. */
   padding: 10px 0;
   border: none;
   background: transparent;

@@ -27,7 +27,6 @@ const Flashcards          = lazy(() => import('./pages/Flashcards.jsx'))
 const Stories             = lazy(() => import('./pages/Stories.jsx'))
 const Duas                = lazy(() => import('./pages/Duas.jsx'))
 const Calendar            = lazy(() => import('./pages/Calendar.jsx'))
-const Tajweed             = lazy(() => import('./pages/Tajweed.jsx'))
 const Fiqh                = lazy(() => import('./pages/fiqh.jsx'))
 const Tawheed              = lazy(() => import('./pages/Tawheed.jsx'))
 const Profile              = lazy(() => import('./pages/Profile.jsx'))
@@ -351,7 +350,6 @@ function AppInner() {
               <Route path="/stories" element={<Stories />} />
               <Route path="/duas" element={<Duas user={user} />} />
               <Route path="/calendar" element={<Calendar />} />
-              <Route path="/tajweed" element={<Tajweed />} />
               <Route path="/fiqh" element={<Fiqh />} />
               <Route path="/tawheed" element={<Tawheed user={user} />} />
               <Route path="/profile" element={<Profile user={user} userLevel={userLevel} setUserLevel={setUserLevel} fontSize={fontSize} setFontSize={setFontSize} />} />
@@ -364,7 +362,6 @@ function AppInner() {
               <Route path="/add-to-home-screen" element={<AddToHomeScreen />} />
               <Route path="/qiwaamah" element={<Qiwaamah user={user} />} />
               <Route path="/zakaat" element={<Zakaat user={user} />} />
-              <Route path="/tajweed" element={<Tajweed user={user} />} />
       
               <Route path="/womens-fiqh" element={<WomensFiqh user={user} />} />
               <Route path="*" element={<Home user={user} />} />

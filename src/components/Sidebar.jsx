@@ -66,13 +66,6 @@ const ICONS = {
       <line x1="16" y1="3" x2="16" y2="7" />
     </svg>
   ),
-  tajweed: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
-      <line x1="8" y1="8" x2="16" y2="8" />
-      <line x1="8" y1="12" x2="16" y2="12" />
-    </svg>
-  ),
   fiqh: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="3" x2="12" y2="21" />
@@ -192,7 +185,6 @@ const NAV_GROUPS = [
     items: [
       { path: '/disciplines', label: 'Disciplines', icon: 'fiqh' },
       { path: '/stories', label: 'Stories', icon: 'stories' },
-      { path: '/tajweed', label: 'Tajweed', icon: 'tajweed' },
       { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
       { path: '/arabic-dictionary', label: 'Arabic Dictionary', icon: 'arabicDictionary' },
       { path: '/adab', label: 'Adab Class', icon: 'adab' },

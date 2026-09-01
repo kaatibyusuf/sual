@@ -74,13 +74,6 @@ const ICONS = {
       <line x1="16" y1="3" x2="16" y2="7" />
     </svg>
   ),
-  tajweed: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
-      <line x1="8" y1="8" x2="16" y2="8" />
-      <line x1="8" y1="12" x2="16" y2="12" />
-    </svg>
-  ),
   prayerTimes: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 21v-8a8 8 0 0 1 16 0v8" />
@@ -179,7 +172,6 @@ const MORE_ITEMS = [
   { to: '/stories', icon: 'stories', label: 'Stories' },
   { to: '/duas', icon: 'duas', label: 'Duas' },
   { to: '/calendar', icon: 'calendar', label: 'Calendar' },
-  { to: '/tajweed', icon: 'tajweed', label: 'Tajweed' },
   { to: '/prayer-times', icon: 'prayerTimes', label: 'Prayer Times' },
   { to: '/womens-fiqh', icon: 'womensFiqh', label: "Women's Fiqh" },
   { to: '/qiwaamah', icon: 'qiwaamah', label: 'Qiwaamah' },
