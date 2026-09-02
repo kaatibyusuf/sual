@@ -831,28 +831,459 @@ export const SEERAHCLASS_TOPICS = {
   },
 
   // -----------------------------------------------------------
-  // UNIT 6 - PUBLIC DAWAH AND EARLY PERSECUTION (placeholders)
+  // UNIT 6 - PUBLIC DAWAH AND EARLY PERSECUTION (full content,
+  // expanded)
+  //
+  // Qur'anic Arabic checked against primary sources. Historical
+  // accounts (the Safa mountain event, Abu Lahab's response, Utbah's
+  // negotiation attempt, the persecution of Bilal and the family of
+  // Yasir) checked against multiple current classical and
+  // contemporary Seerah references, including the underlying
+  // narrations in Sahih al-Bukhari. This unit's third topic covers
+  // real historical accounts of violence against early converts,
+  // presented factually and with the gravity these events warrant,
+  // without dwelling on graphic detail beyond what conveys their
+  // actual historical significance.
   // -----------------------------------------------------------
-  'public-1': { id: 'public-1', unit: 'unit-6', title: 'The Command to Proclaim Openly', summary: 'The revelation instructing him ﷺ to call publicly.' },
-  'public-2': { id: 'public-2', unit: 'unit-6', title: 'Quraysh\u2019s Response and Escalating Hostility', summary: 'How Quraysh\u2019s leadership responded once the message became public.' },
-  'public-3': { id: 'public-3', unit: 'unit-6', title: 'The Torture of the Weak and Enslaved', summary: 'The specific persecution faced by those with no tribal protection.' },
-  'public-4': { id: 'public-4', unit: 'unit-6', title: 'Steadfastness Under Pressure', summary: 'How the earliest Muslims endured this period of open hostility.' },
+  'public-1': {
+    id: 'public-1',
+    unit: 'unit-6',
+    title: 'The Command to Proclaim Openly',
+    summary: 'The revelation instructing him \ufdfa to call publicly.',
+    content: [
+      {
+        heading: 'The command ending three years of private calling',
+        body: `This course's fifth unit already described approximately three years of private, individual dawah. This period ended with a direct instruction.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'فَاصْدَعْ بِمَا تُؤْمَرُ وَأَعْرِضْ عَنِ الْمُشْرِكِينَ',
+            english: 'So proclaim openly what you have been commanded, and turn away from those who associate partners with Allah.',
+            source: 'Surah al-Hijr, 15:94',
+          },
+        ],
+      },
+      {
+        heading: 'A second, more specific command',
+        body: `A further, more specific instruction directed him to begin this public phase with those closest to him by blood.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'وَأَنذِرْ عَشِيرَتَكَ الْأَقْرَبِينَ',
+            english: 'And warn your closest kindred.',
+            source: 'Surah ash-Shu\u2019ara, 26:214',
+          },
+        ],
+      },
+      {
+        heading: 'Gathering Quraysh on Mount Safa',
+        body: `Following this second command, the Prophet \ufdfa ascended Mount Safa and raised the traditional Makkan alarm cry used to warn of approaching danger, drawing the clans of Quraysh together to hear him. Once assembled, he asked them directly: if he told them an armed force was advancing from behind that same mountain, would they believe him. They answered without hesitation that they would, since they had never known him to lie, a direct, public confirmation of the exact reputation this course's third unit already established in detail, now tested openly before the entire assembled tribe.`,
+      },
+      {
+        heading: 'The warning itself, and a hostile reply from within his own family',
+        body: `Having secured this open acknowledgment of his own honesty, the Prophet \ufdfa told them plainly that he was a warner sent to them ahead of a severe punishment. His own uncle, Abu Lahab, responded immediately and harshly, telling him he had perished and asking whether this was truly the reason he had gathered them all together.`,
+      },
+      {
+        heading: 'A direct response naming Abu Lahab specifically',
+        body: `A short surah was revealed in direct response to this exact moment, opening by turning Abu Lahab's own words back upon him.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ',
+            english: 'May the hands of Abu Lahab be ruined, and ruined is he.',
+            source: 'Surah al-Masad, 111:1',
+          },
+        ],
+      },
+      {
+        heading: 'Why this specific moment matters as a genuine turning point',
+        body: `This single event on Mount Safa marks the actual transition this unit's opening topic describes: private calling, covered fully in this course's fifth unit, had now given way to open, public proclamation, delivered directly to Quraysh's own assembled leadership rather than to individuals approached quietly. This course's next topic turns to how that same leadership actually responded once this message could no longer be overlooked or contained.`,
+      },
+    ],
+  },
+
+  'public-2': {
+    id: 'public-2',
+    unit: 'unit-6',
+    title: 'Quraysh\u2019s Response and Escalating Hostility',
+    summary: 'How Quraysh\u2019s leadership responded once the message became public.',
+    content: [
+      {
+        heading: 'From dismissal to genuine alarm',
+        body: `Quraysh's initial reaction to open proclamation included mockery and specific accusations, that the Prophet \ufdfa was a poet, a sorcerer, or simply affected by madness. As the message continued to spread and its direct challenge to Makkah's existing religious order, already established in detail across this course's first unit, became impossible to dismiss, this mockery gradually gave way to genuine alarm among Quraysh's leadership.`,
+      },
+      {
+        heading: 'Utbah ibn Rabi\u2019ah\u2019s attempt at negotiation',
+        body: `Quraysh's council eventually sent Utbah ibn Rabi'ah, a respected elder, to negotiate directly. Utbah offered him, in succession, sufficient wealth to become the richest man in Makkah, recognition as the tribe's own chief, marriage to any woman he wished, and even an offer to seek a cure if his condition was believed to be some form of affliction, all in exchange for abandoning his message. The Prophet \ufdfa responded not by arguing point by point, but by reciting a portion of the Qur'an directly to him.`,
+      },
+      {
+        heading: 'A negotiator shaken by what he actually heard',
+        body: `Utbah returned to Quraysh visibly affected, reportedly telling them directly that he had heard words unlike any poetry, sorcery, or spellcraft he had ever encountered, and advising them to leave the Prophet \ufdfa alone. Quraysh responded by mocking Utbah in turn, accusing him of having been affected by the very words he was warning them about, a telling sign of how seriously his own account had unsettled them despite their public dismissal of it.`,
+      },
+      {
+        heading: 'A final offer of religious compromise, and its direct rejection',
+        body: `Having failed to reach the Prophet \ufdfa through wealth, status, or negotiation, Quraysh proposed a specific religious compromise: that each side worship the other's god for a set period, alternating between them. This proposal was rejected directly and completely.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'لَكُمْ دِينُكُمْ وَلِيَ دِينِ',
+            english: 'To you your religion, and to me my religion.',
+            source: 'Surah al-Kafirun, 109:6',
+          },
+        ],
+      },
+      {
+        heading: 'Why wealth, status, and compromise all genuinely failed',
+        body: `Each of these approaches assumed the Prophet's \ufdfa message could be redirected or negotiated away like an ordinary tribal dispute over honor or resources. This course's first unit already established just how central the Ka'bah's existing religious system was to Quraysh's own standing and wealth, and this course's fourth unit already established the message's own actual nature: a restoration of monotheism rather than a personal grievance or ambition. Neither wealth nor status could genuinely address a message never actually built around either, which is precisely why Quraysh's leadership, having exhausted these approaches, turned toward the direct persecution this unit's next topic examines.`,
+      },
+    ],
+  },
+
+  'public-3': {
+    id: 'public-3',
+    unit: 'unit-6',
+    title: 'The Torture of the Weak and Enslaved',
+    summary: 'The specific persecution faced by those with no tribal protection.',
+    content: [
+      {
+        heading: 'Protection that varied sharply by social standing',
+        body: `This course's fifth unit already noted that early believers came from genuinely different levels of Makkah's social order, and this variation now became directly, and often brutally, consequential. Believers with real tribal standing behind them, including the Prophet \ufdfa himself under Abu Talib's continued protection, faced hostility and pressure, but generally not the direct physical violence inflicted on those with no such protection at all.`,
+      },
+      {
+        heading: 'Violence reaching even a protected believer',
+        body: `Even relative protection did not guarantee complete safety. Abu Bakr, already introduced in this course's fifth unit as a respected and well-connected merchant, was violently beaten by members of Quraysh, including reportedly by Utbah ibn Rabi'ah himself, after speaking publicly in defense of the message, an assault severe enough that his own family initially believed he would not survive it. Upon regaining consciousness, his first recorded concern was not for his own condition, but for the Prophet's \ufdfa safety.`,
+      },
+      {
+        heading: 'Bilal\u2019s specific ordeal',
+        body: `Bilal ibn Rabah, already introduced directly in this course's fifth unit, held no tribal protection at all as an enslaved man, and his owner, Umayyah ibn Khalaf, subjected him to sustained, severe punishment specifically intended to force him to renounce his faith. Bilal endured this treatment while repeating a single word, Ahad, One, affirming Allah's oneness even under this pressure. He was eventually purchased and freed by Abu Bakr, who arranged the transaction specifically to end this suffering.`,
+      },
+      {
+        heading: 'The family of Yasir',
+        body: `Ammar ibn Yasir and his parents, Yasir and Sumayyah, faced sustained persecution at the hands of members of Banu Makhzum, exposed deliberately to Makkah's harsh midday heat in an effort to break their faith. The Prophet \ufdfa passed by them during this ordeal and offered direct words of comfort, telling the family of Yasir to remain steadfast, since Paradise had been promised to them. Sumayyah did not survive this persecution, remembered directly in Islamic tradition as the first martyr in Islam's history, and Yasir himself also died as a direct result of this same treatment.`,
+      },
+      {
+        heading: 'Why this specific chapter is recorded, and remembered, so directly',
+        body: `This course has no interest in presenting only a comfortable, sanitized account of this period. These specific individuals, Bilal held down under real physical torment, Abu Bakr beaten near death for speaking in defense of his faith, and Sumayyah losing her life rather than renouncing it, represent a genuine cost this earliest community actually paid, not an abstract historical footnote. This unit's closing topic turns directly to how this same community, facing exactly this cost, continued regardless.`,
+      },
+    ],
+  },
+
+  'public-4': {
+    id: 'public-4',
+    unit: 'unit-6',
+    title: 'Steadfastness Under Pressure',
+    summary: 'How the earliest Muslims endured this period of open hostility.',
+    content: [
+      {
+        heading: 'Comfort offered directly, in the middle of real suffering',
+        body: `The words already covered in this unit's previous topic, offered directly to the family of Yasir in the midst of their own ordeal, reflect a pattern this course will see repeated across its later units as well: real, present comfort and reassurance offered specifically within active hardship, rather than only reflected upon afterward once the difficulty had passed.`,
+      },
+      {
+        heading: 'A community held together by more than doctrine alone',
+        body: `This course's fifth unit already described the earliest community's practice of genuine mutual support at Dar al-Arqam, and that same mutual support became directly essential during this period of open persecution. Believers with greater protection, Abu Bakr's purchase and manumission of Bilal already covered directly in this unit's previous topic being one clear example, used what standing and resources they had specifically to shield those with none.`,
+      },
+      {
+        heading: 'A hope oriented beyond immediate relief',
+        body: `The specific promise offered to the family of Yasir, Paradise rather than an immediate end to their suffering, reflects the same underlying framework this course's fourth unit already established regarding the actual nature and purpose of his \ufdfa mission: a message concerned with something considerably larger than short-term comfort or safety. This did not make the persecution itself any less real or painful, but it gave those enduring it a genuine reason to continue doing so.`,
+      },
+      {
+        heading: 'Why this pressure did not end the movement it targeted',
+        body: `Despite mockery, negotiation, and direct physical violence, Quraysh's efforts across this entire unit failed to end the message or dissolve the community gathering around it. If anything, the specific courage shown by figures like Bilal, Sumayyah, and Abu Bakr, already covered directly in this unit's third topic, became part of the account itself, remembered and repeated within the very community Quraysh had hoped this pressure would break entirely.`,
+      },
+      {
+        heading: 'Closing this unit and turning to what came next',
+        body: `This unit has covered the transition from private to public dawah, Quraysh's escalating response once negotiation and mockery both failed, the specific, severe persecution faced by believers with no tribal protection, and the steadfastness with which the earliest community endured this entire period. This course's seventh unit turns directly to the specific responses this same persecution produced: a migration to a foreign land, an economic boycott aimed at the Prophet's \ufdfa own clan, and a year of loss that would test this community's endurance further still.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 7 - TRIALS AND TURNING POINTS (placeholders)
+  // UNIT 7 - TRIALS AND TURNING POINTS (full content, expanded)
+  //
+  // Historical accounts (the Abyssinian migrations, Ja'far's speech
+  // before Negus, the boycott of Banu Hashim, the Year of Sorrow,
+  // the journey to Ta'if) checked against multiple current classical
+  // and contemporary Seerah references before writing. A genuine
+  // point of scholarly caution regarding the specific narration of
+  // the boycott document's fate is named honestly rather than
+  // presented as beyond question. The Ta'if supplication is
+  // described by its substance rather than quoted verbatim, since
+  // its exact wording was not independently verified to the same
+  // standard this course applies to quoted Qur'an and hadith text.
   // -----------------------------------------------------------
-  'trial-1': { id: 'trial-1', unit: 'unit-7', title: 'The Migration to Abyssinia', summary: 'Why a group of Muslims migrated to the Christian kingdom of Abyssinia.' },
-  'trial-2': { id: 'trial-2', unit: 'unit-7', title: 'The Boycott of Banu Hashim', summary: 'Quraysh\u2019s attempt to isolate the Prophet\u2019s ﷺ own clan entirely.' },
-  'trial-3': { id: 'trial-3', unit: 'unit-7', title: 'The Year of Sorrow: Khadijah and Abu Talib', summary: 'The deaths of his ﷺ wife and uncle within the same year.' },
-  'trial-4': { id: 'trial-4', unit: 'unit-7', title: 'The Journey to Ta\u2019if', summary: 'His ﷺ difficult journey seeking support outside Makkah.' },
+  'trial-1': {
+    id: 'trial-1',
+    unit: 'unit-7',
+    title: 'The Migration to Abyssinia',
+    summary: 'Why a group of Muslims migrated to the Christian kingdom of Abyssinia.',
+    content: [
+      {
+        heading: 'A response to the persecution already covered directly',
+        body: `Given the severity of the persecution already covered across this course's sixth unit, the Prophet \ufdfa advised a group of believers to seek genuine safety outside Makkah entirely, in the Christian kingdom of Abyssinia, ruled at the time by a king remembered across Islamic tradition specifically for his justice.`,
+      },
+      {
+        heading: 'Two separate migrations',
+        body: `An initial group, eleven men and four women, led by Uthman ibn Maz'un, made this journey around 615 CE. Word later reached this group, incorrectly, that persecution in Makkah had ended, and while some returned to confirm this, they found conditions unchanged. A second, considerably larger migration followed, numbering roughly eighty-three men along with their wives and children, led this time by Ja'far ibn Abi Talib, the Prophet's \ufdfa own cousin and the brother of Ali, already introduced directly in this course's fifth unit.`,
+      },
+      {
+        heading: 'Quraysh\u2019s attempt to reach them even there',
+        body: `Once Quraysh learned that these migrants had found genuine safety and freedom to worship under Negus's protection, they sent two capable representatives, Amr ibn al-As and Abdullah ibn Abi Rabi'ah, carrying substantial gifts for both the king and his bishops, specifically to secure the migrants' return to Makkah.`,
+      },
+      {
+        heading: 'Ja\u2019far\u2019s direct account before the king himself',
+        body: `Negus refused to decide the matter without hearing directly from the Muslims themselves, and Ja'far spoke on their behalf, describing plainly the ignorance and cruelty of their life before this message reached them, and the transformation this same message had brought about in how they treated one another. When Negus asked specifically what this new faith taught regarding Jesus, Ja'far recited from Surah Maryam, the chapter already named for Jesus's own mother, describing his birth in terms of genuine reverence. Negus and his assembled bishops were visibly moved, tradition recording that they wept as they listened.`,
+      },
+      {
+        heading: 'A ruling that protected the migrants and rejected Quraysh\u2019s gifts',
+        body: `Negus ruled directly in the migrants' favor, refusing to hand them over, and returned Quraysh's gifts rather than accepting them. This event mattered well beyond the safety it secured for this specific group. It demonstrated directly that this message could be recognized and respected even by a genuinely just ruler entirely outside Makkah's own hostile environment, a precedent this course's remaining units will show becoming increasingly significant as the years ahead continued to unfold.`,
+      },
+    ],
+  },
+
+  'trial-2': {
+    id: 'trial-2',
+    unit: 'unit-7',
+    title: 'The Boycott of Banu Hashim',
+    summary: 'Quraysh\u2019s attempt to isolate the Prophet\u2019s \ufdfa own clan entirely.',
+    content: [
+      {
+        heading: 'A collective punishment aimed at an entire clan',
+        body: `Having failed to stop the message through ridicule, negotiation, direct persecution, and now the failed attempt to reclaim the Abyssinian migrants already covered in this unit's previous topic, Quraysh's leadership turned to a considerably broader measure: a formal, written boycott against the Prophet's \ufdfa own clan, Banu Hashim, and its closely allied clan, Banu al-Muttalib, with the specific exception of Abu Lahab, who sided openly with the boycott instead.`,
+      },
+      {
+        heading: 'What the boycott actually required',
+        body: `This document, reportedly hung within the Ka'bah itself, prohibited the rest of Quraysh from any trade, marriage, or ordinary social interaction with these two clans, applying equally to their believing and non-believing members alike, until the Prophet \ufdfa was handed over for punishment. Abu Talib, still refusing to abandon his nephew despite not himself accepting the message, led both clans into a confined mountain pass outside Makkah known as Shi'b Abi Talib, where they remained for approximately three years under conditions of real hunger and deprivation.`,
+      },
+      {
+        heading: 'How this severe measure eventually ended',
+        body: `The boycott's end is attributed to two converging developments. A small number of sympathetic Quraysh figures, troubled by the visible suffering of their own kinsmen, worked actively to have the boycott lifted. Tradition also records, more dramatically, that the document itself was discovered to have been consumed by termites, leaving only the words bismika Allahumma, in Your name, O Allah, intact, with Abu Talib reportedly staking the boycott's continuation directly on whether this claim proved true when the document was actually examined.`,
+      },
+      {
+        heading: 'An honest note on this second account specifically',
+        body: `This specific detail regarding the termites is widely transmitted across the biographical tradition, yet it is worth noting directly that some later scholars have questioned the strength of the specific chains through which certain versions of this account are transmitted. Regardless of exactly how the boycott's end unfolded in every specific detail, its basic outcome is not in question: the boycott was lifted, and Banu Hashim and Banu al-Muttalib returned to ordinary life in Makkah after roughly three years of severe hardship.`,
+      },
+      {
+        heading: 'A trial whose full cost was not yet finished',
+        body: `The boycott's end did not mark the end of this period's genuine difficulty. This unit's next topic turns directly to what followed almost immediately afterward: the loss, within a single year, of the two people who had done more than anyone else to sustain and protect the Prophet \ufdfa through everything this course has covered so far.`,
+      },
+    ],
+  },
+
+  'trial-3': {
+    id: 'trial-3',
+    unit: 'unit-7',
+    title: 'The Year of Sorrow: Khadijah and Abu Talib',
+    summary: 'The deaths of his \ufdfa wife and uncle within the same year.',
+    content: [
+      {
+        heading: 'Losing Khadijah',
+        body: `Not long after the boycott covered in this unit's previous topic finally ended, Khadijah, the Prophet's \ufdfa wife of some twenty-five years, already established across this course's third and fourth units as his first believer and one of his earliest and most steadfast sources of personal support, passed away.`,
+      },
+      {
+        heading: 'Losing Abu Talib soon after',
+        body: `Within this same year, Abu Talib also died. This course's second unit already covered his taking on the young Muhammad's \ufdfa care after Abdul Muttalib's death, and this course's sixth and seventh units have now covered, in direct succession, his continued refusal to abandon his nephew even under the boycott's severe pressure. His death removed the single most significant source of the Prophet's \ufdfa social and tribal protection within Makkah.`,
+      },
+      {
+        heading: 'Why tradition remembers this specific year by name',
+        body: `Islamic tradition remembers this year directly as Aam al-Huzn, the Year of Sorrow, a name reflecting the genuine, compounded weight of losing both his closest personal companion and his lifelong protector within so short a span of time. This course has no interest in passing over this period quickly simply because it lacks the dramatic external conflict of the persecution already covered in this course's sixth unit. The loss itself is the point this topic asks to be taken seriously.`,
+      },
+      {
+        heading: 'A practical, and genuinely dangerous, consequence',
+        body: `Abu Talib's death carried a specific practical consequence beyond personal grief: leadership of Banu Hashim passed to Abu Lahab, already established directly in this course's sixth unit as hostile to the message from its very first public proclamation. Unlike Abu Talib, Abu Lahab did not extend the clan's traditional protection to his own nephew, leaving the Prophet \ufdfa considerably more exposed to Quraysh's hostility than at any previous point this course has covered.`,
+      },
+      {
+        heading: 'Where this left him, and what he did next',
+        body: `Having lost both his closest personal support and his tribal protection within the same year, the Prophet \ufdfa faced a genuinely difficult question: where, if anywhere, support might still be found. This unit's closing topic turns directly to his own answer to that question, a journey to a nearby town that would prove, by his own later account, to be among the most painful experiences of his entire life.`,
+      },
+    ],
+  },
+
+  'trial-4': {
+    id: 'trial-4',
+    unit: 'unit-7',
+    title: 'The Journey to Ta\u2019if',
+    summary: 'His \ufdfa difficult journey seeking support outside Makkah.',
+    content: [
+      {
+        heading: 'Seeking a new source of support',
+        body: `Following the losses already covered directly in this unit's previous topic, the Prophet \ufdfa traveled on foot, accompanied only by Zayd ibn Harithah, already introduced in this course's fifth unit, to the nearby town of Ta'if, hoping the tribe of Thaqif settled there might accept his message and offer him the protection Makkah itself could no longer reliably provide.`,
+      },
+      {
+        heading: 'A rejection delivered with real hostility',
+        body: `Thaqif's leading men not only rejected his message outright, but responded with open mockery, and then incited a mob, including servants and younger residents of the town, to drive him out by force. He was pelted with stones severely enough that his feet bled, and Zayd, attempting to shield him from this same assault, was badly injured himself.`,
+      },
+      {
+        heading: 'Brief, unexpected kindness from an unlikely source',
+        body: `Having been driven from the town, the Prophet \ufdfa and Zayd took shelter in a nearby orchard belonging to Utbah and Shaybah, two brothers who, despite their own open opposition to his message, felt genuine pity upon seeing his condition from a distance. The two sent their Christian servant, Addas, with a plate of grapes. The Prophet \ufdfa said bismillah, in the name of Allah, before eating, a small habit that visibly surprised Addas, leading to a brief conversation in which Addas learned enough to respond with real, visible reverence toward him.`,
+      },
+      {
+        heading: 'A moment of real distress, and its resolution',
+        body: `Tradition preserves a supplication offered by the Prophet \ufdfa during this same episode, one whose exact wording this course does not reproduce directly, but whose substance is widely and consistently recorded: a genuine expression of his own weakness and distress in this specific moment, paired with complete submission to Allah regardless of the outcome, and a clear statement that Allah's own pleasure with him mattered more than any hardship people themselves could inflict.`,
+      },
+      {
+        heading: 'An offer declined, and a hope stated instead',
+        body: `Tradition also records that the angel Jibril appeared to him during this same journey, accompanied by the angel responsible for the mountains, who offered, with Allah's permission, to crush Ta'if between the two mountains surrounding it if the Prophet \ufdfa wished. He declined this offer, expressing hope instead that even if this specific generation of Thaqif never accepted the message, their own descendants might yet come to worship Allah alone. He himself later described this specific day as more painful than any other hardship he faced, including the Battle of Uhud examined directly in this course's tenth unit.`,
+      },
+      {
+        heading: 'Closing this unit and turning toward what came next',
+        body: `This unit has covered a genuine refuge found abroad in Abyssinia, a severe collective punishment endured for years within Makkah itself, the loss of his two closest sources of support within a single year, and a painful, physically violent rejection at Ta'if immediately afterward. This course's eighth unit turns directly to what followed this same low point: a remarkable night journey, a series of pledges made by visitors from Yathrib, and the migration that would finally give this community the genuine home Makkah itself had, by this point, thoroughly failed to provide.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 8 - ISRA, MI'RAJ, AND THE PATH TO MADINAH (placeholders)
+  // UNIT 8 - ISRA, MI'RAJ, AND THE PATH TO MADINAH (full content,
+  // expanded)
+  //
+  // Qur'anic Arabic (Surah al-Isra 17:1, Surah at-Tawbah 9:40)
+  // checked against primary sources before writing. Historical
+  // accounts (the ascension narrative, the Pledges of Aqabah, the
+  // Dar an-Nadwah plot, the migration itself) checked against
+  // multiple current classical and contemporary Seerah references.
   // -----------------------------------------------------------
-  'hijrah-1': { id: 'hijrah-1', unit: 'unit-8', title: 'The Night Journey and Ascension', summary: 'The Isra and Mi\u2019raj, and what each event established.' },
-  'hijrah-2': { id: 'hijrah-2', unit: 'unit-8', title: 'The Pledges of Aqabah', summary: 'The agreements made with the people of Yathrib before the migration.' },
-  'hijrah-3': { id: 'hijrah-3', unit: 'unit-8', title: 'Preparing for Migration', summary: 'How the migration to Madinah was planned and carried out.' },
-  'hijrah-4': { id: 'hijrah-4', unit: 'unit-8', title: 'The Hijrah Itself', summary: 'The journey from Makkah to Madinah and its significance.' },
+  'hijrah-1': {
+    id: 'hijrah-1',
+    unit: 'unit-8',
+    title: 'The Night Journey and Ascension',
+    summary: 'The Isra and Mi\u2019raj, and what each event established.',
+    content: [
+      {
+        heading: 'A single night, following the hardship already covered directly',
+        body: `Following the losses and rejection already covered across this course's seventh unit, the Prophet \ufdfa experienced a single night journey combining two distinct events: al-Isra, a physical journey from Makkah to Jerusalem, and al-Mi'raj, an ascension from Jerusalem through the heavens. The Qur'an itself opens a surah with direct reference to the first of these two events.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'سُبْحَانَ الَّذِي أَسْرَىٰ بِعَبْدِهِ لَيْلًا مِّنَ الْمَسْجِدِ الْحَرَامِ إِلَى الْمَسْجِدِ الْأَقْصَى الَّذِي بَارَكْنَا حَوْلَهُ لِنُرِيَهُ مِنْ آيَاتِنَا',
+            english: 'Exalted is He who took His servant by night from al-Masjid al-Haram to al-Masjid al-Aqsa, whose surroundings We have blessed, to show him some of Our signs.',
+            source: 'Surah al-Isra, 17:1',
+          },
+        ],
+      },
+      {
+        heading: 'Leading every earlier prophet in prayer',
+        body: `Riding a mount named al-Buraq, the Prophet \ufdfa traveled to Jerusalem's Masjid al-Aqsa, where tradition records him leading every previous prophet in prayer together, a detail carrying real symbolic weight directly connected to this course's fourth unit: the same continuity between his own mission and every prophet who preceded him, now made physically visible in a single shared act of worship.`,
+      },
+      {
+        heading: 'The ascension itself',
+        body: `From Jerusalem, the Prophet \ufdfa ascended through the heavens, meeting a specific prophet at each level according to tradition, Adam, then Isa and Yahya together, then Yusuf, Idris, Harun, Musa, and finally Ibrahim at the highest level, before reaching Sidrat al-Muntaha, a boundary tradition describes as the furthest point of creation itself.`,
+      },
+      {
+        heading: 'A gift negotiated down through Musa\u2019s own advice',
+        body: `At this furthest point, prayer was made obligatory upon him and his community, initially fifty times daily. Passing Musa again on his return, the Prophet \ufdfa was advised directly that this number would prove too difficult for his community to sustain, and was encouraged to request a reduction. This exchange repeated several times, each request reducing the number further, until five daily prayers remained, while the reward for observing them was retained at the level of fifty, a detail tradition treats as a specific act of mercy rather than a simple discount.`,
+      },
+      {
+        heading: 'Belief without hesitation, and belief withheld entirely',
+        body: `Returning to Makkah the same night, the Prophet \ufdfa recounted this entire journey publicly, and Quraysh responded with open disbelief, treating the claim as plainly impossible. Abu Bakr, already introduced across this course's fifth and sixth units, believed the account immediately and without qualification upon hearing it, a response tradition credits directly with confirming the title as-Siddiq, the one who affirms truth without hesitation, already closely associated with him. This same contrast, instant trust from one companion against outright dismissal from Quraysh's wider leadership, sets the stage directly for this unit's remaining topics, where trust extended by people entirely outside Makkah would prove decisive.`,
+      },
+    ],
+  },
+
+  'hijrah-2': {
+    id: 'hijrah-2',
+    unit: 'unit-8',
+    title: 'The Pledges of Aqabah',
+    summary: 'The agreements made with the people of Yathrib before the migration.',
+    content: [
+      {
+        heading: 'A first, modest agreement',
+        body: `During the pilgrimage season the following year, twelve men from Yathrib met the Prophet \ufdfa privately at a place called Aqabah and pledged specific personal conduct: to associate no partners with Allah, to avoid theft and adultery, to refrain from killing their own children, to avoid slander, and to obey him in what was right. This first pledge asked for individual conduct alone, with no promise of protection or defense attached to it.`,
+      },
+      {
+        heading: 'Mus\u2019ab ibn Umayr\u2019s mission to Yathrib',
+        body: `Following this first pledge, the Prophet \ufdfa sent Mus'ab ibn Umayr back to Yathrib with these same twelve men, specifically to teach the Qur'an and the fundamentals of the message to those already interested. Mus'ab's efforts proved remarkably successful, leading directly to the conversion of Sa'd ibn Mu'adh and Usayd ibn Hudayr, two leading figures among Yathrib's Aws tribe whose acceptance carried real, immediate influence across their own community.`,
+      },
+      {
+        heading: 'A second, considerably larger pledge',
+        body: `The following pilgrimage season, seventy-three men and two women from Yathrib met the Prophet \ufdfa again at the same location, this time offering something categorically different from the first pledge: active protection, promising to defend him exactly as they would defend their own families, even at real cost to themselves.`,
+      },
+      {
+        heading: 'Why this second pledge changed everything',
+        body: `This shift from personal conduct to active, promised defense transformed the entire situation this course has followed since its fifth unit. Yathrib was no longer simply a place where individuals happened to accept the message. It was now a community that had made a genuine, collective commitment to protect the Prophet \ufdfa and his followers, precisely the kind of security Makkah itself, especially following Abu Talib's death already covered in this course's seventh unit, could no longer reliably offer.`,
+      },
+      {
+        heading: 'What this pledge actually made possible',
+        body: `With this second pledge secured, the Prophet \ufdfa began permitting believers to migrate to Yathrib directly, and this unit's remaining topics turn to exactly how that migration actually unfolded, both for the wider community and, eventually, for the Prophet \ufdfa himself.`,
+      },
+    ],
+  },
+
+  'hijrah-3': {
+    id: 'hijrah-3',
+    unit: 'unit-8',
+    title: 'Preparing for Migration',
+    summary: 'How the migration to Madinah was planned and carried out.',
+    content: [
+      {
+        heading: 'A quiet exodus, largely unnoticed at first',
+        body: `Following the second pledge already covered in this unit's previous topic, believers began leaving Makkah for Yathrib gradually, in small groups, over the following weeks and months, deliberately avoiding the kind of open, visible departure that might draw immediate resistance. Within a relatively short span of time, the great majority of Makkah's Muslim community had relocated, leaving primarily the Prophet \ufdfa himself, Abu Bakr, and Ali still remaining behind.`,
+      },
+      {
+        heading: 'Quraysh recognizing the genuine danger this represented',
+        body: `Once Quraysh's leadership grasped what this migration actually meant, a community loyal to the Prophet \ufdfa establishing itself in a genuinely secure location, with real protectors committed to defending it, they understood this as a serious, direct threat rather than simply a matter of individuals leaving the city. A special council convened at Dar an-Nadwah, Quraysh's own meeting house, specifically to decide how to prevent this threat from fully materializing.`,
+      },
+      {
+        heading: 'A plan built specifically to defeat tribal justice itself',
+        body: `Various proposals were raised and rejected, exile and permanent imprisonment among them, before a specific proposal, associated directly with Abu Jahl, was adopted: a single young man selected from every clan in Quraysh would strike the Prophet \ufdfa together, at the same moment, so that responsibility for his death would be shared equally across every clan at once. This was a deliberate exploitation of the same tribal structure this course's first unit already described in detail, since Banu Hashim could never realistically seek justice against every clan in Makkah simultaneously.`,
+      },
+      {
+        heading: 'A plot revealed before it could be carried out',
+        body: `The Qur'an itself later referenced this exact plan directly.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'وَإِذْ يَمْكُرُ بِكَ الَّذِينَ كَفَرُوا لِيُثْبِتُوكَ أَوْ يَقْتُلُوكَ أَوْ يُخْرِجُوكَ وَيَمْكُرُونَ وَيَمْكُرُ اللَّهُ وَاللَّهُ خَيْرُ الْمَاكِرِينَ',
+            english: 'And remember when those who disbelieved plotted against you, to restrain you, kill you, or expel you. They planned, and Allah planned, and Allah is the best of planners.',
+            source: 'Surah al-Anfal, 8:30',
+          },
+        ],
+      },
+      {
+        heading: 'What this revelation actually set in motion',
+        body: `Informed of this exact plan in advance, the Prophet \ufdfa now had both a genuine reason and a genuine destination: the plot already covered directly in this topic, and the community already committed to protecting him through the second pledge covered in this unit's previous topic. This unit's closing topic turns directly to how he actually responded to this specific, immediate danger.`,
+      },
+    ],
+  },
+
+  'hijrah-4': {
+    id: 'hijrah-4',
+    unit: 'unit-8',
+    title: 'The Hijrah Itself',
+    summary: 'The journey from Makkah to Madinah and its significance.',
+    content: [
+      {
+        heading: 'A decoy left behind',
+        body: `On the night the assassins already covered in this unit's previous topic gathered outside his house, the Prophet \ufdfa arranged for Ali to sleep in his own bed, wrapped in his cloak, while he himself slipped away undetected, accompanied only by Abu Bakr, whom he had already informed directly of Allah's permission to migrate.`,
+      },
+      {
+        heading: 'Three days hidden nearby, rather than fleeing immediately',
+        body: `Rather than heading directly and immediately toward Yathrib, an obvious route Quraysh would search first, the two men hid for three days in a cave on Mount Thawr, south of Makkah, allowing the initial, most urgent search to pass before continuing. Quraysh search parties reportedly came close enough to the cave's entrance that Abu Bakr expressed real, immediate fear for their safety.`,
+      },
+      {
+        heading: 'A direct Qur\u2019anic reference to exactly this moment',
+        body: `The Prophet's \ufdfa own response to Abu Bakr's fear is preserved directly within the Qur'an itself.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'إِذْ هُمَا فِي الْغَارِ إِذْ يَقُولُ لِصَاحِبِهِ لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا',
+            english: 'When the two of them were in the cave, and he said to his companion, do not grieve; indeed Allah is with us.',
+            source: 'Surah at-Tawbah, 9:40',
+          },
+        ],
+      },
+      {
+        heading: 'A longer, less expected route',
+        body: `Once the immediate search had eased, the two set out toward Yathrib guided by Abdullah ibn Urayqit, a skilled guide familiar with the region who was not himself yet a Muslim, deliberately taking a longer, less conventional path along the coast rather than the more direct northern route Quraysh would most likely expect and pursue.`,
+      },
+      {
+        heading: 'Arrival, and a name that would follow this same city ever after',
+        body: `The journey brought them first to Quba, on the outskirts of Yathrib, where the Prophet \ufdfa paused for several days and oversaw the construction of a mosque there before completing the final stage of the journey into the city itself. Yathrib would become known from this point onward as Madinat an-Nabi, the city of the Prophet, or simply al-Madinah, the very name this course will use throughout its remaining units.`,
+      },
+      {
+        heading: 'Closing this unit and opening a genuinely new chapter',
+        body: `This unit has covered a single extraordinary night journey and ascension, the two pledges that transformed Yathrib from a distant possibility into a genuine, secured destination, the specific plot that finally made departure urgent, and the careful, deliberate journey that brought the Prophet \ufdfa safely to this new city. This course's ninth unit turns directly to what came next: building an actual community, with its own mosque, its own bonds of brotherhood, and its own formal, written agreement governing how its residents, Muslim and non-Muslim alike, would live together.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
   // UNIT 9 - ESTABLISHING THE MADINAN COMMUNITY (placeholders)

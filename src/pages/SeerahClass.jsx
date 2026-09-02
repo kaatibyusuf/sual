@@ -19,7 +19,7 @@
 // previous unit's quiz to open this one).
 
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabaseClient'; // adjust path to match your existing client import
+import { supabase } from '../lib/supabase.js'; // adjust path to match your existing client import
 import { SEERAHCLASS_UNITS, SEERAHCLASS_TOPICS } from '../data/seerahClass';
 import { SEERAHCLASS_UNIT_QUIZZES, SEERAHCLASS_PASS_THRESHOLD } from '../data/seerahClassQuizzes';
 import './SeerahClass.css';

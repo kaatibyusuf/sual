@@ -155,6 +155,14 @@ const ICONS = {
       <path d="M9 8c1.2-.8 2.5-.4 3 .5.5-.9 1.8-1.3 3-.5" />
     </svg>
   ),
+    seerahClass: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 4H8a3 3 0 0 0-3 3v13" />
+      <path d="M19 4a3 3 0 0 1 0 6H7" />
+      <path d="M7 10v7a3 3 0 0 0 3 3h9" />
+      <path d="M19 20a3 3 0 0 0 0-6" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -185,6 +193,7 @@ const MORE_ITEMS = [
   { to: '/adab', icon: 'adab', label: 'Adab Class' },
   { to: '/tawheed', icon: 'tawheed', label: 'Tawheed Class' },
   { to: '/tajweed-class', icon: 'tajweedClass', label: 'Tajweed Class' },
+  { to: '/seerah-class', icon: 'seerahClass', label: 'Seerah Class' },
   { to: '/knowledge-graph', icon: 'graph', label: 'Knowledge Graph' },
 ]
 
