@@ -17,7 +17,16 @@
 .a11y-toggle-btn {
   position: fixed;
   left: 18px;
-  bottom: calc(48px + env(safe-area-inset-bottom, 0px) + 16px);
+  /* FIX: this used to be hardcoded to always clear a 48px BottomNav,
+     but AccessibilityToggle is mounted globally (see App.jsx — it's
+     a sibling of AppInner, not inside it), so it also renders on
+     every screen that has NO BottomNav at all: Splash, Auth,
+     LevelSelect, WelcomeCarousel. On those screens the button sat
+     much closer to real content than intended and landed directly
+     on top of it. Default here assumes no nav; the
+     [data-has-bottom-nav="true"] rule below restores the original
+     48px clearance only on the screens that actually have one. */
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   z-index: 500;
   width: 52px;
   height: 52px;
@@ -30,6 +39,10 @@
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(9,69,112,0.35);
+}
+
+[data-has-bottom-nav="true"] .a11y-toggle-btn {
+  bottom: calc(48px + env(safe-area-inset-bottom, 0px) + 16px);
 }
 
 .a11y-toggle-btn--on {
@@ -56,6 +69,10 @@
 @media (max-width: 600px) {
   .a11y-toggle-btn {
     left: 14px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  }
+
+  [data-has-bottom-nav="true"] .a11y-toggle-btn {
     bottom: calc(48px + env(safe-area-inset-bottom, 0px) + 14px);
   }
 }

@@ -1,0 +1,201 @@
+/* ============================================
+   Welcome Carousel — three-slide intro shown once to a first-time,
+   signed-out visitor, right before the login screen. Structure
+   (tinted hero zone, curved-top white sheet, pagination dots, pill
+   CTA) follows the reference; palette is Sual's own navy/sky-blue
+   instead of purple, and the hero illustration is an icon badge
+   rather than custom 3D character art.
+   ============================================ */
+
+.wc-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #eef4f9;
+  overflow: hidden;
+}
+
+/* ── Hero zone ──────────────────────────────────────────────── */
+.wc-hero {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42vh;
+  padding: 24px;
+}
+
+.wc-skip {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #094570;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Real image file per slide. Rounded rectangle rather than a
+   circular crop -- a circle mask throws away a lot of most images'
+   actual content and only really works for something composed
+   specifically around a centered subject. A fixed aspect-ratio keeps
+   the hero zone's height stable across slides even if the three
+   files end up different native dimensions, so switching slides
+   doesn't visibly jump the layout. */
+.wc-illustration-photo {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(9, 69, 112, 0.18);
+  animation: wc-photo-fade-in 0.35s ease;
+}
+
+@keyframes wc-photo-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Sheet ──────────────────────────────────────────────────── */
+.wc-sheet {
+  background: #ffffff;
+  border-radius: 28px 28px 0 0;
+  padding: 28px 28px 36px;
+  text-align: center;
+  box-shadow: 0 -8px 30px rgba(9, 69, 112, 0.08);
+}
+
+.wc-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+
+.wc-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: #d8e4ee;
+  padding: 0;
+  cursor: pointer;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+.wc-dot--active {
+  width: 28px;
+  border-radius: 999px;
+  background: #094570;
+}
+
+.wc-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #0d1b2a;
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+.wc-body {
+  font-size: 0.95rem;
+  color: #5a7086;
+  line-height: 1.6;
+  max-width: 380px;
+  margin: 0 auto 28px;
+}
+
+.wc-next {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 15px 0;
+  background: #094570;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.wc-next:hover {
+  background: #062f4a;
+}
+
+.wc-next:active {
+  transform: scale(0.98);
+}
+
+/* ============================================
+   Dark mode
+   ============================================ */
+
+[data-theme="dark"] .wc-page {
+  background: #04141f;
+}
+
+[data-theme="dark"] .wc-skip {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .wc-illustration-photo {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .wc-sheet {
+  background: #0f1f2e;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .wc-dot {
+  background: #1e3448;
+}
+
+[data-theme="dark"] .wc-dot--active {
+  background: #85CCFF;
+}
+
+[data-theme="dark"] .wc-title {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .wc-body {
+  color: #8fa3b8;
+}
+
+[data-theme="dark"] .wc-next {
+  background: #85CCFF;
+  color: #062f4a;
+}
+
+[data-theme="dark"] .wc-next:hover {
+  background: #a3d9ff;
+}
+
+/* ============================================
+   Reduced motion
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .wc-dot {
+    transition: none;
+  }
+
+  .wc-next {
+    transition: none;
+  }
+}

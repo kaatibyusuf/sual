@@ -18,6 +18,7 @@ import AccessibilityToggle from './accessibility/AccessibilityToggle.jsx'
 // JS on first load. Auth, LevelSelect, Home and the shell components
 // above stay eager since they're needed immediately on every visit.
 const Auth               = lazy(() => import('./pages/Auth.jsx'))
+const WelcomeCarousel     = lazy(() => import('./pages/WelcomeCarousel.jsx'))
 const LevelSelect         = lazy(() => import('./pages/LevelSelect.jsx'))
 const Home                = lazy(() => import('./pages/Home.jsx'))
 const Discipline          = lazy(() => import('./pages/Discipline.jsx'))
@@ -65,6 +66,8 @@ function RouteFallback() {
   )
 }
 
+const WELCOME_SEEN_KEY = 'sual-welcome-seen'
+
 // The entire previous App() body, unchanged, just renamed — it now
 // renders INSIDE the accessibility provider mounted by the default
 // export below, instead of being the default export itself.
@@ -78,6 +81,13 @@ function AppInner() {
   const [isKid, setIsKid] = useState(false)
   const [kidCheckDone, setKidCheckDone] = useState(false)
   const [locked, setLocked] = useState(false)
+  // Read once, synchronously, same reasoning as darkMode/fontSize
+  // below — a signed-out first-time visitor should see the carousel
+  // (or not) immediately on first paint, not flicker between states
+  // a beat after the page already rendered.
+  const [welcomeSeen, setWelcomeSeen] = useState(
+    () => localStorage.getItem(WELCOME_SEEN_KEY) === 'true'
+  )
   // Both attributes are applied here, synchronously, inside the
   // lazy initializer — not in a useEffect. useEffect only runs AFTER
   // the browser's first paint, so with the old effect-based version
@@ -109,6 +119,21 @@ function AppInner() {
     localStorage.setItem('sual-fontsize', fontSize)
     document.documentElement.setAttribute('data-fontsize', fontSize)
   }, [fontSize])
+
+  // Lets accessibility.css's .a11y-toggle-btn know whether BottomNav
+  // is actually on screen right now, since AccessibilityToggle is
+  // mounted globally (see the default export below) and renders on
+  // every screen, including the several early-return branches below
+  // that never show BottomNav at all (Splash, Auth, LevelSelect,
+  // WelcomeCarousel, the kid/level/lock loading screens). This
+  // condition mirrors exactly the one gating the "app-layout" branch
+  // near the bottom of this component, the only place BottomNav is
+  // actually rendered — if that branch's condition ever changes,
+  // this needs to change with it.
+  useEffect(() => {
+    const hasBottomNav = !!user && kidCheckDone && !locked && !isKid && !levelLoading && levelSelected
+    document.documentElement.setAttribute('data-has-bottom-nav', hasBottomNav ? 'true' : 'false')
+  }, [user, kidCheckDone, locked, isKid, levelLoading, levelSelected])
 
   // Capture a ?ref=CODE from the URL as early as possible, so it
   // survives whatever redirect happens between clicking a referral
@@ -218,6 +243,11 @@ function AppInner() {
     setUser(null)
   }
 
+  const finishWelcome = () => {
+    localStorage.setItem(WELCOME_SEEN_KEY, 'true')
+    setWelcomeSeen(true)
+  }
+
   if (showSplash) {
     return <SplashScreen onDone={() => setShowSplash(false)} />
   }
@@ -239,6 +269,21 @@ function AppInner() {
           سُؤَال
         </div>
       </div>
+    )
+  }
+
+  // FEATURE: a signed-out visitor who hasn't seen the welcome
+  // carousel on this device sees it here, once, before Auth —
+  // finishWelcome() persists the flag so it never shows again on
+  // this device, whether they Skip or make it through all three
+  // slides. Gated on !user specifically: someone already signed in
+  // on this browser is never "new" from this screen's point of view,
+  // even if localStorage were somehow cleared.
+  if (!user && !welcomeSeen) {
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <WelcomeCarousel onDone={finishWelcome} />
+      </Suspense>
     )
   }
 
