@@ -46,7 +46,11 @@ export default defineConfig({
         // this (build error: "Assets exceeding the limit... won't be
         // precached"). Raised generously above current size so
         // normal growth doesn't hit this again on every future
-        // build.
+        // build. NOTE: this 2.19 MB figure was measured while
+        // build.minify was accidentally disabled (see below) — once
+        // minification is back on, re-check the real bundle size;
+        // this ceiling may end up far more generous than actually
+        // needed.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
 
         // The actual fix for "opens like a web link, nothing shows
@@ -68,7 +72,15 @@ export default defineConfig({
       },
     }),
   ],
-  build: {
-    minify: false,
-  },
+  // FIX: `build: { minify: false }` was removed here. It was the
+  // only setting in this entire file with no comment justifying it,
+  // strongly suggesting it was a leftover debug setting rather than
+  // a deliberate choice. Left in place, it meant every production
+  // deploy shipped a fully unminified bundle to every visitor --
+  // 3-5x the download size a minified build would be, and the app's
+  // source (variable names, structure, comments) readable close to
+  // as-written by anyone who opened DevTools. Vite's own default
+  // (esbuild-based minification) applies now that this override is
+  // gone -- no replacement setting needed, the default is already
+  // the right one.
 })

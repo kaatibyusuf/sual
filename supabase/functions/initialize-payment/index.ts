@@ -21,6 +21,16 @@
 //                                        above, deliberately, so
 //                                        neither can collide with
 //                                        the other)
+//   seerahclass_<plan>_<uuid>_<epoch>   (Seerah Class — same plan
+//                                        format as Adab Class,
+//                                        Tawheed Class, and Tajweed
+//                                        Class; a separate product
+//                                        from the existing Seerah
+//                                        discipline in this app's
+//                                        Q&A-style Disciplines
+//                                        feature, which has no
+//                                        payment product of its own
+//                                        to collide with)
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -63,6 +73,11 @@ const TAWHEED_FULL_PRICE = 5000 * 100
 const TAJWEEDCLASS_UNIT_PRICE = 500 * 100
 const TAJWEEDCLASS_FULL_PRICE = 5000 * 100
 
+// Seerah Class: same one-off pricing model and amounts as the other
+// three classes.
+const SEERAHCLASS_UNIT_PRICE = 500 * 100
+const SEERAHCLASS_FULL_PRICE = 5000 * 100
+
 // Where the user is sent back to after paying, per product — so a
 // Tajweed purchase lands back on /tajweed, not /spaces.
 const CALLBACK_PATHS = {
@@ -72,6 +87,7 @@ const CALLBACK_PATHS = {
   adab: '/adab',
   tawheed: '/tawheed',
   tajweedclass: '/tajweed-class',
+  seerahclass: '/seerah-class',
 }
 
 serve(async (req) => {
@@ -135,6 +151,17 @@ serve(async (req) => {
       reference = `tajweedclass_${plan.replace('-', '')}_${user.id}_${Date.now()}`
     } else {
       return new Response(JSON.stringify({ error: 'Invalid Tajweed Class plan' }), { status: 400, headers: corsHeaders })
+    }
+  } else if (product === 'seerahclass') {
+    if (plan === 'full') {
+      amount = SEERAHCLASS_FULL_PRICE
+      reference = `seerahclass_full_${user.id}_${Date.now()}`
+    } else if (typeof plan === 'string' && /^unit-\d{1,2}$/.test(plan)) {
+      amount = SEERAHCLASS_UNIT_PRICE
+      // 'unit-2' -> 'unit2', same reasoning as the other three classes' reference format.
+      reference = `seerahclass_${plan.replace('-', '')}_${user.id}_${Date.now()}`
+    } else {
+      return new Response(JSON.stringify({ error: 'Invalid Seerah Class plan' }), { status: 400, headers: corsHeaders })
     }
   } else {
     return new Response(JSON.stringify({ error: 'Unknown product' }), { status: 400, headers: corsHeaders })

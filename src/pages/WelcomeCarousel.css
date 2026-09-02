@@ -43,28 +43,39 @@
   text-underline-offset: 3px;
 }
 
-/* Real image file per slide. Rounded rectangle rather than a
-   circular crop -- a circle mask throws away a lot of most images'
-   actual content and only really works for something composed
-   specifically around a centered subject. A fixed aspect-ratio keeps
-   the hero zone's height stable across slides even if the three
-   files end up different native dimensions, so switching slides
-   doesn't visibly jump the layout. */
-.wc-illustration-photo {
+/* Original SVG illustrations, drawn directly in code. The three
+   fill colors are CSS custom properties, set here, so light/dark
+   mode and the accent palette stay controlled from one place
+   instead of needing the SVG paths themselves edited per theme.
+   FIX: this file previously still had the leftover .wc-illustration-
+   -photo rule from the earlier <img>-based approach, with NO rule
+   at all for .wc-illustration-frame/.wc-illustration-svg -- meaning
+   the SVG had zero explicit sizing and its --wc-illus-* custom
+   properties were never defined anywhere, so every fill="var(...)"
+   in the SVG resolved to nothing. That's why nothing rendered at
+   all, not even a broken-image icon (there was no <img> tag left to
+   fail loading in the first place). */
+.wc-illustration-frame {
+  --wc-illus-bg: #eaf3fb;
+  --wc-illus-primary: #094570;
+  --wc-illus-accent: #ffb347;
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 320px;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(9, 69, 112, 0.18);
-  animation: wc-photo-fade-in 0.35s ease;
+  max-width: 280px;
+  animation: wc-illus-fade-in 0.35s ease;
 }
 
-@keyframes wc-photo-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.wc-illustration-svg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  filter: drop-shadow(0 16px 28px rgba(9, 69, 112, 0.18));
+}
+
+@keyframes wc-illus-fade-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* ── Sheet ──────────────────────────────────────────────────── */
@@ -152,8 +163,14 @@
   color: #85CCFF;
 }
 
-[data-theme="dark"] .wc-illustration-photo {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+[data-theme="dark"] .wc-illustration-frame {
+  --wc-illus-bg: #16283a;
+  --wc-illus-primary: #85CCFF;
+  --wc-illus-accent: #ffb347;
+}
+
+[data-theme="dark"] .wc-illustration-svg {
+  filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.45));
 }
 
 [data-theme="dark"] .wc-sheet {

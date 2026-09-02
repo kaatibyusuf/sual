@@ -420,28 +420,415 @@ export const SEERAHCLASS_TOPICS = {
   },
 
   // -----------------------------------------------------------
-  // UNIT 3 - YOUTH AND THE YEARS BEFORE PROPHETHOOD (placeholders)
+  // UNIT 3 - YOUTH AND THE YEARS BEFORE PROPHETHOOD (full content,
+  // expanded)
+  //
+  // Historical details (the Khadijah caravan and marriage sequence,
+  // the Ka'bah rebuilding and Black Stone dispute) checked against
+  // multiple current classical and contemporary Seerah references
+  // before writing. Genuine points of scholarly variation (Khadijah's
+  // exact age, the historicity of specific narrative details from the
+  // Syria journey) are flagged honestly rather than presented as
+  // settled fact.
   // -----------------------------------------------------------
-  'youth-1': { id: 'youth-1', unit: 'unit-3', title: 'Trade, Character, and the Title Al-Amin', summary: 'How his ﷺ honesty in trade earned him a lasting reputation.' },
-  'youth-2': { id: 'youth-2', unit: 'unit-3', title: 'The Blessed Marriage to Khadijah', summary: 'His ﷺ marriage to Khadijah and her role in his life.' },
-  'youth-3': { id: 'youth-3', unit: 'unit-3', title: 'Rebuilding the Ka\u2019bah and the Dispute Resolved', summary: 'How his ﷺ wisdom resolved a dispute among Quraysh\u2019s clans.' },
-  'youth-4': { id: 'youth-4', unit: 'unit-3', title: 'Retreat to the Cave of Hira', summary: 'His ﷺ growing habit of solitary reflection in the years before revelation.' },
+  'youth-1': {
+    id: 'youth-1',
+    unit: 'unit-3',
+    title: 'Trade, Character, and the Title Al-Amin',
+    summary: 'How his \ufdfa honesty in trade earned him a lasting reputation.',
+    content: [
+      {
+        heading: 'Building on a childhood already spent close to trade',
+        body: `This course's second unit already noted that the young Muhammad \ufdfa grew up within Abu Talib's household close to his uncle's own trading activities, including at least one journey toward Syria while still a boy. As he grew into early adulthood, this same trade, already established in this course's first unit as one of Quraysh's major sources of wealth and standing, became the setting in which his own character became genuinely well known across Makkah.`,
+      },
+      {
+        heading: 'Two titles earned through repeated, consistent conduct',
+        body: `Through his own dealings, the young Muhammad \ufdfa earned two specific titles among the people of Makkah: as-Sadiq, the truthful, and al-Amin, the trustworthy. These were not honorary titles granted once. They reflected a consistent, repeated pattern of honest dealing, observed directly and over time by the same trading community this course's first unit already described as placing real value on reliability within its commercial life.`,
+      },
+      {
+        heading: 'Why this specific reputation mattered so much in this specific setting',
+        body: `In a trade economy built substantially on trust, since a merchant sending goods on a distant caravan journey depended entirely on that goods being handled honestly far from any direct oversight, a reputation like al-Amin carried genuine practical value, not merely social approval. A trader known reliably as trustworthy was a trader people across Makkah, and beyond it, actively sought out to handle their own affairs.`,
+      },
+      {
+        heading: 'A reputation about to be tested on a much larger scale',
+        body: `This exact reputation is what drew the attention of one of Makkah's most successful merchants, a woman who had already built and managed a trading operation larger than that of many of Makkah's other merchants combined, and who was, at this point, in need of someone reliable to lead an important caravan on her behalf. This unit's next topic turns directly to her, and to what this specific opportunity would eventually lead to.`,
+      },
+      {
+        heading: 'Character established well before revelation began',
+        body: `It is worth stating plainly what this topic's account actually shows: the honesty, reliability, and good judgment for which the Prophet \ufdfa became known were already fully established among his own people years before he received any revelation at all. This matters directly for how this course's fourth unit will later present the very first moments of that revelation, since the character revelation would eventually call people to trust was not a new persona adopted afterward, but a reputation his own community had already tested and confirmed for years.`,
+      },
+    ],
+  },
+
+  'youth-2': {
+    id: 'youth-2',
+    unit: 'unit-3',
+    title: 'The Blessed Marriage to Khadijah',
+    summary: 'His \ufdfa marriage to Khadijah and her role in his life.',
+    content: [
+      {
+        heading: 'Khadijah bint Khuwaylid, a merchant in her own right',
+        body: `Khadijah bint Khuwaylid was a member of Quraysh in her own right, twice widowed, and a genuinely successful merchant, known among the people of Makkah as at-Tahirah, the pure one. Rather than traveling with her own caravans, she employed trusted agents to conduct trade on her behalf, and by the time this unit's account begins, her own trading operation was reported to rival that of several of Makkah's other merchants put together.`,
+      },
+      {
+        heading: 'A caravan entrusted to Muhammad \ufdfa specifically',
+        body: `Having heard of the reputation already established directly in this unit's previous topic, Khadijah engaged the twenty-five-year-old Muhammad \ufdfa to lead an important trading caravan to Syria on her behalf, reportedly offering him a notably generous share of the resulting profit, and sending her own servant Maysarah along to assist him and to report back on his conduct.`,
+      },
+      {
+        heading: 'A journey that exceeded every expectation',
+        body: `The journey proved considerably more profitable than Khadijah had anticipated, and Maysarah's own report upon returning described conduct that impressed her deeply: consistent honesty in every transaction, and a manner of dealing entirely different from what she had experienced with previous agents. Early biographical sources also record several specific incidents from this same journey, including an encounter with a monk who reportedly recognized signs he associated with prophethood, though, consistent with this course's treatment of similarly specific narrative details elsewhere, these particular incidents are presented here as recorded tradition rather than independently verifiable historical fact in the same way the journey's basic outcome can be established.`,
+      },
+      {
+        heading: 'A proposal initiated by Khadijah herself',
+        body: `Impressed by both Maysarah's account and her own direct impression of his character, Khadijah made the decision to propose marriage, an arrangement she initiated herself rather than waiting to be approached, sending her close friend Nafisah bint Munabbih to discreetly raise the matter with Muhammad \ufdfa directly. Tradition also records that Khadijah discussed these same reports with her cousin Waraqah ibn Nawfal, a figure already familiar with the earlier scriptures, whose own name and role reappear directly in this course's next unit, once revelation itself actually begins.`,
+      },
+      {
+        heading: 'A marriage of real partnership, and its lasting significance',
+        body: `The Prophet \ufdfa was twenty-five at the time of this marriage. Khadijah's own age is traditionally given as around forty, though it is worth noting honestly that a smaller number of sources record a somewhat younger age for her, without full agreement across the tradition on this specific point. What is consistently and firmly attested, regardless of this detail, is that he took no other wife while Khadijah lived, and that she would become, once revelation began, the very first person to believe in his message, a role this course's fifth unit examines directly.`,
+      },
+    ],
+  },
+
+  'youth-3': {
+    id: 'youth-3',
+    unit: 'unit-3',
+    title: 'Rebuilding the Ka\u2019bah and the Dispute Resolved',
+    summary: 'How his \ufdfa wisdom resolved a dispute among Quraysh\u2019s clans.',
+    content: [
+      {
+        heading: 'Damage requiring genuine reconstruction',
+        body: `Some years into his marriage, when the Prophet \ufdfa was around thirty-five years old, roughly five years before revelation began, the Ka'bah suffered real structural damage, variously attributed to flooding and fire, severe enough that Quraysh's various clans undertook a genuine rebuilding of the structure together, each clan collecting stones and contributing labor toward the shared project. The Prophet \ufdfa himself is recorded as taking part directly in this work, carrying stones alongside the rest of Quraysh.`,
+      },
+      {
+        heading: 'A dispute serious enough to threaten real violence',
+        body: `Once construction reached the point of restoring the Black Stone to its place, a serious dispute broke out among Quraysh's clans, each wanting the honor of setting the stone in place for themselves. Tension escalated to the point that one clan, Banu Abd ad-Dar, reportedly pledged themselves to fight to the death over the matter, an oath tradition records them sealing by dipping their hands into a shared bowl of blood, a detail vivid enough that this specific group became remembered afterward as "the blood-lickers." The standoff continued for four or five days before any resolution was found.`,
+      },
+      {
+        heading: 'An elder\u2019s proposal, and who walked through the gate',
+        body: `Abu Umayyah ibn al-Mughirah, among the oldest men of Quraysh present, proposed a specific solution: whoever next entered the sanctuary through its gate would be asked to arbitrate the dispute, and Quraysh agreed. The next person through that gate was the Prophet \ufdfa himself, already known across Makkah by the title established directly in this unit's first topic, and tradition records the assembled clans responding with visible relief at seeing him specifically walk through.`,
+      },
+      {
+        heading: 'A solution giving every clan equal honor',
+        body: `Rather than choosing one clan to receive the honor of placing the stone, the Prophet \ufdfa proposed a different approach entirely: he had the Black Stone placed at the center of a cloak, then asked a representative from each of the disputing clans to take hold of one corner of that same cloak, and together they lifted the stone to its required height. Once positioned there, the Prophet \ufdfa himself placed the stone into its final resting place with his own hands, giving every clan genuine, equal participation in the honor they had nearly gone to war over.`,
+      },
+      {
+        heading: 'Wisdom already recognized years before revelation',
+        body: `This entire episode occurred, by the tradition's own reckoning, roughly five years before the Prophet \ufdfa received his first revelation, meaning his own people had already witnessed, tested, and relied upon his judgment in a genuinely high-stakes civic dispute well before any claim to prophethood existed at all. This unit's remaining topic turns to what was happening in his own life during these same years, a growing pattern of retreat and reflection that would eventually lead directly to the moment this course's next unit examines in full.`,
+      },
+    ],
+  },
+
+  'youth-4': {
+    id: 'youth-4',
+    unit: 'unit-3',
+    title: 'Retreat to the Cave of Hira',
+    summary: 'His \ufdfa growing habit of solitary reflection in the years before revelation.',
+    content: [
+      {
+        heading: 'A growing habit of withdrawal from Makkah\u2019s ordinary life',
+        body: `In the years following the Ka'bah's reconstruction already covered in this unit's previous topic, as the Prophet \ufdfa approached the age of forty, he developed an increasingly consistent habit of withdrawing from Makkah's ordinary daily life to spend extended periods alone in reflection, a practice biographical tradition records growing steadily more frequent as this period continued.`,
+      },
+      {
+        heading: 'The specific place this habit centered on',
+        body: `This retreat centered on a small cave on Jabal al-Nur, the Mountain of Light, a modest hill near Makkah, where the Prophet \ufdfa would remain, by several accounts, for a number of consecutive nights at a stretch, taking a limited supply of provisions with him, reportedly prepared and supplied by Khadijah, before returning briefly to Makkah to resupply and then withdrawing again.`,
+      },
+      {
+        heading: 'What this retreat was actually a response to',
+        body: `This growing habit did not emerge from nowhere. This course's first unit already established the specific religious and social conditions of Jahiliyyah he had grown up surrounded by: idol worship layered over a site tradition held was originally built for pure monotheism, alongside genuine documented social evils this course's opening unit named directly. Biographical tradition consistently presents this period of retreat as a response to real, growing discomfort with these same conditions, a discomfort that had not yet resolved into any clear answer or direction.`,
+      },
+      {
+        heading: 'A search without yet knowing what would be found',
+        body: `It is worth being precise about what this period actually was, and was not. The Prophet \ufdfa was not, during these years, anticipating a specific future revelation in any detailed sense, nor did he yet possess the message this course's fourth unit will examine directly. This was a period of genuine, searching reflection on the state of his people and the questions their condition raised, carried out with no guarantee of where, if anywhere, that reflection would lead.`,
+      },
+      {
+        heading: 'The moment this entire unit has been building toward',
+        body: `This course's next unit picks up directly from exactly this setting: a specific night, during exactly this kind of retreat, in this same cave, when the searching reflection this topic has described was interrupted by something entirely unexpected. Everything covered across this unit, his established reputation for honesty, his marriage to a woman who would become his first supporter, the wisdom his own people had already relied upon, and this growing habit of solitary reflection, forms the immediate, real context for the event this course's fourth unit now turns to directly.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 4 - THE BEGINNING OF REVELATION (placeholders)
+  // UNIT 4 - THE BEGINNING OF REVELATION (full content, expanded)
+  //
+  // Qur'anic Arabic (Surah al-Alaq, Surah al-Muddaththir) checked
+  // against primary sources before writing. The hadith recording
+  // Khadijah's reassurance and the account of Waraqah ibn Nawfal are
+  // drawn from the well-established narration opening Sahih
+  // al-Bukhari's own chapter on the beginning of revelation. A note
+  // on this unit's third topic specifically: some classical
+  // narrations of the pause in revelation include a detail about
+  // real emotional distress expressed in a way involving mountain
+  // heights. This unit describes the genuine distress of this
+  // period and its resolution without repeating that specific
+  // detail, since it is not necessary to convey the historical and
+  // spiritual point and this category of content warrants real
+  // caution regardless of its source. English renderings of
+  // Qur'anic verses are an original paraphrase of the meaning, not
+  // copied from a single named published translation.
   // -----------------------------------------------------------
-  'wahy-1': { id: 'wahy-1', unit: 'unit-4', title: 'The First Revelation: Iqra', summary: 'The events of the first revelation in the cave of Hira.' },
-  'wahy-2': { id: 'wahy-2', unit: 'unit-4', title: 'Khadijah\u2019s Response and Waraqah\u2019s Confirmation', summary: 'How those closest to him ﷺ responded to this first experience.' },
-  'wahy-3': { id: 'wahy-3', unit: 'unit-4', title: 'The Pause in Revelation and Its Resumption', summary: 'The period of silence following the first revelation, and what followed it.' },
-  'wahy-4': { id: 'wahy-4', unit: 'unit-4', title: 'The Nature and Purpose of Prophethood', summary: 'What being sent as a Messenger actually meant for the years ahead.' },
+  'wahy-1': {
+    id: 'wahy-1',
+    unit: 'unit-4',
+    title: 'The First Revelation: Iqra',
+    summary: 'The events of the first revelation in the cave of Hira.',
+    content: [
+      {
+        heading: 'A night unlike any other during these same retreats',
+        body: `This course's third unit already described the Prophet's \ufdfa growing habit of solitary retreat to the cave of Hira as he approached the age of forty. During one such retreat, in the month of Ramadan, this same familiar pattern was interrupted by something entirely different from anything he had experienced there before.`,
+      },
+      {
+        heading: 'A command met with a genuine, honest reply',
+        body: `A being he had never encountered appeared to him and instructed him directly: iqra, read. The Prophet \ufdfa replied honestly that he was not a reader, a plain statement of fact rather than a refusal, since he had never learned to read. The being took hold of him and held him firmly before releasing him and repeating the same instruction, and this exchange occurred a third time before anything further was said.`,
+      },
+      {
+        heading: 'The actual words then given to him',
+        body: `Following this third exchange, the being, later identified as the angel Jibril, recited the words that would become the Qur'an's own first revealed verses.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ \u2022 خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ \u2022 اقْرَأْ وَرَبُّكَ الْأَكْرَمُ \u2022 الَّذِي عَلَّمَ بِالْقَلَمِ \u2022 عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ',
+            english: 'Read in the name of your Lord who created, created man from a clinging clot. Read, and your Lord is the Most Generous, who taught by the pen, taught man what he did not know.',
+            source: 'Surah al-Alaq, 96:1-5',
+          },
+        ],
+      },
+      {
+        heading: 'A meaning worth noticing directly',
+        body: `The very first word revealed to a man who could not read was itself a command to read, and the passage as a whole ties learning and knowledge directly back to Allah as their actual source, teaching by the pen and teaching what a person did not already know. This connects directly to material this course's first unit already established regarding the genuinely high value Arabian culture placed on eloquent language, now met with a revelation whose own opening words placed knowledge itself within a specifically divine, rather than purely human, frame.`,
+      },
+      {
+        heading: 'Returning home, shaken by what had just occurred',
+        body: `The Prophet \ufdfa returned from the cave in a state of genuine physical and emotional distress, trembling, and went directly to Khadijah asking to be wrapped and covered. This was, by every account, an overwhelming and entirely unprecedented experience, and his own reaction, real fear rather than immediate calm certainty, is recorded plainly and without any attempt to soften it. This unit's next topic turns directly to how Khadijah, and soon after her cousin Waraqah, responded to him in this exact state.`,
+      },
+    ],
+  },
+
+  'wahy-2': {
+    id: 'wahy-2',
+    unit: 'unit-4',
+    title: 'Khadijah\u2019s Response and Waraqah\u2019s Confirmation',
+    summary: 'How those closest to him \ufdfa responded to this first experience.',
+    content: [
+      {
+        heading: 'Immediate, unwavering reassurance',
+        body: `Khadijah did not hesitate or express doubt upon hearing what had happened. Her response is recorded directly within the same well established narration this unit's first topic already drew from.`,
+        verses: [
+          {
+            type: 'hadith',
+            arabic: 'كَلَّا وَاللَّهِ مَا يُخْزِيكَ اللَّهُ أَبَدًا إِنَّكَ لَتَصِلُ الرَّحِمَ وَتَحْمِلُ الْكَلَّ وَتَكْسِبُ الْمَعْدُومَ وَتَقْرِي الضَّيْفَ وَتُعِينُ عَلَى نَوَائِبِ الْحَقِّ',
+            english: 'Never! By Allah, He will never disgrace you. You maintain ties of kinship, help carry the burdens of the weak, provide for those who have nothing, honor your guests, and assist those struck by genuine hardship.',
+            source: 'Sahih al-Bukhari, from the narration of Aisha',
+          },
+        ],
+      },
+      {
+        heading: 'Why her specific reasoning matters, not only her comfort',
+        body: `Khadijah's response was not simply emotional reassurance offered in the moment. She reasoned directly from his own established character, already covered in real detail across this course's third unit: a man who had spent years genuinely honoring kinship, supporting the weak, and dealing honestly with others was not, in her direct judgment, the kind of person Allah would abandon to something harmful. This reasoning connects directly back to this course's opening claim in its very first topic, that his \ufdfa entire life would eventually function as an example precisely because it was already, at this exact moment, a life whose character could be reasoned from with genuine confidence.`,
+      },
+      {
+        heading: 'Seeking a second, independent confirmation',
+        body: `Khadijah then took the Prophet \ufdfa directly to her cousin Waraqah ibn Nawfal, already introduced in this course's previous unit as a hanif familiar with the earlier scriptures. The Prophet \ufdfa described exactly what he had experienced, and Waraqah responded with immediate recognition, identifying the being who had appeared as the same Namus, the trusted one, who had come to Musa before him.`,
+      },
+      {
+        heading: 'A warning offered alongside genuine support',
+        body: `Waraqah did not offer only reassurance. He told the Prophet \ufdfa directly that he wished he were young enough, and would live long enough, to see the day his own people would drive him out, a specific and unsettling prediction. When the Prophet \ufdfa asked directly whether this would truly happen, Waraqah answered plainly that it would, since no one before had brought what he now carried without facing real hostility in return, though he added that he would support him with everything he had if he lived to see that day. Waraqah died not long afterward, before the persecution he had predicted actually began.`,
+      },
+      {
+        heading: 'Two independent forms of confirmation, arriving together',
+        body: `Within this same short span of time, the Prophet \ufdfa received two genuinely different kinds of confirmation: Khadijah's, reasoned directly from years of firsthand, lived experience of his character, and Waraqah's, reasoned from independent knowledge of the earlier scriptures and their own description of how a true prophet's message is generally received. Khadijah, already introduced in this course's third unit as the first person to hear of this experience at all, is remembered directly and specifically as the first person in history to believe in his message.`,
+      },
+    ],
+  },
+
+  'wahy-3': {
+    id: 'wahy-3',
+    unit: 'unit-4',
+    title: 'The Pause in Revelation and Its Resumption',
+    summary: 'The period of silence following the first revelation, and what followed it.',
+    content: [
+      {
+        heading: 'An unexpected silence, after such an overwhelming beginning',
+        body: `Following this first experience, revelation did not continue immediately. A genuine period of silence followed, one that classical sources describe with real variation in its exact length, though it is generally remembered as lasting a considerable stretch of time before anything further came.`,
+      },
+      {
+        heading: 'A period of real, honest distress',
+        body: `This silence caused the Prophet \ufdfa genuine sadness and uncertainty. Having just experienced something this overwhelming, its sudden absence afterward left him in real emotional difficulty, a difficulty the biographical tradition records plainly rather than minimizing. This course has no interest in smoothing over the genuine human weight of this period, since presenting only the confident, settled version of this story would misrepresent exactly the kind of honest, lived experience this course's opening unit already promised to treat carefully.`,
+      },
+      {
+        heading: 'What actually brought this period to an end',
+        body: `This period of distress was resolved when Jibril appeared to him once again, directly reaffirming that he was indeed a genuine messenger of Allah, a reassurance the tradition records as settling his heart and easing the real anxiety this silence had caused him.`,
+      },
+      {
+        heading: 'What came next, and a genuine point of scholarly discussion',
+        body: `Following this reassurance, revelation resumed. The majority of scholars hold that the opening verses of Surah al-Muddaththir were the next words revealed, directly assigning him his actual task as a messenger.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'يَا أَيُّهَا الْمُدَّثِّرُ \u2022 قُمْ فَأَنذِرْ',
+            english: 'O you who are wrapped in your cloak, arise and warn.',
+            source: 'Surah al-Muddaththir, 74:1-2',
+          },
+        ],
+      },
+      {
+        heading: 'Why this specific command matters as a genuine turning point',
+        body: `A smaller number of early scholars held that a different surah followed this pause instead, and this course names this variation honestly rather than presenting the majority view as beyond any discussion. What matters most for this unit's purpose is the shift this command represents regardless of exactly which words carried it: al-Alaq's opening verses, covered in this unit's first topic, described a personal experience happening to him. This new command, arise and warn, assigned him an active, outward task for the first time, addressed not to him alone but toward the people around him. This course's next unit turns directly to how that task actually began.`,
+      },
+    ],
+  },
+
+  'wahy-4': {
+    id: 'wahy-4',
+    unit: 'unit-4',
+    title: 'The Nature and Purpose of Prophethood',
+    summary: 'What being sent as a Messenger actually meant for the years ahead.',
+    content: [
+      {
+        heading: 'A mission continuing something already begun, not starting something new',
+        body: `Islamic belief holds that the Prophet Muhammad \ufdfa was not introducing an entirely new religion, but rather restoring and completing the same essential message every earlier prophet had carried: the worship of Allah alone. This connects directly back to this course's second unit, which already traced his own lineage to Ismail, son of Ibrahim, and to this course's first unit, which already described the Ka'bah's own original construction as a monotheistic house of worship before idol worship later overtook it.`,
+      },
+      {
+        heading: 'What this specific continuity meant in practice',
+        body: `Understood this way, his mission was not a rupture with everything that came before it, but a restoration of something Makkah's own sacred site, and the wider religious landscape this course's first unit already described, had drifted away from over many generations. The specific evils and idol worship already named directly in this course's opening unit were exactly what this restored message would now confront directly, beginning quietly and privately, as this course's next unit examines.`,
+      },
+      {
+        heading: 'Why the weight of this task explains his own initial reaction',
+        body: `Returning to this unit's own opening topic, the Prophet's \ufdfa genuine fear and trembling immediately following the first revelation, and the real distress covered in this unit's previous topic during the silence that followed it, are worth holding onto directly rather than treating as embarrassing details to minimize. Being entrusted with a message meant to reach and correct an entire religious and social order was a task of enormous weight, and a fully human response to encountering that weight for the first time is precisely what the tradition records, honestly, rather than presenting a version of events stripped of any real difficulty.`,
+      },
+      {
+        heading: 'A private task, for now, about to become a public one',
+        body: `Despite the outward command already covered in this unit's previous topic, arise and warn, this course's next unit shows that the actual, practical work of dawah began quietly and privately, among a small number of people closest to him, rather than as an immediate public proclamation to all of Makkah. This deliberate pacing matters directly for understanding the years that follow, since it shows a mission unfolding in careful, considered stages rather than announced all at once.`,
+      },
+      {
+        heading: 'Closing this unit and opening the account of his \ufdfa actual mission',
+        body: `This unit has covered the first revelation itself, the immediate response of Khadijah and Waraqah, the genuine distress of the silence that followed, and what being entrusted with prophethood actually meant. This course's fifth unit now turns to the actual beginning of that mission in practice: who first believed, and how this small, private community of early Muslims began to take shape within Makkah's own hostile religious landscape.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 5 - SECRET DAWAH (placeholders)
+  // UNIT 5 - SECRET DAWAH (full content, expanded)
+  //
+  // The specific converts named in this unit (the four categories
+  // of first believers, the five men Abu Bakr personally brought,
+  // Dar al-Arqam's role) were checked against multiple current
+  // classical and contemporary Seerah references before writing.
   // -----------------------------------------------------------
-  'secret-1': { id: 'secret-1', unit: 'unit-5', title: 'The First to Believe', summary: 'Khadijah, Abu Bakr, Ali, and Zayd among the earliest believers.' },
-  'secret-2': { id: 'secret-2', unit: 'unit-5', title: 'Three Years of Private Calling', summary: 'Why the earliest dawah was conducted privately rather than openly.' },
-  'secret-3': { id: 'secret-3', unit: 'unit-5', title: 'The Household of Islam\u2019s Earliest Converts', summary: 'Who joined the earliest community, and from what backgrounds.' },
-  'secret-4': { id: 'secret-4', unit: 'unit-5', title: 'Building a Community in Secret', summary: 'How the earliest Muslims practiced and supported one another quietly.' },
+  'secret-1': {
+    id: 'secret-1',
+    unit: 'unit-5',
+    title: 'The First to Believe',
+    summary: 'Khadijah, Abu Bakr, Ali, and Zayd among the earliest believers.',
+    content: [
+      {
+        heading: 'A woman, a youth, a freedman, and a friend',
+        body: `This course's fourth unit already established Khadijah directly as the first person in history to believe in the Prophet's \ufdfa message. Tradition presents the very earliest community of believers through a specific, commonly repeated framework: the first woman to believe, the first youth, the first freed slave, and the first free adult man outside the immediate household, four distinct categories, each represented by a specific individual close to the Prophet \ufdfa himself.`,
+      },
+      {
+        heading: 'Ali ibn Abi Talib, the first among the young',
+        body: `Ali ibn Abi Talib, son of Abu Talib and therefore the Prophet's \ufdfa own first cousin, was still a boy, traditionally described as around ten years old, at this time. Given Abu Talib's own household had grown large and financially stretched, already covered in this course's second unit as never having been among the wealthier of Abdul Muttalib's sons, the Prophet \ufdfa had taken Ali into his own household some time before this, meaning Ali was raised in close daily proximity to him well before revelation ever began, and believed without hesitation once it did.`,
+      },
+      {
+        heading: 'Zayd ibn Harithah, the first among the freed',
+        body: `Zayd ibn Harithah had originally come into Khadijah's household, who later gave him to the Prophet \ufdfa directly. The Prophet \ufdfa subsequently freed him and treated him as an adopted son in every practical sense, and Zayd, already bound to him by this close relationship, believed early and remained one of his most trusted companions for the rest of his life.`,
+      },
+      {
+        heading: 'Abu Bakr, the first among free men outside the household',
+        body: `Abu Bakr as-Siddiq was a respected and well-connected Makkan merchant, already a close personal friend of the Prophet \ufdfa before revelation began, and the first adult man outside his immediate household to believe. This specific detail matters directly for this unit's remaining topics, since Abu Bakr's own wide network of trusted relationships across Makkah is precisely what allowed the earliest community to grow beyond this first small circle at all.`,
+      },
+      {
+        heading: 'Why this specific framework is worth remembering',
+        body: `Presenting these four individuals together, rather than simply as an unordered list of early names, makes a specific point worth carrying into this unit's remaining topics: from its very first moments, before any public proclamation had even occurred, this new community already crossed the lines of age, social status, and gender that structured so much of the Makkan society this course's first unit already described in detail. This pattern, a message reaching across exactly these lines, becomes even more pronounced as this unit's account continues.`,
+      },
+    ],
+  },
+
+  'secret-2': {
+    id: 'secret-2',
+    unit: 'unit-5',
+    title: 'Three Years of Private Calling',
+    summary: 'Why the earliest dawah was conducted privately rather than openly.',
+    content: [
+      {
+        heading: 'A deliberate, sustained choice, not simple hesitation',
+        body: `Following these first believers, dawah continued privately and individually for a sustained period, traditionally given as approximately three years, before any public, open proclamation of the message occurred at all. This was not the Prophet \ufdfa hesitating or delaying out of uncertainty. It reflects a deliberate approach to how a small, entirely new community could actually survive its own earliest and most vulnerable period.`,
+      },
+      {
+        heading: 'What private dawah actually looked like in practice',
+        body: `During this period, the Prophet \ufdfa approached specific individuals directly and quietly, generally those already connected to him or to other early believers through existing bonds of trust, rather than addressing Makkah's population as a whole. This is precisely the setting in which Abu Bakr's own personal network, already introduced in this unit's previous topic, became so significant, since private, trust-based invitation depends entirely on exactly the kind of close, credible relationships he already possessed across Makkah.`,
+      },
+      {
+        heading: 'Why premature exposure would have posed a genuine risk',
+        body: `This course's first unit already established Quraysh's considerable investment, religious and economic alike, in Makkah's existing order, including the very idol worship this new message directly opposed. A public challenge to this order, announced before the community calling for it had any real size or cohesion, risked drawing the full weight of Quraysh's opposition down onto a group with no capacity yet to withstand it. Private growth allowed the message to reach genuinely receptive people first, before that inevitable confrontation, examined directly in this course's sixth unit, actually arrived.`,
+      },
+      {
+        heading: 'A period of real, if modest, growth',
+        body: `Despite its private nature, this was not a period of stagnation. This unit's next topic turns directly to just how far this private network actually reached during these same three years, extending well beyond the four individuals already covered in this unit's first topic into a genuinely broader, more socially varied group of early believers.`,
+      },
+      {
+        heading: 'Setting up the transition this course examines directly next',
+        body: `This entire three-year period existed specifically to prepare for what would eventually follow: a direct command to proclaim the message openly, examined in full in this course's sixth unit. Understanding why this private phase came first, and lasted as long as it did, is what makes that later transition to public proclamation genuinely make sense as a considered shift in strategy, rather than an arbitrary change in approach.`,
+      },
+    ],
+  },
+
+  'secret-3': {
+    id: 'secret-3',
+    unit: 'unit-5',
+    title: 'The Household of Islam\u2019s Earliest Converts',
+    summary: 'Who joined the earliest community, and from what backgrounds.',
+    content: [
+      {
+        heading: 'Abu Bakr\u2019s own considerable role in this growth',
+        body: `Abu Bakr, already introduced in this unit's first topic, proved to be an especially active and effective caller to this new faith from his very first day as a believer. Well regarded across Makkah, personally trusted, and already surrounded by a wide circle of relationships built through years of honest business dealing, he was positioned to reach people few others in the earliest community could have approached with the same immediate credibility.`,
+      },
+      {
+        heading: 'Five specific men brought to belief through his own efforts',
+        body: `Through Abu Bakr's direct, personal efforts, five specific men came to believe during this same period: Uthman ibn Affan, Zubayr ibn al-Awwam, Abdur Rahman ibn Awf, Sa'd ibn Abi Waqqas, and Talha ibn Ubaydullah. Together with the four individuals already covered in this unit's first topic, these men are frequently remembered together as being among the earliest forerunners of the entire Muslim community, several of them going on to hold real significance in the years this course examines later.`,
+      },
+      {
+        heading: 'A message that reached well beyond Makkah\u2019s established elite',
+        body: `Alongside these relatively well-connected converts, the earliest community also included Bilal ibn Rabah, an Abyssinian man held in slavery in Makkah, whose belief placed him in a considerably more vulnerable position than converts with real tribal standing and protection behind them, a vulnerability this course's sixth unit examines directly once persecution actually began. His presence within this same early community, alongside men like Uthman and Zubayr from Quraysh's own established families, confirms directly what this unit's first topic already suggested: this message reached across genuinely different levels of Makkah's social order from its very earliest days.`,
+      },
+      {
+        heading: 'A genuinely wide cross-section, even while still private',
+        body: `Beyond these specific individuals, biographical tradition records dozens of further early converts during this same three-year period, drawn from a real range of backgrounds, established Quraysh families and people with no significant standing at all, older figures and younger ones, men and women alike. This range matters directly for understanding the specific, varied character of persecution this course's next unit examines, since the actual danger different early believers faced would come to depend heavily on exactly this same variation in social standing and tribal protection.`,
+      },
+      {
+        heading: 'A community already meaningfully larger than four people',
+        body: `By the end of the period this unit covers, the private, quietly growing community this topic has described was genuinely larger and more socially varied than its first four believers alone might suggest, even though it remained, throughout this entire period, still unknown to Makkah's wider population and its leadership. This unit's closing topic turns directly to where and how this same community actually gathered and practiced together during these same private years.`,
+      },
+    ],
+  },
+
+  'secret-4': {
+    id: 'secret-4',
+    unit: 'unit-5',
+    title: 'Building a Community in Secret',
+    summary: 'How the earliest Muslims practiced and supported one another quietly.',
+    content: [
+      {
+        heading: 'A specific house at the center of this early community',
+        body: `The house of al-Arqam ibn Abi al-Arqam, himself a young early convert from the clan of Makhzum, became the primary gathering place for the Prophet \ufdfa and the earliest Muslims during this same period. This specific house is remembered directly in Islamic tradition by name, precisely because of how central it became to the community's earliest life together.`,
+      },
+      {
+        heading: 'Why this specific house, of all the possible choices',
+        body: `Al-Arqam's youth and his specific position within Makhzum, a clan not otherwise directly associated with the new message, meant this particular house drew considerably less attention than a more prominent or already-suspected location might have. This connects directly back to this unit's second topic, and the broader concern already established there for protecting a small, genuinely vulnerable community from premature exposure to Quraysh's opposition.`,
+      },
+      {
+        heading: 'What actually happened inside this house',
+        body: `Within this same house, the Prophet \ufdfa personally met with new and interested individuals, taught the Qur'an directly, and led the small community in prayer together. This was genuine, structured communal practice, not merely private, isolated belief held individually by scattered converts, even though it remained entirely hidden from Makkah's wider population throughout this same period.`,
+      },
+      {
+        heading: 'A community built on real mutual support, not belief alone',
+        body: `Beyond worship and teaching, this early community also provided its members with real, practical mutual support, a genuinely necessary provision given that several of its members, Bilal already named directly in this unit's previous topic among them, held little independent social protection of their own. This mutual support among a small, quietly growing group of believers is itself part of what allowed this community to survive its own most vulnerable early years intact.`,
+      },
+      {
+        heading: 'Closing this unit and opening the account of public dawah',
+        body: `This unit has now covered the very first believers across four distinct categories, the deliberate reasoning behind approximately three years of private calling, the genuinely wide range of people this same private message reached, and the specific house where this early community actually gathered and practiced together. This course's sixth unit turns directly to what happened once this same private phase came to its own deliberate end: a direct command to proclaim the message openly, and Quraysh's own response once they could no longer overlook it.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
   // UNIT 6 - PUBLIC DAWAH AND EARLY PERSECUTION (placeholders)
