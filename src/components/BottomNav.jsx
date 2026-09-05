@@ -163,6 +163,12 @@ const ICONS = {
       <path d="M19 20a3 3 0 0 0 0-6" />
     </svg>
   ),
+    arabiyyahClass: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 20l3-1 10-10a2.1 2.1 0 0 0-3-3L4 16l-1 4z" />
+      <path d="M13 7l3 3" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -194,6 +200,7 @@ const MORE_ITEMS = [
   { to: '/tawheed', icon: 'tawheed', label: 'Tawheed Class' },
   { to: '/tajweed-class', icon: 'tajweedClass', label: 'Tajweed Class' },
   { to: '/seerah-class', icon: 'seerahClass', label: 'Seerah Class' },
+  { to: '/arabiyyah-class', icon: 'arabiyyahClass', label: 'Arabiyyah Class' },
   { to: '/knowledge-graph', icon: 'graph', label: 'Knowledge Graph' },
 ]
 

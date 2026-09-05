@@ -27,7 +27,16 @@
      [data-has-bottom-nav="true"] rule below restores the original
      48px clearance only on the screens that actually have one. */
   bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-  z-index: 500;
+  /* FIX: was 500, which sits ABOVE ordinary in-app modals/sheets --
+     e.g. ArabiyyahClass.jsx's paywall sheet uses z-index: 100, a
+     completely normal value for a modal overlay. That meant this
+     button rendered on top of that sheet's content (and any other
+     modal using a similarly ordinary z-index) instead of being
+     correctly hidden behind it while it's open. This toggle only
+     needs to float above ORDINARY page content, which essentially
+     never sets a z-index of its own -- it should never need to beat
+     a deliberate overlay/modal. */
+  z-index: 40;
   width: 52px;
   height: 52px;
   border-radius: 50%;

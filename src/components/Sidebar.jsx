@@ -174,6 +174,12 @@ const ICONS = {
       <path d="M19 20a3 3 0 0 0 0-6" />
     </svg>
   ),
+    arabiyyahClass: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 20l3-1 10-10a2.1 2.1 0 0 0-3-3L4 16l-1 4z" />
+      <path d="M13 7l3 3" />
+    </svg>
+  ),
 }
 
 // -- Six-pillar grouping ---------------------------------------
@@ -198,6 +204,7 @@ const NAV_GROUPS = [
       { path: '/adab', label: 'Adab Class', icon: 'adab' },
       { path: '/tajweed-class', label: 'Tajweed Class', icon: 'tajweedClass' },
       { path: '/seerah-class', label: 'Seerah Class', icon: 'seerahClass' },
+      { path: '/arabiyyah-class', label: 'Arabiyyah Class', icon: 'arabiyyahClass' },
       { path: '/knowledge-graph', label: 'Knowledge Graph', icon: 'graph' },
 
     ],

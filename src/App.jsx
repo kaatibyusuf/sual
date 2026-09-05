@@ -51,6 +51,7 @@ const Adab = lazy(() => import('./pages/Adab.jsx'))
 const KnowledgeGraph = lazy(() => import('./pages/KnowledgeGraph.jsx'))
 const TajweedClass = lazy(() => import('./pages/TajweedClass.jsx'))
 const SeerahClass = lazy(() => import('./pages/SeerahClass.jsx'))
+const ArabiyyahClass = React.lazy(() => import('./pages/ArabiyyahClass'));
 
 function RouteFallback() {
   return (
@@ -420,6 +421,7 @@ function AppInner() {
               <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
               <Route path="/tajweed-class" element={<TajweedClass user={user} />} />
               <Route path="/seerah-class" element={<SeerahClass user={user} />} />
+              <Route path="/arabiyyah-class" element={<ArabiyyahClass user={user} />} />
             </Routes>
           </Suspense>
         </main>

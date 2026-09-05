@@ -1,36 +1,14 @@
 // supabase/functions/initialize-payment/index.ts
 //
 // Initializes a Paystack transaction for Spaces (monthly, annual, or
-// lifetime), Book Quiz, the Tajweed Course, Adab Class, Tawheed
-// Class, or Tajweed Class. The reference format carries the plan so
-// the webhook can branch on it without a second lookup:
-//   sual_<plan>_<uuid>_<epoch>          (Spaces)
-//   bookquiz_<plan>_<uuid>_<epoch>      (Book Quiz)
-//   tajweed_<plan>_<uuid>_<epoch>       (Tajweed Course)
-//   adab_<plan>_<uuid>_<epoch>          (Adab Class — plan is
-//                                        'full' or a unit token like
-//                                        'unit2', derived from the
-//                                        unit id 'unit-2')
-//   tawheed_<plan>_<uuid>_<epoch>       (Tawheed Class — same plan
-//                                        format as Adab Class)
-//   tajweedclass_<plan>_<uuid>_<epoch>  (Tajweed Class — same plan
-//                                        format as Adab Class and
-//                                        Tawheed Class; a separate
-//                                        product from the existing
-//                                        Tajweed Course subscription
-//                                        above, deliberately, so
-//                                        neither can collide with
-//                                        the other)
-//   seerahclass_<plan>_<uuid>_<epoch>   (Seerah Class — same plan
-//                                        format as Adab Class,
-//                                        Tawheed Class, and Tajweed
-//                                        Class; a separate product
-//                                        from the existing Seerah
-//                                        discipline in this app's
-//                                        Q&A-style Disciplines
-//                                        feature, which has no
-//                                        payment product of its own
-//                                        to collide with)
+// lifetime), Book Quiz, the Tajweed Course, or Arabiyyah Class
+// (per-unit or full-course one-time purchase). The reference format
+// carries the plan so the webhook can branch on it without a second
+// lookup:
+//   sual_<plan>_<uuid>_<epoch>            (Spaces)
+//   bookquiz_<plan>_<uuid>_<epoch>        (Book Quiz)
+//   tajweed_<plan>_<uuid>_<epoch>         (Tajweed Course subscription)
+//   arabiyyahclass_<unit-id|full>_<uuid>_<epoch>  (Arabiyyah Class)
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -57,26 +35,17 @@ const TAJWEED_PLAN_AMOUNTS = {
   annual: 10000 * 100,
 }
 
-// Adab Class: one-off purchases, not a recurring subscription.
-// ₦500 unlocks a single unit; ₦5,000 unlocks every unit at once.
-const ADAB_UNIT_PRICE = 500 * 100
-const ADAB_FULL_PRICE = 5000 * 100
-
-// Tawheed Class: same one-off pricing model and amounts as Adab Class.
-const TAWHEED_UNIT_PRICE = 500 * 100
-const TAWHEED_FULL_PRICE = 5000 * 100
-
-// Tajweed Class: same one-off pricing model and amounts as Adab
-// Class and Tawheed Class. This is a distinct product from the
-// existing 'tajweed' subscription above (Tajweed Course), not a
-// replacement for it.
-const TAJWEEDCLASS_UNIT_PRICE = 500 * 100
-const TAJWEEDCLASS_FULL_PRICE = 5000 * 100
-
-// Seerah Class: same one-off pricing model and amounts as the other
-// three classes.
-const SEERAHCLASS_UNIT_PRICE = 500 * 100
-const SEERAHCLASS_FULL_PRICE = 5000 * 100
+// Arabiyyah Class: a one-time purchase per unit, or one flat price
+// for full-course access — NOT a monthly/annual subscription like
+// Spaces/Tajweed above, so this is priced differently: `plan` here
+// is either 'full' or a specific unit id string (e.g. 'unit-2'),
+// matching exactly what ArabiyyahClass.jsx's startPurchase(plan)
+// actually sends. Every non-'full' plan value is treated as a
+// per-unit purchase at the same flat price — these numbers must
+// stay in sync with UNIT_PRICE_NGN/FULL_PRICE_NGN in
+// ArabiyyahClass.jsx if either ever changes.
+const ARABIYYAHCLASS_UNIT_PRICE = 500 * 100
+const ARABIYYAHCLASS_FULL_PRICE = 5000 * 100
 
 // Where the user is sent back to after paying, per product — so a
 // Tajweed purchase lands back on /tajweed, not /spaces.
@@ -84,10 +53,7 @@ const CALLBACK_PATHS = {
   spaces: '/spaces',
   bookquiz: '/book-quiz',
   tajweed: '/tajweed',
-  adab: '/adab',
-  tawheed: '/tawheed',
-  tajweedclass: '/tajweed-class',
-  seerahclass: '/seerah-class',
+  arabiyyahclass: '/arabiyyah-class',
 }
 
 serve(async (req) => {
@@ -118,51 +84,22 @@ serve(async (req) => {
     const tajweedPlan = plan === 'annual' ? 'annual' : 'monthly'
     amount = TAJWEED_PLAN_AMOUNTS[tajweedPlan]
     reference = `tajweed_${tajweedPlan}_${user.id}_${Date.now()}`
-  } else if (product === 'adab') {
-    if (plan === 'full') {
-      amount = ADAB_FULL_PRICE
-      reference = `adab_full_${user.id}_${Date.now()}`
-    } else if (typeof plan === 'string' && /^unit-\d{1,2}$/.test(plan)) {
-      amount = ADAB_UNIT_PRICE
-      // 'unit-2' -> 'unit2' so the webhook's underscore-delimited
-      // parser sees one clean token, not two.
-      reference = `adab_${plan.replace('-', '')}_${user.id}_${Date.now()}`
-    } else {
-      return new Response(JSON.stringify({ error: 'Invalid Adab plan' }), { status: 400, headers: corsHeaders })
-    }
-  } else if (product === 'tawheed') {
-    if (plan === 'full') {
-      amount = TAWHEED_FULL_PRICE
-      reference = `tawheed_full_${user.id}_${Date.now()}`
-    } else if (typeof plan === 'string' && /^unit-\d{1,2}$/.test(plan)) {
-      amount = TAWHEED_UNIT_PRICE
-      // 'unit-2' -> 'unit2', same reasoning as Adab's reference format.
-      reference = `tawheed_${plan.replace('-', '')}_${user.id}_${Date.now()}`
-    } else {
-      return new Response(JSON.stringify({ error: 'Invalid Tawheed plan' }), { status: 400, headers: corsHeaders })
-    }
-  } else if (product === 'tajweedclass') {
-    if (plan === 'full') {
-      amount = TAJWEEDCLASS_FULL_PRICE
-      reference = `tajweedclass_full_${user.id}_${Date.now()}`
-    } else if (typeof plan === 'string' && /^unit-\d{1,2}$/.test(plan)) {
-      amount = TAJWEEDCLASS_UNIT_PRICE
-      // 'unit-2' -> 'unit2', same reasoning as Adab's and Tawheed's reference format.
-      reference = `tajweedclass_${plan.replace('-', '')}_${user.id}_${Date.now()}`
-    } else {
-      return new Response(JSON.stringify({ error: 'Invalid Tajweed Class plan' }), { status: 400, headers: corsHeaders })
-    }
-  } else if (product === 'seerahclass') {
-    if (plan === 'full') {
-      amount = SEERAHCLASS_FULL_PRICE
-      reference = `seerahclass_full_${user.id}_${Date.now()}`
-    } else if (typeof plan === 'string' && /^unit-\d{1,2}$/.test(plan)) {
-      amount = SEERAHCLASS_UNIT_PRICE
-      // 'unit-2' -> 'unit2', same reasoning as the other three classes' reference format.
-      reference = `seerahclass_${plan.replace('-', '')}_${user.id}_${Date.now()}`
-    } else {
-      return new Response(JSON.stringify({ error: 'Invalid Seerah Class plan' }), { status: 400, headers: corsHeaders })
-    }
+  } else if (product === 'arabiyyahclass') {
+    // `plan` is 'full' or a specific unit id (e.g. 'unit-2') here,
+    // not one of a fixed small set of plan names like the products
+    // above — so this branch trusts whatever string was sent as the
+    // unit identifier (falling back to per-unit pricing for
+    // anything that isn't literally 'full'), rather than validating
+    // it against a whitelist the way spacesPlan/bqPlan/tajweedPlan
+    // do above. The amount charged only ever depends on whether
+    // it's 'full' or not, so a bogus/unrecognized unit id can't
+    // result in an unexpected price — only in a reference that the
+    // webhook won't recognize as a real unit, which fails safely
+    // (no purchase row gets created) rather than granting anything.
+    const isFull = plan === 'full'
+    amount = isFull ? ARABIYYAHCLASS_FULL_PRICE : ARABIYYAHCLASS_UNIT_PRICE
+    const planSegment = isFull ? 'full' : String(plan)
+    reference = `arabiyyahclass_${planSegment}_${user.id}_${Date.now()}`
   } else {
     return new Response(JSON.stringify({ error: 'Unknown product' }), { status: 400, headers: corsHeaders })
   }

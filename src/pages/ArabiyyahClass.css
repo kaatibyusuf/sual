@@ -1,0 +1,299 @@
+/* src/pages/ArabiyyahClass.css
+ * Built on the same wf-style visual system as Adab Class and
+ * Tawheed Class, for consistency across the app: white cards,
+ * light-blue borders, navy accents, [data-theme="dark"] overrides
+ * (manual toggle, not prefers-color-scheme). All classes prefixed
+ * arc- so this course can coexist with adab-/tw- classes in the same
+ * bundle without collision.
+ */
+
+.arc-page {
+  padding-top: 32px;
+  max-width: 720px;
+}
+
+.arc-back {
+  display: inline-block;
+  color: #4a6080;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin-bottom: 20px;
+  padding: 0;
+  font-family: var(--font-ui);
+}
+.arc-back:hover { color: #094570; }
+
+.arc-loading { display: flex; justify-content: center; padding: 60px 0; }
+.arc-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid #e8f0f8;
+  border-top-color: #094570;
+  border-radius: 50%;
+  animation: tcSpin 0.8s linear infinite;
+}
+@keyframes tcSpin { to { transform: rotate(360deg); } }
+
+.arc-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
+.arc-icon svg { width: 100%; height: 100%; }
+
+/* -- Hero -- */
+.arc-hero {
+  padding: 22px;
+  background: #ffffff !important;
+  border: 1.5px solid #094570;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+.arc-hero-title { font-size: 1.25rem; font-weight: 800; color: #0d1b2a; margin-bottom: 4px; }
+.arc-hero-sub { font-size: 0.85rem; color: #4a6080; margin-bottom: 16px; }
+
+.arc-progress-track { height: 8px; border-radius: 100px; background: #e8f0f8; overflow: hidden; margin-bottom: 8px; }
+.arc-progress-fill { height: 100%; background: #094570; border-radius: 100px; transition: width 0.3s ease; }
+.arc-progress-label { font-size: 0.8rem; color: #6a8090; margin-bottom: 14px; }
+
+.arc-hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.arc-btn-primary {
+  padding: 11px 20px; background: #094570; color: #ffffff; border: none;
+  border-radius: 100px; font-family: var(--font-ui); font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: background 0.15s ease;
+}
+.arc-btn-primary:hover { background: #0a5486; }
+.arc-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.arc-btn-secondary {
+  padding: 11px 20px; background: #ffffff; color: #094570; border: 1.5px solid #094570;
+  border-radius: 100px; font-family: var(--font-ui); font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: all 0.15s ease;
+}
+.arc-btn-secondary:hover { background: #f0f7ff; }
+.arc-btn-secondary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* -- List cards -- */
+.arc-cards { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+
+.arc-card {
+  display: flex; align-items: center; gap: 16px; padding: 22px;
+  background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 16px;
+  text-align: left; cursor: pointer; font-family: var(--font-ui);
+  transition: all 0.2s ease; width: 100%;
+}
+.arc-card:hover { border-color: #85CCFF; box-shadow: 0 6px 20px rgba(9,69,112,0.1); transform: translateY(-2px); }
+.arc-card--locked { cursor: pointer; opacity: 0.85; }
+.arc-card--done { border-color: #b8dfc0; }
+
+.arc-card-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px;
+  background: #094570; color: #ffffff; font-weight: 800; font-size: 1.1rem;
+}
+.arc-card-icon--locked { background: #dce4ee; color: #6a8090; }
+.arc-card-icon--done { background: #2e7d32; color: #ffffff; }
+.arc-card-icon .arc-icon { width: 22px; height: 22px; }
+
+.arc-card-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.arc-card-side { flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
+
+.arc-card-progress-pill {
+  font-size: 0.78rem; font-weight: 700; color: #6a8090; background: #f5f8fb;
+  padding: 4px 10px; border-radius: 100px; white-space: nowrap;
+}
+
+.arc-card-label { font-size: 1.05rem; font-weight: 800; color: #094570; line-height: 1.35; }
+.arc-card-meta { font-size: 0.72rem; font-weight: 700; color: #8a9ab0; text-transform: uppercase; letter-spacing: 0.06em; }
+.arc-card-desc { font-size: 0.82rem; color: #6a8090; line-height: 1.5; }
+
+.arc-card-badge { flex-shrink: 0; font-size: 0.75rem; font-weight: 700; padding: 5px 11px; border-radius: 100px; white-space: nowrap; }
+.arc-card-badge--lock { background: #fdf3dd; color: #7a5a13; }
+.arc-card-badge--quiz { background: #e8f0f8; color: #094570; }
+
+.arc-card-arrow { flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; color: #c8d8e8; }
+
+/* -- Detail header -- */
+.arc-detail-header {
+  display: flex; align-items: center; gap: 16px; padding: 22px;
+  background: #f0f7ff !important; border: 1.5px solid #094570; border-radius: 16px; margin-bottom: 16px;
+}
+.arc-detail-icon {
+  display: flex; align-items: center; justify-content: center; width: 48px; height: 48px;
+  flex-shrink: 0; border-radius: 12px; background: #094570; color: #ffffff; font-weight: 800; font-size: 1.2rem;
+}
+.arc-detail-title { font-size: 1.25rem; font-weight: 800; color: #0d1b2a; margin-bottom: 2px; }
+.arc-detail-sub { font-size: 0.9rem; color: #4a6080; }
+
+/* -- Content sections -- */
+.arc-section { padding: 20px 22px; background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 14px; margin-bottom: 14px; }
+.arc-section-title { font-size: 0.9rem; font-weight: 800; color: #094570; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; }
+.arc-section-body { font-size: 0.9rem; color: #1a2a3a; line-height: 1.8; }
+.arc-section-body p { margin: 0 0 12px; }
+.arc-section-body p:last-child { margin-bottom: 0; }
+
+/* -- Highlighted Qur'an / Hadith / Example / Qaidah verse blocks -- */
+.arc-verse { margin-top: 16px; padding: 18px 18px 16px; border-radius: 12px; border: 1.5px solid; }
+.arc-verse--quran { background: #f0f7ff; border-color: #85CCFF; }
+.arc-verse--hadith { background: #fdf3dd; border-color: #e0c07a; }
+.arc-verse--example { background: #f2f8f0; border-color: #8ac48a; }
+
+/* Qaidah (rule) boxes are this course's most important recurring
+   content type, so they get the most visually distinct treatment:
+   a thicker border, a strong left accent bar, and a slightly deeper
+   background tint, so a learner scanning a page can spot every
+   stated rule at a glance without rereading full paragraphs. */
+.arc-verse--qaidah {
+  background: #fff4e8; border-color: #d98a3d; border-width: 2px;
+  border-left-width: 6px; padding-left: 16px;
+}
+
+.arc-verse-tag {
+  display: inline-block; font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 3px 9px; border-radius: 100px; margin-bottom: 10px;
+}
+.arc-verse--quran .arc-verse-tag { background: #094570; color: #ffffff; }
+.arc-verse--hadith .arc-verse-tag { background: #b8862f; color: #ffffff; }
+.arc-verse--example .arc-verse-tag { background: #3f7d3f; color: #ffffff; }
+.arc-verse--qaidah .arc-verse-tag { background: #b8541e; color: #ffffff; font-weight: 900; }
+
+.arc-verse-arabic {
+  font-size: 1.35rem; line-height: 2.1; color: #0d1b2a; margin: 0 0 8px; font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade New', serif;
+}
+.arc-verse--qaidah .arc-verse-arabic { font-size: 1.45rem; font-weight: 700; color: #5a2e0a; }
+.arc-verse-translit { font-size: 0.82rem; color: #4a6050; margin: 0 0 8px; font-style: italic; letter-spacing: 0.01em; }
+.arc-verse--qaidah .arc-verse-translit { color: #8a5a30; }
+.arc-verse-english { font-size: 0.9rem; color: #2a3a4a; line-height: 1.7; font-style: italic; margin: 0 0 8px; }
+.arc-verse--qaidah .arc-verse-english { color: #4a3018; font-weight: 600; font-style: normal; }
+.arc-verse-source { font-size: 0.76rem; font-weight: 700; color: #6a8090; margin: 0; text-transform: uppercase; letter-spacing: 0.03em; }
+.arc-verse--qaidah .arc-verse-source { color: #a06a30; }
+
+.arc-empty { padding: 32px 24px; background: #ffffff !important; border: 1.5px dashed #c8d8e8; border-radius: 14px; text-align: center; color: #6a8090; font-size: 0.88rem; margin-bottom: 14px; }
+
+/* -- Bottom actions -- */
+.arc-actions-row { display: flex; justify-content: center; margin: 20px 0; }
+.arc-nav-row { display: flex; gap: 8px; }
+.arc-nav-btn {
+  flex: 1; padding: 12px; border: 1.5px solid #c8d8e8; border-radius: 10px; background: #f5f8fb;
+  color: #094570; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.15s ease;
+}
+.arc-nav-btn:hover:not(:disabled) { border-color: #094570; background: #e8f0f8; }
+.arc-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* -- Quiz -- */
+.arc-status-card { padding: 24px; background: #ffffff !important; border: 2px solid #094570; border-radius: 16px; text-align: center; margin-bottom: 16px; }
+.arc-status-card--fail { border-color: #c0392b; }
+.arc-status-value { font-size: 1.8rem; font-weight: 800; color: #094570; margin-bottom: 6px; }
+.arc-status-card--fail .arc-status-value { color: #c0392b; }
+.arc-status-note { font-size: 0.85rem; color: #6a8090; font-weight: 600; }
+
+.arc-quiz-q { padding: 20px 22px; background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 14px; margin-bottom: 14px; }
+.arc-quiz-q-text { font-size: 0.9rem; font-weight: 700; color: #0d1b2a; margin-bottom: 14px; line-height: 1.6; }
+.arc-quiz-num { color: #094570; }
+
+.arc-quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.arc-quiz-option {
+  text-align: left; padding: 12px 14px; background: #f5f8fb; border: 1.5px solid #dde8f2;
+  border-radius: 10px; font-family: var(--font-ui); font-size: 0.85rem; color: #1a2a3a; cursor: pointer; transition: all 0.15s ease;
+}
+.arc-quiz-option:hover:not(:disabled) { border-color: #094570; }
+.arc-quiz-option--selected { border-color: #094570; background: #e8f0f8; font-weight: 700; }
+.arc-quiz-option--correct { border-color: #2e7d32; background: #e6f4e8; font-weight: 700; color: #1e5c22; }
+.arc-quiz-option--wrong { border-color: #c0392b; background: rgba(231,76,60,0.08); color: #a02f22; }
+.arc-quiz-option:disabled { cursor: default; }
+
+.arc-quiz-explanation { font-size: 0.82rem; color: #6a8090; line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #dde8f2; }
+
+/* -- Bottom sheet -- */
+.arc-sheet-overlay { position: fixed; inset: 0; background: rgba(13, 27, 42, 0.45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+
+.arc-sheet { width: 100%; max-width: 420px; padding: 22px 20px; background: #ffffff !important; border-radius: 18px; border: 1.5px solid #c8d8e8; max-height: calc(100vh - 40px); overflow-y: auto; }
+
+.arc-sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.arc-sheet-title { font-size: 1.1rem; font-weight: 800; color: #094570; }
+.arc-sheet-close { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; border: none; background: #f5f8fb; color: #6a8090; cursor: pointer; font-size: 1.1rem; line-height: 1; }
+.arc-sheet-text { font-size: 0.85rem; color: #4a6080; line-height: 1.6; margin-bottom: 18px; }
+.arc-sheet-options { display: flex; flex-direction: column; gap: 10px; }
+
+.arc-sheet-option { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f5f8fb; border: 1.5px solid #dde8f2; border-radius: 12px; font-family: var(--font-ui); cursor: pointer; text-align: left; }
+.arc-sheet-option--full { border-color: #094570; background: #f0f7ff; }
+.arc-sheet-option-title { font-weight: 700; color: #0d1b2a; font-size: 0.92rem; }
+.arc-sheet-option-price { font-weight: 800; color: #094570; font-size: 1rem; }
+.arc-sheet-option-tag { position: absolute; top: -9px; left: 14px; background: #094570; color: #fff; font-size: 0.62rem; font-weight: 700; border-radius: 100px; padding: 2px 9px; letter-spacing: 0.03em; }
+
+/* -- Dark mode -- */
+[data-theme="dark"] .arc-hero { background: #0f1f2e !important; border-color: #1e4a70; }
+[data-theme="dark"] .arc-hero-title { color: #c8e0f5; }
+[data-theme="dark"] .arc-hero-sub { color: #7f97ae; }
+[data-theme="dark"] .arc-progress-track { background: #12283b; }
+[data-theme="dark"] .arc-progress-fill { background: #85CCFF; }
+[data-theme="dark"] .arc-progress-label { color: #7f97ae; }
+
+[data-theme="dark"] .arc-btn-primary { background: #85CCFF; color: #062338; }
+[data-theme="dark"] .arc-btn-primary:hover { background: #a3d8ff; }
+[data-theme="dark"] .arc-btn-secondary { background: transparent; color: #85CCFF; border-color: #85CCFF; }
+[data-theme="dark"] .arc-btn-secondary:hover { background: rgba(133,204,255,0.08); }
+
+[data-theme="dark"] .arc-card,
+[data-theme="dark"] .arc-section,
+[data-theme="dark"] .arc-empty,
+[data-theme="dark"] .arc-status-card,
+[data-theme="dark"] .arc-quiz-q {
+  background: #0f1f2e !important; border-color: #1e3448;
+}
+[data-theme="dark"] .arc-card--done { border-color: #1e4a2c; }
+[data-theme="dark"] .arc-card-label { color: #85CCFF; }
+[data-theme="dark"] .arc-card-meta, [data-theme="dark"] .arc-card-desc { color: #7f97ae; }
+[data-theme="dark"] .arc-card-badge--lock { background: rgba(184,134,47,0.16); color: #e0c07a; }
+[data-theme="dark"] .arc-card-badge--quiz { background: rgba(133,204,255,0.14); color: #85CCFF; }
+[data-theme="dark"] .arc-card-icon--locked { background: #2a3a4a; color: #8fa4bc; }
+[data-theme="dark"] .arc-card-progress-pill { background: #0a1825; color: #7f97ae; }
+
+[data-theme="dark"] .arc-detail-header { background: #0a1825 !important; border-color: #1e4a70; }
+[data-theme="dark"] .arc-detail-title { color: #c8e0f5; }
+[data-theme="dark"] .arc-detail-sub { color: #85CCFF; }
+
+[data-theme="dark"] .arc-section-title { color: #85CCFF; }
+[data-theme="dark"] .arc-section-body { color: #a8c0d8; }
+[data-theme="dark"] .arc-empty { color: #7f97ae; }
+
+[data-theme="dark"] .arc-verse--quran { background: #0e2438; border-color: #1e5a8a; }
+[data-theme="dark"] .arc-verse--hadith { background: #2a2110; border-color: #6e5320; }
+[data-theme="dark"] .arc-verse--example { background: #142a14; border-color: #3f7d3f; }
+[data-theme="dark"] .arc-verse--qaidah { background: #2e1c0c; border-color: #d98a3d; }
+[data-theme="dark"] .arc-verse--quran .arc-verse-tag { background: #85CCFF; color: #062338; }
+[data-theme="dark"] .arc-verse--hadith .arc-verse-tag { background: #e0c07a; color: #2a2110; }
+[data-theme="dark"] .arc-verse--example .arc-verse-tag { background: #8ac48a; color: #0d1f0d; }
+[data-theme="dark"] .arc-verse--qaidah .arc-verse-tag { background: #e8a562; color: #2e1c0c; }
+[data-theme="dark"] .arc-verse-arabic { color: #e8f0f8; }
+[data-theme="dark"] .arc-verse--qaidah .arc-verse-arabic { color: #ffe8cc; }
+[data-theme="dark"] .arc-verse-translit { color: #9ab89a; }
+[data-theme="dark"] .arc-verse--qaidah .arc-verse-translit { color: #d9a870; }
+[data-theme="dark"] .arc-verse-english { color: #a8c0d8; }
+[data-theme="dark"] .arc-verse--qaidah .arc-verse-english { color: #f0d5b8; }
+[data-theme="dark"] .arc-verse-source { color: #7f97ae; }
+[data-theme="dark"] .arc-verse--qaidah .arc-verse-source { color: #d9a870; }
+
+[data-theme="dark"] .arc-nav-btn { background: #0a1825; border-color: #1e3448; color: #85CCFF; }
+[data-theme="dark"] .arc-nav-btn:hover:not(:disabled) { border-color: #85CCFF; background: #12283b; }
+
+[data-theme="dark"] .arc-status-card { border-color: #85CCFF; }
+[data-theme="dark"] .arc-status-card--fail { border-color: #ff6b5a; }
+[data-theme="dark"] .arc-status-value { color: #85CCFF; }
+[data-theme="dark"] .arc-status-card--fail .arc-status-value { color: #ff6b5a; }
+[data-theme="dark"] .arc-status-note { color: #a8c0d8; }
+
+[data-theme="dark"] .arc-quiz-q-text { color: #c8e0f5; }
+[data-theme="dark"] .arc-quiz-num { color: #85CCFF; }
+[data-theme="dark"] .arc-quiz-option { background: #0a1825; border-color: #1e3448; color: #a8c0d8; }
+[data-theme="dark"] .arc-quiz-option--selected { background: #12283b; border-color: #85CCFF; }
+[data-theme="dark"] .arc-quiz-option--correct { background: rgba(46,125,50,0.18); border-color: #4caf50; color: #a5d6a7; }
+[data-theme="dark"] .arc-quiz-option--wrong { background: rgba(231,76,60,0.14); border-color: #ff6b5a; color: #ff8a80; }
+[data-theme="dark"] .arc-quiz-explanation { color: #7f97ae; border-top-color: #1e3448; }
+
+[data-theme="dark"] .arc-sheet { background: #0f1f2e !important; border-color: #1e3448; }
+[data-theme="dark"] .arc-sheet-title { color: #85CCFF; }
+[data-theme="dark"] .arc-sheet-close { background: #0a1825; color: #7f97ae; }
+[data-theme="dark"] .arc-sheet-text { color: #a8c0d8; }
+[data-theme="dark"] .arc-sheet-option { background: #0a1825; border-color: #1e3448; }
+[data-theme="dark"] .arc-sheet-option--full { background: #12283b; border-color: #85CCFF; }
+[data-theme="dark"] .arc-sheet-option-title { color: #c8e0f5; }
+[data-theme="dark"] .arc-sheet-option-price { color: #85CCFF; }

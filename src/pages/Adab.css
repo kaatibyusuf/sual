@@ -419,21 +419,22 @@
   inset: 0;
   background: rgba(13, 27, 42, 0.45);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   z-index: 100;
+  padding: 20px;
 }
-@media (min-width: 640px) { .adab-sheet-overlay { align-items: center; } }
 
 .adab-sheet {
   width: 100%;
   max-width: 420px;
   padding: 22px 20px;
   background: #ffffff !important;
-  border-radius: 18px 18px 0 0;
+  border-radius: 18px;
   border: 1.5px solid #c8d8e8;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
-@media (min-width: 640px) { .adab-sheet { border-radius: 18px; } }
 
 .adab-sheet-header {
   display: flex;
