@@ -1286,36 +1286,568 @@ export const SEERAHCLASS_TOPICS = {
   },
 
   // -----------------------------------------------------------
-  // UNIT 9 - ESTABLISHING THE MADINAN COMMUNITY (placeholders)
+  // UNIT 9 - ESTABLISHING THE MADINAN COMMUNITY (full content,
+  // expanded)
+  //
+  // Historical details (the mosque's founding, the Abdur-Rahman ibn
+  // Awf brotherhood account, the Constitution of Madinah's actual
+  // terms, the Jewish tribes named within it) checked against
+  // multiple current classical and contemporary Seerah references
+  // before writing. The Abdur-Rahman ibn Awf account is drawn from
+  // his own narration recorded in Sahih al-Bukhari.
   // -----------------------------------------------------------
-  'madinah-1': { id: 'madinah-1', unit: 'unit-9', title: 'Arrival and the Building of the Mosque', summary: 'His ﷺ arrival in Madinah and the first mosque built there.' },
-  'madinah-2': { id: 'madinah-2', unit: 'unit-9', title: 'The Bond of Brotherhood', summary: 'How Makkan and Madinan Muslims were paired as brothers.' },
-  'madinah-3': { id: 'madinah-3', unit: 'unit-9', title: 'The Constitution of Madinah', summary: 'The agreement establishing the rights and duties of Madinah\u2019s residents.' },
-  'madinah-4': { id: 'madinah-4', unit: 'unit-9', title: 'Relations with the Jewish Tribes of Madinah', summary: 'The Prophet\u2019s ﷺ dealings with Madinah\u2019s established Jewish tribes.' },
+  'madinah-1': {
+    id: 'madinah-1',
+    unit: 'unit-9',
+    title: 'Arrival and the Building of the Mosque',
+    summary: 'His \ufdfa arrival in Madinah and the first mosque built there.',
+    content: [
+      {
+        heading: 'Letting the journey itself choose a resting place',
+        body: `Arriving at the outskirts of Madinah following the journey already covered directly across this course's eighth unit, the Prophet \ufdfa let his own camel continue freely rather than directing it toward any specific location, and the animal eventually knelt on a plot of open ground used by the local Banu Najjar for drying dates.`,
+      },
+      {
+        heading: 'Land belonging to two orphans, purchased rather than simply taken',
+        body: `This land belonged to two young orphans, Sahl and Suhayl, under the guardianship of As'ad ibn Zurarah. Their guardian offered the land freely for the Prophet's \ufdfa use, but the Prophet \ufdfa insisted on paying a fair price for it rather than accepting it as an unpaid gift, with Abu Bakr covering the actual cost. Even in founding what would become the community's central place of worship, the ordinary property rights of two children were honored rather than simply assumed away.`,
+      },
+      {
+        heading: 'A mosque built by the community itself',
+        body: `Masjid an-Nabawi, the Prophet's \ufdfa mosque, rose on this same plot as a genuinely simple structure: walls of unbaked mud brick, pillars made from palm trunks, and a roof of palm fronds. The believers built it themselves, carrying materials and doing the physical labor directly, with the Prophet \ufdfa working alongside them rather than merely overseeing the project from a distance.`,
+      },
+      {
+        heading: 'A building doing considerably more than housing prayer alone',
+        body: `From its very first days, this mosque functioned as far more than a place for the five daily prayers already established during the ascension covered in this course's eighth unit. It served as a center for teaching, for consultation on the community's practical affairs, for receiving visitors and delegations, and, as this unit's remaining topics will show, for the specific agreements that would actually structure how this new community operated.`,
+      },
+      {
+        heading: 'A physical center for a community still being built',
+        body: `This mosque's construction was only the first of several deliberate steps taken to turn a group of migrants and local believers into an actual, functioning community. This unit's next topic turns directly to the specific relationship established between these two groups, Makkah's own emigrants and Madinah's local believers, who had, until this point, largely been strangers to one another.`,
+      },
+    ],
+  },
+
+  'madinah-2': {
+    id: 'madinah-2',
+    unit: 'unit-9',
+    title: 'The Bond of Brotherhood',
+    summary: 'How Makkan and Madinan Muslims were paired as brothers.',
+    content: [
+      {
+        heading: 'A practical problem requiring a deliberate solution',
+        body: `The Muhajirun, the Makkan emigrants already covered across this course's earlier units, had arrived in Madinah having left behind homes, trade, and, in many cases, most of their material possessions entirely. The Prophet \ufdfa addressed this directly by formally pairing each Muhajir with an Ansari, a Madinan believer, establishing a bond of brotherhood carrying genuine practical weight rather than functioning as a symbolic gesture alone.`,
+      },
+      {
+        heading: 'A specific pairing recorded in Abdur-Rahman ibn Awf\u2019s own words',
+        body: `Abdur-Rahman ibn Awf, already introduced in this course's fifth unit among the earliest converts brought to Islam through Abu Bakr's own efforts, was paired with Sa'd ibn ar-Rabi', among the wealthiest men in Madinah. Sa'd offered Abdur-Rahman half of his entire wealth outright, along with the choice of one of his two wives, whom he offered to divorce so Abdur-Rahman could marry her once her waiting period concluded.`,
+      },
+      {
+        heading: 'A remarkable response, on both sides',
+        body: `Abdur-Rahman declined this extraordinary offer, asking instead only to be shown the way to the marketplace. Trading there with whatever modest resources he still had, he rebuilt his own livelihood entirely through his own effort, going on to become one of the wealthiest and most generous men in the entire early Muslim community.`,
+      },
+      {
+        heading: 'What this specific exchange actually demonstrates',
+        body: `This single account illustrates both halves of this brotherhood at once: Sa'd's willingness to share literally everything he owned with someone he had only just met, and Abdur-Rahman's own preference to rebuild through honest effort rather than accept what amounted to charity on this scale. Together, these two responses capture exactly the spirit this institution was designed to produce, genuine mutual care paired with genuine mutual respect, rather than one-directional dependency in either direction.`,
+      },
+      {
+        heading: 'A bond built specifically to unite two previously separate groups',
+        body: `Repeated across dozens of similar pairings, this bond of brotherhood did real, practical work beyond any single account: it fused Makkah's emigrants and Madinah's local believers into a single, functioning community considerably faster than time and ordinary social contact alone could likely have achieved. This unit's next topic turns to a second, formal document that extended this same community-building further still, defining not just relationships between Muslims, but the terms governing everyone living in Madinah together.`,
+      },
+    ],
+  },
+
+  'madinah-3': {
+    id: 'madinah-3',
+    unit: 'unit-9',
+    title: 'The Constitution of Madinah',
+    summary: 'The agreement establishing the rights and duties of Madinah\u2019s residents.',
+    content: [
+      {
+        heading: 'A written document governing an entire city, not one community alone',
+        body: `Beyond the brotherhood already covered in this unit's previous topic, uniting Muslims specifically, the Prophet \ufdfa established a further, formal written agreement, commonly called the Constitution of Madinah, defining the rights and obligations of every group living in the city: the Muhajirun, the Ansar, and Madinah's established Jewish tribes alike.`,
+      },
+      {
+        heading: 'What this document actually established',
+        body: `This agreement bound its various signatories to mutual defense of Madinah against outside aggression, guaranteed each community the freedom to practice its own religion and be governed by its own laws in its own internal affairs, and established the Prophet \ufdfa directly as the final authority for resolving disputes that arose between these different groups. Its own text describes all of these communities together as a single ummah, one people, bound by this shared agreement despite their genuinely different religious identities.`,
+      },
+      {
+        heading: 'Why this document is considered genuinely significant beyond its own time',
+        body: `Modern scholars, including specialists who have studied it specifically as a historical legal document, have described this agreement as among the earliest known written constitutions in human history, notable specifically for organizing a diverse, multi-religious city around a shared framework of mutual defense and legal recognition rather than around the rule of a single dominant group over every other.`,
+      },
+      {
+        heading: 'A document preserved through historical transmission, read with appropriate care',
+        body: `This agreement is preserved through the biographical and historical tradition, most notably through Ibn Ishaq's own early account, rather than transmitted as a single hadith within the most rigorously authenticated hadith collections. Historians, both Muslim and non-Muslim, broadly accept its basic content and substance, and this course treats it accordingly: as a genuine, historically significant document, read with the same honest awareness of its specific transmission this course has applied to other historical material throughout.`,
+      },
+      {
+        heading: 'Setting up this unit\u2019s closing topic directly',
+        body: `Among the specific communities this agreement named directly were Madinah's established Jewish tribes, residents of the city well before the Prophet's \ufdfa own arrival. This unit's closing topic turns directly to who these communities actually were, and to the relationship this same agreement established between them and the city's new Muslim community.`,
+      },
+    ],
+  },
+
+  'madinah-4': {
+    id: 'madinah-4',
+    unit: 'unit-9',
+    title: 'Relations with the Jewish Tribes of Madinah',
+    summary: 'The Prophet\u2019s \ufdfa dealings with Madinah\u2019s established Jewish tribes.',
+    content: [
+      {
+        heading: 'Communities already established long before this new arrival',
+        body: `Madinah was home to several established Jewish tribes well before the Prophet's \ufdfa own arrival, most significantly Banu Qaynuqa, Banu an-Nadir, and Banu Qurayza, each with its own settlements, agricultural land, and standing within the city's existing social order.`,
+      },
+      {
+        heading: 'The relationship the Constitution actually established',
+        body: `Under the agreement already covered directly in this unit's previous topic, these tribes were recognized as genuine parties to the same shared framework governing the rest of the city: guaranteed their own religious practice and internal legal autonomy, expected to contribute to the city's collective defense against outside threats, and understood, alongside every other signatory, as part of the single ummah this document described.`,
+      },
+      {
+        heading: 'A foundation of mutual recognition, honestly stated as its actual starting point',
+        body: `This arrangement reflected genuine mutual recognition rather than either forced subjugation or naive assumption of permanent, effortless harmony. Each party retained real autonomy over its own community's internal affairs, while accepting real, shared obligations toward the city's collective security, a framework built on the same practical realism already visible in this unit's earlier coverage of the brotherhood between Muhajirun and Ansar.`,
+      },
+      {
+        heading: 'An honest note on what followed this initial arrangement',
+        body: `This course, consistent with its treatment of every period covered so far, states plainly that this founding arrangement did not remain entirely unchanged throughout the years that followed. Specific disputes and breaches of this same agreement arose over time involving individual Jewish tribes, events belonging properly to the years this course's tenth unit and beyond will examine directly, rather than to this unit's own account of the community's initial founding.`,
+      },
+      {
+        heading: 'Closing this unit and turning toward genuine conflict',
+        body: `This unit has covered the mosque's founding on honestly purchased land, the brotherhood binding Muhajirun and Ansar into one community, the formal constitution extending this same framework across the entire city, and the relationship this framework established with Madinah's already resident Jewish tribes. This course's tenth unit turns directly to a different kind of test entirely: the major battles this new community would face, beginning with the first direct armed confrontation between the Muslims and Quraysh at Badr.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 10 - THE MAJOR BATTLES (placeholders)
+  // UNIT 10 - THE MAJOR BATTLES (full content, expanded)
+  //
+  // Historical details (troop figures, the specific tactical
+  // decisions at Badr and the Trench, the archer episode at Uhud,
+  // the Banu Qurayza arbitration) checked against multiple current
+  // classical and contemporary Seerah references before writing.
+  // This unit's third topic addresses the Banu Qurayza episode
+  // directly, honoring the note in this course's ninth unit that
+  // this founding arrangement did not remain unchanged. This is
+  // presented factually and with real gravity, focused on the
+  // documented process (a genuine treaty violation, an arbitrator
+  // both sides agreed to, a judgment applying a recognized wartime
+  // legal standard) rather than on graphic detail, and without
+  // asserting a precise casualty figure given genuine variation
+  // across historical sources.
   // -----------------------------------------------------------
-  'battle-1': { id: 'battle-1', unit: 'unit-10', title: 'The Battle of Badr', summary: 'The first major battle between the Muslims and Quraysh.' },
-  'battle-2': { id: 'battle-2', unit: 'unit-10', title: 'The Battle of Uhud', summary: 'The battle that followed Quraysh\u2019s defeat at Badr.' },
-  'battle-3': { id: 'battle-3', unit: 'unit-10', title: 'The Battle of the Trench', summary: 'The defense of Madinah against a combined confederation of tribes.' },
-  'battle-4': { id: 'battle-4', unit: 'unit-10', title: 'Lessons Across the Three Battles', summary: 'What these three battles, taken together, actually teach.' },
+  'battle-1': {
+    id: 'battle-1',
+    unit: 'unit-10',
+    title: 'The Battle of Badr',
+    summary: 'The first major battle between the Muslims and Quraysh.',
+    content: [
+      {
+        heading: 'An intercepted caravan that never actually arrived',
+        body: `In the second year after the Hijrah, the Prophet \ufdfa learned that a Quraysh trade caravan, led by Abu Sufyan and funded substantially by property the Muhajirun had left behind in Makkah, was returning from Syria. A small Muslim force set out to intercept it, but the caravan altered its route and escaped, while Abu Sufyan sent word to Makkah requesting reinforcement, resulting in a considerably larger Quraysh army marching out to confront the Muslims directly instead.`,
+      },
+      {
+        heading: 'A genuinely uneven confrontation',
+        body: `The Muslim force numbered roughly three hundred and thirteen men, facing a Quraysh army of approximately one thousand, considerably better equipped. The two sides met at the wells of Badr, and a specific tactical suggestion shaped the battle before it even began: Hubab ibn al-Mundhir asked directly whether the Prophet's \ufdfa chosen position was divine instruction or his own personal judgment, and upon learning it was the latter, proposed instead that the Muslims occupy the well closest to the Quraysh army while blocking the others, denying the enemy reliable access to water. The Prophet \ufdfa adopted this suggestion immediately.`,
+      },
+      {
+        heading: 'Single combat before the wider battle',
+        body: `Following Arab custom, three Quraysh champions, Utbah, Shaybah, and Walid ibn Utbah, challenged three Muslims to individual combat before the general engagement began. Hamzah, Ali, and Ubaydah ibn al-Harith accepted, and all three Quraysh champions were killed in this exchange, a result that visibly unsettled Quraysh's own ranks before the wider fighting had even started.`,
+      },
+      {
+        heading: 'A decisive, lopsided outcome',
+        body: `Despite being outnumbered roughly three to one, the Muslims won decisively. Around seventy Quraysh were killed, including several of the movement's most determined opponents already introduced across this course's earlier units, and a further seventy were taken prisoner, against only fourteen Muslim deaths.`,
+      },
+      {
+        heading: 'How the prisoners were actually treated',
+        body: `Prisoners were generally released upon payment of ransom, and a number of literate prisoners unable to pay were instead required to teach a set number of Muslim children to read and write in exchange for their freedom, a specific arrangement turning captivity itself into a genuine transfer of practical knowledge. This first major military engagement established the young Muslim community's credibility in a way negotiation and endurance alone had not yet achieved, though this unit's next topic turns directly to how quickly that same credibility would be tested again.`,
+      },
+    ],
+  },
+
+  'battle-2': {
+    id: 'battle-2',
+    unit: 'unit-10',
+    title: 'The Battle of Uhud',
+    summary: 'The battle that followed Quraysh\u2019s defeat at Badr.',
+    content: [
+      {
+        heading: 'A campaign built specifically around revenge',
+        body: `The following year, Quraysh returned to settle the outcome already covered in this unit's previous topic, marching on Madinah with roughly three thousand men under Abu Sufyan. Hind bint Utbah, having lost her father and other close relatives at Badr, accompanied this army herself, seeking personal vengeance directly.`,
+      },
+      {
+        heading: 'A specific order given in advance, and what happened to it',
+        body: `The Prophet \ufdfa positioned fifty archers on a hill overlooking the battlefield, instructing them directly to hold that position no matter what they observed happening below, regardless of whether the battle appeared won or lost. Fighting began favorably for the Muslims, and as Quraysh's lines began to break, most of these archers left their position to gather spoils, believing the battle already decided.`,
+      },
+      {
+        heading: 'A gap exploited immediately',
+        body: `Khalid ibn al-Walid, commanding Quraysh's cavalry and not yet himself a Muslim, recognized this now-exposed position instantly and led a flanking attack around the hill directly into the Muslim rear, reversing what had been a winning position into genuine chaos within moments.`,
+      },
+      {
+        heading: 'Real losses, and a moment of real danger for the Prophet \ufdfa himself',
+        body: `Roughly seventy Muslims were killed in the resulting confusion, including Hamzah, already introduced in this unit's previous topic, killed by a javelin thrown by Wahshi ibn Harb, who had been promised his freedom by Hind specifically for this act. Hamzah's body was afterward mutilated, a documented act of revenge this course states plainly without dwelling on its specific details. The Prophet \ufdfa was himself wounded during this same chaos, his face injured and a tooth broken, and a false rumor that he had been killed spread rapidly, deepening the confusion until his continued presence was confirmed directly.`,
+      },
+      {
+        heading: 'A costly setback, not a final defeat',
+        body: `Muslims eventually regrouped on higher ground, and Quraysh, despite this clear tactical opening, did not press their advantage to the point of destroying the community entirely, withdrawing instead. This unit's fourth topic returns directly to the specific lesson this single moment, archers abandoning a direct order once victory appeared already secured, is consistently drawn from across the entire tradition.`,
+      },
+    ],
+  },
+
+  'battle-3': {
+    id: 'battle-3',
+    unit: 'unit-10',
+    title: 'The Battle of the Trench',
+    summary: 'The defense of Madinah against a combined confederation of tribes.',
+    content: [
+      {
+        heading: 'A far larger threat than either previous battle',
+        body: `Two years after Uhud, a considerably larger confederation, roughly ten thousand fighters drawn from Quraysh and several allied tribes, marched on Madinah, coordinated significantly by Huyayy ibn Akhtab of Banu an-Nadir, a Jewish tribe already expelled from Madinah after an earlier, separate breach of trust this course has not covered in detail, and who remained determined afterward to see the Muslim community destroyed entirely.`,
+      },
+      {
+        heading: 'A tactic never before used in Arabian warfare',
+        body: `Facing this considerably larger force, the Prophet \ufdfa consulted his companions directly, and Salman al-Farisi, a Persian companion already familiar with Persian military practice unfamiliar to Arab warfare generally, suggested digging a defensive trench across Madinah's one genuinely exposed side. This suggestion was adopted immediately, and roughly three thousand Muslims dug this trench under real hardship, facing cold and hunger while the confederation continued approaching.`,
+      },
+      {
+        heading: 'A stalemate the confederation could not break',
+        body: `The trench proved decisive, neutralizing the confederation's cavalry entirely and locking both sides into a prolonged standoff neither had originally planned for. Worsening weather and mounting exhaustion eventually led the confederation to withdraw without ever breaching Madinah's defenses directly.`,
+      },
+      {
+        heading: 'A genuine breach of trust from within, during the siege itself',
+        body: `During this same siege, Banu Qurayza, a Jewish tribe already bound by the Constitution of Madinah's mutual defense obligations already covered directly in this course's ninth unit, broke this same agreement and entered into contact with the besieging confederation, precisely the kind of breach this course noted directly, in that same ninth unit, as a genuine development this founding arrangement did not remain immune to.`,
+      },
+      {
+        heading: 'A judgment both sides genuinely agreed to accept',
+        body: `Once the confederation had withdrawn, the Muslims turned to address this specific breach, besieging Banu Qurayza's own stronghold until they surrendered. Banu Qurayza themselves requested that Sa'd ibn Mu'adh, chief of the Aws tribe and their own long-standing ally, serve as arbitrator, and both sides agreed in advance to accept whatever judgment he issued. Sa'd, himself mortally wounded during the earlier fighting and would not survive much longer afterward, rendered his judgment according to the established legal standard his own tradition applied to precisely this situation, wartime treachery during a siege. This is one of the most seriously studied and historically discussed episodes in the entire Seerah, and this course states its documented outcome honestly, that the judgment was carried out as rendered, without asserting a specific casualty figure given genuine variation across the historical sources that record it.`,
+      },
+    ],
+  },
+
+  'battle-4': {
+    id: 'battle-4',
+    unit: 'unit-10',
+    title: 'Lessons Across the Three Battles',
+    summary: 'What these three battles, taken together, actually teach.',
+    content: [
+      {
+        heading: 'Badr: reliance on Allah paired with genuine preparation',
+        body: `Badr, already covered directly in this unit's first topic, is consistently read across the tradition as demonstrating that victory depends on Allah's aid combined with genuine, sincere effort and sound tactical decision-making, exemplified directly by Hubab's water-position suggestion, rather than on numerical advantage alone. A force outnumbered three to one still prevailed decisively.`,
+      },
+      {
+        heading: 'Uhud: the cost of abandoning a direct order too early',
+        body: `Uhud, already covered directly in this unit's second topic, is remembered specifically for the moment discipline broke down at the exact point victory appeared secured, when archers left their assigned position for the sake of collecting spoils. The lesson consistently drawn from this single moment is sobering and specific: obedience to a clear instruction must hold precisely when success feels most assured, since that is exactly the moment complacency becomes most dangerous.`,
+      },
+      {
+        heading: 'The Trench: consultation, and the danger of betrayal under pressure',
+        body: `The Trench, already covered directly in this unit's third topic, demonstrates the genuine value of consultation reaching beyond an inner circle of established advisors, Salman al-Farisi's suggestion coming from a companion whose own background lay entirely outside Arabian military tradition. It also demonstrates, through the Banu Qurayza episode covered in that same topic, how genuine crisis can expose breaches of trust that peacetime conditions alone might never have revealed.`,
+      },
+      {
+        heading: 'Battles as tests of character, not contests measured by numbers alone',
+        body: `Taken together, these three battles function within this course's account less as a simple military record and more as a series of tests revealing the young community's actual character: its willingness to adopt good counsel regardless of its source, its capacity for genuine discipline once victory feels within reach, and its ability to recognize and address betrayal honestly rather than looking away from it.`,
+      },
+      {
+        heading: 'Closing this unit and turning toward a different kind of engagement',
+        body: `This unit has covered three battles spanning roughly five years, each testing this community in a genuinely different way. This course's eleventh unit turns to a different register entirely: treaties, formal correspondence with distant rulers, and further military engagements that, taken together, would eventually shift the entire balance of power across the peninsula without requiring outright conquest of Makkah itself, at least not yet.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 11 - TREATIES AND EXPANDING DAWAH (placeholders)
+  // UNIT 11 - TREATIES AND EXPANDING DAWAH (full content, expanded)
+  //
+  // Qur'anic Arabic (Surah al-Fath 48:1 and 48:18) checked against
+  // primary sources. Historical details (the Hudaybiyyah negotiation
+  // and its terms, the authenticated hadith of Heraclius and Abu
+  // Sufyan recorded in Sahih al-Bukhari, the siege of Khaybar, the
+  // Mu'tah campaign) checked against multiple current classical and
+  // contemporary Seerah references before writing. Numerical
+  // disparities at Mu'tah are described in general terms rather than
+  // with a single precise figure, given genuine variation across
+  // historical sources.
   // -----------------------------------------------------------
-  'treaty-1': { id: 'treaty-1', unit: 'unit-11', title: 'The Treaty of Hudaybiyyah', summary: 'The treaty that appeared unfavorable but proved strategically decisive.' },
-  'treaty-2': { id: 'treaty-2', unit: 'unit-11', title: 'Letters to the Kings and Rulers', summary: 'His ﷺ formal invitations sent to surrounding rulers.' },
-  'treaty-3': { id: 'treaty-3', unit: 'unit-11', title: 'The Battle of Khaybar', summary: 'The campaign against the fortified Jewish settlement of Khaybar.' },
-  'treaty-4': { id: 'treaty-4', unit: 'unit-11', title: 'The Expedition to Mu\u2019tah', summary: 'The first major engagement between Muslims and Byzantine forces.' },
+  'treaty-1': {
+    id: 'treaty-1',
+    unit: 'unit-11',
+    title: 'The Treaty of Hudaybiyyah',
+    summary: 'The treaty that appeared unfavorable but proved strategically decisive.',
+    content: [
+      {
+        heading: 'A peaceful pilgrimage, blocked before it began',
+        body: `In the sixth year after the Hijrah, the Prophet \ufdfa set out for Makkah with some fourteen hundred companions, dressed in the simple garments of pilgrimage and carrying no weapons beyond an ordinary traveler's sword, intending only to perform Umrah. Quraysh, alarmed regardless of this clearly peaceful intent, blocked their entry and the two sides camped near each other at Hudaybiyyah, just outside Makkah's own sacred boundary.`,
+      },
+      {
+        heading: 'A rumor, and a pledge made in response to it',
+        body: `The Prophet \ufdfa sent Uthman ibn Affan, already introduced across this course's earlier units, into Makkah as an envoy. When his return was delayed well beyond expectation, a rumor spread that he had been killed, and the Prophet \ufdfa gathered his companions beneath a tree and took a direct pledge from them to fight if necessary, an event the Qur'an itself later commemorated directly.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'لَقَدْ رَضِيَ اللَّهُ عَنِ الْمُؤْمِنِينَ إِذْ يُبَايِعُونَكَ تَحْتَ الشَّجَرَةِ',
+            english: 'Allah was certainly pleased with the believers when they pledged allegiance to you under the tree.',
+            source: 'Surah al-Fath, 48:18',
+          },
+        ],
+      },
+      {
+        heading: 'Terms that seemed to concede a great deal',
+        body: `Uthman returned safely shortly afterward, and Quraysh sent Suhayl ibn Amr to negotiate directly. The resulting treaty established a ten-year truce, but required the Muslims to return to Madinah that same year without completing Umrah, permitted only the following year, and stipulated that any Muslim who left to join Quraysh would not be returned, while any Quraysh who joined the Muslims without a guardian's permission would be sent back regardless of their own wishes. Suhayl further objected to the phrase Messenger of Allah appearing in the treaty's own text, since he did not accept this claim, and the Prophet \ufdfa agreed to record only his own personal name instead.`,
+      },
+      {
+        heading: 'A difficult scene, and a difficult mood among the companions',
+        body: `Before the treaty's ink had even dried, Abu Jandal, Suhayl's own son and already a believer, arrived in visible distress seeking refuge, only to be returned directly to his father under the treaty's own newly agreed terms. Several companions, including Umar ibn al-Khattab, openly questioned these terms as excessively unfavorable, a reaction this course states plainly rather than glossing over, since it reflects a genuine, understandable difficulty rather than a lack of faith.`,
+      },
+      {
+        heading: 'A declaration answering that same difficulty directly',
+        body: `Shortly afterward, before the return journey to Madinah had even concluded, a specific revelation addressed this same confusion directly.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'إِنَّا فَتَحْنَا لَكَ فَتْحًا مُّبِينًا',
+            english: 'Indeed, We have granted you a clear victory.',
+            source: 'Surah al-Fath, 48:1',
+          },
+        ],
+      },
+      {
+        heading: 'Why this description was not an empty consolation',
+        body: `The ten years of truce this treaty secured, however lopsided its specific written terms appeared, allowed dawah to spread freely without the immediate threat of Quraysh hostility, and tradition consistently records more people accepting Islam across the two years following this treaty than in the entire period before it combined. This unit's remaining topics turn directly to how far this newly opened space actually extended, beginning with the Prophet's \ufdfa own formal outreach well beyond Arabia's borders entirely.`,
+      },
+    ],
+  },
+
+  'treaty-2': {
+    id: 'treaty-2',
+    unit: 'unit-11',
+    title: 'Letters to the Kings and Rulers',
+    summary: 'His \ufdfa formal invitations sent to surrounding rulers.',
+    content: [
+      {
+        heading: 'A message now reaching well beyond Arabia',
+        body: `Around this same period, the Prophet \ufdfa sent formal letters inviting several of the region's major rulers to Islam directly, including Heraclius, the Byzantine emperor, Khosrow, the Persian emperor, the Negus of Abyssinia, already familiar to this course from its seventh unit, and Muqawqis, the ruler of Egypt, marking a genuine shift toward outreach extending well past Arabia's own borders.`,
+      },
+      {
+        heading: 'A documented exchange preserved directly in Sahih al-Bukhari',
+        body: `Heraclius, upon receiving his letter, summoned Abu Sufyan, still not yet a Muslim at this point and coincidentally present nearby on a trade caravan, and questioned him directly and at length regarding the Prophet's \ufdfa lineage, his growing following, and whether any of his followers had ever abandoned the faith once accepting it. Abu Sufyan later recounted answering honestly throughout, specifically because he feared being caught in a lie before his own companions.`,
+      },
+      {
+        heading: 'A conclusion Heraclius reached, without acting on it himself',
+        body: `Based on these answers, Heraclius concluded that the pattern Abu Sufyan had just described matched what he understood to be genuine signs of prophethood, reportedly telling him directly that once faith's own sweetness genuinely enters a heart, it does not simply depart again. Despite this conclusion, Heraclius did not himself accept Islam, a decision tradition generally attributes to political considerations rather than genuine doubt about what he had just concluded.`,
+      },
+      {
+        heading: 'A considerably more hostile response from Persia',
+        body: `Khosrow, receiving his own letter, reportedly tore it apart in anger. Upon learning of this response, the Prophet \ufdfa is recorded as remarking that Khosrow's own kingdom would, in turn, be torn apart, a statement this course notes as recorded tradition without asserting a specific later historical event as its confirmed fulfillment, since that question extends well beyond this course's own scope.`,
+      },
+      {
+        heading: 'A respectful, if noncommittal, reply from Egypt',
+        body: `Muqawqis responded considerably more graciously, sending valuable gifts, including two women who would later join the Prophet's \ufdfa own household, without himself converting to Islam. Taken together, these varied responses, genuine intellectual respect from Heraclius, open hostility from Khosrow, and polite diplomacy from Muqawqis, mark this period as the point at which the Prophet's \ufdfa mission genuinely became a matter of international attention rather than a purely Arabian concern.`,
+      },
+    ],
+  },
+
+  'treaty-3': {
+    id: 'treaty-3',
+    unit: 'unit-11',
+    title: 'The Battle of Khaybar',
+    summary: 'The campaign against the fortified Jewish settlement of Khaybar.',
+    content: [
+      {
+        heading: 'A stronghold connected directly to an earlier threat',
+        body: `Khaybar, a fortified oasis settlement north of Madinah, was home to a sizable Jewish community, including Huyayy ibn Akhtab, the same figure already introduced directly in this course's tenth unit as a principal organizer of the confederation that besieged Madinah at the Battle of the Trench. Following Hudaybiyyah's truce, already covered in this unit's first topic, the Prophet \ufdfa turned his attention to this same settlement directly.`,
+      },
+      {
+        heading: 'A siege fought fortress by fortress',
+        body: `Khaybar's defenses consisted of several separate fortifications rather than a single stronghold, and early attempts to breach them met only limited success. The Prophet \ufdfa eventually gave the banner to Ali, who achieved the decisive breakthrough this campaign had been seeking, and Marhab, Khaybar's own noted champion, was killed in the fighting that followed, with tradition most commonly crediting this specifically to Ali directly, though some accounts of the exact circumstances vary in their specific details.`,
+      },
+      {
+        heading: 'Terms allowing the community to remain',
+        body: `Once Khaybar's inhabitants surrendered, terms were agreed permitting them to remain on their own land and continue cultivating it, sharing half of what it produced with the Muslims in return, a practical arrangement allowing continued agricultural life to proceed rather than wholesale displacement.`,
+      },
+      {
+        heading: 'A specific outcome worth naming directly',
+        body: `Among those taken captive during this campaign was Safiyyah bint Huyayy, daughter of the same Huyayy ibn Akhtab already named in this unit's opening topic. She subsequently married the Prophet \ufdfa, becoming one of the Mothers of the Believers, a specific outcome this course states factually and without elaboration beyond the documented fact itself.`,
+      },
+      {
+        heading: 'Closing this topic and turning to a genuinely different kind of engagement',
+        body: `Khaybar's fall removed a significant remaining threat to Madinah's own security, closing out this unit's coverage of engagements within Arabia's own borders. This unit's closing topic turns to something categorically different: the Prophet's \ufdfa first direct military engagement with an entirely foreign power, the Byzantine Empire, considerably further from home than any campaign this course has covered so far.`,
+      },
+    ],
+  },
+
+  'treaty-4': {
+    id: 'treaty-4',
+    unit: 'unit-11',
+    title: 'The Expedition to Mu\u2019tah',
+    summary: 'The first major engagement between Muslims and Byzantine forces.',
+    content: [
+      {
+        heading: 'A diplomatic killing demanding a direct response',
+        body: `An envoy the Prophet \ufdfa had sent northward was killed by forces allied with the Byzantine Empire, a serious breach of the diplomatic protection ordinarily extended to messengers even between hostile parties. In response, the Prophet \ufdfa dispatched a force of roughly three thousand men toward Mu'tah, in present-day Jordan, where Byzantine and allied forces had gathered in vastly greater numbers, considerably outnumbering the Muslim contingent by any reasonable estimate, though the exact scale of this disparity is recorded with real variation across different historical sources.`,
+      },
+      {
+        heading: 'Three commanders, appointed in advance for exactly this possibility',
+        body: `The Prophet \ufdfa named three commanders in a specific order before the expedition departed, Zayd ibn Harithah first, followed by Ja'far ibn Abi Talib, already introduced in this course's seventh unit through his leadership of the Abyssinian migration, and then Abdullah ibn Rawahah, each intended to take command should the one before him fall in battle. All three were killed in succession during the fighting that followed.`,
+      },
+      {
+        heading: 'A new commander, and a name this course has not used this way before',
+        body: `Khalid ibn al-Walid, already introduced across this course's tenth unit as the very cavalry commander whose flanking maneuver had reversed the outcome at Uhud against the Muslims, had by this point accepted Islam himself and now took command of this same force following the third commander's death, in his own first engagement leading Muslim forces rather than opposing them.`,
+      },
+      {
+        heading: 'Not a conventional victory, but a genuinely skilled withdrawal',
+        body: `Facing overwhelming numerical disadvantage, Khalid executed a disciplined, deliberate withdrawal that preserved the bulk of the Muslim force rather than allowing its complete destruction, an outcome tradition treats as a genuine achievement in its own right rather than as an outright defeat, precisely because of how considerably worse the actual outcome could easily have been.`,
+      },
+      {
+        heading: 'A title earned, and a chapter this unit closes with',
+        body: `Upon learning of this withdrawal, the Prophet \ufdfa gave Khalid the title Sayf Allah, the Sword of Allah, in direct recognition of this same achievement. This unit has now covered a treaty that appeared to concede everything yet secured genuine strategic advantage, formal outreach extending the Prophet's \ufdfa message to rulers well beyond Arabia, the fall of Khaybar's own remaining threat, and this first, costly encounter with an entirely foreign power. This course's twelfth unit turns directly to what these combined developments finally made possible: a return to the city that had once driven the Prophet \ufdfa out entirely.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 12 - THE CONQUEST OF MAKKAH AND CONSOLIDATION (placeholders)
+  // UNIT 12 - THE CONQUEST OF MAKKAH AND CONSOLIDATION (full
+  // content, expanded)
+  //
+  // Qur'anic Arabic (12:92, 17:81, 9:25) checked against primary
+  // sources. Historical details (the terms of amnesty, the Hunayn
+  // spoils controversy and the Prophet's ﷺ own address to the Ansar,
+  // Ka'b ibn Malik's account, the treaties reached at Tabuk) checked
+  // against multiple current classical and contemporary Seerah
+  // references before writing.
   // -----------------------------------------------------------
-  'fath-1': { id: 'fath-1', unit: 'unit-12', title: 'The Conquest of Makkah', summary: 'The largely peaceful return to the city that had once expelled him ﷺ.' },
-  'fath-2': { id: 'fath-2', unit: 'unit-12', title: 'The Battle of Hunayn and Ta\u2019if', summary: 'The battle fought immediately after Makkah\u2019s conquest.' },
-  'fath-3': { id: 'fath-3', unit: 'unit-12', title: 'The Year of Delegations', summary: 'Tribes from across Arabia sending delegations to accept Islam.' },
-  'fath-4': { id: 'fath-4', unit: 'unit-12', title: 'The Expedition to Tabuk', summary: 'The Prophet\u2019s ﷺ final military expedition.' },
+  'fath-1': {
+    id: 'fath-1',
+    unit: 'unit-12',
+    title: 'The Conquest of Makkah',
+    summary: 'The largely peaceful return to the city that had once expelled him \ufdfa.',
+    content: [
+      {
+        heading: 'A treaty broken, giving genuine grounds for action',
+        body: `In the eighth year after the Hijrah, an ally of Quraysh attacked an ally of the Muslims, a direct violation of the Treaty of Hudaybiyyah already covered in this course's eleventh unit. This breach gave the Prophet \ufdfa legitimate grounds to consider the truce void, and he marched on Makkah with roughly ten thousand men, by far the largest force he had yet assembled.`,
+      },
+      {
+        heading: 'A conversion on the very eve of return',
+        body: `Abu Sufyan, already familiar to this course as a leading Quraysh figure across several earlier units and still not himself a Muslim at this point, came to assess the situation directly and, upon witnessing the sheer scale of the approaching force, accepted Islam before the army's entry into the city.`,
+      },
+      {
+        heading: 'A conquest achieved with almost no bloodshed',
+        body: `The Prophet \ufdfa entered Makkah with minimal resistance, having instructed his forces directly to avoid fighting except where they were actively opposed, and declared that anyone taking refuge in their own home or within the Sacred Mosque itself would be safe.`,
+      },
+      {
+        heading: 'A declaration of amnesty, in Yusuf\u2019s own words',
+        body: `Addressing the very people who had persecuted the Muslims for two decades, already documented in real detail across this course's sixth and seventh units, the Prophet \ufdfa asked them directly what treatment they expected from him. When they answered that they expected only good from a noble kinsman, he responded with words the Qur'an itself had already recorded once before, spoken by the Prophet Yusuf to the same brothers who had once wronged him.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'لَا تَثْرِيبَ عَلَيْكُمُ الْيَوْمَ يَغْفِرُ اللَّهُ لَكُمْ وَهُوَ أَرْحَمُ الرَّاحِمِينَ',
+            english: 'There is no blame upon you today. Allah will forgive you, and He is the most merciful of the merciful.',
+            source: 'Surah Yusuf, 12:92',
+          },
+        ],
+      },
+      {
+        heading: 'A cleansing of the Ka\u2019bah, and forgiveness extending even further',
+        body: `Approaching the Ka'bah directly, the Prophet \ufdfa personally took part in removing the idols already described in real detail across this course's first unit, reciting a specific verse as each one fell.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'وَقُلْ جَاءَ الْحَقُّ وَزَهَقَ الْبَاطِلُ إِنَّ الْبَاطِلَ كَانَ زَهُوقًا',
+            english: 'And say, truth has come, and falsehood has vanished. Indeed, falsehood is bound to vanish.',
+            source: 'Surah al-Isra, 17:81',
+          },
+        ],
+      },
+      {
+        heading: 'Why this specific act of forgiveness is remembered so directly',
+        body: `Among those pardoned was Hind bint Utbah, already covered directly in this course's tenth unit for her role in Hamzah's mutilation following Uhud. That this general amnesty extended even to her specifically is precisely why this conquest is remembered not merely as a military outcome, but as one of history's most striking examples of restraint shown toward a population with genuine, documented reason to expect the opposite. This unit's next topic turns to how quickly this same restraint would be tested again, only days later.`,
+      },
+    ],
+  },
+
+  'fath-2': {
+    id: 'fath-2',
+    unit: 'unit-12',
+    title: 'The Battle of Hunayn and Ta\u2019if',
+    summary: 'The battle fought immediately after Makkah\u2019s conquest.',
+    content: [
+      {
+        heading: 'A new threat, gathered before the Muslims could grow further',
+        body: `Shortly after Makkah's conquest, already covered directly in this unit's previous topic, the tribes of Hawazin and Thaqif, the same Thaqif already covered in this course's seventh unit for their harsh rejection of the Prophet \ufdfa years earlier, gathered a considerable force at the valley of Hunayn, hoping to confront the Muslims before their growing strength became unstoppable.`,
+      },
+      {
+        heading: 'A moment of dangerous overconfidence, addressed directly in the Qur\u2019an',
+        body: `Facing this threat with roughly twelve thousand men, a considerably larger force than any this course has covered previously, some among the Muslims reportedly grew confident enough in their own numbers to suggest that small forces alone could no longer defeat them, an attitude the Qur'an itself addresses directly.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'وَيَوْمَ حُنَيْنٍ إِذْ أَعْجَبَتْكُمْ كَثْرَتُكُمْ فَلَمْ تُغْنِ عَنكُمْ شَيْئًا وَضَاقَتْ عَلَيْكُمُ الْأَرْضُ بِمَا رَحُبَتْ ثُمَّ وَلَّيْتُم مُّدْبِرِينَ',
+            english: 'And on the day of Hunayn, when your great numbers impressed you, but they availed you nothing, and the earth, despite its vastness, closed in on you, and then you turned back in retreat.',
+            source: 'Surah at-Tawbah, 9:25',
+          },
+        ],
+      },
+      {
+        heading: 'A sudden ambush, and a recovery led personally',
+        body: `Hawazin's forces launched a sudden ambush from the surrounding terrain, causing real, immediate chaos among the Muslim ranks, and it was the Prophet \ufdfa himself, standing firm alongside his closest companions while much of the wider force scattered, who anchored the recovery that eventually turned this same chaos into a decisive victory.`,
+      },
+      {
+        heading: 'A generous distribution, and an honest grievance it caused',
+        body: `Following this victory, the Prophet \ufdfa distributed a considerable share of the captured spoils to several recent Makkan converts specifically, a deliberate gesture meant to further secure their genuine attachment to the message. Some among the Ansar, already introduced across this course's ninth unit, felt a real, understandable sting at seeing these particular gifts given so generously to men who had only recently opposed the Muslims at all.`,
+      },
+      {
+        heading: 'A response that moved the Ansar to tears',
+        body: `Addressing this grievance directly rather than dismissing it, the Prophet \ufdfa asked the Ansar whether they would not prefer that these other men return home with mere camels and sheep, while the Ansar themselves returned with him in their own midst instead. This question is recorded as bringing the assembled Ansar to tears, resolving the grievance not by denying it, but by naming plainly what they actually still held that no distribution of spoils could touch.`,
+      },
+      {
+        heading: 'An unsuccessful siege, and a peaceful submission not long after',
+        body: `Thaqif's own forces withdrew into Ta'if itself following Hunayn's defeat, and the Muslims' subsequent siege of the fortified town did not succeed directly, lacking the equipment needed to breach its defenses. Thaqif nonetheless submitted peacefully to Islam within roughly a year afterward, without any further military engagement required, closing this same conflict on considerably better terms than the siege itself had managed to achieve.`,
+      },
+    ],
+  },
+
+  'fath-3': {
+    id: 'fath-3',
+    unit: 'unit-12',
+    title: 'The Year of Delegations',
+    summary: 'Tribes from across Arabia sending delegations to accept Islam.',
+    content: [
+      {
+        heading: 'A visible shift in how the peninsula responded',
+        body: `Following Makkah's conquest and Hunayn's decisive victory, both already covered directly in this unit's earlier topics, tribes from across the Arabian Peninsula began sending formal delegations to Madinah to accept Islam and pledge their allegiance directly, a pattern of engagement genuinely different in character from the years of open conflict this course has covered extensively up to this point.`,
+      },
+      {
+        heading: 'A recognition of where real strength now actually lay',
+        body: `These delegations reflected a practical, clear-eyed recognition that the balance of power across Arabia had shifted decisively. Tribes that had previously remained cautiously uncommitted, watching from a distance rather than engaging directly with either side, now judged that formal, peaceful alignment served their own interests considerably better than continued distance or opposition.`,
+      },
+      {
+        heading: 'A genuinely different kind of achievement from this course\u2019s earlier units',
+        body: `This period stands in real contrast to nearly everything this course has covered from its fifth unit onward: rather than persecution, battle, or hard-won treaty, the peninsula's near-complete alignment around this new religious and political order arrived through voluntary, largely peaceful delegation, a form of consolidation this course's earlier units simply had no equivalent for.`,
+      },
+      {
+        heading: 'A near-complete unification, though not yet fully finished',
+        body: `By the close of this same year, the great majority of Arabia's tribes had aligned themselves with Madinah in some formal capacity, though this course's closing topic turns directly to one final military undertaking still remaining, addressing a threat originating well beyond Arabia's own borders entirely.`,
+      },
+    ],
+  },
+
+  'fath-4': {
+    id: 'fath-4',
+    unit: 'unit-12',
+    title: 'The Expedition to Tabuk',
+    summary: 'The Prophet\u2019s \ufdfa final military expedition.',
+    content: [
+      {
+        heading: 'A precaution against a threat that ultimately did not materialize',
+        body: `In the ninth year after the Hijrah, reports reached Madinah of a substantial Byzantine mobilization near the northern frontier, prompting the Prophet \ufdfa to gather by far the largest force he had ever personally led and march toward Tabuk as a direct precaution, though these reports would ultimately prove considerably exaggerated once the Muslims actually arrived.`,
+      },
+      {
+        heading: 'A campaign remembered specifically for its hardship',
+        body: `This expedition is remembered directly as Ghazwat al-Usrah, the campaign of hardship, undertaken during intense heat with real strain on water, provisions, and endurance alike, difficult enough that a number of hypocrites and weaker believers offered excuses to avoid participating entirely, excuses the Qur'an itself addresses at greater length regarding this specific expedition than any other conflict covered across this entire course.`,
+      },
+      {
+        heading: 'Three honest men, and what their honesty actually cost them',
+        body: `Among those who stayed behind, Ka'b ibn Malik and two companions offered no false excuse at all, admitting plainly that they simply had not gone despite having every genuine means to do so. Rather than accepting a convenient explanation, as had been extended to others, the Prophet \ufdfa ordered the wider community to socially avoid these same three men entirely for fifty days, a period of real isolation Ka'b's own account describes in considerable personal detail.`,
+      },
+      {
+        heading: 'A forgiveness that arrived only after this genuine trial',
+        body: `Following these fifty days, a specific revelation confirmed that these three men's sincere repentance had been accepted, and the community's rejoicing upon hearing this news, recorded directly in tradition as spontaneous and genuine, matched the real weight of the preceding isolation itself. This entire episode functions within the wider tradition as one of the most carefully documented accounts of genuine repentance found anywhere in the Seerah.`,
+      },
+      {
+        heading: 'No battle, yet a campaign still considered a genuine success',
+        body: `Arriving at Tabuk, the Muslims found no Byzantine force actually present to confront, and the Prophet \ufdfa instead secured a series of peaceful treaties with several regional border communities, Christian and Jewish alike, bringing these territories into a formal relationship with Madinah without any military engagement at all. This marked the Prophet's \ufdfa final personally led military campaign, and this course's thirteenth unit turns directly to the final years of his \ufdfa own life that followed it.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
   // UNIT 13 - THE FINAL YEARS (placeholders)
