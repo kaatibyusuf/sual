@@ -1850,18 +1850,287 @@ export const SEERAHCLASS_TOPICS = {
   },
 
   // -----------------------------------------------------------
-  // UNIT 13 - THE FINAL YEARS (placeholders)
+  // UNIT 13 - THE FINAL YEARS (full content, expanded)
+  //
+  // Qur'anic Arabic (5:3, 3:144) checked against primary sources.
+  // The Farewell Sermon's content and the account of Abu Bakr's
+  // address upon the Prophet's ﷺ death are drawn from multiple
+  // corroborating narrations, the latter recorded directly in Sahih
+  // al-Bukhari. Deliberately outside this unit's scope: the later
+  // succession question (Saqifah and the selection of the first
+  // caliph) belongs to the history of the early caliphate rather
+  // than to the Prophet's ﷺ own life, which is this course's actual
+  // subject, so this unit states the factual detail of Abu Bakr
+  // leading prayers during the final illness without extending into
+  // that later, separate, and religiously contested discussion.
   // -----------------------------------------------------------
-  'final-1': { id: 'final-1', unit: 'unit-13', title: 'The Farewell Hajj', summary: 'His ﷺ only Hajj, performed in the final year of his life.' },
-  'final-2': { id: 'final-2', unit: 'unit-13', title: 'The Farewell Sermon', summary: 'The principles he ﷺ set out in his final major address.' },
-  'final-3': { id: 'final-3', unit: 'unit-13', title: 'His ﷺ Final Illness', summary: 'The days leading up to his ﷺ death.' },
-  'final-4': { id: 'final-4', unit: 'unit-13', title: 'The Death of the Prophet ﷺ', summary: 'His ﷺ passing and its impact on the early community.' },
+  'final-1': {
+    id: 'final-1',
+    unit: 'unit-13',
+    title: 'The Farewell Hajj',
+    summary: 'His \ufdfa only Hajj, performed in the final year of his life.',
+    content: [
+      {
+        heading: 'A single pilgrimage, after a lifetime of leading a community',
+        body: `In the tenth year after the Hijrah, the Prophet \ufdfa performed Hajj for the only time in his life as the leader of an established Muslim community, accompanied by a gathering tradition records as well over a hundred thousand companions, by a considerable margin the largest assembly of believers he ever personally addressed.`,
+      },
+      {
+        heading: 'A name given only afterward',
+        body: `This pilgrimage became known as Hajjat al-Wada, the Farewell Pilgrimage, a name reflecting later recognition that it would be his only and final Hajj, rather than a title announced in advance. Certain of his own statements during this same journey suggest he sensed its unique significance directly, though this course states this honestly as a reasonable inference from the sources rather than an explicit, advance declaration on his own part.`,
+      },
+      {
+        heading: 'A pattern established for every Hajj that would follow',
+        body: `Throughout this pilgrimage, the Prophet \ufdfa performed each of Hajj's specific rites, standing at Arafat, the stoning at Mina, the sacrifice, the circling of the Ka'bah, and the passage between Safa and Marwah, already introduced across this course's opening unit as sites with a history reaching back to Ibrahim himself. His own specific practice throughout this journey became the enduring model every subsequent Hajj has followed since.`,
+      },
+      {
+        heading: 'The setting for what this unit examines next',
+        body: `It was during this same pilgrimage, on the plain of Arafat itself, that the Prophet \ufdfa delivered what would become the single most consequential address of his entire public life, summarizing, before this largest gathering he ever spoke to, the core ethical and social principles his entire mission had been built around from its very beginning.`,
+      },
+      {
+        heading: 'Why this specific setting matters for what follows',
+        body: `Delivering this address at Hajj, rather than at some other occasion, meant it reached believers who would soon disperse back across the entire peninsula, carrying its content with them well beyond anything a single local sermon could achieve. This unit's next topic turns directly to what that address actually said.`,
+      },
+    ],
+  },
+
+  'final-2': {
+    id: 'final-2',
+    unit: 'unit-13',
+    title: 'The Farewell Sermon',
+    summary: 'The principles he \ufdfa set out in his final major address.',
+    content: [
+      {
+        heading: 'A declaration of sanctity, stated first',
+        body: `The Prophet \ufdfa opened by declaring the lives, property, and honor of every believer as sacred, comparing this sanctity directly to the sanctity already recognized in that specific day, that specific month, and that specific sacred city, a comparison his audience would have understood immediately given the deep reverence Arabian custom already held for exactly these three things.`,
+      },
+      {
+        heading: 'Old debts and old feuds, ended by his own example first',
+        body: `He then declared every claim of blood vengeance from the pre-Islamic period abolished, along with every form of interest-based lending, beginning both declarations specifically with claims belonging to his own family, a deliberate choice to apply this same abolition to himself before asking anyone else to accept it.`,
+      },
+      {
+        heading: 'Direct instruction concerning women',
+        body: `He instructed his audience directly to treat women well, describing this responsibility as a trust taken through Allah's own words, and outlining mutual rights and obligations running in both directions between spouses rather than obligation flowing in one direction alone.`,
+      },
+      {
+        heading: 'A declaration undoing an entire social order',
+        body: `He then delivered what remains among the most quoted lines from this entire address, declaring directly that no Arab holds any superiority over a non-Arab, nor a non-Arab over an Arab, and no person of one complexion holds superiority over another, except through piety and righteous conduct. This directly reversed the very tribal and racial hierarchies this course's first unit already described as structuring so much of pre-Islamic Arabian society, now explicitly declared abolished before the largest audience he ever addressed.`,
+      },
+      {
+        heading: 'A closing instruction, and a threefold exchange',
+        body: `He instructed his listeners to hold fast to the Qur'an as a source of guidance that would prevent them from going astray after him, then asked the assembled crowd directly, three separate times, whether he had conveyed the message entrusted to him. Each time, the crowd answered yes, and each time he raised his hand toward the sky and called on Allah directly to witness this same acknowledgment.`,
+      },
+      {
+        heading: 'A revelation confirming this moment directly',
+        body: `Tradition records that a specific revelation arrived during this same occasion, understood by many companions as marking the completion of the message this entire course has traced from its first moments in the cave of Hira.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'الْيَوْمَ أَكْمَلْتُ لَكُمْ دِينَكُمْ وَأَتْمَمْتُ عَلَيْكُمْ نِعْمَتِي وَرَضِيتُ لَكُمُ الْإِسْلَامَ دِينًا',
+            english: 'This day I have perfected for you your religion, completed My favor upon you, and approved Islam for you as religion.',
+            source: 'Surah al-Ma\u2019idah, 5:3',
+          },
+        ],
+      },
+    ],
+  },
+
+  'final-3': {
+    id: 'final-3',
+    unit: 'unit-13',
+    title: 'His \ufdfa Final Illness',
+    summary: 'The days leading up to his \ufdfa death.',
+    content: [
+      {
+        heading: 'A fever, arriving a few months after this same pilgrimage',
+        body: `Roughly two to three months after returning from the Farewell Hajj already covered directly across this unit's first two topics, the Prophet \ufdfa developed a fever accompanied by severe headache and real physical weakness, an illness that would occupy the final weeks of his life.`,
+      },
+      {
+        heading: 'Cared for at Aisha\u2019s own request, with his other wives\u2019 agreement',
+        body: `During this illness, he asked to be cared for primarily within Aisha's own quarters, a request his other wives agreed to directly, reflecting both the practical realities of a household with several wives and their own shared, genuine concern for his wellbeing during this difficult period.`,
+      },
+      {
+        heading: 'Continuing to lead as long as physically able',
+        body: `The Prophet \ufdfa continued personally leading the community's prayers for as long as his illness allowed, and once he could no longer do so himself, he specifically asked Abu Bakr, already established across this entire course as one of his earliest and most trusted companions, to lead these prayers in his place. This course states this specific, factual detail plainly, without extending into the later, separate question of formal succession, a subject belonging to the history of the early caliphate rather than to this course's own account of the Prophet's \ufdfa life.`,
+      },
+      {
+        heading: 'Final acts recorded from these last days',
+        body: `Tradition records the Prophet \ufdfa using these final days to give away his remaining personal wealth in charity, to free those he held in servitude, and to offer direct words of guidance and concern to those gathered around him, including specific expressions of concern for the continued wellbeing of the Ansar, already covered extensively across this course's ninth and twelfth units.`,
+      },
+      {
+        heading: 'A community bracing for what was coming, without yet being ready for it',
+        body: `Despite the sermon's own closing exchange already covered in this unit's second topic, and despite his own continued weakening condition, tradition records that many companions remained genuinely unprepared, emotionally, for what this illness would actually mean. This unit's closing topic turns directly to the moment that unpreparedness met reality.`,
+      },
+    ],
+  },
+
+  'final-4': {
+    id: 'final-4',
+    unit: 'unit-13',
+    title: 'The Death of the Prophet \ufdfa',
+    summary: 'His \ufdfa passing and its impact on the early community.',
+    content: [
+      {
+        heading: 'A death, and an immediate refusal to accept it',
+        body: `The Prophet \ufdfa passed away on the twelfth of Rabi al-Awwal in the eleventh year after the Hijrah, in Aisha's own quarters. Umar ibn al-Khattab, already familiar across this entire course as one of his most devoted companions, reportedly refused at first to accept the news, insisting the Prophet \ufdfa could not truly have died and warning others against suggesting otherwise.`,
+      },
+      {
+        heading: 'Abu Bakr\u2019s direct, steadying response',
+        body: `Abu Bakr, arriving shortly afterward, addressed the gathered community directly and calmly, stating plainly that whoever had worshipped Muhammad should know that Muhammad had now died, but whoever worshipped Allah should know that Allah remains eternally alive and never dies.`,
+      },
+      {
+        heading: 'A verse many felt they were hearing for the first time',
+        body: `Abu Bakr then recited a verse already revealed years earlier, one this same community had heard many times before without its full weight apparently registering until this exact moment.`,
+        verses: [
+          {
+            type: 'quran',
+            arabic: 'وَمَا مُحَمَّدٌ إِلَّا رَسُولٌ قَدْ خَلَتْ مِن قَبْلِهِ الرُّسُلُ أَفَإِن مَّاتَ أَوْ قُتِلَ انقَلَبْتُمْ عَلَىٰ أَعْقَابِكُمْ',
+            english: 'Muhammad is not but a messenger; other messengers have passed on before him. So if he was to die or be killed, would you turn back on your heels?',
+            source: 'Surah Aal-\u2018Imran, 3:144',
+          },
+        ],
+      },
+      {
+        heading: 'Why this recitation is remembered so specifically',
+        body: `A companion present that day is recorded remarking directly that it felt as though the community had never truly heard this exact verse before, until Abu Bakr recited it at precisely this moment, and that once he spoke it, everyone present began repeating it themselves. This detail matters for understanding this entire scene: it was not new information that steadied the community, but a truth already given years earlier, finally grasped with its full weight only once circumstances made that weight unavoidable.`,
+      },
+      {
+        heading: 'His burial, and what this moment closes',
+        body: `The Prophet \ufdfa was buried in the same quarters where he had passed away, later incorporated directly into the expanded grounds of Masjid an-Nabawi, already covered directly in this course's ninth unit as the mosque he and the earliest Muslims had built together with their own hands in Madinah's first days. His death marks the close of direct revelation and of the prophetic mission this entire course has traced from before his own birth through to this exact moment. This course's fourteenth and final unit turns directly to what remains after this closing: his \ufdfa own character, and why studying it continues to matter.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 14 - CHARACTER AND LEGACY (placeholders)
+  // UNIT 14 - CHARACTER AND LEGACY (full content, expanded)
+  //
+  // This closing unit deliberately introduces no new historical
+  // narrative. It draws together character evidence already
+  // established across this course's earlier units, plus two
+  // additional, directly authenticated hadith (the night-prayer
+  // account in Sahih al-Bukhari, and the justice hadith recorded in
+  // both Bukhari and Sahih Muslim). Deliberately outside this
+  // unit's scope: later, religiously contested disputes involving
+  // Fatima after the Prophet's ﷺ death (the Fadak inheritance
+  // question and disputed accounts of the circumstances of her own
+  // death) belong to the same separate, post-Prophetic history this
+  // course's thirteenth unit already excluded regarding succession,
+  // so this unit's coverage of family life stays within his ﷺ own
+  // lifetime, where the historical record is not contested in the
+  // same way.
   // -----------------------------------------------------------
-  'legacy-1': { id: 'legacy-1', unit: 'unit-14', title: 'His ﷺ Character in Worship', summary: 'What his ﷺ personal worship actually looked like.' },
-  'legacy-2': { id: 'legacy-2', unit: 'unit-14', title: 'His ﷺ Character in Family Life', summary: 'His ﷺ conduct as a husband, father, and grandfather.' },
-  'legacy-3': { id: 'legacy-3', unit: 'unit-14', title: 'His ﷺ Character in Leadership and Justice', summary: 'How he ﷺ led, judged, and treated those under his authority.' },
-  'legacy-4': { id: 'legacy-4', unit: 'unit-14', title: 'Why the Seerah Still Matters Today', summary: 'Closing reflections on studying this life as a living example.' },
+  'legacy-1': {
+    id: 'legacy-1',
+    unit: 'unit-14',
+    title: 'His \ufdfa Character in Worship',
+    summary: 'What his \ufdfa personal worship actually looked like.',
+    content: [
+      {
+        heading: 'Devotion continuing well past any sense of obligation',
+        body: `Tradition records that the Prophet \ufdfa would stand in prayer at night until his own feet became swollen from the length of time spent standing. When asked directly why he pushed himself this far, given that his own errors, past and future alike, had already been forgiven, he answered simply that he wished to be a grateful servant. This single exchange captures something worth holding onto across this entire closing unit: his worship was not motivated by anxious obligation, but by genuine gratitude freely offered.`,
+      },
+      {
+        heading: 'A personal life marked by real simplicity',
+        body: `Alongside this devotion, the Prophet \ufdfa lived with genuine personal simplicity, mending his own clothing and footwear himself rather than delegating this ordinary task to others, and maintaining a modest diet and household despite leading a community that had, by the end of his life, grown to encompass the greater part of the Arabian Peninsula, already covered directly across this course's twelfth unit.`,
+      },
+      {
+        heading: 'A deliberate balance, not extreme withdrawal',
+        body: `When some companions, in their own eagerness to imitate his devotion, proposed extreme measures for themselves, permanently forgoing marriage, sleep, or ordinary food entirely in pursuit of worship alone, the Prophet \ufdfa corrected them directly, stating plainly that this was not his own actual practice, and that he himself prayed, but also slept, fasted, but also ate, and married. His worship existed alongside a full ordinary life rather than replacing it entirely.`,
+      },
+      {
+        heading: 'A thread running back to this course\u2019s very first experience of revelation',
+        body: `This same balance connects directly back to this course's fourth unit, where the Prophet's \ufdfa own initial reaction to revelation was recorded as genuine, unguarded human fear rather than instant, effortless calm. His worship throughout the rest of his life reflects this same honest humanity: real devotion, pursued with real intensity, without ever collapsing into a withdrawal from ordinary human life and its genuine obligations.`,
+      },
+      {
+        heading: 'Setting up this unit\u2019s remaining topics',
+        body: `This same combination, genuine intensity paired with genuine balance, appears again directly in how the Prophet \ufdfa conducted himself within his own family, examined in this unit's next topic, and in how he led and judged the community entrusted to him, examined in the topic after that.`,
+      },
+    ],
+  },
+
+  'legacy-2': {
+    id: 'legacy-2',
+    unit: 'unit-14',
+    title: 'His \ufdfa Character in Family Life',
+    summary: 'His \ufdfa conduct as a husband, father, and grandfather.',
+    content: [
+      {
+        heading: 'A promise this course made back in its second unit',
+        body: `This course's second unit noted directly that the Prophet's \ufdfa own early losses, orphaned before birth, motherless at six, without his grandfather's care by eight, are consistently connected across the tradition to his own later, documented tenderness toward children specifically, and promised a return to this exact theme once this course reached his own family life directly. This topic is that return.`,
+      },
+      {
+        heading: 'A specific, direct expression of affection for his daughter',
+        body: `Regarding his daughter Fatima, the Prophet \ufdfa stated directly that she was a part of him, and that whatever caused her distress caused him distress in turn, a statement reflecting a closeness this course states plainly and without embellishment, exactly as it is recorded.`,
+      },
+      {
+        heading: 'Warmth with his grandchildren, recorded directly',
+        body: `Tradition consistently records the Prophet \ufdfa showing open, physical affection toward his grandchildren, Hasan and Husayn, including carrying them during prayer itself and prolonging his own prostration when one of them climbed onto his back, rather than disturbing the child by rising immediately. This same warmth extended openly to children generally, a pattern entirely consistent with the specific early losses already covered in this course's second unit.`,
+      },
+      {
+        heading: 'A marriage already covered directly, revisited here',
+        body: `This course's third unit already established that the Prophet \ufdfa took no other wife while Khadijah lived, remaining in a genuinely monogamous marriage for twenty-five years. Tradition also records him continuing to speak of her with real warmth and gratitude for the rest of his own life, well after her death, a loyalty this course's seventh unit already named directly as part of the genuine grief marking the Year of Sorrow.`,
+      },
+      {
+        heading: 'A household life marked by ordinary participation, not distant authority',
+        body: `Within his own household more broadly, the Prophet \ufdfa is recorded assisting directly with ordinary domestic tasks, mending his own clothing already noted in this unit's first topic, and engaging with his wives and family with recorded warmth, patience, and occasional humor rather than distant or authoritarian formality. This unit's next topic turns to this same character extended outward, to how he led and judged the far larger community entrusted to him.`,
+      },
+    ],
+  },
+
+  'legacy-3': {
+    id: 'legacy-3',
+    unit: 'unit-14',
+    title: 'His \ufdfa Character in Leadership and Justice',
+    summary: 'How he \ufdfa led, judged, and treated those under his authority.',
+    content: [
+      {
+        heading: 'A specific declaration on equal justice, given context',
+        body: `When a woman from a socially prominent Makkan family was found to have committed theft, some among Quraysh sought special leniency on her behalf specifically because of her family's own standing, approaching the Prophet \ufdfa through a companion he held in real personal affection to make this exact request.`,
+      },
+      {
+        heading: 'A direct rejection of exactly this kind of special treatment',
+        body: `The Prophet \ufdfa responded by explaining directly that earlier communities had been destroyed precisely because they excused the powerful while punishing the weak for identical offenses, and stated plainly that were his own daughter Fatima, already covered directly in this unit's previous topic, to commit this same theft, he would apply the same prescribed judgment to her without exception. This declaration, recorded directly and without softening, states a principle of equal justice regardless of standing in the clearest possible terms.`,
+      },
+      {
+        heading: 'A principle already demonstrated repeatedly across this entire course',
+        body: `This same principle appears directly, in practical form, at several earlier points across this course: the specific, deliberate protection of the vulnerable and enslaved covered in this course's sixth unit, the wisdom shown in the Black Stone dispute already covered directly in this course's third unit, giving every competing clan equal honor rather than favoring one, and the general amnesty extended even to Hind bint Utbah at Makkah's conquest, already covered directly in this course's twelfth unit, applying mercy without regard for the specific standing or history of the person receiving it.`,
+      },
+      {
+        heading: 'Leadership that made room for genuine disagreement',
+        body: `This course has also shown, at several points, a leader genuinely willing to adopt counsel from unexpected sources and to address grievance directly rather than dismissing it: Hubab ibn al-Mundhir's tactical suggestion at Badr, already covered in this course's tenth unit, Salman al-Farisi's suggestion at the Trench, already covered in that same unit, and the Ansar's own grievance following Hunayn, already covered directly in this course's twelfth unit, addressed with a direct, moving response rather than simple authority.`,
+      },
+      {
+        heading: 'A single, consistent character across every one of these settings',
+        body: `Taken together, these examples, drawn from across this entire course rather than newly introduced here, describe a single, consistent character: justice applied without regard for status, genuine openness to correction and consultation, and mercy extended even to those with every apparent reason to expect the opposite. This unit's closing topic turns directly to why studying this specific character, across every one of the settings this course has covered, continues to matter.`,
+      },
+    ],
+  },
+
+  'legacy-4': {
+    id: 'legacy-4',
+    unit: 'unit-14',
+    title: 'Why the Seerah Still Matters Today',
+    summary: 'Closing reflections on studying this life as a living example.',
+    content: [
+      {
+        heading: 'Returning to the verse this course opened with',
+        body: `This course's very first topic opened with a single verse, describing the Prophet \ufdfa as an excellent example for anyone whose hope is genuinely placed in Allah and the Last Day. Fourteen units later, having traced his life from before his own birth through his death and the character that ran consistently through every stage of it, this claim should now stand as a conclusion earned through real, cumulative evidence rather than a statement simply asked to be accepted on trust back at this course's own opening page.`,
+      },
+      {
+        heading: 'A life studied as a pattern to follow, not only a subject to admire',
+        body: `This course's opening unit stated directly that an excellent example is meant to be genuinely followed rather than merely admired from a distance. This closing unit's own account of his worship, his family life, and his leadership together offer exactly this: not abstract ideals floating free of any concrete example, but specific, documented conduct in specific, documented situations, available to be studied and genuinely applied rather than only appreciated as history.`,
+      },
+      {
+        heading: 'Why the specific historical detail this course insisted on still matters',
+        body: `This course's first unit also insisted directly that getting this life's actual historical details right matters precisely because it is meant to function as a genuinely followable pattern, not a loosely remembered legend. Fourteen units of real historical specificity, verified names, dated events, and honestly acknowledged points of genuine scholarly discussion, were not an academic exercise pursued for its own sake. They were the necessary foundation for treating this life as the kind of example this course's opening verse actually describes.`,
+      },
+      {
+        heading: 'A life whose relevance was never confined to its own century',
+        body: `The specific qualities this unit has traced directly, gratitude in worship, tenderness within family, and justice applied without regard for status, describe patterns of conduct with no expiration date attached to the seventh century. A parent's care for children, a leader's fairness toward those with less power, and a believer's genuine gratitude in worship remain exactly as relevant to a reader today as they were to the community this course has followed from Arabia before Islam through to Madinah's own final years.`,
+      },
+      {
+        heading: 'A closing invitation, at the end of this course',
+        body: `This course has aimed throughout to offer real evidence and honest reasoning alongside its account of this life, not simply facts to memorize without context. Having reached this course's own final page, the invitation this closing unit extends is the same one this course's first unit already promised: to study this specific life closely, to hold its details with genuine care, and to let it function, exactly as its own foundational verse describes, as a pattern for a lifetime rather than a subject completed and set aside once this course itself has ended.`,
+      },
+    ],
+  },
 };
