@@ -53,6 +53,7 @@ const TajweedClass = lazy(() => import('./pages/TajweedClass.jsx'))
 const SeerahClass = lazy(() => import('./pages/SeerahClass.jsx'))
 const ArabiyyahClass = React.lazy(() => import('./pages/ArabiyyahClass'));
 const Fusuul = React.lazy(() => import('./pages/Fusuul'));
+const HadeethClass = React.lazy(() => import('./pages/HadeethClass'));
 
 function RouteFallback() {
   return (
@@ -424,6 +425,7 @@ function AppInner() {
               <Route path="/seerah-class" element={<SeerahClass user={user} />} />
               <Route path="/arabiyyah-class" element={<ArabiyyahClass user={user} />} />
               <Route path="/fusuul" element={<Fusuul />} />
+              <Route path="/hadeeth-class" element={<HadeethClass />} />
             </Routes>
           </Suspense>
         </main>

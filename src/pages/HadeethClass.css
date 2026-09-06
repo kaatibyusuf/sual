@@ -1,0 +1,292 @@
+/* src/pages/HadeethClass.css
+ * Built on the same wf-style visual system as Adab Class and
+ * Tawheed Class, for consistency across the app: white cards,
+ * light-blue borders, navy accents, [data-theme="dark"] overrides
+ * (manual toggle, not prefers-color-scheme). All classes prefixed
+ * hdc- so this course can coexist with adab-/tw- classes in the same
+ * bundle without collision.
+ */
+
+.hdc-page {
+  padding-top: 32px;
+  max-width: 720px;
+}
+
+.hdc-back {
+  display: inline-block;
+  color: #4a6080;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin-bottom: 20px;
+  padding: 0;
+  font-family: var(--font-ui);
+}
+.hdc-back:hover { color: #094570; }
+
+.hdc-loading { display: flex; justify-content: center; padding: 60px 0; }
+.hdc-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid #e8f0f8;
+  border-top-color: #094570;
+  border-radius: 50%;
+  animation: tcSpin 0.8s linear infinite;
+}
+@keyframes tcSpin { to { transform: rotate(360deg); } }
+
+.hdc-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
+.hdc-icon svg { width: 100%; height: 100%; }
+
+/* -- Hero -- */
+.hdc-hero {
+  padding: 22px;
+  background: #ffffff !important;
+  border: 1.5px solid #094570;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+.hdc-hero-title { font-size: 1.25rem; font-weight: 800; color: #0d1b2a; margin-bottom: 4px; }
+.hdc-hero-sub { font-size: 0.85rem; color: #4a6080; margin-bottom: 16px; }
+
+.hdc-progress-track { height: 8px; border-radius: 100px; background: #e8f0f8; overflow: hidden; margin-bottom: 8px; }
+.hdc-progress-fill { height: 100%; background: #094570; border-radius: 100px; transition: width 0.3s ease; }
+.hdc-progress-label { font-size: 0.8rem; color: #6a8090; margin-bottom: 14px; }
+
+.hdc-hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.hdc-btn-primary {
+  padding: 11px 20px; background: #094570; color: #ffffff; border: none;
+  border-radius: 100px; font-family: var(--font-ui); font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: background 0.15s ease;
+}
+.hdc-btn-primary:hover { background: #0a5486; }
+.hdc-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.hdc-btn-secondary {
+  padding: 11px 20px; background: #ffffff; color: #094570; border: 1.5px solid #094570;
+  border-radius: 100px; font-family: var(--font-ui); font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: all 0.15s ease;
+}
+.hdc-btn-secondary:hover { background: #f0f7ff; }
+.hdc-btn-secondary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* -- List cards -- */
+.hdc-cards { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+
+.hdc-card {
+  display: flex; align-items: center; gap: 16px; padding: 22px;
+  background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 16px;
+  text-align: left; cursor: pointer; font-family: var(--font-ui);
+  transition: all 0.2s ease; width: 100%;
+}
+.hdc-card:hover { border-color: #85CCFF; box-shadow: 0 6px 20px rgba(9,69,112,0.1); transform: translateY(-2px); }
+.hdc-card--locked { cursor: pointer; opacity: 0.85; }
+.hdc-card--done { border-color: #b8dfc0; }
+
+.hdc-card-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px;
+  background: #094570; color: #ffffff; font-weight: 800; font-size: 1.1rem;
+}
+.hdc-card-icon--locked { background: #dce4ee; color: #6a8090; }
+.hdc-card-icon--done { background: #2e7d32; color: #ffffff; }
+.hdc-card-icon .hdc-icon { width: 22px; height: 22px; }
+
+.hdc-card-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.hdc-card-side { flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
+
+.hdc-card-progress-pill {
+  font-size: 0.78rem; font-weight: 700; color: #6a8090; background: #f5f8fb;
+  padding: 4px 10px; border-radius: 100px; white-space: nowrap;
+}
+
+.hdc-card-label { font-size: 1.05rem; font-weight: 800; color: #094570; line-height: 1.35; }
+.hdc-card-meta { font-size: 0.72rem; font-weight: 700; color: #8a9ab0; text-transform: uppercase; letter-spacing: 0.06em; }
+.hdc-card-desc { font-size: 0.82rem; color: #6a8090; line-height: 1.5; }
+
+.hdc-card-badge { flex-shrink: 0; font-size: 0.75rem; font-weight: 700; padding: 5px 11px; border-radius: 100px; white-space: nowrap; }
+.hdc-card-badge--lock { background: #fdf3dd; color: #7a5a13; }
+.hdc-card-badge--quiz { background: #e8f0f8; color: #094570; }
+
+.hdc-card-arrow { flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; color: #c8d8e8; }
+
+/* -- Detail header -- */
+.hdc-detail-header {
+  display: flex; align-items: center; gap: 16px; padding: 22px;
+  background: #f0f7ff !important; border: 1.5px solid #094570; border-radius: 16px; margin-bottom: 16px;
+}
+.hdc-detail-icon {
+  display: flex; align-items: center; justify-content: center; width: 48px; height: 48px;
+  flex-shrink: 0; border-radius: 12px; background: #094570; color: #ffffff; font-weight: 800; font-size: 1.2rem;
+}
+.hdc-detail-title { font-size: 1.25rem; font-weight: 800; color: #0d1b2a; margin-bottom: 2px; }
+.hdc-detail-sub { font-size: 0.9rem; color: #4a6080; }
+
+/* -- Content sections -- */
+.hdc-section { padding: 20px 22px; background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 14px; margin-bottom: 14px; }
+.hdc-section-title { font-size: 0.9rem; font-weight: 800; color: #094570; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; }
+.hdc-section-body { font-size: 0.9rem; color: #1a2a3a; line-height: 1.8; }
+.hdc-section-body p { margin: 0 0 12px; }
+.hdc-section-body p:last-child { margin-bottom: 0; }
+
+/* -- Highlighted Qur'an / Hadith verse blocks -- */
+.hdc-verse { margin-top: 16px; padding: 18px 18px 16px; border-radius: 12px; border: 1.5px solid; }
+.hdc-verse--quran { background: #f0f7ff; border-color: #85CCFF; }
+.hdc-verse--hadith { background: #fdf3dd; border-color: #e0c07a; }
+
+.hdc-verse-tag {
+  display: inline-block; font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 3px 10px; border-radius: 100px; margin-bottom: 10px;
+}
+.hdc-verse--quran .hdc-verse-tag { background: #094570; color: #ffffff; }
+.hdc-verse--hadith .hdc-verse-tag { background: #b8862f; color: #ffffff; }
+
+.hdc-verse-arabic {
+  font-size: 1.35rem; line-height: 2; color: #0d1b2a; text-align: right; margin: 0 0 12px;
+  font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade New', serif;
+}
+.hdc-verse-english { font-size: 0.9rem; color: #2a3a4a; line-height: 1.7; font-style: italic; margin: 0 0 8px; }
+.hdc-verse-source { font-size: 0.76rem; font-weight: 700; color: #6a8090; margin: 0; text-transform: uppercase; letter-spacing: 0.03em; }
+
+.hdc-empty { padding: 32px 24px; background: #ffffff !important; border: 1.5px dashed #c8d8e8; border-radius: 14px; text-align: center; color: #6a8090; font-size: 0.88rem; margin-bottom: 14px; }
+
+/* -- Bottom actions -- */
+.hdc-actions-row { display: flex; justify-content: center; margin: 20px 0; }
+.hdc-nav-row { display: flex; gap: 8px; }
+.hdc-nav-btn {
+  flex: 1; padding: 12px; border: 1.5px solid #c8d8e8; border-radius: 10px; background: #f5f8fb;
+  color: #094570; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.15s ease;
+}
+.hdc-nav-btn:hover:not(:disabled) { border-color: #094570; background: #e8f0f8; }
+.hdc-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* -- Quiz -- */
+.hdc-status-card { padding: 24px; background: #ffffff !important; border: 2px solid #094570; border-radius: 16px; text-align: center; margin-bottom: 16px; }
+.hdc-status-card--fail { border-color: #c0392b; }
+.hdc-status-value { font-size: 1.8rem; font-weight: 800; color: #094570; margin-bottom: 6px; }
+.hdc-status-card--fail .hdc-status-value { color: #c0392b; }
+.hdc-status-note { font-size: 0.85rem; color: #6a8090; font-weight: 600; }
+
+.hdc-quiz-q { padding: 20px 22px; background: #ffffff !important; border: 1.5px solid #c8d8e8; border-radius: 14px; margin-bottom: 14px; }
+.hdc-quiz-q-text { font-size: 0.9rem; font-weight: 700; color: #0d1b2a; margin-bottom: 14px; line-height: 1.6; }
+.hdc-quiz-num { color: #094570; }
+
+.hdc-quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.hdc-quiz-option {
+  text-align: left; padding: 12px 14px; background: #f5f8fb; border: 1.5px solid #dde8f2;
+  border-radius: 10px; font-family: var(--font-ui); font-size: 0.85rem; color: #1a2a3a; cursor: pointer; transition: all 0.15s ease;
+}
+.hdc-quiz-option:hover:not(:disabled) { border-color: #094570; }
+.hdc-quiz-option--selected { border-color: #094570; background: #e8f0f8; font-weight: 700; }
+.hdc-quiz-option--correct { border-color: #2e7d32; background: #e6f4e8; font-weight: 700; color: #1e5c22; }
+.hdc-quiz-option--wrong { border-color: #c0392b; background: rgba(231,76,60,0.08); color: #a02f22; }
+.hdc-quiz-option:disabled { cursor: default; }
+
+.hdc-quiz-explanation { font-size: 0.82rem; color: #6a8090; line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #dde8f2; }
+
+/* -- Bottom sheet -- */
+.hdc-sheet-overlay { position: fixed; inset: 0; background: rgba(13, 27, 42, 0.45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+
+.hdc-sheet { width: 100%; max-width: 420px; padding: 22px 20px; background: #ffffff !important; border-radius: 18px; border: 1.5px solid #c8d8e8; max-height: calc(100vh - 40px); overflow-y: auto; }
+
+.hdc-sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.hdc-sheet-title { font-size: 1.1rem; font-weight: 800; color: #094570; }
+.hdc-sheet-close { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; border: none; background: #f5f8fb; color: #6a8090; cursor: pointer; font-size: 1.1rem; line-height: 1; }
+.hdc-sheet-text { font-size: 0.85rem; color: #4a6080; line-height: 1.6; margin-bottom: 18px; }
+.hdc-sheet-options { display: flex; flex-direction: column; gap: 10px; }
+
+.hdc-sheet-option { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f5f8fb; border: 1.5px solid #dde8f2; border-radius: 12px; font-family: var(--font-ui); cursor: pointer; text-align: left; }
+.hdc-sheet-option--full { border-color: #094570; background: #f0f7ff; }
+.hdc-sheet-option-title { font-weight: 700; color: #0d1b2a; font-size: 0.92rem; }
+.hdc-sheet-option-price { font-weight: 800; color: #094570; font-size: 1rem; }
+.hdc-sheet-option-tag { position: absolute; top: -9px; left: 14px; background: #094570; color: #fff; font-size: 0.62rem; font-weight: 700; border-radius: 100px; padding: 2px 9px; letter-spacing: 0.03em; }
+
+/* -- Payment / purchase error message (shown in paywall sheet and hero) -- */
+.hdc-sheet-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1.5px solid #fecaca;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* -- Dark mode -- */
+[data-theme="dark"] .hdc-hero { background: #0f1f2e !important; border-color: #1e4a70; }
+[data-theme="dark"] .hdc-hero-title { color: #c8e0f5; }
+[data-theme="dark"] .hdc-hero-sub { color: #7f97ae; }
+[data-theme="dark"] .hdc-progress-track { background: #12283b; }
+[data-theme="dark"] .hdc-progress-fill { background: #85CCFF; }
+[data-theme="dark"] .hdc-progress-label { color: #7f97ae; }
+
+[data-theme="dark"] .hdc-btn-primary { background: #85CCFF; color: #062338; }
+[data-theme="dark"] .hdc-btn-primary:hover { background: #a3d8ff; }
+[data-theme="dark"] .hdc-btn-secondary { background: transparent; color: #85CCFF; border-color: #85CCFF; }
+[data-theme="dark"] .hdc-btn-secondary:hover { background: rgba(133,204,255,0.08); }
+
+[data-theme="dark"] .hdc-card,
+[data-theme="dark"] .hdc-section,
+[data-theme="dark"] .hdc-empty,
+[data-theme="dark"] .hdc-status-card,
+[data-theme="dark"] .hdc-quiz-q {
+  background: #0f1f2e !important; border-color: #1e3448;
+}
+[data-theme="dark"] .hdc-card--done { border-color: #1e4a2c; }
+[data-theme="dark"] .hdc-card-label { color: #85CCFF; }
+[data-theme="dark"] .hdc-card-meta, [data-theme="dark"] .hdc-card-desc { color: #7f97ae; }
+[data-theme="dark"] .hdc-card-badge--lock { background: rgba(184,134,47,0.16); color: #e0c07a; }
+[data-theme="dark"] .hdc-card-badge--quiz { background: rgba(133,204,255,0.14); color: #85CCFF; }
+[data-theme="dark"] .hdc-card-icon--locked { background: #2a3a4a; color: #8fa4bc; }
+[data-theme="dark"] .hdc-card-progress-pill { background: #0a1825; color: #7f97ae; }
+
+[data-theme="dark"] .hdc-detail-header { background: #0a1825 !important; border-color: #1e4a70; }
+[data-theme="dark"] .hdc-detail-title { color: #c8e0f5; }
+[data-theme="dark"] .hdc-detail-sub { color: #85CCFF; }
+
+[data-theme="dark"] .hdc-section-title { color: #85CCFF; }
+[data-theme="dark"] .hdc-section-body { color: #a8c0d8; }
+[data-theme="dark"] .hdc-empty { color: #7f97ae; }
+
+[data-theme="dark"] .hdc-verse--quran { background: #0e2438; border-color: #1e5a8a; }
+[data-theme="dark"] .hdc-verse--hadith { background: #2a2110; border-color: #6e5320; }
+[data-theme="dark"] .hdc-verse--quran .hdc-verse-tag { background: #85CCFF; color: #062338; }
+[data-theme="dark"] .hdc-verse--hadith .hdc-verse-tag { background: #e0c07a; color: #2a2110; }
+[data-theme="dark"] .hdc-verse-arabic { color: #e8f0f8; }
+[data-theme="dark"] .hdc-verse-english { color: #a8c0d8; }
+[data-theme="dark"] .hdc-verse-source { color: #7f97ae; }
+
+[data-theme="dark"] .hdc-nav-btn { background: #0a1825; border-color: #1e3448; color: #85CCFF; }
+[data-theme="dark"] .hdc-nav-btn:hover:not(:disabled) { border-color: #85CCFF; background: #12283b; }
+
+[data-theme="dark"] .hdc-status-card { border-color: #85CCFF; }
+[data-theme="dark"] .hdc-status-card--fail { border-color: #ff6b5a; }
+[data-theme="dark"] .hdc-status-value { color: #85CCFF; }
+[data-theme="dark"] .hdc-status-card--fail .hdc-status-value { color: #ff6b5a; }
+[data-theme="dark"] .hdc-status-note { color: #a8c0d8; }
+
+[data-theme="dark"] .hdc-quiz-q-text { color: #c8e0f5; }
+[data-theme="dark"] .hdc-quiz-num { color: #85CCFF; }
+[data-theme="dark"] .hdc-quiz-option { background: #0a1825; border-color: #1e3448; color: #a8c0d8; }
+[data-theme="dark"] .hdc-quiz-option--selected { background: #12283b; border-color: #85CCFF; }
+[data-theme="dark"] .hdc-quiz-option--correct { background: rgba(46,125,50,0.18); border-color: #4caf50; color: #a5d6a7; }
+[data-theme="dark"] .hdc-quiz-option--wrong { background: rgba(231,76,60,0.14); border-color: #ff6b5a; color: #ff8a80; }
+[data-theme="dark"] .hdc-quiz-explanation { color: #7f97ae; border-top-color: #1e3448; }
+
+[data-theme="dark"] .hdc-sheet { background: #0f1f2e !important; border-color: #1e3448; }
+[data-theme="dark"] .hdc-sheet-title { color: #85CCFF; }
+[data-theme="dark"] .hdc-sheet-close { background: #0a1825; color: #7f97ae; }
+[data-theme="dark"] .hdc-sheet-text { color: #a8c0d8; }
+[data-theme="dark"] .hdc-sheet-option { background: #0a1825; border-color: #1e3448; }
+[data-theme="dark"] .hdc-sheet-option--full { background: #12283b; border-color: #85CCFF; }
+[data-theme="dark"] .hdc-sheet-option-title { color: #c8e0f5; }
+[data-theme="dark"] .hdc-sheet-option-price { color: #85CCFF; }
+
+[data-theme="dark"] .hdc-sheet-error {
+  background: rgba(255, 107, 90, 0.12);
+  color: #ff8a80;
+  border-color: rgba(255, 107, 90, 0.4);
+}

@@ -68,6 +68,15 @@ const COURSES = [
     stats: '14 units \u00b7 60 topics \u00b7 420 quiz questions',
     accent: 'arabiyyah',
   },
+  {
+  id: 'hadeethclass',
+  route: '/hadeeth-class',
+  arabic: 'حَدِيث',
+  title: 'Hadeeth Class',
+  tagline: 'The science of hadith authentication: sanad, matn, and classifying what is truly authentic',
+  stats: '14 units · 58 topics · 420 quiz questions',
+  accent: 'hadeeth',
+},
 ];
 
 export default function Fusuul() {
