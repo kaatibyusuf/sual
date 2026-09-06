@@ -425,7 +425,7 @@ function AppInner() {
               <Route path="/seerah-class" element={<SeerahClass user={user} />} />
               <Route path="/arabiyyah-class" element={<ArabiyyahClass user={user} />} />
               <Route path="/fusuul" element={<Fusuul />} />
-              <Route path="/hadeeth-class" element={<HadeethClass />} />
+              <Route path="/hadeeth-class" element={<HadeethClass user={user} />} />
             </Routes>
           </Suspense>
         </main>

@@ -616,45 +616,626 @@ export const HADEETHCLASS_TOPICS = {
   },
 
   // -----------------------------------------------------------
-  // UNIT 5 - CLASSIFICATION BY NUMBER OF NARRATORS (placeholders)
+  // UNIT 5 - CLASSIFICATION BY NUMBER OF NARRATORS (full content,
+  // expanded)
+  //
+  // The mutawatir lafzi/ma'nawi distinction with real examples, the
+  // honest scholarly debate over whether true tawatur is ever fully
+  // achieved in practice, and the mashhur/'aziz/gharib subdivisions
+  // (including the rule that a chain's weakest point determines its
+  // classification) checked against multiple current Mustalah
+  // al-Hadith references before writing.
   // -----------------------------------------------------------
-  'adad-1': { id: 'adad-1', unit: 'unit-5', title: 'Al-Mutawatir: The Mass-Transmitted Hadith', summary: 'A report transmitted by so many independent narrators that collusion on a lie becomes inconceivable.' },
-  'adad-2': { id: 'adad-2', unit: 'unit-5', title: 'Al-Ahad: The Solitary Report', summary: 'Any hadith not reaching the threshold of tawatur.' },
-  'adad-3': { id: 'adad-3', unit: 'unit-5', title: "Subdivisions of Ahad: Mashhur, 'Aziz, Gharib", summary: 'Three further categories distinguishing solitary reports from one another.' },
+  'adad-1': {
+    id: 'adad-1',
+    unit: 'unit-5',
+    title: 'Al-Mutawatir: The Mass-Transmitted Hadith',
+    summary: 'A report transmitted by so many independent narrators that collusion on a lie becomes inconceivable.',
+    content: [
+      {
+        heading: 'A genuinely different question from everything covered so far',
+        body: `This course's second, third, and fourth units all examined a hadith's reliability through its own individual narrators and their own individual chain. This unit turns to a genuinely different question entirely: how many separate, independent narrators actually transmitted a given report at each stage of its own history.`,
+      },
+      {
+        heading: 'A definition centered on collusion becoming inconceivable',
+        body: `Al-mutawatir describes a report transmitted, at every single generation from the Prophet \ufdfa onward, by a group of narrators so large and so genuinely independent of one another that their collectively agreeing upon a shared lie becomes practically inconceivable.`,
+      },
+      {
+        heading: 'No single, universally fixed minimum number',
+        body: `Scholars have not settled on one specific, universally agreed minimum count of narrators required for tawatur. What matters instead is whether the actual scale and independence of transmission genuinely rules out coordinated fabrication in a given case, a standard depending on real circumstance rather than a fixed arithmetic threshold.`,
+      },
+      {
+        heading: 'Two recognized forms of mutawatir',
+        body: `Mutawatir lafzi describes a report transmitted through numerous independent chains all agreeing on identical wording, such as the widely narrated statement warning against deliberately attributing a false statement to the Prophet \ufdfa, reported through several dozen separate chains of companions. Mutawatir ma'nawi describes a report transmitted through numerous chains that differ in their specific wording while still converging on the same underlying meaning, such as the general, broadly attested practice of the daily prayers themselves.`,
+      },
+      {
+        heading: 'An honest note on how rare this actually is',
+        body: `Reports genuinely meeting this full standard are considerably rarer than casual usage of the term sometimes suggests. Some scholars, Ibn Hibban among them, have gone so far as to question whether any hadith fully satisfies every strict condition of tawatur at all, while most others acknowledge the category exists in principle while agreeing that relatively few specific hadith actually reach it. Mutawatir hadith, where genuinely established, yields certain knowledge and does not require the same individual chain-by-chain scrutiny this course's second and third units already examined in depth.`,
+      },
+    ],
+  },
+
+  'adad-2': {
+    id: 'adad-2',
+    unit: 'unit-5',
+    title: 'Al-Ahad: The Solitary Report',
+    summary: 'Any hadith not reaching the threshold of tawatur.',
+    content: [
+      {
+        heading: 'The category nearly everything studied so far actually belongs to',
+        body: `Al-ahad, also called khabar al-wahid, describes any hadith failing to reach the mutawatir threshold already covered directly in this unit's previous topic. Given how rare genuine tawatur actually is, the overwhelming majority of hadith, including virtually every specific example already used across this entire course, fall within this same broader category.`,
+      },
+      {
+        heading: 'Why this connects directly back to this course\u2019s earlier units',
+        body: `Ahad hadith is precisely the category requiring the individual sanad scrutiny this course's second, third, and fourth units examined in such depth, 'adalah, dabt, ittisal, and the resulting sahih, hasan, and da'if gradings. Mutawatir hadith, by contrast, achieves certainty through sheer independent volume alone, without needing this same individual chain-by-chain evaluation.`,
+      },
+      {
+        heading: 'A genuine, honest difference over the resulting certainty',
+        body: `The majority position, held by Ibn Hajar al-'Asqalani among others, holds that ahad hadith yields only probable rather than absolute certainty, unless independently corroborated to an unusually strong degree, though sahih ahad hadith remains fully actionable for practice regardless. A minority position, associated with Dawud az-Zahiri and Ibn Hazm, held that sound ahad hadith can achieve genuine certainty as well.`,
+      },
+      {
+        heading: 'A specific, practical form this same corroboration can take',
+        body: `Even a report technically ahad, or even gharib specifically, examined directly in this unit's closing topic, at some point in its chain, can still reach a genuinely elevated practical standing through talaqqi al-ummah bi al-qabul, the wider Muslim community's own broad, sustained acceptance without serious objection, a real factor in why material found within Sahih al-Bukhari and Sahih Muslim, examined directly across this course's eleventh unit, is generally treated with such strong assurance despite many individual hadith within them being technically ahad in their own chains.`,
+      },
+      {
+        heading: "Setting up this unit's closing topic",
+        body: `This unit's closing topic turns to three further, more specific categories existing entirely within ahad itself, distinguishing solitary reports from one another according to exactly how many narrators transmitted them at each stage.`,
+      },
+    ],
+  },
+
+  'adad-3': {
+    id: 'adad-3',
+    unit: 'unit-5',
+    title: "Subdivisions of Ahad: Mashhur, 'Aziz, Gharib",
+    summary: 'Three further categories distinguishing solitary reports from one another.',
+    content: [
+      {
+        heading: "Al-mashhur: three or more, at every generation",
+        body: `Al-mashhur, well known, describes an ahad hadith narrated by three or more separate narrators at every single generation of its chain, while still genuinely falling short of the far larger scale already covered directly in this unit's first topic as mutawatir.`,
+      },
+      {
+        heading: "Al-'aziz: exactly two, at minimum, at every generation",
+        body: `Al-'aziz, rare or mighty, describes an ahad hadith in which at least two narrators are found at every generation of its chain, more than the single narrator defining gharib, examined directly next in this same topic, but not reaching mashhur's own three-narrator threshold.`,
+      },
+      {
+        heading: 'Al-gharib: a single narrator at some point, despite the name',
+        body: `Al-gharib, strange or solitary, describes an ahad hadith in which only a single narrator is found at some specific point in its chain, even if other points along that same chain happen to include several narrators. Despite its name suggesting rarity of content, gharib is, in practice, the single most common of these three subdivisions, since a chain narrowing to one narrator at even a single generation is a genuinely common occurrence.`,
+      },
+      {
+        heading: "A specific rule worth stating directly: the weakest point decides",
+        body: `A chain's own classification among these three categories is determined by its single weakest generation, not by its strongest or its average. A chain with three narrators at every generation except one, where only a single narrator appears, is classified as gharib overall, not mashhur, since that one narrow point governs the entire chain's classification.`,
+        verses: [
+          {
+            type: 'qaidah',
+            arabic: 'العِبْرَةُ فِي تَصْنِيفِ السَّنَدِ بِأَضْعَفِ طَبَقَاتِهِ لَا بِأَقْوَاهَا',
+            transliteration: "al-\u2018ibratu fi tasnifi s-sanadi bi-ad\u2018afi tabaqatihi la bi-aqwaha",
+            english: "A chain's classification is determined by its weakest generation, not its strongest.",
+            source: 'The governing rule for classifying mashhur, \u2018aziz, and gharib',
+          },
+        ],
+      },
+      {
+        heading: "Closing this unit and turning to the chain's own connectedness",
+        body: `This unit has now covered mutawatir as the rare, certainty-producing category achieved purely through overwhelming independent volume, ahad as the far more common category this entire course's earlier scrutiny actually applies to, and mashhur, 'aziz, and gharib as three further subdivisions distinguishing ahad reports by their own specific narrator count at each generation. This course's sixth unit turns directly to a different structural question already flagged briefly across this course's first and fourth units: whether a chain is genuinely connected at all, and the several specific, named ways it can instead fall short.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 6 - CONNECTED AND DISCONNECTED CHAINS (placeholders)
+  // UNIT 6 - CONNECTED AND DISCONNECTED CHAINS (full content,
+  // expanded)
+  //
+  // The precise, distinct definitions of munqati' (single break,
+  // anywhere), mu'dal (two or more consecutive breaks), mursal
+  // (missing Companion specifically), and mu'allaq (missing from
+  // the chain's own start), including the real Bukhari mu'allaq
+  // example and the Maliki/Hanafi leniency toward mursal from
+  // specific trusted narrators, checked against multiple current
+  // Mustalah al-Hadith references before writing.
   // -----------------------------------------------------------
-  'ittisal-1': { id: 'ittisal-1', unit: 'unit-6', title: 'Al-Muttasil: The Connected Chain', summary: 'A sanad with no missing link from beginning to end.' },
-  'ittisal-2': { id: 'ittisal-2', unit: 'unit-6', title: "Al-Munqati': A Broken Link", summary: 'A chain missing one narrator at any point other than its very start.' },
-  'ittisal-3': { id: 'ittisal-3', unit: 'unit-6', title: "Al-Mu'dal: Two or More Consecutive Missing Links", summary: 'A more serious break than munqati\u2019, with consecutive narrators missing.' },
-  'ittisal-4': { id: 'ittisal-4', unit: 'unit-6', title: "Al-Mursal: When a Tabi'i Narrates Directly from the Prophet \ufdfa", summary: 'A chain skipping the Companion generation entirely.' },
-  'ittisal-5': { id: 'ittisal-5', unit: 'unit-6', title: "Al-Mu'allaq: A Chain Missing from the Start", summary: 'A chain dropped from its own beginning rather than elsewhere.' },
+  'ittisal-1': {
+    id: 'ittisal-1',
+    unit: 'unit-6',
+    title: 'Al-Muttasil: The Connected Chain',
+    summary: 'A sanad with no missing link from beginning to end.',
+    content: [
+      {
+        heading: "Returning to a standard already established",
+        body: `Al-muttasil, the connected chain, describes a sanad already meeting al-ittisal, the third requirement covered directly across this course's second unit: every narrator genuinely received the hadith directly from the person immediately before them, with no missing or merely assumed link anywhere along the chain's own length.`,
+      },
+      {
+        heading: 'A single positive standard, several distinct ways to fail it',
+        body: `This unit's remaining four topics each examine a specific, precisely named way a chain can fail to reach this same muttasil standard. These four categories are genuinely distinct from one another, differing in exactly how many narrators are missing, and precisely where in the chain that gap actually occurs.`,
+      },
+      {
+        heading: "A recalled distinction worth keeping in mind throughout",
+        body: `This course's second unit already showed that even scholars as careful as Imam al-Bukhari and Imam Muslim applied different standards for confirming genuine connection between two consecutive narrators. The categories examined across this unit's remaining topics describe chains failing this same connection requirement outright, rather than differing only in how strictly that requirement was verified.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `This unit's next topic turns to al-munqati', the single most general term for a chain failing this standard, before this unit's remaining three topics examine three further, considerably more specific categories.`,
+      },
+    ],
+  },
+
+  'ittisal-2': {
+    id: 'ittisal-2',
+    unit: 'unit-6',
+    title: "Al-Munqati': A Broken Link",
+    summary: 'A chain missing one narrator at any point other than its very start.',
+    content: [
+      {
+        heading: 'The most general term for a genuine break',
+        body: `Al-munqati', literally disconnected, describes a chain missing exactly one narrator at some specific point, wherever that single point happens to occur along the chain's own length, distinct from the more specific categories this unit's remaining topics examine.`,
+      },
+      {
+        heading: 'A single missing link, not a consecutive gap',
+        body: `This category specifically concerns a single missing narrator at any one location. Where two or more consecutive narrators are missing together, the chain instead falls under a different, more specific category, examined directly in this unit's next topic.`,
+      },
+      {
+        heading: 'Why this category functions as the general umbrella term',
+        body: `Munqati' serves as the broadest, most general label for a genuine break in connectivity, while mu'dal, mursal, and mu'allaq, examined directly across this unit's remaining three topics, each describe a specific, more precisely defined variety of this same underlying problem, distinguished by exactly how many narrators are missing and precisely where.`,
+      },
+      {
+        heading: "Setting up this unit's next topic",
+        body: `This unit's next topic turns to mu'dal, the specific category reserved for a chain missing two or more narrators consecutively, a more serious gap than munqati's own single missing link.`,
+      },
+    ],
+  },
+
+  'ittisal-3': {
+    id: 'ittisal-3',
+    unit: 'unit-6',
+    title: "Al-Mu'dal: Two or More Consecutive Missing Links",
+    summary: 'A more serious break than munqati\u2019, with consecutive narrators missing.',
+    content: [
+      {
+        heading: 'A more serious gap than munqati\u2019 specifically',
+        body: `Al-mu'dal, literally difficult or severely broken, describes a chain missing two or more consecutive narrators at the same point, distinguished directly from munqati', already covered in this unit's previous topic, specifically by this consecutive quality rather than by the missing narrators' own total count.`,
+      },
+      {
+        heading: 'A genuine, specific exception worth naming honestly',
+        body: `A later jurist simply stating, "the Prophet \ufdfa said," while drawing on or citing an established point rather than genuinely claiming to transmit a direct chain of narration, is not considered mu'dal at all. This specific situation reflects citation and argument, not an actual, failed attempt at transmission, and is therefore excluded from this category entirely.`,
+      },
+      {
+        heading: 'Why the consecutive quality specifically matters',
+        body: `Two narrators missing consecutively removes an entire, uninterrupted stretch of the chain's own verification at once, a more serious gap than two separate, single missing narrators occurring at different, unconnected points, which would instead be described using munqati' at each of those separate locations.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `This unit's remaining two topics turn to two further categories, distinguished not by how many narrators are missing, but by precisely where in the chain that specific gap occurs.`,
+      },
+    ],
+  },
+
+  'ittisal-4': {
+    id: 'ittisal-4',
+    unit: 'unit-6',
+    title: "Al-Mursal: When a Tabi'i Narrates Directly from the Prophet \ufdfa",
+    summary: 'A chain skipping the Companion generation entirely.',
+    content: [
+      {
+        heading: 'A gap at one specific, named location',
+        body: `Al-mursal describes a chain in which a tabi'i, a Successor, already introduced directly across this course's first unit, narrates directly from the Prophet \ufdfa, entirely omitting the specific Companion this same Successor would ordinarily have heard the report from.`,
+      },
+      {
+        heading: 'A useful way to remember this specific location',
+        body: `Mursal is missing its link at the end of the chain, nearest the Prophet \ufdfa himself, the exact opposite end from mu'allaq, examined directly in this unit's closing topic, which instead goes missing at the chain's own beginning, nearest the person actually compiling the hadith.`,
+      },
+      {
+        heading: 'A genuine, documented reason for real leniency',
+        body: `Several scholars, including Malik ibn Anas and Abu Hanifah, treated mursal reports with real leniency, particularly when transmitted by a widely trusted Successor such as Sa'id ibn al-Musayyib, reasoning that the specific missing narrator would almost certainly have been a Companion, a category already understood as carrying strong, general uprightness by virtue of direct contact with the Prophet \ufdfa himself.`,
+      },
+      {
+        heading: "A stricter position, held just as genuinely",
+        body: `Imam ash-Shafi'i and a considerable number of dedicated hadith specialists held a stricter position, generally treating mursal as da'if unless independently supported by further evidence, since a missing narrator, whoever they may have actually been, still represents a genuine, unverified gap in the chain's own documented connection.`,
+      },
+    ],
+  },
+
+  'ittisal-5': {
+    id: 'ittisal-5',
+    unit: 'unit-6',
+    title: "Al-Mu'allaq: A Chain Missing from the Start",
+    summary: 'A chain dropped from its own beginning rather than elsewhere.',
+    content: [
+      {
+        heading: 'The opposite end from mursal, exactly as already noted',
+        body: `Al-mu'allaq, literally hanging or suspended, describes a chain missing one or more narrators from its own very beginning, the end nearest whoever is actually compiling or citing the hadith, rather than the end nearest the Prophet \ufdfa already covered directly in this unit's previous topic through mursal.`,
+      },
+      {
+        heading: 'A concrete, real example',
+        body: `Imam al-Bukhari occasionally wrote something equivalent to, "it is narrated from Ibn Abbas that...", without stating his own specific chain connecting himself back to Ibn Abbas at that exact point, precisely the structure defining mu'allaq.`,
+      },
+      {
+        heading: 'Why this does not automatically weaken Sahih al-Bukhari itself',
+        body: `Most mu'allaq narrations within Sahih al-Bukhari are still considered sahih, since Bukhari himself had already verified and connected these same reports through a complete chain elsewhere, either later in that same book or within his own other works, shortening this specific citation deliberately rather than genuinely losing track of the chain.`,
+      },
+      {
+        heading: 'A useful point of contrast worth naming directly',
+        body: `Sahih Muslim, by contrast, contains only a single mu'allaq hadith, and Imam Muslim himself did not consider this specific report part of his own actual collection in the fullest sense, illustrating how differently even two scholars working within the same overall standard of rigor handled this exact same structural situation.`,
+      },
+      {
+        heading: "Closing this unit and turning to hidden defects directly",
+        body: `This unit has now covered muttasil as the positive standard already established directly across this course's second unit, and four specific, precisely distinguished ways a chain can fail to reach it: munqati's single, generic break, mu'dal's consecutive double break, mursal's specific gap at the Companion generation, and mu'allaq's specific gap at the chain's own beginning. This course's seventh unit turns to a considerably more difficult category still: hidden defects undermining a chain that, on its own surface, appears to be genuinely, fully connected.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 7 - HIDDEN AND SUBTLE DEFECTS (placeholders)
+  // UNIT 7 - HIDDEN AND SUBTLE DEFECTS (full content, expanded)
+  //
+  // The shadh-versus-munkar distinction (reliable versus weak
+  // narrator contradicting more reliable narrators), the distinct
+  // concept of ziyadat ath-thiqah (an accepted, non-contradicting
+  // addition), a real documented mudraj example (Abu Hurairah's own
+  // commentary merged into a hadith text), and the maqlub/mudtarib
+  // definitions checked against multiple current Mustalah al-Hadith
+  // references before writing.
   // -----------------------------------------------------------
-  'illah-1': { id: 'illah-1', unit: 'unit-7', title: "Al-'Illah: The Hidden Defect", summary: 'A subtle flaw undermining an otherwise apparently sound hadith.' },
-  'illah-2': { id: 'illah-2', unit: 'unit-7', title: 'Ash-Shadh: The Irregular Narration', summary: 'A reliable narrator contradicting narrators more reliable than himself.' },
-  'illah-3': { id: 'illah-3', unit: 'unit-7', title: 'Al-Munkar: Contradicting More Reliable Narrators', summary: 'A weak narrator contradicting more reliable narrators.' },
-  'illah-4': { id: 'illah-4', unit: 'unit-7', title: 'Al-Mudraj: An Insertion Into the Text', summary: 'Words added into a hadith\u2019s own text, not originally part of it.' },
-  'illah-5': { id: 'illah-5', unit: 'unit-7', title: 'Al-Maqlub and Al-Mudtarib: Reversed and Confused Narrations', summary: 'Two further, specific categories of narrator error.' },
+  'illah-1': {
+    id: 'illah-1',
+    unit: 'unit-7',
+    title: "Al-'Illah: The Hidden Defect",
+    summary: 'A subtle flaw undermining an otherwise apparently sound hadith.',
+    content: [
+      {
+        heading: "Returning directly to this course's third unit",
+        body: `This course's third unit already named 'adam al-'illah al-qadihah, freedom from a hidden, discrediting defect, as the fifth condition of sahih. This unit now examines exactly what this specific kind of defect actually is, and how specialists actually go about detecting it.`,
+      },
+      {
+        heading: 'A defect invisible on the chain\u2019s own surface',
+        body: `Al-'illah describes a subtle flaw undermining a hadith's authenticity despite its chain appearing, on first inspection, to fully satisfy every ordinary requirement already covered across this course's second and third units. Detecting it requires comparing multiple separate transmission routes for the same report against one another, rather than examining any single chain in isolation.`,
+      },
+      {
+        heading: 'A documented, genuinely instructive example',
+        body: `The well known hadith stating that actions are judged according to intentions was, for several early generations, transmitted through an unusually narrow chain, passing through only a single specific narrator at each of its earliest stages before finally widening considerably. Specialists in this exact science studied this narrow transmission pattern with real, direct scrutiny precisely because of how seriously this science treats such patterns, ultimately still affirming the hadith's own authenticity despite this unusual structure.`,
+      },
+      {
+        heading: 'A specialty requiring truly exceptional expertise',
+        body: `Detecting genuine 'ilal is widely regarded as among the most demanding subdisciplines within the entire science of hadith, historically mastered by only a small number of specialists, Ali ibn al-Madini, Ahmad ibn Hanbal, Imam al-Bukhari, and ad-Daraqutni prominent among them, each requiring an almost encyclopedic command of narrators, their specific teachers, and the full range of documented transmission routes for a truly vast number of individual reports.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `This unit's remaining four topics examine several specific, named categories of defect this same broader science of 'ilal actually works to uncover, beginning directly with shadh, already named alongside 'illah in this course's third unit.`,
+      },
+    ],
+  },
+
+  'illah-2': {
+    id: 'illah-2',
+    unit: 'unit-7',
+    title: 'Ash-Shadh: The Irregular Narration',
+    summary: 'A reliable narrator contradicting narrators more reliable than himself.',
+    content: [
+      {
+        heading: 'A defect that does not require an unreliable narrator at all',
+        body: `Ash-shadh, already named directly in this course's third unit, describes a specific situation in which a genuinely reliable narrator's own report contradicts a report transmitted by narrators who are more reliable than himself, whether through greater individual precision or through considerably greater number.`,
+      },
+      {
+        heading: "The narrator's own reliability is not actually the problem",
+        body: `This is a genuinely important point worth stating directly: shadh does not indicate that this specific narrator is himself unreliable. The defect lies entirely in the comparison itself, since even a genuinely trustworthy narrator can occasionally report something conflicting with what more reliable narrators reported regarding that exact same event.`,
+      },
+      {
+        heading: 'Al-mahfuz: naming the version actually preferred',
+        body: `The specific version ultimately preferred in such a contradiction, transmitted by these more reliable narrators, is called al-mahfuz, the preserved, correct version, standing directly opposite the rejected shadh version in this exact comparison.`,
+      },
+      {
+        heading: 'A related concept worth distinguishing directly',
+        body: `Shadh must be distinguished carefully from ziyadat ath-thiqah, an addition made by a reliable narrator that does not actually contradict other narrators, merely supplying extra genuine detail they happened to omit. Such an addition is generally accepted rather than rejected, precisely because no real contradiction exists in this specific case, unlike shadh, which by definition involves a genuine, direct conflict.`,
+      },
+    ],
+  },
+
+  'illah-3': {
+    id: 'illah-3',
+    unit: 'unit-7',
+    title: 'Al-Munkar: Contradicting More Reliable Narrators',
+    summary: 'A weak narrator contradicting more reliable narrators.',
+    content: [
+      {
+        heading: 'The same basic structure, one crucial difference',
+        body: `Al-munkar shares shadh's own basic structure, already covered directly in this unit's previous topic, a report contradicting one transmitted by more reliable narrators, differing specifically in that the contradicting narrator here is himself already known to be weak, rather than genuinely reliable.`,
+      },
+      {
+        heading: 'Two distinct defects compounding at once',
+        body: `Munkar is generally considered more seriously weak than shadh precisely because it compounds two separate problems simultaneously: the narrator's own already established unreliability, and this specific contradiction with more trustworthy material, whereas shadh involves only the second of these two problems.`,
+      },
+      {
+        heading: "Al-ma'ruf: this category's own preferred version",
+        body: `The specific version ultimately preferred in this exact comparison, transmitted by the more reliable narrators, is called al-ma'ruf, the recognized, correct version, functioning as munkar's own direct counterpart, exactly as al-mahfuz already functions for shadh in this unit's previous topic.`,
+      },
+      {
+        heading: "The single distinguishing factor worth holding in mind",
+        body: `Comparing this unit's second and third topics directly: shadh and munkar share an identical underlying structure, contradiction with more reliable narrators, differing only in whether the contradicting narrator is himself reliable, shadh, or already known to be weak, munkar. This single distinction is what actually separates these two otherwise closely related categories.`,
+      },
+    ],
+  },
+
+  'illah-4': {
+    id: 'illah-4',
+    unit: 'unit-7',
+    title: 'Al-Mudraj: An Insertion Into the Text',
+    summary: "Words added into a hadith's own text, not originally part of it.",
+    content: [
+      {
+        heading: 'Material entering a hadith that was never actually part of it',
+        body: `Al-mudraj describes a hadith in which specific words or phrases have become inserted into either its text or its chain, material genuinely absent from the Prophet's \ufdfa own original statement, typically originating instead as a narrator's own explanatory comment later merged, whether accidentally or otherwise, into the main body of the report itself.`,
+      },
+      {
+        heading: 'A real, documented example',
+        body: `In one well known instance, Abu Hurairah's own personal advice encouraging thorough completion of ablution appears within the same narration as the Prophet's \ufdfa own separate warning against neglecting the feet during this exact same act, later transmitters merging these two genuinely distinct statements into what then appeared to be one single, continuous hadith.`,
+      },
+      {
+        heading: 'How this specific insertion is actually detected',
+        body: `Mudraj is identified specifically by comparing multiple independent narrations of what is presented as the same hadith, and noticing that a specific phrase or addition appears in only some versions rather than consistently across all of them, alongside any explicit clarification a narrator themselves later offered distinguishing their own commentary from the Prophet's \ufdfa own actual words.`,
+      },
+      {
+        heading: 'Why this specific defect matters so directly',
+        body: `Left undetected, mudraj risks attributing to the Prophet \ufdfa words he never actually said, even when the surrounding material genuinely does trace back to him. This is precisely the kind of subtle textual problem the broader science of 'ilal, already covered directly across this unit's first topic, exists specifically to uncover.`,
+      },
+    ],
+  },
+
+  'illah-5': {
+    id: 'illah-5',
+    unit: 'unit-7',
+    title: 'Al-Maqlub and Al-Mudtarib: Reversed and Confused Narrations',
+    summary: 'Two further, specific categories of narrator error.',
+    content: [
+      {
+        heading: 'Al-maqlub: names or wording genuinely reversed',
+        body: `Al-maqlub describes a hadith in which specific words or the order of events within its own text have been swapped or reversed, or in which specific names within its own chain have been altered, such as exchanging a narrator's own name with his father's name. Some documented instances of this specific reversal occurred deliberately, a narrator hoping to make an otherwise familiar chain appear unique or personally impressive by presenting it in this altered form.`,
+      },
+      {
+        heading: 'Al-mudtarib: genuinely irreconcilable versions',
+        body: `Al-mudtarib describes a hadith transmitted in multiple ways, whether differing in sanad or in matn, that genuinely cannot be reconciled with one another and cannot be resolved by simply preferring one version over the rest.`,
+      },
+      {
+        heading: 'A specific condition worth stating directly',
+        body: `Mudtarib applies specifically when the conflicting versions are roughly equal in their own overall strength. Where one specific version is clearly stronger than the others, that version is simply preferred outright, and the report is not considered mudtarib at all, a distinction worth holding in mind directly rather than applying this label to any report with multiple differing narrations.`,
+      },
+      {
+        heading: "Closing this unit and turning to narrator biography directly",
+        body: `This unit has now covered al-'illah as the broader hidden-defect science this course's third unit already anticipated, ash-shadh and al-munkar as closely related but genuinely distinct forms of contradiction, al-mudraj as material inserted into a hadith's own text or chain, and al-maqlub and al-mudtarib as reversal and genuine irreconcilability. Detecting essentially every one of these defects depends directly on deep, specific knowledge of individual narrators themselves, exactly the subject this course's eighth unit turns to next.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 8 - 'ILM AR-RIJAL (placeholders)
+  // UNIT 8 - 'ILM AR-RIJAL (full content, expanded)
+  //
+  // The paired jarh/ta'dil discipline, the graded terminology scale
+  // (from superlatives through saduq to maqbul/layyin, with a
+  // parallel graded scale of criticism), and the specific chain of
+  // reference works (Ibn Abi Hatim, al-Mizzi, Ibn Hajar's two
+  // Tahdhib works, adh-Dhahabi's Mizan al-I'tidal) checked against
+  // multiple current Mustalah al-Hadith references before writing.
   // -----------------------------------------------------------
-  'rijal-1': { id: 'rijal-1', unit: 'unit-8', title: 'Why Narrators Themselves Are Studied', summary: 'The rationale behind an entire science devoted to individual biography.' },
-  'rijal-2': { id: 'rijal-2', unit: 'unit-8', title: "Al-Jarh wa't-Ta'dil: Criticism and Validation", summary: 'The paired discipline of validating and criticizing individual narrators.' },
-  'rijal-3': { id: 'rijal-3', unit: 'unit-8', title: 'Ranks of Ta\u2019dil and Jarh', summary: 'The graded scale scholars use rather than a simple accept-or-reject verdict.' },
-  'rijal-4': { id: 'rijal-4', unit: 'unit-8', title: 'Books Dedicated to Narrator Biography', summary: 'The reference works this entire discipline is actually recorded in.' },
+  'rijal-1': {
+    id: 'rijal-1',
+    unit: 'unit-8',
+    title: 'Why Narrators Themselves Are Studied',
+    summary: 'The rationale behind an entire science devoted to individual biography.',
+    content: [
+      {
+        heading: 'The foundation everything already covered actually depends on',
+        body: `This course's second unit established al-'adalah and ad-dabt as required qualities of every individual narrator, and its later units built extensively upon this same foundation. None of this evaluation is practically possible without a genuine, documented body of biographical knowledge about who each specific narrator actually was.`,
+      },
+      {
+        heading: 'Specific, concrete questions this discipline actually answers',
+        body: `'Ilm ar-rijal, the science of narrator biography, developed specifically to answer direct, practical questions about each individual transmitter: who exactly was this person, during which period did they live, under which specific teachers did they study, which students transmitted from them in turn, and what did other, contemporary scholars who personally knew or investigated them actually say about their honesty and precision.`,
+      },
+      {
+        heading: 'Turning abstract standards into genuinely checkable facts',
+        body: `Without this documented record, 'adalah and dabt would remain abstract standards with no real, practical way to verify whether any specific narrator actually satisfied them. 'Ilm ar-rijal turns these standards into checkable historical fact, a documented record scholars could consult directly rather than relying on unverifiable impression alone.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `This unit's next topic turns directly to the specific, paired discipline scholars developed to actually record and weigh this documented information: al-jarh wa't-ta'dil, criticism and validation.`,
+      },
+    ],
+  },
+
+  'rijal-2': {
+    id: 'rijal-2',
+    unit: 'unit-8',
+    title: "Al-Jarh wa't-Ta'dil: Criticism and Validation",
+    summary: 'The paired discipline of validating and criticizing individual narrators.',
+    content: [
+      {
+        heading: 'Two directions of the same underlying discipline',
+        body: `Al-jarh wa't-ta'dil, literally wounding and correcting, names the paired discipline of at-ta'dil, formally validating a narrator as upright and reliable, and al-jarh, formally identifying a specific flaw or weakness in a narrator, together forming a single, unified critical discipline scholars applied to every historically documented hadith narrator.`,
+      },
+      {
+        heading: 'A genuine, working principle for resolving conflicting assessments',
+        body: `When scholars disagreed about a specific narrator, one offering general praise while another offered criticism, a specific, explained criticism, jarh mufassar, is generally given more weight than unexplained general praise, since it comes with actual, stated reasoning a later reader can independently evaluate rather than a bare impression alone.`,
+      },
+      {
+        heading: 'A genuine limitation on this same principle',
+        body: `This preference for explained criticism does not apply without qualification. Vague, unexplained criticism, jarh mubham, giving no specific reasoning at all, generally carries considerably less weight than a clearly explained validation, since an unexplained accusation offers no actual basis a later scholar could independently assess or verify.`,
+      },
+      {
+        heading: "Setting up this unit's next topic",
+        body: `Neither ta'dil nor jarh functions as a simple, binary verdict. This unit's next topic turns directly to the genuine, graded scale of specific terminology scholars actually used to express exactly how strong a given validation or criticism truly was.`,
+      },
+    ],
+  },
+
+  'rijal-3': {
+    id: 'rijal-3',
+    unit: 'unit-8',
+    title: 'Ranks of Ta\u2019dil and Jarh',
+    summary: 'The graded scale scholars use rather than a simple accept-or-reject verdict.',
+    content: [
+      {
+        heading: 'A genuinely graded scale, not a simple binary',
+        body: `Scholars developed a specific, graded scale of terminology for both ta'dil and jarh, allowing considerably more precision than a simple accepted-or-rejected verdict could ever actually express.`,
+      },
+      {
+        heading: "Ta'dil's own graded terms, from highest to lowest",
+        body: `At the very top, terms such as awthaq an-nas, the most reliable of people, or a repeated adjective such as thiqah thiqah, reliable, reliable, mark the very highest possible validation. Below this, thiqah alone, reliable, marks strong, standard acceptance. Below this again, saduq, truthful, describes a narrator generally honest but occasionally prone to minor error, a specific level already connected directly to this course's third unit, since narrators at this exact level are precisely the ones whose hadith is often graded hasan rather than sahih. At the lowest still-usable level, maqbul or layyin, acceptable or soft, describes a narrator whose material is generally usable primarily in a supporting, corroborating role rather than standing entirely on its own.`,
+      },
+      {
+        heading: "Jarh's own graded terms, from mildest to most severe",
+        body: `Criticism follows a similarly graded scale in the opposite direction. Milder terms such as layyin al-hadith, soft in hadith, indicate a narrator whose material is treated with real caution, while considerably more severe terms such as kadhdhab, liar, or wadi' al-hadith, fabricator, indicate a narrator whose material is rejected outright and entirely, regardless of any other consideration.`,
+      },
+      {
+        heading: 'Why this precise terminology matters so directly',
+        body: `The exact specific term a recognized scholar of narrator criticism actually used carries real, practical consequences for how a given hadith is ultimately graded, connecting this unit's own subject matter directly back to sahih, hasan, and da'if, already covered fully across this course's third and fourth units. A narrator described as saduq produces a genuinely different outcome than one described as thiqah, despite both terms falling generally within ta'dil's own overall validating direction.`,
+      },
+    ],
+  },
+
+  'rijal-4': {
+    id: 'rijal-4',
+    unit: 'unit-8',
+    title: 'Books Dedicated to Narrator Biography',
+    summary: 'The reference works this entire discipline is actually recorded in.',
+    content: [
+      {
+        heading: 'A discipline requiring its own dedicated reference literature',
+        body: `Given the sheer number of individual narrators this science needed to document, scholars produced entire dedicated reference works recording exactly this kind of biographical and critical information, allowing later students to look up a specific narrator's own documented standing directly rather than needing to independently reconstruct it each time.`,
+      },
+      {
+        heading: 'Foundational early works',
+        body: `Al-Jarh wa't-Ta'dil by Ibn Abi Hatim ar-Razi stands among the earliest and most foundational works of exactly this kind, a substantial biographical dictionary recording detailed critical assessments across a truly vast number of individual narrators.`,
+      },
+      {
+        heading: 'A chain of later works, each building on the one before it',
+        body: `Al-Mizzi's Tahdhib al-Kamal later gathered detailed biographical information specifically on narrators found within the six major hadith collections, examined directly across this course's eleventh unit. Ibn Hajar al-'Asqalani subsequently condensed this same material into his own Tahdhib at-Tahdhib, and condensed that same work still further into Taqrib at-Tahdhib, a considerably shorter, genuinely practical reference still widely used today for quickly checking a specific narrator's own documented grading.`,
+      },
+      {
+        heading: 'A work focused specifically on weakness',
+        body: `Adh-Dhahabi's Mizan al-I'tidal focuses specifically on narrators who received genuine criticism, gathering this same kind of documented material together in one place specifically for identifying and studying weakness.`,
+      },
+      {
+        heading: "Closing this unit and turning to narrators' own historical generations",
+        body: `This unit has now covered why narrators themselves require this kind of dedicated, documented study, the paired jarh and ta'dil discipline scholars developed for this exact purpose, the genuinely graded terminology this discipline actually uses, and the specific reference works recording all of this material for later use. This course's ninth unit turns directly to the specific historical generations these same narrators actually belonged to, already used as terminology throughout this entire course, examined now on their own terms.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 9 - THE GENERATIONS OF NARRATORS (placeholders)
+  // UNIT 9 - THE GENERATIONS OF NARRATORS (full content, expanded)
+  //
+  // Ibn Hajar's own precise definition of Sahabi (with its exact
+  // Arabic), the majority position on the Companions' collective
+  // uprightness, the senior/junior division within the Tabi'un, and
+  // Ibn Sa'd's Kitab at-Tabaqat al-Kubra as a concrete reference
+  // work organized around this exact generational structure, all
+  // checked against multiple current Mustalah al-Hadith references
+  // before writing.
   // -----------------------------------------------------------
-  'tabaqat-1': { id: 'tabaqat-1', unit: 'unit-9', title: 'As-Sahabah: The Companions', summary: 'Those who met the Prophet \ufdfa personally as believers.' },
-  'tabaqat-2': { id: 'tabaqat-2', unit: 'unit-9', title: "At-Tabi'un: The Successors", summary: 'Those who met at least one Companion but not the Prophet \ufdfa himself.' },
-  'tabaqat-3': { id: 'tabaqat-3', unit: 'unit-9', title: "Tabi' at-Tabi'in: The Successors of the Successors", summary: 'The third generation in this same chain of personal transmission.' },
-  'tabaqat-4': { id: 'tabaqat-4', unit: 'unit-9', title: 'How a Narrator\u2019s Generation Affects a Hadith\u2019s Study', summary: 'Why this specific dating matters directly for sanad evaluation.' },
+  'tabaqat-1': {
+    id: 'tabaqat-1',
+    unit: 'unit-9',
+    title: 'As-Sahabah: The Companions',
+    summary: 'Those who met the Prophet \ufdfa personally as believers.',
+    content: [
+      {
+        heading: 'A precise definition, not a loose popular notion',
+        body: `Ibn Hajar al-'Asqalani offered what remains the most widely accepted definition of as-sahabah, the Companions: anyone who met the Prophet \ufdfa while believing in him, and who died as a Muslim.`,
+        verses: [
+          {
+            type: 'qaidah',
+            arabic: 'أَصَحُّ مَا وَقَفْتُ عَلَيْهِ مِنْ ذَلِكَ أَنَّ الصَّحَابِيَّ مَنْ لَقِيَ النَّبِيَّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مُؤْمِنًا بِهِ وَمَاتَ عَلَى الْإِسْلَامِ',
+            transliteration: "asahhu mā waqaftu 'alayhi min dhālika anna s-sahābiyya man laqiya n-nabiyya sallallāhu 'alayhi wa sallam mu'minan bihi wa māta 'ala l-islām",
+            english: 'The most correct view I came across is that a Companion is one who met the Prophet \ufdfa, believing in him, and passed away as a Muslim.',
+            source: "Ibn Hajar al-'Asqalani's own definition of sahabi",
+          },
+        ],
+      },
+      {
+        heading: 'A genuinely inclusive standard',
+        body: `This definition includes anyone meeting this basic standard regardless of how long they actually spent with the Prophet \ufdfa, whether they personally narrated any hadith at all, and whether their own encounter was extensive or as brief as a single sighting.`,
+      },
+      {
+        heading: "The majority position on their collective standing",
+        body: `The scholarly tradition this course has drawn on throughout holds that the Companions, as a group, are treated as collectively upright, without requiring the same individual 'adalah investigation already covered directly across this course's second and eighth units for narrators from later generations, a position resting specifically on their unique historical proximity to revelation itself.`,
+      },
+      {
+        heading: 'A small number of especially prolific narrators',
+        body: `While many thousands of Companions existed, a comparatively small number transmitted the majority of hadith actually recorded, Abu Hurairah, 'Aishah, Ibn 'Abbas, Ibn 'Umar, Anas ibn Malik, and Jabir ibn 'Abdullah prominent among them.`,
+      },
+    ],
+  },
+
+  'tabaqat-2': {
+    id: 'tabaqat-2',
+    unit: 'unit-9',
+    title: "At-Tabi'un: The Successors",
+    summary: 'Those who met at least one Companion but not the Prophet \ufdfa himself.',
+    content: [
+      {
+        heading: 'A generation defined by what it did not personally witness',
+        body: `At-tabi'un, the Successors, already introduced briefly across this course's sixth unit, refers to anyone who met at least one Companion as a believer without ever personally meeting the Prophet \ufdfa himself.`,
+      },
+      {
+        heading: 'Real internal seniority within this same generation',
+        body: `Classical biographers divided the Tabi'un into several distinct layers based on relative seniority, distinguishing those who met numerous senior Companions over an extended period from those meeting only a smaller number, or more junior, Companions later in this same generation's own overall span.`,
+      },
+      {
+        heading: 'A specific example already familiar from this course',
+        body: `Sa'id ibn al-Musayyib, already named directly across this course's sixth unit as a widely trusted narrator whose mursal reports several scholars treated with genuine leniency, is himself a well known example of a senior Tabi'i, having personally met a considerable number of senior Companions.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `This unit's next topic turns to the third generation in this same sequence, before this unit's closing topic examines directly why this entire generational structure actually matters for evaluating a hadith's own sanad.`,
+      },
+    ],
+  },
+
+  'tabaqat-3': {
+    id: 'tabaqat-3',
+    unit: 'unit-9',
+    title: "Tabi' at-Tabi'in: The Successors of the Successors",
+    summary: 'The third generation in this same chain of personal transmission.',
+    content: [
+      {
+        heading: 'Continuing the same defining logic one generation further',
+        body: `Tabi' at-tabi'in, the Successors of the Successors, refers to anyone who met at least one member of the Tabi'un, already covered directly in this unit's previous topic, without personally meeting any Companion at all.`,
+      },
+      {
+        heading: 'A generation containing the earliest systematic scholarship',
+        body: `This third generation includes several of the earliest scholars who began the kind of systematic collection and critical evaluation this entire course has examined throughout, work that would later mature into the developed science this course studies in its fullest, later form.`,
+      },
+      {
+        heading: 'Why generational boundaries are not always perfectly sharp',
+        body: `Precisely dating any specific individual's own generational placement can genuinely vary between biographers, particularly for narrators living near the boundary separating two adjacent generations. This course's own use of these three broad categories reflects the general, widely recognized structure rather than resolving every specific individual case with absolute precision.`,
+      },
+      {
+        heading: "Setting up this unit's closing topic",
+        body: `With all three core generations now introduced, sahabah, tabi'un, and tabi' at-tabi'in, this unit's closing topic turns directly to why this same generational framework actually matters so directly for studying a hadith's own sanad.`,
+      },
+    ],
+  },
+
+  'tabaqat-4': {
+    id: 'tabaqat-4',
+    unit: 'unit-9',
+    title: 'How a Narrator\u2019s Generation Affects a Hadith\u2019s Study',
+    summary: "Why this specific dating matters directly for sanad evaluation.",
+    content: [
+      {
+        heading: 'A direct connection to this course\u2019s second unit',
+        body: `This course's second unit already showed that confirming genuine connection between two consecutive narrators, the specific standard distinguishing Imam al-Bukhari's own stricter requirement from Imam Muslim's, depends directly on knowing whether these two narrators genuinely could have met at all, a question resolved specifically through knowing their own respective generations and approximate lifespans.`,
+      },
+      {
+        heading: 'A direct connection to this course\u2019s sixth unit',
+        body: `Al-mursal, already covered directly across this course's sixth unit, is itself defined entirely in generational terms: a member of the Tabi'un narrating directly from the Prophet \ufdfa, skipping the Companion generation specifically. Recognizing mursal at all depends entirely on first knowing precisely which generation a given narrator actually belonged to.`,
+      },
+      {
+        heading: 'A direct connection to this course\u2019s eighth unit',
+        body: `The reference works already covered directly across this course's eighth unit are frequently organized specifically around this same generational structure. Ibn Sa'd's Kitab at-Tabaqat al-Kubra, one of the earliest major biographical works of exactly this kind, arranges its own subjects generation by generation, precisely the structure this unit has now covered in full.`,
+      },
+      {
+        heading: 'Closing this unit and turning to how hadith actually changed hands',
+        body: `This unit has now covered the Sahabah's own precise definition and unique collective standing, the Tabi'un's own internal seniority, Tabi' at-Tabi'in as the third generation in this same sequence, and the direct, practical ways this generational structure connects to material already covered across this course's second, sixth, and eighth units. This course's tenth unit turns to a related but genuinely different question: not which generation a narrator belonged to, but the specific, named methods by which a hadith was actually received and passed on from one narrator to the next.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
   // UNIT 10 - METHODS OF RECEIVING AND TRANSMITTING HADITH

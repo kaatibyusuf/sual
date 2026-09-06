@@ -7,6 +7,17 @@
 // page (topic list) -> Topic page, dual gating (payment + quiz),
 // highlighted Qur'an/Hadith verse blocks, card-based UI.
 //
+// This course's verse blocks support a third type beyond 'quran' and
+// 'hadith': type 'qaidah', used for formally stated classical rules
+// (in Arabic, with transliteration and English), the same extension
+// originally built for Arabiyyah Class, since Mustalah al-Hadith is
+// just as terminology-dense a subject and benefits from the same
+// distinct, findable treatment for stated rules versus quoted
+// primary sources. Qaidah blocks render with their own
+// transliteration line and distinct visual style (see
+// .hdc-verse--qaidah in HadeethClass.css) so a stated rule is never
+// confused with an actual quoted hadith.
+//
 // Deliberately named and routed separately from any existing
 // hadith-related content elsewhere in this app -- this uses its own
 // DB tables (hadeethclass_progress / hadeethclass_purchases /
@@ -59,6 +70,7 @@ export default function HadeethClass({ user }) {
   const [paywallUnitId, setPaywallUnitId] = useState(null);
   const [quizGateUnitId, setQuizGateUnitId] = useState(null);
   const [purchasing, setPurchasing] = useState(false);
+  const [purchaseError, setPurchaseError] = useState(null);
   const [saving, setSaving] = useState(false);
 
   const [quizAnswers, setQuizAnswers] = useState({});
@@ -131,7 +143,7 @@ export default function HadeethClass({ user }) {
   const isUnitLocked = (unitId) => isUnitPaymentLocked(unitId) || isUnitQuizLocked(unitId);
 
   const handleUnitClick = (unit) => {
-    if (isUnitPaymentLocked(unit.id)) { setPaywallUnitId(unit.id); return; }
+    if (isUnitPaymentLocked(unit.id)) { setPaywallUnitId(unit.id); setPurchaseError(null); return; }
     if (isUnitQuizLocked(unit.id)) {
       const idx = HADEETHCLASS_UNITS.findIndex((u) => u.id === unit.id);
       setQuizGateUnitId(HADEETHCLASS_UNITS[idx - 1].id);
@@ -166,13 +178,23 @@ export default function HadeethClass({ user }) {
   const startPurchase = async (plan) => {
     if (!user) return;
     setPurchasing(true);
+    setPurchaseError(null);
     try {
       const { data, error } = await supabase.functions.invoke('initialize-payment', { body: { product: 'hadeethclass', plan } });
       if (error) throw error;
       const authUrl = data?.data?.authorization_url ?? data?.authorization_url;
-      if (authUrl) window.location.href = authUrl;
+      if (authUrl) {
+        window.location.href = authUrl;
+      } else {
+        // Function returned 200 but no authorization_url — surface
+        // whatever error message it sent back instead of failing silently.
+        throw new Error(data?.error || 'No checkout link was returned. Please try again.');
+      }
     } catch (err) {
       console.error('Hadeeth Class purchase failed to initialize', err);
+      setPurchaseError(
+        err?.message || err?.error_description || 'Could not start payment. Please try again in a moment.'
+      );
     } finally {
       setPurchasing(false);
     }
@@ -219,13 +241,14 @@ export default function HadeethClass({ user }) {
     const unit = HADEETHCLASS_UNITS.find((u) => u.id === paywallUnitId);
     if (!unit) return null;
     return (
-      <div className="hdc-sheet-overlay" onClick={() => setPaywallUnitId(null)}>
+      <div className="hdc-sheet-overlay" onClick={() => { setPaywallUnitId(null); setPurchaseError(null); }}>
         <div className="hdc-sheet" onClick={(e) => e.stopPropagation()}>
           <div className="hdc-sheet-header">
             <span className="hdc-sheet-title">Unlock "{unit.title}"</span>
-            <button className="hdc-sheet-close" onClick={() => setPaywallUnitId(null)}>×</button>
+            <button className="hdc-sheet-close" onClick={() => { setPaywallUnitId(null); setPurchaseError(null); }}>×</button>
           </div>
           <p className="hdc-sheet-text">This unit is part of the paid Hadeeth Class content.</p>
+          {purchaseError && <div className="hdc-sheet-error">{purchaseError}</div>}
           <div className="hdc-sheet-options">
             <button className="hdc-sheet-option" disabled={purchasing} onClick={() => startPurchase(unit.id)}>
               <span className="hdc-sheet-option-title">Unlock This Unit</span>
@@ -372,8 +395,13 @@ export default function HadeethClass({ user }) {
               </div>
               {Array.isArray(section.verses) && section.verses.map((v, vi) => (
                 <div key={vi} className={`hdc-verse hdc-verse--${v.type}`}>
-                  <span className="hdc-verse-tag">{v.type === 'quran' ? 'Qur\'an' : 'Hadith'}</span>
+                  <span className="hdc-verse-tag">
+                    {v.type === 'quran' ? 'Qur\'an' : v.type === 'hadith' ? 'Hadith' : 'Qaidah (Rule)'}
+                  </span>
                   <p className="hdc-verse-arabic" lang="ar" dir="rtl">{v.arabic}</p>
+                  {v.type === 'qaidah' && v.transliteration && (
+                    <p className="hdc-verse-translit">{v.transliteration}</p>
+                  )}
                   <p className="hdc-verse-english">{v.english}</p>
                   <p className="hdc-verse-source">{v.source}</p>
                 </div>
@@ -473,10 +501,11 @@ export default function HadeethClass({ user }) {
           </button>
           {!hasFullAccess && (
             <button className="hdc-btn-secondary" disabled={purchasing} onClick={() => startPurchase('full')}>
-              Unlock Full Course: ₦{FULL_PRICE_NGN.toLocaleString()}
+              {purchasing ? 'Starting checkout…' : `Unlock Full Course: ₦${FULL_PRICE_NGN.toLocaleString()}`}
             </button>
           )}
         </div>
+        {purchaseError && !paywallUnitId && <div className="hdc-sheet-error" style={{ marginTop: 14, marginBottom: 0 }}>{purchaseError}</div>}
       </div>
 
       <div className="hdc-cards">
