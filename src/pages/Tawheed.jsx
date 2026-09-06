@@ -21,6 +21,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js'; // adjust path to match your existing client import
 import { TAWHEED_UNITS, TAWHEED_TOPICS } from '../data/tawheed';
 import { TAWHEED_UNIT_QUIZZES, TAWHEED_PASS_THRESHOLD } from '../data/tawheedQuizzes';
+import CourseCertificate from '../components/CourseCertificate.jsx';
 import './Tawheed.css';
 
 const FREE_UNIT_IDS = ['unit-1'];
@@ -517,6 +518,15 @@ export default function Tawheed({ user }) {
           </div>
         )}
       </div>
+
+      <CourseCertificate
+        courseId="tawheed"
+        quizAttemptsTable="tawheed_quiz_attempts"
+        units={TAWHEED_UNITS}
+        courseLabel="Tawheed Class"
+        courseArabic="تَوْحِيد"
+        courseStats="" // TODO: fill in once you confirm the real unit/topic/quiz counts
+      />
 
       <div className="tw-cards">
         {TAWHEED_UNITS.map((unit, unitIdx) => {

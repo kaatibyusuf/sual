@@ -37,6 +37,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js'; // adjust path to match your existing client import
 import { ARABIYYAHCLASS_UNITS, ARABIYYAHCLASS_TOPICS } from '../data/arabiyyahClass';
 import { ARABIYYAHCLASS_UNIT_QUIZZES, ARABIYYAHCLASS_PASS_THRESHOLD } from '../data/arabiyyahClassQuizzes';
+import CourseCertificate from '../components/CourseCertificate.jsx';
 import './ArabiyyahClass.css';
 
 
@@ -499,6 +500,15 @@ export default function ArabiyyahClass({ user }) {
           )}
         </div>
       </div>
+
+      <CourseCertificate
+        courseId="arabiyyahclass"
+        quizAttemptsTable="arabiyyahclass_quiz_attempts"
+        units={ARABIYYAHCLASS_UNITS}
+        courseLabel="Arabiyyah Class"
+        courseArabic="عَرَبِيَّة"
+        courseStats="14 units · 60 topics · 420 quiz questions"
+      />
 
       <div className="arc-cards">
         {ARABIYYAHCLASS_UNITS.map((unit, unitIdx) => {

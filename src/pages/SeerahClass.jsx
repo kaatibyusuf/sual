@@ -22,6 +22,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js'; // adjust path to match your existing client import
 import { SEERAHCLASS_UNITS, SEERAHCLASS_TOPICS } from '../data/seerahClass';
 import { SEERAHCLASS_UNIT_QUIZZES, SEERAHCLASS_PASS_THRESHOLD } from '../data/seerahClassQuizzes';
+import CourseCertificate from '../components/CourseCertificate.jsx';
 import './SeerahClass.css';
 
 const FREE_UNIT_IDS = ['unit-1'];
@@ -478,6 +479,15 @@ export default function SeerahClass({ user }) {
           )}
         </div>
       </div>
+
+      <CourseCertificate
+        courseId="seerahclass"
+        quizAttemptsTable="seerahclass_quiz_attempts"
+        units={SEERAHCLASS_UNITS}
+        courseLabel="Seerah Class"
+        courseArabic="سِيرَة"
+        courseStats="14 units · 58 topics · 420 quiz questions"
+      />
 
       <div className="sc-cards">
         {SEERAHCLASS_UNITS.map((unit, unitIdx) => {

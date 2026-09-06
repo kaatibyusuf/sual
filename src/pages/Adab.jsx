@@ -13,6 +13,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js'; // adjust path to match your existing client import
 import { ADAB_UNITS, ADAB_TOPICS } from '../data/adab';
 import { ADAB_UNIT_QUIZZES, ADAB_PASS_THRESHOLD } from '../data/adabQuizzes';
+import CourseCertificate from '../components/CourseCertificate.jsx';
 import './Adab.css';
 
 const FREE_UNIT_IDS = ['unit-1'];
@@ -463,6 +464,15 @@ export default function Adab({ user }) {
           )}
         </div>
       </div>
+
+      <CourseCertificate
+        courseId="adab"
+        quizAttemptsTable="adab_quiz_attempts"
+        units={ADAB_UNITS}
+        courseLabel="Adab Class"
+        courseArabic="أَدَب"
+        courseStats="" // TODO: fill in once you confirm the real unit/topic/quiz counts
+      />
 
       <div className="adab-cards">
         {ADAB_UNITS.map((unit, unitIdx) => {

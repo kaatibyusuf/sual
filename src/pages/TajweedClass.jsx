@@ -22,6 +22,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js'; // adjust path to match your existing client import
 import { TAJWEEDCLASS_UNITS, TAJWEEDCLASS_TOPICS } from '../data/tajweedClass';
 import { TAJWEEDCLASS_UNIT_QUIZZES, TAJWEEDCLASS_PASS_THRESHOLD } from '../data/tajweedClassQuizzes';
+import CourseCertificate from '../components/CourseCertificate.jsx';
 import './TajweedClass.css';
 
 const FREE_UNIT_IDS = ['unit-1'];
@@ -478,6 +479,15 @@ export default function TajweedClass({ user }) {
           )}
         </div>
       </div>
+
+      <CourseCertificate
+        courseId="tajweedclass"
+        quizAttemptsTable="tajweedclass_quiz_attempts"
+        units={TAJWEEDCLASS_UNITS}
+        courseLabel="Tajweed Class"
+        courseArabic="تَجْوِيد"
+        courseStats="12 units · 54 topics · 360 quiz questions"
+      />
 
       <div className="tc-cards">
         {TAJWEEDCLASS_UNITS.map((unit, unitIdx) => {

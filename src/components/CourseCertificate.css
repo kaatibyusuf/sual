@@ -1,0 +1,310 @@
+/* src/components/CourseCertificate.css
+ *
+ * Two things are styled here: the small "you're done, claim it"
+ * trigger card that sits on the course page, and the actual
+ * certificate artwork inside the modal. The artwork deliberately
+ * reuses Fusuul's own visual language (navy/sky-blue, Amiri Arabic
+ * serif, warm ivory ground) so a certificate feels like it belongs
+ * to the same brand a learner has been studying inside, not a
+ * generic template bolted on afterward.
+ */
+
+/* ---------- Trigger card ---------- */
+
+.cert-trigger-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #094570, #062338);
+  color: #fdf6e8;
+}
+
+.cert-trigger-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cert-trigger-title {
+  font-size: 1.02rem;
+  font-weight: 800;
+}
+
+.cert-trigger-subtitle {
+  font-size: 0.85rem;
+  color: #b8d4ec;
+}
+
+.cert-trigger-button {
+  flex: 0 0 auto;
+  padding: 10px 20px;
+  border-radius: 100px;
+  border: none;
+  background: #85CCFF;
+  color: #062338;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.cert-trigger-button:hover { transform: translateY(-1px); }
+
+/* ---------- Modal shell ---------- */
+
+.cert-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 20, 32, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.cert-modal {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.cert-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f0f4f8;
+  color: #4a5a68;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cert-modal-form {
+  margin-bottom: 16px;
+}
+
+.cert-name-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a5a68;
+  margin-bottom: 6px;
+}
+
+.cert-name-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #d0e0ec;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.cert-download-button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 13px;
+  border-radius: 10px;
+  border: none;
+  background: #094570;
+  color: #fdf6e8;
+  font-weight: 800;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.cert-download-button:disabled {
+  background: #b8c4ce;
+  cursor: not-allowed;
+}
+
+/* ---------- The certificate artwork itself ---------- */
+
+.cert-preview-wrap {
+  border-radius: 10px;
+  overflow: hidden;
+  transition: opacity 0.15s ease;
+}
+
+.cert-preview-wrap--empty { opacity: 0.35; }
+
+.cert-plate {
+  width: 100%;
+  aspect-ratio: 1.55 / 1;
+  background: #faf6ee;
+  padding: 22px;
+  box-sizing: border-box;
+}
+
+.cert-border {
+  height: 100%;
+  box-sizing: border-box;
+  border: 2px solid #094570;
+  outline: 1px solid #85CCFF;
+  outline-offset: -8px;
+  border-radius: 6px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cert-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cert-brand-arabic {
+  font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #094570;
+}
+
+.cert-brand-latin {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #6a7a86;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cert-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 140px;
+  margin-bottom: 16px;
+}
+
+.cert-rule-line {
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #85CCFF, transparent);
+}
+
+.cert-rule-mark {
+  width: 9px;
+  height: 9px;
+  color: #094570;
+  flex: 0 0 auto;
+}
+
+.cert-eyebrow {
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #094570;
+}
+
+.cert-lead {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #55636e;
+}
+
+.cert-name {
+  margin: 8px 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #0d2438;
+  min-height: 1.4em;
+  border-bottom: 1.5px solid #d9c9a0;
+  padding-bottom: 6px;
+  min-width: 260px;
+}
+
+.cert-course-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 14px 0 18px;
+}
+
+.cert-course-arabic {
+  font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #094570;
+}
+
+.cert-course-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0d2438;
+}
+
+.cert-course-stats {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8a9aa8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.cert-footer {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid #e4dcc4;
+}
+
+.cert-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cert-footer-col--right { align-items: flex-end; }
+
+.cert-footer-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #8a9aa8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cert-footer-value {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a5a68;
+}
+
+/* ---------- Dark mode (trigger card + modal chrome only --
+   the certificate artwork itself always renders on its own light,
+   print-like background regardless of app theme, since that's what
+   should end up in the downloaded image). ---------- */
+
+[data-theme="dark"] .cert-modal { background: #10202f; }
+[data-theme="dark"] .cert-modal-close { background: rgba(232, 240, 248, 0.08); color: #e8f0f8; }
+[data-theme="dark"] .cert-name-label { color: #a8c0d8; }
+[data-theme="dark"] .cert-name-input { background: #0a1520; border-color: #1e3448; color: #e8f0f8; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-trigger-button, .cert-preview-wrap { transition: none; }
+}
