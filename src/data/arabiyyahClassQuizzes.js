@@ -1732,4 +1732,3032 @@ export const ARABIYYAHCLASS_UNIT_QUIZZES = {
       explanation: 'This synthesizes all five topics of Unit 5 into a single foundational claim, setting up the specific signs of i\u2019rab in Unit 6.',
     },
   ],
+
+  'unit-6': [
+    {
+      id: 'ar6q1',
+      question: 'Al-alaamaat al-asliyyah, the original signs, refer to:',
+      options: [
+        'Only signs used by the five nouns',
+        'The standard sign for each i\u2019rab state (damma, fatha, kasra, sukoon), already established in this course\u2019s fifth unit',
+        'Only signs used by verbs',
+        'A set of signs no longer used in modern Arabic',
+      ],
+      correctIndex: 1,
+      explanation: 'These apply to the overwhelming majority of Arabic nouns and verbs without modification.',
+    },
+    {
+      id: 'ar6q2',
+      question: 'According to the lesson, al-alaamaat al-far\u2019iyyah, substitute signs, exist because:',
+      options: [
+        'Arabic grammar is genuinely inconsistent',
+        'Certain word shapes cannot comfortably carry the standard short vowels the way an ordinary singular noun does',
+        'They apply to every single Arabic word without exception',
+        'They replaced the original signs entirely at some point in history',
+      ],
+      correctIndex: 1,
+      explanation: 'This is not an inconsistency in the system, but a recognition of specific word shapes.',
+    },
+    {
+      id: 'ar6q3',
+      question: 'According to the lesson, why does learning these substitute signs matter practically?',
+      options: [
+        'It has no real practical value',
+        'A reader unfamiliar with them might wrongly conclude a word\u2019s i\u2019rab has broken down, when it is actually following a well defined pattern',
+        'It only matters for classical poetry',
+        'Substitute signs only appear in the Qur\u2019an',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit\u2019s remaining topics give each pattern its own direct treatment.',
+    },
+    {
+      id: 'ar6q4',
+      question: 'Al-asmaa\u2019 al-khamsah are exactly which five nouns?',
+      options: [
+        'Ab, akh, ham, fam/fu, and dhu',
+        'Zayd, \u2018Amr, Bakr, Khalid, and Sa\u2019d',
+        'Any five nouns chosen at random',
+        'The five nouns used in the Qur\u2019an most frequently',
+      ],
+      correctIndex: 0,
+      explanation: 'These five, and only these five, follow the pattern this topic describes.',
+    },
+    {
+      id: 'ar6q5',
+      question: 'According to the qaidah given in the lesson, the five nouns take raf\u2019, nasb, and jarr with:',
+      options: [
+        'Damma, fatha, and kasra respectively, exactly like ordinary nouns',
+        'Waw, alif, and ya respectively',
+        'Sukoon in every state',
+        'Tanween in every state',
+      ],
+      correctIndex: 1,
+      explanation: 'أَبُوكَ, أَبَاكَ, and أَبِيكَ illustrate this pattern directly.',
+    },
+    {
+      id: 'ar6q6',
+      question: 'According to the lesson, this special pattern for the five nouns applies only when:',
+      options: [
+        'The noun is plural',
+        'The noun is singular, mudaf to something other than ya al-mutakallim, and not diminutive',
+        'The noun follows a harf jarr',
+        'The noun is definite',
+      ],
+      correctIndex: 1,
+      explanation: 'If any single one of these conditions fails, the noun reverts to ordinary declension instead.',
+    },
+    {
+      id: 'ar6q7',
+      question: 'According to the lesson, أَبِي (my father) does not follow the special five-nouns pattern because:',
+      options: [
+        'أَب is not one of the five nouns',
+        'The noun is mudaf specifically to ya al-mutakallim, failing one of the three required conditions',
+        'The noun is plural',
+        'The noun is diminutive',
+      ],
+      correctIndex: 1,
+      explanation: 'Precision about the conditions matters just as much as memorizing the five nouns themselves.',
+    },
+    {
+      id: 'ar6q8',
+      question: 'Al-muthanna, the dual, is used specifically to refer to:',
+      options: [
+        'Exactly one of something', 'Exactly two of something', 'Three or more of something', 'An indefinite quantity'
+      ],
+      correctIndex: 1,
+      explanation: 'This is a separate grammatical number Arabic maintains, unlike English.',
+    },
+    {
+      id: 'ar6q9',
+      question: 'According to the qaidah given in the lesson, the dual takes raf\u2019 with:',
+      options: [
+        'Waw', 'Alif', 'Ya', 'Damma'
+      ],
+      correctIndex: 1,
+      explanation: 'Both nasb and jarr instead take ya, sharing an identical marker.',
+    },
+    {
+      id: 'ar6q10',
+      question: 'In الطَّالِبَيْنِ (the two students), the ending marks:',
+      options: [
+        'Raf\u2019 only', 'Both nasb and jarr, sharing an identical form', 'Only jazm', 'Only raf\u2019 and jazm'
+      ],
+      correctIndex: 1,
+      explanation: 'This contrasts with الطَّالِبَانِ, which marks raf\u2019 specifically.',
+    },
+    {
+      id: 'ar6q11',
+      question: 'According to the lesson, since the dual\u2019s nasb and jarr forms are identical, a reader must:',
+      options: [
+        'Give up trying to distinguish the two states entirely',
+        'Rely on surrounding context, such as the presence of a harf jarr or a transitive verb\u2019s object position',
+        'Assume the word is always in jarr',
+        'Assume the word is always in nasb',
+      ],
+      correctIndex: 1,
+      explanation: 'This is a direct contrast with al-asmaa\u2019 al-khamsah, where each state received its own distinct letter.',
+    },
+    {
+      id: 'ar6q12',
+      question: 'Jam\u2019 al-mudhakkar as-salim is called "sound" specifically because:',
+      options: [
+        'It sounds different from other plurals when spoken aloud',
+        'It adds a regular suffix without altering the noun\u2019s own internal structure, unlike jam\u2019 at-taksir',
+        'It only applies to sound-related vocabulary',
+        'It is the only plural form that exists in Arabic',
+      ],
+      correctIndex: 1,
+      explanation: 'Jam\u2019 at-taksir, the broken plural, is examined directly in this course\u2019s seventh unit.',
+    },
+    {
+      id: 'ar6q13',
+      question: 'According to the qaidah given in the lesson, the sound masculine plural takes raf\u2019 with:',
+      options: [
+        'Waw', 'Alif', 'Ya alone', 'Kasra'
+      ],
+      correctIndex: 0,
+      explanation: 'Both nasb and jarr instead take ya, closely paralleling the dual\u2019s own pattern.',
+    },
+    {
+      id: 'ar6q14',
+      question: 'المُسْلِمُونَ (the Muslims) illustrates:',
+      options: [
+        'The sound masculine plural in raf\u2019', 'The sound masculine plural in nasb or jarr', 'The dual', 'The sound feminine plural'
+      ],
+      correctIndex: 0,
+      explanation: 'المُسْلِمِينَ illustrates this same plural in nasb or jarr instead.',
+    },
+    {
+      id: 'ar6q15',
+      question: 'According to the lesson, when the sound masculine plural functions as mudaf:',
+      options: [
+        'Nothing about its form changes at all',
+        'Its final نَ is dropped entirely, a detail belonging properly to this course\u2019s eighth unit on idafah',
+        'It reverts to the singular form',
+        'It becomes a broken plural instead',
+      ],
+      correctIndex: 1,
+      explanation: 'This is flagged honestly here so a learner recognizes مُعَلِّمُو المَدْرَسَةِ as this same plural.',
+    },
+    {
+      id: 'ar6q16',
+      question: 'Jam\u2019 al-mu\u2019annath as-salim is formed by adding which suffix to a feminine singular noun?',
+      options: [
+        'وْنَ', 'اتٌ', 'يْنِ', 'انِ'
+      ],
+      correctIndex: 1,
+      explanation: 'طَالِبَةٌ becomes طَالِبَاتٌ following this pattern.',
+    },
+    {
+      id: 'ar6q17',
+      question: 'According to the lesson, how does the sound feminine plural\u2019s irregularity differ from the three patterns already covered earlier in this unit?',
+      options: [
+        'It also switches entirely to letters instead of vowels',
+        'It keeps ordinary short vowels, with only one specific substitution, making its irregularity narrower',
+        'It has no irregularity at all',
+        'It follows the exact same pattern as the five nouns',
+      ],
+      correctIndex: 1,
+      explanation: 'This narrower irregularity is, for many learners, genuinely more surprising precisely because it is easy to overlook.',
+    },
+    {
+      id: 'ar6q18',
+      question: 'According to the qaidah given in the lesson, the sound feminine plural takes nasb with:',
+      options: [
+        'Fatha, exactly like an ordinary noun',
+        'Kasra, standing in for fatha',
+        'Waw',
+        'Sukoon',
+      ],
+      correctIndex: 1,
+      explanation: 'Raf\u2019 and jarr both follow the ordinary damma and kasra pattern instead.',
+    },
+    {
+      id: 'ar6q19',
+      question: 'In رَأَيْتُ مُسْلِمَاتٍ (I saw Muslim women), مُسْلِمَاتٍ carries kasra despite functioning as:',
+      options: [
+        'Al-mubtada', "Al-maf'ul bihi, already established as a nasb-carrying role in this course's fourth unit", 'Al-fa\u2019il', 'Al-khabar'
+      ],
+      correctIndex: 1,
+      explanation: 'A learner expecting fatha here, by analogy with an ordinary noun, would produce a genuine, identifiable error.',
+    },
+    {
+      id: 'ar6q20',
+      question: 'According to the lesson, all four patterns covered in this unit still express:',
+      options: [
+        'An entirely separate system unrelated to raf\u2019, nasb, jarr, and jazm',
+        'Exactly the same four states already established in this course\u2019s fifth unit, simply through different specific markers',
+        'Only two of the four states',
+        'A system that has replaced the four states entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This unifies every pattern covered in this unit under the same underlying framework.',
+    },
+    {
+      id: 'ar6q21',
+      question: 'According to the lesson, this course\u2019s seventh unit turns directly to:',
+      options: [
+        'A repeat of the four substitute patterns',
+        'A broader set of categories governing nouns generally: definiteness, gender, and number',
+        'Kaana wa akhawatuha',
+        'Harf al-jarr and idafah',
+      ],
+      correctIndex: 1,
+      explanation: 'This builds on the specific plural and dual forms already introduced in this unit.',
+    },
+    {
+      id: 'ar6q22',
+      question: 'According to the lesson, the five nouns\u2019, the dual\u2019s, and the sound masculine plural\u2019s patterns share which common feature?',
+      options: [
+        'None; they are entirely unrelated patterns',
+        'All three replace short vowels with entire letters, unlike the sound feminine plural',
+        'All three use the exact same three letters in the exact same order',
+        'All three apply only to feminine nouns',
+      ],
+      correctIndex: 1,
+      explanation: 'The sound feminine plural instead keeps short vowels with just one specific substitution.',
+    },
+    {
+      id: 'ar6q23',
+      question: 'According to the lesson, ذُو (possessor of) is used almost exclusively:',
+      options: [
+        'As a standalone word with no further construction',
+        'In idafah constructions, meaning possessor or owner of something specific',
+        'Only in the plural',
+        'Only in the dual',
+      ],
+      correctIndex: 1,
+      explanation: 'This is one of the five nouns already listed directly in this unit\u2019s second topic.',
+    },
+    {
+      id: 'ar6q24',
+      question: 'According to the lesson, the dual and the sound masculine plural both share:',
+      options: [
+        'An identical i\u2019rab pattern in every respect, using the exact same letters',
+        'A closely parallel structure, raf\u2019 marked one way and nasb/jarr collapsed into a single shared form, though using different specific letters',
+        'No structural similarity at all',
+        'The exact same suffix, -ātun',
+      ],
+      correctIndex: 1,
+      explanation: 'This parallel is named directly when the sound masculine plural is introduced in this unit\u2019s fourth topic.',
+    },
+    {
+      id: 'ar6q25',
+      question: 'According to the lesson, a learner who has only memorized the five nouns\u2019 letters without their governing conditions risks:',
+      options: [
+        'No real risk at all',
+        'Misapplying the pattern to a word like أَبِي, my father, which does not meet all three required conditions',
+        'Confusing the five nouns with the sound feminine plural',
+        'Forgetting the four original signs entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This is why this unit stresses the conditions as carefully as the letters themselves.',
+    },
+    {
+      id: 'ar6q26',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'The sound feminine plural directly to the original signs, in reverse order',
+        'The original default signs, to the five nouns, to the dual, to the sound masculine plural, to the sound feminine plural',
+        'A repeat of Unit 5\u2019s content with no new material',
+        'Idafah directly to harf al-jarr, skipping the substitute signs entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s five topics were actually presented.',
+    },
+    {
+      id: 'ar6q27',
+      question: 'According to the lesson, jam\u2019 at-taksir, the broken plural, is described as:',
+      options: [
+        'Identical to jam\u2019 al-mudhakkar as-salim',
+        'A plural that restructures the word internally, examined directly in this course\u2019s seventh unit',
+        'A plural only used for feminine nouns',
+        'Not a real category in Arabic grammar',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the direct contrast drawn when introducing why the sound masculine plural is called "sound."',
+    },
+    {
+      id: 'ar6q28',
+      question: 'According to the lesson, if any one of the five nouns\u2019 three required conditions is not met:',
+      options: [
+        'The noun still follows the special waw/alif/ya pattern regardless',
+        'The noun reverts entirely to ordinary damma/fatha/kasra declension',
+        'The noun becomes ungrammatical entirely',
+        'The noun automatically becomes plural',
+      ],
+      correctIndex: 1,
+      explanation: 'All three conditions, singular, mudaf to something other than ya al-mutakallim, and not diminutive, must hold at once.',
+    },
+    {
+      id: 'ar6q29',
+      question: 'According to the lesson, the sound feminine plural\u2019s single substitution is described as:',
+      options: [
+        'Obvious and rarely a source of confusion',
+        'Genuinely more surprising for many learners precisely because it is easy to overlook',
+        'Identical to the substitutions used by the five nouns',
+        'Not actually a real feature of Arabic grammar',
+      ],
+      correctIndex: 1,
+      explanation: 'This is stated directly when this pattern is first introduced in this unit\u2019s closing topic.',
+    },
+    {
+      id: 'ar6q30',
+      question: 'Taken together, this unit\u2019s overarching theme is best summarized as:',
+      options: [
+        'Substitute signs are rare exceptions with no real system behind them',
+        'Four distinct, well defined patterns handle specific noun categories that cannot carry the standard short vowels, each still expressing the same four i\u2019rab states through its own particular markers',
+        'Only the five nouns matter for correct Arabic grammar',
+        'This unit has no connection to the i\u2019rab system already covered in this course\u2019s fifth unit',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all five topics of Unit 6 into a single foundational claim, setting up the broader noun categories covered in Unit 7.',
+    },
+  ],
+
+  'unit-7': [
+    {
+      id: 'ar7q1',
+      question: 'According to the lesson, this course\u2019s third unit already established that al-mubtada is normally required to be:',
+      options: [
+        'Plural', 'Definite (ma\u2019rifah)', 'Feminine', 'In jarr case'
+      ],
+      correctIndex: 1,
+      explanation: 'This unit gives this exact distinction its own full, systematic treatment.',
+    },
+    {
+      id: 'ar7q2',
+      question: 'An-nakirah is described as:',
+      options: [
+        'A rare, exceptional category',
+        'The default, unmarked state a noun belongs to unless it falls into one of the recognized definite categories',
+        'Only used for proper nouns',
+        'A category that never carries tanween',
+      ],
+      correctIndex: 1,
+      explanation: 'رَجُلٌ, a man, is nakirah, referring to no particular, identifiable man.',
+    },
+    {
+      id: 'ar7q3',
+      question: 'According to the qaidah given in the lesson, how many recognized categories of ma\u2019rifah are there?',
+      options: ['Three', 'Four', 'Six', 'Ten'],
+      correctIndex: 2,
+      explanation: 'The pronoun, the proper noun, the demonstrative noun, the relative noun, the noun carrying "al-", and a noun mudaf to something definite.',
+    },
+    {
+      id: 'ar7q4',
+      question: 'كِتَابُ زَيْدٍ (Zayd\u2019s book) becomes definite through which category?',
+      options: [
+        'The definite article directly',
+        'Being mudaf to something already definite (زَيْدٍ, a proper noun)',
+        'Being a demonstrative noun',
+        'Being a pronoun',
+      ],
+      correctIndex: 1,
+      explanation: 'This is already covered directly in this course\u2019s fifth unit through idafah.',
+    },
+    {
+      id: 'ar7q5',
+      question: 'According to the lesson, this six-category map of definiteness matters beyond the mubtada rule because:',
+      options: [
+        'It has no further application in this course',
+        'This course\u2019s ninth unit will show that an adjective (na\u2019t) must agree with its noun in definiteness as well as gender and number',
+        'It only applies to pronouns',
+        'It replaces the need to learn i\u2019rab',
+      ],
+      correctIndex: 1,
+      explanation: 'This six-category map is a genuine prerequisite for that later unit\u2019s own treatment.',
+    },
+    {
+      id: 'ar7q6',
+      question: 'According to the lesson, al-mudhakkar, masculine, functions as:',
+      options: [
+        'A rare, marked category',
+        'The default category a noun belongs to unless it carries a specific feminine marker or is understood as feminine by meaning',
+        'Only relevant to human nouns',
+        'A category that never takes i\u2019rab',
+      ],
+      correctIndex: 1,
+      explanation: 'Every Arabic noun carries grammatical gender.',
+    },
+    {
+      id: 'ar7q7',
+      question: 'Al-mu\u2019annath al-lafzi describes a feminine noun that:',
+      options: [
+        'Has no visible marker at all',
+        'Carries one of three visible markers: taa marbuta, alif maqsura, or alif mamduda',
+        'Is always a proper name',
+        'Is always plural',
+      ],
+      correctIndex: 1,
+      explanation: 'طَالِبَةٌ illustrates taa marbuta directly.',
+    },
+    {
+      id: 'ar7q8',
+      question: 'أُمّ (mother) is described in the lesson as an example of:',
+      options: [
+        'Mu\u2019annath lafzi', 'Mu\u2019annath ma\u2019nawi: feminine by meaning, with no visible marker', 'A masculine noun', 'A broken plural'
+      ],
+      correctIndex: 1,
+      explanation: 'This still requires feminine agreement in khabar, na\u2019t, and elsewhere.',
+    },
+    {
+      id: 'ar7q9',
+      question: 'According to the lesson, طَلْحَة (Talhah) is significant because it:',
+      options: [
+        'Is a feminine noun with no exceptions',
+        'Is a masculine proper name that carries taa marbuta anyway, an established exception to the usual marker',
+        'Never actually appears in Arabic',
+        'Is an example of jam\u2019 at-taksir',
+      ],
+      correctIndex: 1,
+      explanation: 'Taa marbuta is therefore a useful first clue toward feminine gender, but not an absolute guarantee.',
+    },
+    {
+      id: 'ar7q10',
+      question: 'According to the lesson, this gender system underlies which specific rule already covered in this course\u2019s third unit?',
+      options: [
+        'The definiteness rule for mubtada',
+        'The khabar agreement rules, including the non-human plural exception (الكُتُبُ مُفِيدَةٌ)',
+        'The five nouns\u2019 special pattern',
+        'The rules of idafah',
+      ],
+      correctIndex: 1,
+      explanation: 'Arabic treats non-human plurals as a single, unified group for this specific agreement purpose.',
+    },
+    {
+      id: 'ar7q11',
+      question: 'According to the lesson, every Arabic noun, alongside definiteness and gender, also carries:',
+      options: [
+        'A fixed color category',
+        'A specific number: mufrad, muthanna, or jam\u2019',
+        'A fixed tense',
+        'A fixed harf jarr',
+      ],
+      correctIndex: 1,
+      explanation: 'Al-muthanna, the dual, was already examined in full across this course\u2019s sixth unit.',
+    },
+    {
+      id: 'ar7q12',
+      question: 'According to the lesson, why does the dual deserve genuine, separate status in Arabic?',
+      options: [
+        'It does not; it is identical to the plural',
+        'Unlike English, Arabic treats exactly two of something as its own distinct grammatical category',
+        'It only applies to feminine nouns',
+        'It is only used in classical poetry',
+      ],
+      correctIndex: 1,
+      explanation: 'This carries the specific alif/ya pattern already covered directly in this course\u2019s sixth unit.',
+    },
+    {
+      id: 'ar7q13',
+      question: 'According to the lesson, al-jam\u2019 itself divides into which two categories?',
+      options: [
+        'Masculine and feminine only',
+        'Jam\u2019 as-salim (sound) and jam\u2019 at-taksir (broken)',
+        'Definite and indefinite',
+        'Raf\u2019 and nasb',
+      ],
+      correctIndex: 1,
+      explanation: 'These require entirely different treatment from one another.',
+    },
+    {
+      id: 'ar7q14',
+      question: 'According to the lesson, jam\u2019 as-salim adds a regular suffix, while jam\u2019 at-taksir:',
+      options: [
+        'Also simply adds a regular suffix',
+        'Restructures the noun\u2019s own internal pattern instead',
+        'Never actually occurs in real Arabic',
+        'Only applies to verbs',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit\u2019s closing topic turns to this considerably more common plural type.',
+    },
+    {
+      id: 'ar7q15',
+      question: 'According to the lesson, jam\u2019 at-taksir is, across the Arabic language as a whole:',
+      options: [
+        'Rarer than the sound plural',
+        'The more common plural type; most Arabic nouns take a broken rather than sound form',
+        'Used exclusively for feminine nouns',
+        'No longer used in modern Arabic',
+      ],
+      correctIndex: 1,
+      explanation: 'This is worth stating directly since many learners assume sound plurals are the more typical case.',
+    },
+    {
+      id: 'ar7q16',
+      question: 'كِتَابٌ becomes كُتُبٌ (books) through:',
+      options: [
+        'Adding a regular suffix, like the sound plural',
+        'An internal restructuring of the singular noun\u2019s own vowel pattern',
+        'Adding waw and nun',
+        'Adding taa marbuta',
+      ],
+      correctIndex: 1,
+      explanation: 'رَجُلٌ becoming رِجَالٌ illustrates a genuinely different internal pattern for a different word.',
+    },
+    {
+      id: 'ar7q17',
+      question: 'According to the lesson, despite jam\u2019 at-taksir\u2019s internal irregularity in formation, it declines using:',
+      options: [
+        'The special letter-based markers used by the sound masculine plural and the dual',
+        'The ordinary, original i\u2019rab signs: damma, fatha, and kasra',
+        'No i\u2019rab at all',
+        'Only sukoon in every state',
+      ],
+      correctIndex: 1,
+      explanation: 'This distinguishes it from the letter-based patterns already covered across this course\u2019s sixth unit.',
+    },
+    {
+      id: 'ar7q18',
+      question: 'According to the lesson, الكُتُبُ, already used in this course\u2019s third unit to illustrate the non-human plural khabar rule, is itself:',
+      options: [
+        'A sound masculine plural',
+        'An instance of jam\u2019 at-taksir, the broken plural this unit has just introduced',
+        'A dual noun',
+        'A proper noun',
+      ],
+      correctIndex: 1,
+      explanation: 'This means that memorable example from three units ago was, from the very beginning, a real instance of this same category.',
+    },
+    {
+      id: 'ar7q19',
+      question: 'According to the lesson, this course\u2019s eighth unit turns to:',
+      options: [
+        'A repeat of the broken plural',
+        'Huruf al-jarr and al-idafah, how nouns relate to one another and to prepositions',
+        'Kaana wa akhawatuha',
+        'The three types of khabar',
+      ],
+      correctIndex: 1,
+      explanation: 'Both have already been referenced repeatedly across this course\u2019s earlier units without yet receiving full treatment.',
+    },
+    {
+      id: 'ar7q20',
+      question: 'According to the lesson, هُوَ (he) illustrates which category of ma\u2019rifah?',
+      options: [
+        'The proper noun', 'The pronoun', 'The demonstrative noun', 'The relative noun'
+      ],
+      correctIndex: 1,
+      explanation: 'Pronouns are always definite.',
+    },
+    {
+      id: 'ar7q21',
+      question: 'الَّذِي (the one who) illustrates which category of ma\u2019rifah?',
+      options: [
+        'The definite article', 'The relative noun', 'The pronoun', 'The proper noun'
+      ],
+      correctIndex: 1,
+      explanation: 'This is one of the six recognized categories covered directly in this unit\u2019s first topic.',
+    },
+    {
+      id: 'ar7q22',
+      question: 'According to the lesson, an unfamiliar name carrying taa marbuta should be treated as:',
+      options: [
+        'Definitely feminine with no exceptions possible',
+        'Likely feminine, but not an absolute, infallible guarantee, given documented exceptions',
+        'Definitely masculine',
+        'Impossible to classify at all',
+      ],
+      correctIndex: 1,
+      explanation: 'This reflects the honest exception named directly through طَلْحَة.',
+    },
+    {
+      id: 'ar7q23',
+      question: 'According to the lesson, understanding that plural splits into two genuinely different formation strategies is:',
+      options: [
+        'An unnecessary complication with no practical use',
+        'Essential preparation for this unit\u2019s closing topic on the broken plural',
+        'Only relevant to sound plurals',
+        'Already fully covered in this course\u2019s sixth unit with nothing left to add',
+      ],
+      correctIndex: 1,
+      explanation: 'This distinction is drawn directly in this unit\u2019s third topic before the closing topic examines jam\u2019 at-taksir.',
+    },
+    {
+      id: 'ar7q24',
+      question: 'According to the lesson, three examples of jam\u2019 at-taksir given directly are:',
+      options: [
+        'كِتَابٌ\u2192كُتُبٌ, رَجُلٌ\u2192رِجَالٌ, and قَلَمٌ\u2192أَقْلَامٌ',
+        'الطَّالِبَانِ, المُسْلِمُونَ, and المُسْلِمَاتُ',
+        'أَبٌ, أَخٌ, and حَمٌ',
+        'This unit gives no concrete examples',
+      ],
+      correctIndex: 0,
+      explanation: 'These illustrate three entirely different internal transformations rather than one shared pattern.',
+    },
+    {
+      id: 'ar7q25',
+      question: 'According to the lesson, the six categories of ma\u2019rifah and the two categories of mu\u2019annath both illustrate:',
+      options: [
+        'Arbitrary lists with no underlying logic',
+        'Systematic frameworks this course draws on directly in its treatment of agreement rules in earlier and later units',
+        'Concepts entirely unrelated to i\u2019rab or agreement',
+        'Rules that apply only to proper nouns',
+      ],
+      correctIndex: 1,
+      explanation: 'Both connect directly to rules already covered in this course\u2019s third unit and rules still to come in later units.',
+    },
+    {
+      id: 'ar7q26',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'The broken plural directly to definiteness, in reverse order',
+        'Definiteness, to gender, to the three-way number system, to the broken plural specifically',
+        'A repeat of Unit 6\u2019s content with no new material',
+        'Idafah directly to harf al-jarr, skipping noun categories entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s four topics were actually presented.',
+    },
+    {
+      id: 'ar7q27',
+      question: 'According to the lesson, feminine geographic names and paired body parts are examples of:',
+      options: [
+        'Mu\u2019annath lafzi', 'A further category of mu\u2019annath ma\u2019nawi beyond umm alone', 'Masculine nouns', 'Broken plurals'
+      ],
+      correctIndex: 1,
+      explanation: 'These carry no visible marker yet are still treated as grammatically feminine.',
+    },
+    {
+      id: 'ar7q28',
+      question: 'According to the lesson, jam\u2019 as-salim, already covered in this course\u2019s sixth unit, is characterized by:',
+      options: [
+        'Internal restructuring of the singular noun',
+        'A regular, predictable suffix added without disturbing the singular noun\u2019s own internal structure',
+        'No fixed pattern of any kind',
+        'Being rarer than jam\u2019 at-taksir',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the direct contrast drawn against jam\u2019 at-taksir in this unit\u2019s third and fourth topics.',
+    },
+    {
+      id: 'ar7q29',
+      question: 'According to the lesson, هَذَا (this) illustrates which category of ma\u2019rifah?',
+      options: [
+        'The demonstrative noun', 'The relative noun', 'The definite article', 'The pronoun'
+      ],
+      correctIndex: 0,
+      explanation: 'This is one of the six categories listed directly in this unit\u2019s opening qaidah.',
+    },
+    {
+      id: 'ar7q30',
+      question: 'Taken together, this unit\u2019s overarching theme is best summarized as:',
+      options: [
+        'Nouns in Arabic carry no meaningful internal categories beyond their basic meaning',
+        'Every Arabic noun carries three layered categories, definiteness, gender, and number, each governed by specific, learnable rules that connect directly to agreement patterns already introduced earlier in this course',
+        'Only definiteness matters for correct Arabic grammar',
+        'This unit has no connection to material already covered earlier in this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all four topics of Unit 7 into a single foundational claim, setting up harf al-jarr and idafah in Unit 8.',
+    },
+  ],
+
+  'unit-8': [
+    {
+      id: 'ar8q1',
+      question: 'According to the lesson, this course\u2019s first unit already identified being preceded by a harf jarr as:',
+      options: [
+        'A sign confirming a word as a fi\u2019l',
+        'One of the four reliable signs confirming a word as an ism',
+        'A sign confirming a word as a harf itself',
+        'Not relevant to identifying word categories',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit now examines huruf al-jarr directly, both their meanings and their grammatical effect.',
+    },
+    {
+      id: 'ar8q2',
+      question: 'Which of the following is listed in the lesson among the most commonly used huruf al-jarr?',
+      options: [
+        'هَلْ', 'مِنْ', 'قَدْ', 'لَنْ'
+      ],
+      correctIndex: 1,
+      explanation: 'مِنْ means "from."',
+    },
+    {
+      id: 'ar8q3',
+      question: 'According to the lesson, which three huruf al-jarr attach directly to the following word rather than standing separately?',
+      options: [
+        'مِنْ، إِلَى، عَنْ', 'بِـ، كَـ، لِـ', 'فِي، عَلَى، حَتَّى', 'None; all huruf al-jarr stand as separate words'
+      ],
+      correctIndex: 1,
+      explanation: 'This distinction affects only how each preposition is written, not its underlying grammatical effect.',
+    },
+    {
+      id: 'ar8q4',
+      question: 'According to the lesson, عَنْ and مِنْ:',
+      options: [
+        'Mean exactly the same thing with no distinction at all',
+        'Overlap in English translation while marking genuinely distinct relationships in Arabic itself',
+        'Are not actually huruf al-jarr',
+        'Never appear in the same text',
+      ],
+      correctIndex: 1,
+      explanation: 'This shows that meaning is not always predictable from a single English equivalent.',
+    },
+    {
+      id: 'ar8q5',
+      question: 'According to the qaidah given in the lesson, every noun falling immediately after a harf jarr is:',
+      options: [
+        'Marfu\u2019', 'Mansub', 'Majrur (in the state of jarr)', 'Majzum'
+      ],
+      correctIndex: 2,
+      explanation: 'This confirms directly the rule already established in this course\u2019s fifth unit.',
+    },
+    {
+      id: 'ar8q6',
+      question: 'According to the lesson, harf al-jarr itself:',
+      options: [
+        'Takes i\u2019rab depending on context',
+        'Is mabni, taking no i\u2019rab of its own regardless of context',
+        'Always carries raf\u2019',
+        'Always carries jarr, exactly like the noun it governs',
+      ],
+      correctIndex: 1,
+      explanation: 'The entire grammatical effect falls exclusively on the following noun.',
+    },
+    {
+      id: 'ar8q7',
+      question: 'According to the lesson, jarr wa majrur is precisely what this course\u2019s third unit already introduced as:',
+      options: [
+        'Khabar mufrad', 'Shibh al-jumlah, one of the three forms al-khabar can take', 'Al-mubtada', 'Al-fa\u2019il'
+      ],
+      correctIndex: 1,
+      explanation: 'فِي المَسْجِدِ, already used in that same unit, is jarr wa majrur functioning as khabar.',
+    },
+    {
+      id: 'ar8q8',
+      question: 'According to the lesson, huruf al-jarr zaa\u2019idah are described as:',
+      options: [
+        'Particles that never actually cause jarr',
+        'Augmenting particles adding emphasis rather than genuinely new meaning, while still causing jarr grammatically',
+        'A category that does not actually exist in Arabic',
+        'Particles used exclusively in questions',
+      ],
+      correctIndex: 1,
+      explanation: 'This is named honestly rather than presenting every harf jarr as always carrying equally weighty meaning.',
+    },
+    {
+      id: 'ar8q9',
+      question: 'According to the lesson, harf al-jarr is only one of how many triggers for jarr case already identified in this course\u2019s fifth unit?',
+      options: ['One', 'Two', 'Three', 'Four'],
+      correctIndex: 1,
+      explanation: 'This unit\u2019s remaining two topics turn to the second trigger, al-idafah.',
+    },
+    {
+      id: 'ar8q10',
+      question: 'Al-idafah is described as:',
+      options: [
+        'A construct requiring a separate word for "of"',
+        'Arabic\u2019s own way of expressing possession by joining two nouns directly, with no separate connecting word',
+        'A category that only applies to proper nouns',
+        'Identical in structure to a harf jarr and its noun',
+      ],
+      correctIndex: 1,
+      explanation: 'كِتَابُ الطَّالِبِ illustrates this construct precisely.',
+    },
+    {
+      id: 'ar8q11',
+      question: 'The first noun in an idafah construct is called:',
+      options: [
+        'Al-mudaf ilayh', 'Al-mudaf', 'Al-khabar', 'Al-fa\u2019il'
+      ],
+      correctIndex: 1,
+      explanation: 'The second noun is called al-mudaf ilayh.',
+    },
+    {
+      id: 'ar8q12',
+      question: 'مُعَلِّمُو المَدْرَسَةِ (the school\u2019s teachers) directly fulfills a forward reference from which earlier unit of this course?',
+      options: [
+        'This course\u2019s fifth unit', 'This course\u2019s sixth unit, regarding the sound masculine plural dropping its final noon when mudaf', 'This course\u2019s third unit', 'This course\u2019s first unit'
+      ],
+      correctIndex: 1,
+      explanation: 'مُعَلِّمُونَ loses its final نَ once it becomes mudaf.',
+    },
+    {
+      id: 'ar8q13',
+      question: 'According to the lesson, idafah chains extending across more than two nouns work by:',
+      options: [
+        'Only the first noun in the chain functioning as mudaf',
+        'Each middle noun functioning simultaneously as mudaf ilayh to the noun before it and mudaf to the noun after it',
+        'Repeating the definite article on every noun in the chain',
+        'This is not possible in Arabic grammar',
+      ],
+      correctIndex: 1,
+      explanation: 'بَابُ بَيْتِ المُدِيرِ illustrates this directly, with بَيْتِ serving both roles at once.',
+    },
+    {
+      id: 'ar8q14',
+      question: 'According to the qaidah given in the lesson, al-mudaf:',
+      options: [
+        'Always carries tanween',
+        'Never carries tanween, never takes "al-", and its i\u2019rab follows entirely from its own role in the sentence',
+        'Always carries jarr regardless of context',
+        'Always takes the definite article directly',
+      ],
+      correctIndex: 1,
+      explanation: 'These are the three governing rules of al-mudaf.',
+    },
+    {
+      id: 'ar8q15',
+      question: 'According to the lesson, al-mudaf becomes definite by position specifically when:',
+      options: [
+        'It carries tanween',
+        'Its own mudaf ilayh is definite, drawing on the six categories of ma\u2019rifah from this course\u2019s seventh unit',
+        'It is plural',
+        'It is preceded by a harf jarr',
+      ],
+      correctIndex: 1,
+      explanation: 'كِتَابُ الطَّالِبِ is definite as a whole precisely because الطَّالِبِ carries the definite article.',
+    },
+    {
+      id: 'ar8q16',
+      question: 'According to the qaidah given in the lesson, al-mudaf ilayh:',
+      options: [
+        'Is always in the state of jarr, regardless of context',
+        'Shifts case depending on its own role in the sentence, exactly like al-mudaf',
+        'Never carries tanween or "al-"',
+        'Is always in the state of raf\u2019',
+      ],
+      correctIndex: 0,
+      explanation: 'This is one consistent rule that never changes, unlike al-mudaf\u2019s own shifting case.',
+    },
+    {
+      id: 'ar8q17',
+      question: 'In رَأَيْتُ كِتَابَ الطَّالِبِ (I saw the student\u2019s book), كِتَابَ carries nasb because:',
+      options: [
+        'It is always in nasb regardless of context',
+        'It functions as maf\u2019ul bihi, already covered directly in this course\u2019s fourth unit',
+        'It is the mudaf ilayh',
+        'It follows a harf jarr',
+      ],
+      correctIndex: 1,
+      explanation: 'الطَّالِبِ carries jarr regardless, exactly as al-mudaf ilayh always does.',
+    },
+    {
+      id: 'ar8q18',
+      question: 'According to the lesson, this course\u2019s ninth unit turns directly to:',
+      options: [
+        'A repeat of harf al-jarr and idafah',
+        'At-tawabi\u2019, elements that follow and depend directly on a noun already present in the sentence, beginning with an-na\u2019t',
+        'Kaana wa akhawatuha',
+        'The three types of khabar',
+      ],
+      correctIndex: 1,
+      explanation: 'This is a genuinely new set of categories building on the noun material already covered across this course.',
+    },
+    {
+      id: 'ar8q19',
+      question: 'According to the lesson, despite never carrying "al-" itself, al-mudaf can still be understood as definite because:',
+      options: [
+        'It always carries tanween instead',
+        'It borrows its definiteness from its own mudaf ilayh, when that mudaf ilayh is itself definite',
+        'All mudaf nouns are automatically definite regardless of the mudaf ilayh',
+        'Definiteness is irrelevant to idafah constructs entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'كِتَابُ never displays this definiteness directly on its own form, yet the whole construct is still definite.',
+    },
+    {
+      id: 'ar8q20',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'Al-mudaf directly to huruf al-jarr, in reverse order',
+        'The meanings of common prepositions, to their grammatical effect, to idafah\u2019s basic structure, to the specific rules of mudaf and mudaf ilayh',
+        'A repeat of Unit 7\u2019s content with no new material',
+        'At-tawabi\u2019 directly, skipping harf al-jarr and idafah entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s four topics were actually presented.',
+    },
+    {
+      id: 'ar8q21',
+      question: 'According to the lesson, classical grammarians recognize:',
+      options: [
+        'Only the small set of huruf al-jarr covered directly in this unit, with no others existing',
+        'A considerably longer list of huruf al-jarr beyond this unit\u2019s core set, including rarer particles used in oaths and classical constructions',
+        'No fixed list of huruf al-jarr at all',
+        'Exactly one hundred huruf al-jarr',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit\u2019s own scope remains focused on the set encountered most often in ordinary reading.',
+    },
+    {
+      id: 'ar8q22',
+      question: 'According to the lesson, بَابُ بَيْتِ المُدِيرِ (the door of the manager\u2019s house) shows بَيْتِ functioning as:',
+      options: [
+        'Only a mudaf, with no other role',
+        'Both mudaf ilayh to the noun before it and mudaf to the noun after it, simultaneously',
+        'Only a mudaf ilayh, with no other role',
+        'Neither mudaf nor mudaf ilayh',
+      ],
+      correctIndex: 1,
+      explanation: 'Only the final noun in such a chain can carry "al-" directly.',
+    },
+    {
+      id: 'ar8q23',
+      question: 'According to the lesson, the distinction between huruf al-jarr that attach directly and those that stand separately affects:',
+      options: [
+        'Their underlying grammatical effect on the following noun',
+        'Only how each preposition is written',
+        'Whether they cause jarr at all',
+        'Their basic meaning entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'The grammatical effect (causing jarr) remains identical regardless of this written distinction.',
+    },
+    {
+      id: 'ar8q24',
+      question: 'According to the lesson, mudaf ilayh differs from mudaf specifically in that:',
+      options: [
+        'Mudaf ilayh can carry tanween or "al-", while mudaf can carry neither',
+        'Mudaf ilayh never carries tanween while mudaf always does',
+        'Both follow identical rules with no distinction',
+        'Mudaf ilayh\u2019s case shifts with sentence role while mudaf\u2019s never does',
+      ],
+      correctIndex: 0,
+      explanation: 'This directly reverses the specific restrictions placed on al-mudaf.',
+    },
+    {
+      id: 'ar8q25',
+      question: 'According to the lesson, this unit connects to material from how many of this course\u2019s earlier units?',
+      options: [
+        'None; this unit introduces entirely new, unconnected material',
+        'Several, including the first, third, fourth, fifth, sixth, and seventh units',
+        'Only the fifth unit',
+        'Only the first unit',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit consolidates and directly fulfills several forward references made throughout this course.',
+    },
+    {
+      id: 'ar8q26',
+      question: 'According to the lesson, why is it worth naming huruf al-jarr zaa\u2019idah honestly rather than omitting them?',
+      options: [
+        'They are extremely rare and never actually appear',
+        'This avoids presenting every harf jarr as always carrying equally weighty independent meaning',
+        'They contradict the core rule of harf al-jarr entirely',
+        'This detail has no practical value for a reader',
+      ],
+      correctIndex: 1,
+      explanation: 'This reflects the same honest calibration this course has applied to other genuine nuances throughout.',
+    },
+    {
+      id: 'ar8q27',
+      question: 'According to the lesson, في السَّاعَةِ الخَامِسَةِ style time expressions in Arabic rely overwhelmingly on which single preposition, according to broader usage patterns discussed in this unit\u2019s first topic?',
+      options: [
+        'عَلَى', 'فِي', 'مِنْ', 'حَتَّى'
+      ],
+      correctIndex: 1,
+      explanation: 'Arabic relies heavily on a single preposition for many time expressions where English shifts between several.',
+    },
+    {
+      id: 'ar8q28',
+      question: 'According to the lesson, the relationship between huruf al-jarr and idafah as two triggers for jarr is:',
+      options: [
+        'Entirely unrelated categories with no shared feature',
+        'Two structurally different mechanisms that both place a noun into the exact same jarr case already established in this course\u2019s fifth unit',
+        'Identical mechanisms with no real distinction between them',
+        'A distinction that only applies to proper nouns',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit examines both mechanisms directly, one through prepositions, the other through idafah.',
+    },
+    {
+      id: 'ar8q29',
+      question: 'According to the lesson, understanding al-mudaf and al-mudaf ilayh\u2019s distinct rules matters because:',
+      options: [
+        'They are identical and interchangeable in every respect',
+        'Confusing which noun follows which rule would lead to genuine, identifiable errors in both case marking and definiteness',
+        'These rules have no bearing on reading real Arabic text',
+        'Only al-mudaf ilayh actually matters; al-mudaf\u2019s rules are optional',
+      ],
+      correctIndex: 1,
+      explanation: 'This is precisely why this unit gives each set of rules its own direct, dedicated treatment.',
+    },
+    {
+      id: 'ar8q30',
+      question: 'Taken together, this unit\u2019s overarching theme is best summarized as:',
+      options: [
+        'Prepositions and possession in Arabic follow no learnable, consistent system',
+        'Two distinct mechanisms, prepositions and idafah, both place a noun into jarr case, each governed by its own precise, learnable rules that this course has been building toward across several earlier units',
+        'Only huruf al-jarr matter for correct Arabic grammar',
+        'This unit has no connection to the i\u2019rab system already covered earlier in this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all four topics of Unit 8 into a single foundational claim, setting up at-tawabi\u2019 in Unit 9.',
+    },
+  ],
+
+  'unit-9': [
+    {
+      id: 'ar9q1',
+      question: 'According to the lesson, all four elements of at-tawabi\u2019 share which defining mechanical trait?',
+      options: [
+        'Each has its own case independently assigned by its own grammatical role',
+        'Each takes its own i\u2019rab entirely from a preceding noun already present in the sentence',
+        'Each is always mabni, taking no i\u2019rab at all',
+        'Each must always be plural',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the shared mechanism this unit opens with and returns to at its close.',
+    },
+    {
+      id: 'ar9q2',
+      question: 'According to the qaidah given in the lesson, an-na\u2019t must match its man\u2019ut (the noun it describes) in how many categories?',
+      options: ['Two', 'Three', 'Four', 'Five'],
+      correctIndex: 2,
+      explanation: 'Case, definiteness, gender, and number.',
+    },
+    {
+      id: 'ar9q3',
+      question: 'In عَبَّاسٌ تَاجِرٌ غَنِيٌّ (Abbas is a rich merchant), تَاجِرٌ functions as:',
+      options: [
+        'An-na\u2019t, requiring four-way agreement',
+        'Al-khabar, already covered in this course\u2019s third unit, requiring agreement only in gender and number',
+        'Al-badal', 'Al-mudaf'
+      ],
+      correctIndex: 1,
+      explanation: 'غَنِيٌّ, by contrast, functions as an-na\u2019t describing تَاجِرٌ specifically.',
+    },
+    {
+      id: 'ar9q4',
+      question: 'In that same example, غَنِيٌّ must match تَاجِرٌ in:',
+      options: [
+        'Only gender and number, exactly like khabar',
+        'All four categories: case, definiteness, gender, and number',
+        'Only case', 'No categories at all'
+      ],
+      correctIndex: 1,
+      explanation: 'Both are indefinite, both masculine, both singular, and both marfu\u2019.',
+    },
+    {
+      id: 'ar9q5',
+      question: 'According to the lesson, الطَّالِبُ المُجْتَهِدُ (the diligent student), with both words definite, is:',
+      options: [
+        'Already a complete sentence on its own',
+        'Not yet a complete sentence, since المُجْتَهِدُ functions as na\u2019t and the phrase still requires its own khabar',
+        'An example of al-\u2019atf',
+        'An example of al-badal',
+      ],
+      correctIndex: 1,
+      explanation: 'This connects directly back to jumlah mufeedah, already covered in this course\u2019s second unit.',
+    },
+    {
+      id: 'ar9q6',
+      question: 'According to the lesson, confusing na\u2019t with khabar risks:',
+      options: [
+        'No real consequence for reading Arabic',
+        'Misreading an entire sentence\u2019s structure',
+        'Only affecting pronunciation',
+        'Only affecting definiteness, nothing else',
+      ],
+      correctIndex: 1,
+      explanation: 'This is why this unit stresses the four-way versus two-way agreement distinction so directly.',
+    },
+    {
+      id: 'ar9q7',
+      question: 'Al-\u2019atf joins al-ma\u2019tuf to al-ma\u2019tuf \u2019alayhi using which kind of particle?',
+      options: [
+        'Huruf al-jarr', 'Huruf al-\u2019atf, such as وَ، فَ، ثُمَّ، and أَوْ', 'Huruf an-nasb', 'Huruf al-jazm'
+      ],
+      correctIndex: 1,
+      explanation: 'These particles include wa (and), fa (so/then), thumma (then), and aw (or).',
+    },
+    {
+      id: 'ar9q8',
+      question: 'According to the qaidah given in the lesson, al-\u2019atf requires matching in:',
+      options: [
+        'Four categories, exactly like na\u2019t',
+        'I\u2019rab (case) alone',
+        'Gender and number only',
+        'No categories at all',
+      ],
+      correctIndex: 1,
+      explanation: 'This is considerably narrower than an-na\u2019t\u2019s own four-way requirement.',
+    },
+    {
+      id: 'ar9q9',
+      question: 'In جَاءَ زَيْدٌ وَعَمْرٌو (Zayd and \u2018Amr came), both nouns share raf\u2019 because:',
+      options: [
+        'They share the same gender',
+        'They share the same fa\u2019il role already covered in this course\u2019s fourth unit',
+        'They are both definite',
+        'They are both feminine',
+      ],
+      correctIndex: 1,
+      explanation: 'Zayd and \u2018Amr may otherwise differ freely in gender, number, or definiteness.',
+    },
+    {
+      id: 'ar9q10',
+      question: 'According to the lesson, why does al-\u2019atf\u2019s narrower rule genuinely make sense?',
+      options: [
+        'It links two independent items sharing the same grammatical role, unlike na\u2019t which describes a single noun closely',
+        'It has no real underlying logic at all',
+        'It is actually identical to na\u2019t in every respect',
+        'It only applies to feminine nouns',
+      ],
+      correctIndex: 0,
+      explanation: 'This is the direct contrast drawn against na\u2019t in this unit\u2019s second topic.',
+    },
+    {
+      id: 'ar9q11',
+      question: 'At-tawkid al-lafzi, verbal emphasis, is achieved by:',
+      options: [
+        'Using a dedicated set of emphasis words',
+        'Simply repeating the original word itself',
+        'Adding a harf jarr',
+        'Adding tanween',
+      ],
+      correctIndex: 1,
+      explanation: 'At-tawkid al-ma\u2019nawi, by contrast, uses specific dedicated words instead.',
+    },
+    {
+      id: 'ar9q12',
+      question: 'According to the lesson, which words are named as the most common tawkid ma\u2019nawi words?',
+      options: [
+        'نَفْس، عَيْن، and كُلّ', 'مِنْ، إِلَى، and عَنْ', 'هَذَا، تِلْكَ، and أُولَٰئِكَ', 'الَّذِي and الَّتِي'
+      ],
+      correctIndex: 0,
+      explanation: 'نَفْس and عَيْن both roughly mean "itself"; كُلّ means "all" or "every."',
+    },
+    {
+      id: 'ar9q13',
+      question: 'According to the lesson, each tawkid ma\u2019nawi word must be:',
+      options: [
+        'Preceded by a harf jarr',
+        'Mudaf to a pronoun referring back to the exact noun being emphasized',
+        'Always indefinite',
+        'Always plural',
+      ],
+      correctIndex: 1,
+      explanation: 'This draws directly on idafah, already covered in this course\u2019s eighth unit.',
+    },
+    {
+      id: 'ar9q14',
+      question: 'In جَاءَ الأَمِيرُ نَفْسُهُ (the prince himself came), نَفْسُهُ emphasizes that:',
+      options: [
+        'A representative of the prince came instead',
+        'The prince personally came, rather than merely sending a representative',
+        'Two princes came together',
+        'The prince did not actually come',
+      ],
+      correctIndex: 1,
+      explanation: 'نَفْسُهُ is nafs mudaf to the pronoun هُ referring back to الأَمِيرُ.',
+    },
+    {
+      id: 'ar9q15',
+      question: 'According to the qaidah given in the lesson, at-tawkid follows the emphasized word in:',
+      options: [
+        'Four categories, exactly like na\u2019t',
+        'Its own case alone, exactly like al-\u2019atf',
+        'Gender only',
+        'No categories at all',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the same narrower rule already established for al-\u2019atf in this unit\u2019s second topic.',
+    },
+    {
+      id: 'ar9q16',
+      question: 'Al-badal follows a preceding noun, called al-mubdal minhu, and:',
+      options: [
+        'Simply repeats it verbatim',
+        'Restates it with greater specificity, functioning as though the first noun were a preliminary gesture toward the more precise meaning',
+        'Contradicts its meaning entirely',
+        'Joins it using a harf al-\u2019atf',
+      ],
+      correctIndex: 1,
+      explanation: 'This is genuinely different from both al-\u2019atf and at-tawkid in its underlying function.',
+    },
+    {
+      id: 'ar9q17',
+      question: 'According to the lesson, al-badal follows its mubdal minhu in:',
+      options: [
+        'Four categories', 'Case alone, like al-\u2019atf and at-tawkid', 'Gender and number only', 'No categories at all'
+      ],
+      correctIndex: 1,
+      explanation: 'This is the same narrower rule shared by three of this unit\u2019s four dependents.',
+    },
+    {
+      id: 'ar9q18',
+      question: 'In زَارَنِي الأَمِيرُ خَالِدٌ (the prince, Khalid, visited me), خَالِدٌ functions as:',
+      options: [
+        'Na\u2019t for الأَمِيرُ', 'Badal for الأَمِيرُ, specifying exactly which prince is meant', 'Khabar', 'Mudaf ilayh'
+      ],
+      correctIndex: 1,
+      explanation: 'Both nouns share raf\u2019 as fa\u2019il.',
+    },
+    {
+      id: 'ar9q19',
+      question: 'According to the lesson, classical Nahw recognizes, beyond the straightforward substitution covered directly in this unit:',
+      options: [
+        'No further categories of badal at all',
+        'Several further categories, including badal covering only part of the original noun',
+        'Only one further category, identical to na\u2019t',
+        'Categories that apply only to verbs',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit\u2019s own scope covers only the clearest, most direct form.',
+    },
+    {
+      id: 'ar9q20',
+      question: 'According to the lesson, which three of the four tawabi\u2019 share the exact same "case alone" agreement rule?',
+      options: [
+        'An-na\u2019t, al-\u2019atf, and at-tawkid',
+        'Al-\u2019atf, at-tawkid, and al-badal',
+        'An-na\u2019t, at-tawkid, and al-badal',
+        'All four share the four-way rule equally',
+      ],
+      correctIndex: 1,
+      explanation: 'An-na\u2019t alone requires the more demanding four-way agreement.',
+    },
+    {
+      id: 'ar9q21',
+      question: 'According to the lesson, this course\u2019s tenth unit turns to:',
+      options: [
+        'A repeat of at-tawabi\u2019',
+        'Kaana wa akhawatuha, a group of verbs that actively change the rules governing the nominal sentence',
+        'Harf al-jarr and idafah',
+        'The three types of khabar',
+      ],
+      correctIndex: 1,
+      explanation: 'This is described as something genuinely different from the material covered across this unit.',
+    },
+    {
+      id: 'ar9q22',
+      question: 'According to the lesson, the name "at-tawabi\u2019" is drawn directly from:',
+      options: [
+        'A place name in Arabia',
+        'An Arabic root meaning "to follow"',
+        'The name of a classical grammarian',
+        'A term unrelated to the category\u2019s actual function',
+      ],
+      correctIndex: 1,
+      explanation: 'This reflects the shared mechanical trait uniting all four elements this unit covers.',
+    },
+    {
+      id: 'ar9q23',
+      question: 'According to the lesson, ثُمَّ, one of the huruf al-\u2019atf, specifically implies:',
+      options: [
+        'Simultaneous action with no delay', 'Some delay between the two joined items', 'A negative meaning', 'A question'
+      ],
+      correctIndex: 1,
+      explanation: 'This is distinguished directly from فَ, which does not carry this same implication of delay.',
+    },
+    {
+      id: 'ar9q24',
+      question: 'According to the lesson, at-tawkid removes ambiguity by:',
+      options: [
+        'Introducing a completely new, unrelated idea',
+        'Reinforcing a preceding noun\u2019s meaning so that who or what is actually intended becomes unmistakably clear',
+        'Replacing the preceding noun entirely',
+        'Joining two unrelated nouns together',
+      ],
+      correctIndex: 1,
+      explanation: 'This distinguishes at-tawkid\u2019s function directly from al-badal\u2019s own restating function.',
+    },
+    {
+      id: 'ar9q25',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'Al-badal directly to an-na\u2019t, in reverse order',
+        'An-na\u2019t\u2019s demanding four-way agreement, to al-\u2019atf, at-tawkid, and al-badal, each requiring only matching case',
+        'A repeat of Unit 8\u2019s content with no new material',
+        'Kaana wa akhawatuha directly, skipping at-tawabi\u2019 entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s four topics were actually presented.',
+    },
+    {
+      id: 'ar9q26',
+      question: 'According to the lesson, al-badal and al-\u2019atf differ in their underlying function in that:',
+      options: [
+        'Al-badal restates a single noun with greater specificity, while al-\u2019atf joins two genuinely separate, independent items',
+        'They are functionally identical with no real distinction',
+        'Al-\u2019atf restates a single noun while al-badal joins separate items',
+        'Neither actually shares the "case alone" agreement rule',
+      ],
+      correctIndex: 0,
+      explanation: 'Despite this functional difference, both still share the exact same case-only agreement rule.',
+    },
+    {
+      id: 'ar9q27',
+      question: 'According to the lesson, why is it important to state honestly that further categories of badal exist beyond this unit\u2019s coverage?',
+      options: [
+        'To discourage further study of the topic',
+        'To avoid presenting the clearest, most direct form as though it were the only form badal ever takes',
+        'These further categories contradict the rule already given',
+        'This detail has no practical value',
+      ],
+      correctIndex: 1,
+      explanation: 'This reflects the same honest calibration this course has applied to other genuine nuances throughout.',
+    },
+    {
+      id: 'ar9q28',
+      question: 'According to the lesson, in جَاءَ الأَمِيرُ نَفْسُهُ, نَفْسُهُ carries which case?',
+      options: [
+        'Nasb', 'The same case as الأَمِيرُ, since it matches the emphasized word', 'Jarr regardless of context', 'No case at all'
+      ],
+      correctIndex: 1,
+      explanation: 'الأَمِيرُ is fa\u2019il here, carrying raf\u2019, which نَفْسُهُ then matches.',
+    },
+    {
+      id: 'ar9q29',
+      question: 'According to the lesson, the shared mechanism uniting all four tawabi\u2019 is best understood as:',
+      options: [
+        'A coincidental similarity with no real conceptual unity',
+        'A single underlying principle, dependents drawing their i\u2019rab from a preceding noun, expressed through four functionally different structures',
+        'A rule that applies to only one of the four elements',
+        'Something entirely unrelated to i\u2019rab',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the unifying claim this unit opens and closes with.',
+    },
+    {
+      id: 'ar9q30',
+      question: 'Taken together, this unit\u2019s overarching theme is best summarized as:',
+      options: [
+        'Description, conjunction, emphasis, and substitution follow entirely unrelated, arbitrary rules',
+        'Four genuinely different ways of extending a noun, description, joining, emphasis, and restatement, are unified by the single mechanism of drawing i\u2019rab from what precedes them',
+        'Only an-na\u2019t matters for correct Arabic grammar',
+        'This unit has no connection to material already covered earlier in this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all four topics of Unit 9 into a single foundational claim, setting up kaana wa akhawatuha in Unit 10.',
+    },
+  ],
+
+  'unit-10': [
+    {
+      id: 'ar10q1',
+      question: 'According to the lesson, al-af\u2019al an-naqisah are called "defective" because:',
+      options: [
+        'They are rarely used in Arabic',
+        'Unlike an ordinary fi\u2019l, they cannot convey complete meaning through action and doer alone, requiring a khabar instead',
+        'They have no i\u2019rab at all',
+        'They only appear in poetry',
+      ],
+      correctIndex: 1,
+      explanation: 'They require a khabar to complete their meaning, much as al-mubtada itself does.',
+    },
+    {
+      id: 'ar10q2',
+      question: 'Which of the following is listed in the lesson as one of kaana\u2019s sisters?',
+      options: [
+        'هَلْ', 'أَصْبَحَ', 'قَدْ', 'إِنَّ'
+      ],
+      correctIndex: 1,
+      explanation: 'أَصْبَحَ means "became," associated with morning.',
+    },
+    {
+      id: 'ar10q3',
+      question: 'According to the lesson, لَيْسَ is distinguished from kaana and her other sisters because:',
+      options: [
+        'It conjugates across past, present, and command forms exactly like kaana',
+        'It exists only in one fixed shape, carrying present-tense negation despite its own past-tense appearance',
+        'It never actually appears with a khabar',
+        'It is not actually considered one of kaana\u2019s sisters',
+      ],
+      correctIndex: 1,
+      explanation: 'It has no corresponding mudari\u2019 or amr form of its own at all.',
+    },
+    {
+      id: 'ar10q4',
+      question: 'According to the lesson, مَا زَالَ and its closely related family of verbs:',
+      options: [
+        'Never require any preceding particle at all',
+        'Specifically require a preceding negation particle to carry their "continued to" meaning, a genuine grammatical requirement',
+        'Only function as ordinary transitive verbs',
+        'Are identical in every respect to laysa',
+      ],
+      correctIndex: 1,
+      explanation: 'This includes مَا بَرِحَ, مَا فَتِئَ, and مَا انْفَكَّ.',
+    },
+    {
+      id: 'ar10q5',
+      question: 'According to the lesson, this course\u2019s third unit already noted that khabar\u2019s default raf\u2019 case changes specifically once:',
+      options: [
+        'A harf jarr enters the sentence',
+        'Kaana or one of her sisters enters the sentence',
+        'The sentence becomes plural',
+        'An adjective is added',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit examines exactly what that change actually is.',
+    },
+    {
+      id: 'ar10q6',
+      question: 'According to the qaidah given in the lesson, once kaana or a sister enters a jumlah ismiyyah:',
+      options: [
+        'Both nouns shift into nasb',
+        'The mubtada keeps raf\u2019 while the khabar shifts into nasb',
+        'The mubtada shifts into nasb while the khabar keeps raf\u2019',
+        'Both nouns remain entirely unchanged',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the core, defining effect of kaana and her sisters.',
+    },
+    {
+      id: 'ar10q7',
+      question: 'In كَانَ الجَوُّ جَمِيلًا (the weather was beautiful), جَمِيلًا carries:',
+      options: [
+        'Raf\u2019, exactly as it did before kaana entered',
+        'Nasb, carrying fatha in place of the damma it carried before kaana entered',
+        'Jarr', 'Jazm'
+      ],
+      correctIndex: 1,
+      explanation: 'الجَوُّ retains its own raf\u2019 entirely unchanged.',
+    },
+    {
+      id: 'ar10q8',
+      question: 'According to the lesson, why does kaana\u2019s narrow, precise effect matter?',
+      options: [
+        'It alters the sentence\u2019s overall structure unpredictably',
+        'It changes only one specific noun\u2019s case, leaving the other entirely untouched, which allows these two elements to receive their own specific names',
+        'It has no real practical consequence',
+        'It eliminates the need for i\u2019rab entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This precision is what allows this unit\u2019s next topic to name these elements directly.',
+    },
+    {
+      id: 'ar10q9',
+      question: 'Once kaana or a sister enters a sentence, al-mubtada is renamed:',
+      options: [
+        'Khabar kaana', 'Ism kaana', 'Al-fa\u2019il', 'Al-maf\u2019ul bihi'
+      ],
+      correctIndex: 1,
+      explanation: 'Al-khabar is renamed khabar kaana.',
+    },
+    {
+      id: 'ar10q10',
+      question: 'According to the lesson, khabar kaana can still take:',
+      options: [
+        'Only the mufrad form',
+        'Any of the three forms already established in this course\u2019s third unit: mufrad, jumlah, or shibh jumlah',
+        'Only the jumlah form',
+        'No specific form at all',
+      ],
+      correctIndex: 1,
+      explanation: 'This holds despite khabar kaana\u2019s new name and shifted nasb case.',
+    },
+    {
+      id: 'ar10q11',
+      question: 'In أَصْبَحَ الجَوُّ بَارِدًا (the weather became cold), الجَوُّ functions as:',
+      options: [
+        'Khabar asbaha', 'Ism asbaha, retaining raf\u2019', 'Al-fa\u2019il', 'Al-mudaf'
+      ],
+      correctIndex: 1,
+      explanation: 'بَارِدًا functions as khabar asbaha, carrying nasb.',
+    },
+    {
+      id: 'ar10q12',
+      question: 'According to the lesson, كَانَ الكِتَابُ عَلَى الطَّاوِلَةِ (the book was on the table) uses عَلَى الطَّاوِلَةِ, a shibh jumlah, to confirm that:',
+      options: [
+        'Kaana\u2019s effect restricts khabar to the mufrad form only',
+        'Kaana\u2019s effect on case does not restrict which specific form khabar itself may still take',
+        'Shibh jumlah can never function as khabar kaana',
+        'This construction is ungrammatical',
+      ],
+      correctIndex: 1,
+      explanation: 'This is already familiar from this course\u2019s third and eighth units.',
+    },
+    {
+      id: 'ar10q13',
+      question: 'According to the lesson, the single most frequent mistake when applying kaana\u2019s sisters is:',
+      options: [
+        'Shifting the ism into nasb instead of the khabar',
+        'Leaving khabar kaana in raf\u2019, its own ordinary default case, out of habit rather than correctly shifting it into nasb',
+        'Forgetting to include an ism at all',
+        'Using the wrong preposition',
+      ],
+      correctIndex: 1,
+      explanation: 'كَانَ الجَوُّ جَمِيلٌ, leaving جَمِيلٌ unchanged, is a genuine, identifiable error.',
+    },
+    {
+      id: 'ar10q14',
+      question: 'According to the lesson, why is this specific mistake so easy to make?',
+      options: [
+        'Khabar\u2019s ordinary raf\u2019 case is never actually taught',
+        'A learner who has internalized khabar\u2019s ordinary raf\u2019 case through extensive practice may continue that habit automatically even once kaana has genuinely changed the rule',
+        'This mistake is actually impossible to make',
+        'Kaana never actually appears in real Arabic sentences',
+      ],
+      correctIndex: 1,
+      explanation: 'Recognizing kaana\u2019s own presence as the trigger is what actually prevents this error.',
+    },
+    {
+      id: 'ar10q15',
+      question: 'According to the lesson, a second related error involves:',
+      options: [
+        'Never shifting either noun at all',
+        'Mistakenly shifting the ism into nasb as well, treating both nouns as equally affected by kaana\u2019s entry',
+        'Using kaana in a sentence with no khabar at all',
+        'Confusing kaana with a harf jarr',
+      ],
+      correctIndex: 1,
+      explanation: 'كَانَ الجَوَّ جَمِيلًا, incorrectly placing الجَوَّ in nasb, misapplies a rule that changes only the khabar.',
+    },
+    {
+      id: 'ar10q16',
+      question: 'According to the lesson, a practical habit worth adopting is to:',
+      options: [
+        'Assume both nouns in a kaana sentence must always match each other, exactly as al-\u2019atf would require',
+        'First confirm which noun is functioning as ism and which as khabar, then apply raf\u2019 and nasb according to that identified role',
+        'Never attempt to identify ism or khabar at all',
+        'Always place the second noun in raf\u2019 regardless of context',
+      ],
+      correctIndex: 1,
+      explanation: 'This is contrasted directly with al-\u2019atf\u2019s own matching requirement, already covered in this course\u2019s ninth unit.',
+    },
+    {
+      id: 'ar10q17',
+      question: 'According to the lesson, this course\u2019s eleventh unit turns to:',
+      options: [
+        'A repeat of kaana and her sisters',
+        'Inna wa akhawatuha, particles that also change the nominal sentence\u2019s i\u2019rab, though through the exact reverse case assignment',
+        'Harf al-jarr and idafah',
+        'At-tawabi\u2019',
+      ],
+      correctIndex: 1,
+      explanation: 'This is described as a structurally related but genuinely distinct group.',
+    },
+    {
+      id: 'ar10q18',
+      question: 'According to the lesson, صَارَ specifically means:',
+      options: [
+        'Remained', 'Became or turned into', 'Is not', 'As long as'
+      ],
+      correctIndex: 1,
+      explanation: 'This is listed directly among the core sisters in this unit\u2019s first topic.',
+    },
+    {
+      id: 'ar10q19',
+      question: 'According to the lesson, ظَلَّ specifically means:',
+      options: [
+        'Remained', 'Became, associated with evening', 'Became, associated with night', 'As long as'
+      ],
+      correctIndex: 0,
+      explanation: 'This is distinguished directly from أَمْسَى (evening) and بَاتَ (night) among the sisters.',
+    },
+    {
+      id: 'ar10q20',
+      question: 'According to the lesson, مَا دَامَ specifically means:',
+      options: [
+        'Became', 'As long as', 'Is not', 'Remained'
+      ],
+      correctIndex: 1,
+      explanation: 'This is listed directly among the core sisters in this unit\u2019s first topic.',
+    },
+    {
+      id: 'ar10q21',
+      question: 'According to the lesson, the seven sisters sharing kaana\u2019s full range of conjugation across all tenses are contrasted directly with:',
+      options: [
+        'An-na\u2019t and al-\u2019atf',
+        'Laysa, which exists only in one fixed shape',
+        'Al-mudaf and al-mudaf ilayh',
+        'The five nouns from this course\u2019s sixth unit',
+      ],
+      correctIndex: 1,
+      explanation: 'This is a genuinely distinguishing morphological detail about laysa specifically.',
+    },
+    {
+      id: 'ar10q22',
+      question: 'According to the lesson, the ordinary jumlah ismiyyah الجَوُّ جَمِيلٌ, before any sister verb enters, has:',
+      options: [
+        'Both mubtada and khabar in nasb',
+        'Both mubtada and khabar in raf\u2019',
+        'Mubtada in nasb and khabar in raf\u2019',
+        'No i\u2019rab at all',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the ordinary baseline already established across this course\u2019s third unit, before kaana enters.',
+    },
+    {
+      id: 'ar10q23',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'Common mistakes directly to the sisters list, in reverse order',
+        'Identifying kaana and her sisters, to their shared case-shifting effect, to the new ism/khabar terminology, to common mistakes in application',
+        'A repeat of Unit 9\u2019s content with no new material',
+        'Inna wa akhawatuha directly, skipping kaana entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s four topics were actually presented.',
+    },
+    {
+      id: 'ar10q24',
+      question: 'According to the lesson, kaana and her sisters require a khabar to complete their meaning in a way that parallels:',
+      options: [
+        'Al-fa\u2019il\u2019s own requirement', 'Al-mubtada\u2019s own requirement, already covered across this course\u2019s third unit', 'Al-maf\u2019ul bihi\u2019s own requirement', 'Al-badal\u2019s own requirement'
+      ],
+      correctIndex: 1,
+      explanation: 'This is the specific reason these verbs are called "defective."',
+    },
+    {
+      id: 'ar10q25',
+      question: 'According to the lesson, once a sister verb other than kaana itself is used, the terminology adjusts to reflect this by using:',
+      options: [
+        'The exact same terms, ism kaana and khabar kaana, regardless of which sister appears',
+        'Terms reflecting the specific sister actually used, such as ism asbaha or khabar sāra',
+        'No specific terminology at all',
+        'The terms mubtada and khabar unchanged',
+      ],
+      correctIndex: 1,
+      explanation: 'This reflects that specific verb\u2019s own governance over the sentence.',
+    },
+    {
+      id: 'ar10q26',
+      question: 'According to the lesson, this unit\u2019s treatment of laysa and the mā zāla family reflects:',
+      options: [
+        'An attempt to avoid discussing genuine complexity within this topic',
+        'The same honest naming of genuine grammatical nuance this course has applied throughout',
+        'A rejection of these words as genuine sisters of kaana',
+        'A claim that these words never actually appear in real Arabic',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the same calibrated honesty already applied to other genuine nuances across this course.',
+    },
+    {
+      id: 'ar10q27',
+      question: 'According to the lesson, recognizing kaana\u2019s own presence as a trigger, rather than memorizing individual correct forms, is what actually:',
+      options: [
+        'Has no practical value at all',
+        'Prevents the single most common mistake this unit names directly',
+        'Only helps with laysa specifically',
+        'Only matters for advanced learners',
+      ],
+      correctIndex: 1,
+      explanation: 'This is stated directly as the practical takeaway from this unit\u2019s closing topic.',
+    },
+    {
+      id: 'ar10q28',
+      question: 'According to the lesson, the correct form of the earlier example, avoiding the identified common mistake, is:',
+      options: [
+        'كَانَ الجَوُّ جَمِيلٌ', 'كَانَ الجَوُّ جَمِيلًا', 'كَانَ الجَوَّ جَمِيلًا', 'كَانَ الجَوَّ جَمِيلٌ'
+      ],
+      correctIndex: 1,
+      explanation: 'This keeps الجَوُّ in raf\u2019 and correctly shifts جَمِيلًا into nasb.',
+    },
+    {
+      id: 'ar10q29',
+      question: 'According to the lesson, kaana and her sisters entering a sentence is described as changing:',
+      options: [
+        'The sentence\u2019s overall word order entirely',
+        'Only the case of one specific noun, the khabar, while leaving the mubtada\u2019s case untouched',
+        'Both nouns\u2019 gender and number',
+        'The sentence type from ismiyyah to fi\u2019liyyah',
+      ],
+      correctIndex: 1,
+      explanation: 'This precise, narrow effect is what this unit has traced across all four of its topics.',
+    },
+    {
+      id: 'ar10q30',
+      question: 'Taken together, this unit\u2019s overarching theme is best summarized as:',
+      options: [
+        'Kaana and her sisters have no consistent, learnable effect on the nominal sentence',
+        'A defined group of defective verbs enters the nominal sentence and applies one precise, consistent effect, keeping the ism in raf\u2019 and shifting the khabar into nasb, a rule with genuine, identifiable pitfalls worth guarding against directly',
+        'Only kaana itself matters for correct Arabic grammar',
+        'This unit has no connection to material already covered earlier in this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all four topics of Unit 10 into a single foundational claim, setting up inna wa akhawatuha in Unit 11.',
+    },
+  ],
+
+  'unit-11': [
+    {
+      id: 'ar11q1',
+      question: 'According to the lesson, inna wa akhawatuha differ from kaana wa akhawatuha in that:',
+      options: [
+        'Inna and her sisters are genuine verbs, while kaana and her sisters are particles',
+        'Inna and her sisters are huruf, mabni and carrying no independent i\u2019rab, unlike kaana and her sisters, which are genuine verbs',
+        'There is no real difference between the two groups',
+        'Inna and her sisters cannot enter a jumlah ismiyyah at all',
+      ],
+      correctIndex: 1,
+      explanation: 'Despite this difference, both groups share the basic capacity to change a nominal sentence\u2019s underlying i\u2019rab.',
+    },
+    {
+      id: 'ar11q2',
+      question: 'Which of the following is listed among inna\u2019s six recognized sisters?',
+      options: [
+        'أَصْبَحَ', 'لَكِنَّ', 'ظَلَّ', 'بَاتَ'
+      ],
+      correctIndex: 1,
+      explanation: 'لَكِنَّ means "but," used for correction or contrast.',
+    },
+    {
+      id: 'ar11q3',
+      question: 'According to the lesson, لَيْتَ specifically expresses:',
+      options: [
+        'Straightforward affirmation',
+        'A wish the speaker may know is unlikely',
+        'Genuine contrast', 'Likeness or comparison'
+      ],
+      correctIndex: 1,
+      explanation: 'لَعَلَّ, by contrast, expresses a hope the speaker considers genuinely possible.',
+    },
+    {
+      id: 'ar11q4',
+      question: 'According to the lesson, this course\u2019s tenth unit already promised that inna and her sisters would apply:',
+      options: [
+        'The exact same effect as kaana and her sisters',
+        'Kaana\u2019s own effect in reverse',
+        'No effect at all on the nominal sentence',
+        'An effect only relevant to verbal sentences',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit confirms precisely what that reversal actually is.',
+    },
+    {
+      id: 'ar11q5',
+      question: 'According to the qaidah given in the lesson, inna and her sisters enter the nominal sentence and:',
+      options: [
+        'Keep the mubtada in raf\u2019 while shifting the khabar into nasb',
+        'Push the mubtada into nasb while keeping the khabar in raf\u2019',
+        'Shift both nouns into nasb',
+        'Leave both nouns entirely unchanged',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the exact reverse of kaana\u2019s own effect already covered in this course\u2019s tenth unit.',
+    },
+    {
+      id: 'ar11q6',
+      question: 'In إِنَّ اللَّهَ غَفُورٌ (indeed, Allah is forgiving), اللَّهَ carries:',
+      options: [
+        'Raf\u2019, exactly as it did before inna entered',
+        'Nasb, shifted from its original raf\u2019',
+        'Jarr', 'Jazm'
+      ],
+      correctIndex: 1,
+      explanation: 'غَفُورٌ remains entirely unchanged in raf\u2019.',
+    },
+    {
+      id: 'ar11q7',
+      question: 'According to the lesson, remembering either kaana\u2019s or inna\u2019s effect correctly:',
+      options: [
+        'Provides no help in remembering the other',
+        'Makes the other immediately available by simple reversal',
+        'Requires memorizing two entirely unrelated rules',
+        'Only applies to laysa specifically',
+      ],
+      correctIndex: 1,
+      explanation: 'Kaana keeps the first noun in raf\u2019 and shifts the second into nasb; inna does the exact opposite.',
+    },
+    {
+      id: 'ar11q8',
+      question: 'Once inna or a sister enters a sentence, al-mubtada is renamed:',
+      options: [
+        'Khabar inna', 'Ism inna', 'Al-fa\u2019il', 'Al-maf\u2019ul bihi'
+      ],
+      correctIndex: 1,
+      explanation: 'Al-khabar is renamed khabar inna.',
+    },
+    {
+      id: 'ar11q9',
+      question: 'According to the lesson, khabar inna:',
+      options: [
+        'Can only take the mufrad form',
+        'Retains the same flexibility already established for khabar kaana: mufrad, jumlah, or shibh jumlah',
+        'Can never take the jumlah form',
+        'Loses its own i\u2019rab entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This holds despite khabar inna\u2019s own new name and unchanged raf\u2019 case.',
+    },
+    {
+      id: 'ar11q10',
+      question: 'In لَعَلَّ الجَوَّ جَمِيلٌ (perhaps the weather is beautiful), الجَوَّ functions as:',
+      options: [
+        'Khabar la\u2019alla', 'Ism la\u2019alla, carrying nasb', 'Al-fa\u2019il', 'Al-mudaf'
+      ],
+      correctIndex: 1,
+      explanation: 'جَمِيلٌ functions as khabar la\u2019alla, retaining raf\u2019.',
+    },
+    {
+      id: 'ar11q11',
+      question: 'According to the lesson, correctly identifying which specific group has entered a sentence, kaana\u2019s family or inna\u2019s family, is:',
+      options: [
+        'Unnecessary, since both groups behave identically',
+        'The single most important first step before assigning case to either noun',
+        'Only relevant to advanced learners',
+        'Irrelevant to i\u2019rab entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This is stated directly given the two groups\u2019 exactly opposite effects.',
+    },
+    {
+      id: 'ar11q12',
+      question: 'According to the lesson, لَا an-nafiyah lil-jins makes a claim that is:',
+      options: [
+        'Weaker than ordinary negation',
+        'Considerably stronger than ordinary negation, denying an entire category with no exception',
+        'Identical to ordinary negation in every respect',
+        'Only used in poetry',
+      ],
+      correctIndex: 1,
+      explanation: 'Rather than denying one specific instance, it denies the existence of an entire kind altogether.',
+    },
+    {
+      id: 'ar11q13',
+      question: 'According to the lesson, this categorical reading of لَا requires which four conditions together?',
+      options: [
+        'The noun must be definite, separated from لَا, with a definite khabar, and لَا repeated',
+        'The noun following لَا must be indefinite, nothing separates them, the khabar is also indefinite, and لَا does not repeat',
+        'Only that the noun be indefinite; no other conditions apply',
+        'Only that لَا appears at the start of a sentence',
+      ],
+      correctIndex: 1,
+      explanation: 'Meeting all four conditions together confirms this specific categorical reading.',
+    },
+    {
+      id: 'ar11q14',
+      question: 'According to the lesson, once these conditions are met, لَا behaves:',
+      options: [
+        'Nothing like inna and her sisters',
+        'Exactly like inna and her sisters, pushing its own ism into nasb while leaving khabar in raf\u2019',
+        'Exactly like kaana and her sisters instead',
+        'Like an ordinary harf jarr',
+      ],
+      correctIndex: 1,
+      explanation: 'This is why لَا an-nafiyah lil-jins belongs within this same broader family this unit examines.',
+    },
+    {
+      id: 'ar11q15',
+      question: 'According to the lesson, when the ism of لَا an-nafiyah lil-jins is a single, unmodified word, it is:',
+      options: [
+        'Marked with ordinary tanween exactly like any other indefinite noun',
+        'Mabni on fatha, rather than carrying ordinary tanween-marked nasb',
+        'Left entirely without any case marking',
+        'Always definite',
+      ],
+      correctIndex: 1,
+      explanation: 'This is a specific structural detail distinguishing this construction from an ordinary indefinite noun.',
+    },
+    {
+      id: 'ar11q16',
+      question: 'In لَا إِكْرَاهَ فِي الدِّينِ (there is no compulsion in religion), إِكْرَاهَ:',
+      options: [
+        'Is definite and carries ordinary raf\u2019',
+        'Is indefinite, mabni on fatha as ism laa, immediately following لَا with nothing separating them',
+        'Is separated from لَا by an intervening word',
+        'Carries jarr case',
+      ],
+      correctIndex: 1,
+      explanation: 'This denies not one specific instance but the entire category of compulsion in religious belief altogether.',
+    },
+    {
+      id: 'ar11q17',
+      question: 'This verse is found in which surah, according to the lesson?',
+      options: [
+        'Surah al-Fatihah', 'Surah al-Baqarah, 2:256', 'Surah Yasin', 'Surah al-Ikhlas'
+      ],
+      correctIndex: 1,
+      explanation: 'This is a widely known, directly Qur\u2019anic example of this exact construction.',
+    },
+    {
+      id: 'ar11q18',
+      question: 'According to the lesson, this course\u2019s twelfth unit turns to:',
+      options: [
+        'A repeat of inna wa akhawatuha',
+        'Al-maf\u2019ulat, further categories of noun carrying nasb despite serving genuinely different functions from a direct object',
+        'Kaana wa akhawatuha again',
+        'Harf al-jarr and idafah',
+      ],
+      correctIndex: 1,
+      explanation: 'This connects directly to al-maf\u2019ul bihi, already covered across this course\u2019s fourth unit.',
+    },
+    {
+      id: 'ar11q19',
+      question: 'According to the lesson, إِنَّ and أَنَّ are both used for:',
+      options: [
+        'Genuine contrast', 'Straightforward affirmation', 'Wish or regret', 'Hope or expectation'
+      ],
+      correctIndex: 1,
+      explanation: 'أَنَّ is specifically used within embedded clauses.',
+    },
+    {
+      id: 'ar11q20',
+      question: 'According to the lesson, كَأَنَّ specifically expresses:',
+      options: [
+        'Likeness or comparison', 'Correction', 'A wish', 'Hope'
+      ],
+      correctIndex: 0,
+      explanation: 'This is listed directly among the six recognized sisters in this unit\u2019s first topic.',
+    },
+    {
+      id: 'ar11q21',
+      question: 'According to the lesson, the ordinary jumlah ismiyyah اللَّهُ غَفُورٌ, before inna enters, has:',
+      options: [
+        'Both nouns in nasb',
+        'Both nouns in raf\u2019',
+        'The first noun in nasb and the second in raf\u2019',
+        'No i\u2019rab at all',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the ordinary baseline before إِنَّ enters and shifts the first noun into nasb.',
+    },
+    {
+      id: 'ar11q22',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'Laa an-nafiyah lil-jins directly to identifying the sisters, in reverse order',
+        'Identifying inna and her sisters, to their reversed case effect, to the new ism/khabar terminology, to laa an-nafiyah lil-jins as a specific family member',
+        'A repeat of Unit 10\u2019s content with no new material',
+        'Al-maf\u2019ulat directly, skipping inna wa akhawatuha entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s four topics were actually presented.',
+    },
+    {
+      id: 'ar11q23',
+      question: 'According to the lesson, if the noun following لَا is separated from it by an intervening word, or is definite:',
+      options: [
+        'The categorical negation reading still applies without issue',
+        'This specific categorical reading does not apply, since the required conditions are not met',
+        'لَا becomes ungrammatical entirely',
+        'This has no effect on which reading applies',
+      ],
+      correctIndex: 1,
+      explanation: 'All four conditions must hold together for this specific reading to be confirmed.',
+    },
+    {
+      id: 'ar11q24',
+      question: 'According to the lesson, لَا an-nafiyah lil-jins is grouped within the broader inna family specifically because:',
+      options: [
+        'It shares no real similarity with inna at all',
+        'Once its conditions are met, it shares inna\u2019s own basic mechanism of pushing its ism into nasb while leaving khabar in raf\u2019',
+        'It is actually a defective verb like kaana',
+        'It only applies to verbal sentences',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the same underlying mechanism already established across this unit\u2019s second and third topics.',
+    },
+    {
+      id: 'ar11q25',
+      question: 'According to the lesson, correctly distinguishing كَانَ from إِنَّ family verbs and particles at the start of a sentence is important because:',
+      options: [
+        'They have no real bearing on the rest of the sentence',
+        'They apply exactly opposite case assignments to the same two-noun structure',
+        'They are actually interchangeable in every respect',
+        'Only kaana affects i\u2019rab; inna does not',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the direct contrast this unit builds from its second topic onward.',
+    },
+    {
+      id: 'ar11q26',
+      question: 'According to the lesson, لَكِنَّ specifically differs from إِنَّ in that it:',
+      options: [
+        'Expresses correction or contrast rather than straightforward affirmation',
+        'Does not affect i\u2019rab at all',
+        'Only applies to verbal sentences',
+        'Is not actually one of inna\u2019s sisters',
+      ],
+      correctIndex: 0,
+      explanation: 'Each of inna\u2019s sisters carries its own specific shade of meaning beyond the shared grammatical effect.',
+    },
+    {
+      id: 'ar11q27',
+      question: 'According to the lesson, the table contrasting kaana (ism raf\u2019, khabar nasb) against inna (ism nasb, khabar raf\u2019) is described as:',
+      options: [
+        'An unnecessary complication with no practical value',
+        'A useful memory anchor for correctly applying either rule',
+        'Evidence that the two rules are actually identical',
+        'Only relevant to laysa specifically',
+      ],
+      correctIndex: 1,
+      explanation: 'This is stated directly as a genuinely useful way to hold both rules in mind together.',
+    },
+    {
+      id: 'ar11q28',
+      question: 'According to the lesson, لَا إِكْرَاهَ فِي الدِّينِ is significant as an example because it is:',
+      options: [
+        'An invented sentence with no real-world source',
+        'A widely known, directly Qur\u2019anic instance of this exact grammatical construction',
+        'An example of kaana wa akhawatuha instead',
+        'An example of ordinary, non-categorical negation',
+      ],
+      correctIndex: 1,
+      explanation: 'This connects the grammatical rule directly to a real, well known verse.',
+    },
+    {
+      id: 'ar11q29',
+      question: 'According to the lesson, ism laa being mabni on fatha rather than carrying ordinary tanween-marked nasb is described as:',
+      options: [
+        'Identical to how any other indefinite noun is marked elsewhere in a sentence',
+        'A specific structural detail distinguishing this exact construction',
+        'A sign that the sentence is ungrammatical',
+        'Something that only applies to definite nouns',
+      ],
+      correctIndex: 1,
+      explanation: 'This is named directly as a distinguishing feature of ism laa specifically.',
+    },
+    {
+      id: 'ar11q30',
+      question: 'Taken together, this unit\u2019s overarching theme is best summarized as:',
+      options: [
+        'Inna and her sisters have no real relationship to kaana and her sisters',
+        'A group of particles applies kaana\u2019s own effect in exact reverse, and one specific member of this same family, لَا, extends this mechanism into a considerably stronger, categorical form of negation under precisely defined conditions',
+        'Only إِنَّ itself matters for correct Arabic grammar',
+        'This unit has no connection to material already covered earlier in this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all four topics of Unit 11 into a single foundational claim, setting up al-maf\u2019ulat in Unit 12.',
+    },
+  ],
+
+  'unit-12': [
+    {
+      id: 'ar12q1',
+      question: 'According to the lesson, al-maf\u2019ul al-mutlaq is:',
+      options: [
+        'An ordinary noun unrelated to the verb',
+        'A masdar sharing the exact same root as the verb already present in the sentence, placed in nasb',
+        'A preposition governing a following noun',
+        'Always plural',
+      ],
+      correctIndex: 1,
+      explanation: 'It serves one of three distinct purposes once placed in this position.',
+    },
+    {
+      id: 'ar12q2',
+      question: 'حَفِظْتُ الدَّرْسَ حِفْظًا illustrates which purpose of al-maf\u2019ul al-mutlaq?',
+      options: [
+        'Bayan an-naw\u2019, specifying manner', 'At-tawkid, pure emphasis', 'Bayan al-\u2019adad, specifying number', 'None of these purposes'
+      ],
+      correctIndex: 1,
+      explanation: 'حِفْظًا simply reinforces that the memorizing genuinely, definitely occurred.',
+    },
+    {
+      id: 'ar12q3',
+      question: 'ضَرَبْتُ ضَرْبًا شَدِيدًا illustrates which purpose of al-maf\u2019ul al-mutlaq?',
+      options: [
+        'At-tawkid alone', 'Bayan an-naw\u2019, specifying manner', 'Bayan al-\u2019adad, specifying number', 'This is not a valid maf\u2019ul mutlaq example'
+      ],
+      correctIndex: 1,
+      explanation: 'شَدِيدًا describes the strike\u2019s own particular manner.',
+    },
+    {
+      id: 'ar12q4',
+      question: 'ضَرَبْتُ ضَرْبَتَيْنِ illustrates which purpose of al-maf\u2019ul al-mutlaq?',
+      options: [
+        'At-tawkid', 'Bayan an-naw\u2019', 'Bayan al-\u2019adad, specifying number', 'None of these'
+      ],
+      correctIndex: 2,
+      explanation: 'The dual form states how many times the action occurred.',
+    },
+    {
+      id: 'ar12q5',
+      question: 'According to the lesson, al-maf\u2019ul li ajlihi differs from al-maf\u2019ul al-mutlaq in that it:',
+      options: [
+        'Shares the main verb\u2019s own root',
+        'Does not share the main verb\u2019s root, and answers why the action occurred rather than describing its manner or number',
+        'Never carries nasb case',
+        'Is never a masdar',
+      ],
+      correctIndex: 1,
+      explanation: 'This is a genuinely different question from what al-maf\u2019ul al-mutlaq answers.',
+    },
+    {
+      id: 'ar12q6',
+      question: 'In قُمْتُ إِجْلَالًا لِلْأُسْتَاذِ (I stood out of respect for the teacher), إِجْلَالًا explains:',
+      options: [
+        'How the standing occurred', 'Why the standing occurred', 'When the standing occurred', 'Where the standing occurred'
+      ],
+      correctIndex: 1,
+      explanation: 'This is a genuine motivating cause rather than a description of manner or number.',
+    },
+    {
+      id: 'ar12q7',
+      question: 'According to the lesson, al-maf\u2019ul li ajlihi must:',
+      options: [
+        'Belong to a different doer than the main verb',
+        'Share the exact same doer as the main verb itself',
+        'Always be plural',
+        'Always be definite',
+      ],
+      correctIndex: 1,
+      explanation: 'This distinguishes it from a masdar that might simply appear elsewhere without explaining the main verb\u2019s motivation.',
+    },
+    {
+      id: 'ar12q8',
+      question: 'Al-maf\u2019ul fihi, also called az-zarf, expresses:',
+      options: [
+        'Why an action occurred', 'Either the specific time or the specific place in which an action occurred', 'How many times an action occurred', 'The manner of an action'
+      ],
+      correctIndex: 1,
+      explanation: 'This divides into zarf zaman and zarf makan.',
+    },
+    {
+      id: 'ar12q9',
+      question: 'سَافَرْتُ صَبَاحًا (I traveled in the morning) illustrates:',
+      options: [
+        'Zarf makan', 'Zarf zaman, specifying when the action occurred', 'Al-haal', 'At-tamyiz'
+      ],
+      correctIndex: 1,
+      explanation: 'صَبَاحًا specifies exactly when the traveling occurred.',
+    },
+    {
+      id: 'ar12q10',
+      question: 'جَلَسْتُ أَمَامَ البَيْتِ (I sat in front of the house) illustrates:',
+      options: [
+        'Zarf zaman', 'Zarf makan, specifying where the action occurred', 'Al-maf\u2019ul li ajlihi', 'Al-maf\u2019ul al-mutlaq'
+      ],
+      correctIndex: 1,
+      explanation: 'أَمَامَ البَيْتِ is itself an idafah construct already covered in this course\u2019s eighth unit.',
+    },
+    {
+      id: 'ar12q11',
+      question: 'According to the lesson, al-maf\u2019ul al-mutlaq, al-maf\u2019ul li ajlihi, and al-maf\u2019ul fihi all share:',
+      options: [
+        'The exact same question they answer about the action',
+        'The exact same nasb case, while answering three entirely different questions',
+        'No real relationship to one another',
+        'The requirement of being a masdar in every case',
+      ],
+      correctIndex: 1,
+      explanation: 'These questions are how or how much, why, and when or where.',
+    },
+    {
+      id: 'ar12q12',
+      question: 'Al-haal describes:',
+      options: [
+        'A permanent characteristic of an entity',
+        'The temporary state or condition of an already-identified entity, specifically at the moment the action occurs',
+        'The reason an action occurred',
+        'The number of times an action occurred',
+      ],
+      correctIndex: 1,
+      explanation: 'This entity is called sahib al-haal.',
+    },
+    {
+      id: 'ar12q13',
+      question: 'According to the lesson, al-haal itself must be:',
+      options: [
+        'Definite, while its sahib al-haal must be indefinite',
+        'Indefinite, while its sahib al-haal must be definite',
+        'Both definite',
+        'Both indefinite',
+      ],
+      correctIndex: 1,
+      explanation: 'This is one of the specific conditions distinguishing al-haal.',
+    },
+    {
+      id: 'ar12q14',
+      question: 'In جَاءَ زَيْدٌ رَاكِبًا (Zayd came riding), رَاكِبًا describes:',
+      options: [
+        'A permanent characteristic of Zayd',
+        'زَيْدٌ\u2019s temporary condition of riding at the moment of arrival',
+        'The reason Zayd came',
+        'The number of times Zayd came',
+      ],
+      correctIndex: 1,
+      explanation: 'زَيْدٌ, definite, is the sahib al-haal here.',
+    },
+    {
+      id: 'ar12q15',
+      question: 'At-tamyiz is described as:',
+      options: [
+        'A definite noun describing a temporary state',
+        'A single, indefinite noun in nasb that resolves genuine ambiguity in a preceding word',
+        'A masdar sharing the main verb\u2019s root',
+        'An adverb of time or place',
+      ],
+      correctIndex: 1,
+      explanation: 'This most commonly resolves ambiguity in a number or measurement.',
+    },
+    {
+      id: 'ar12q16',
+      question: 'In عِنْدِي عِشْرُونَ كِتَابًا (I have twenty books), كِتَابًا resolves:',
+      options: [
+        'The manner in which the books were obtained',
+        'Exactly what "twenty" actually refers to, since the number alone leaves this unclear',
+        'The reason for having books',
+        'The location of the books',
+      ],
+      correctIndex: 1,
+      explanation: 'This is a classic, commonly cited example of tamyiz resolving numerical ambiguity.',
+    },
+    {
+      id: 'ar12q17',
+      question: 'According to the lesson, the precise distinction between al-haal and at-tamyiz is that:',
+      options: [
+        'They are functionally identical with no real distinction',
+        'Al-haal clarifies the situation of an already known entity, while at-tamyiz clarifies what an ambiguous preceding word actually refers to',
+        'At-tamyiz describes temporary states while al-haal resolves numerical ambiguity',
+        'Only al-haal ever carries nasb case',
+      ],
+      correctIndex: 1,
+      explanation: 'رَاكِبًا tells us something new about زَيْدٌ; كِتَابًا tells us what عِشْرُونَ itself means.',
+    },
+    {
+      id: 'ar12q18',
+      question: 'According to the lesson, this course\u2019s thirteenth unit turns to:',
+      options: [
+        'A repeat of al-maf\u2019ulat',
+        'The mudari\u2019 verb\u2019s own i\u2019rab in full depth, examining which particles push it into nasb or jazm',
+        'Kaana wa akhawatuha again',
+        'Harf al-jarr and idafah',
+      ],
+      correctIndex: 1,
+      explanation: 'This was already introduced in outline across this course\u2019s fifth unit.',
+    },
+    {
+      id: 'ar12q19',
+      question: 'According to the lesson, this course\u2019s fourth unit already established which noun as carrying nasb case?',
+      options: [
+        'Al-mubtada', 'Al-maf\u2019ul bihi', 'Al-khabar', 'Al-fa\u2019il'
+      ],
+      correctIndex: 1,
+      explanation: 'This unit examines several further categories of noun that also carry nasb.',
+    },
+    {
+      id: 'ar12q20',
+      question: 'According to the lesson, the five categories covered across this unit, despite sharing the same case, each:',
+      options: [
+        'Answer the exact same question about the action',
+        'Answer a genuinely different question despite sharing this exact same nasb case',
+        'Require being a masdar',
+        'Only apply to intransitive verbs',
+      ],
+      correctIndex: 1,
+      explanation: 'This is stated directly as this unit\u2019s closing synthesis.',
+    },
+    {
+      id: 'ar12q21',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'At-tamyiz directly to al-maf\u2019ul al-mutlaq, in reverse order',
+        'Al-maf\u2019ul al-mutlaq, to al-maf\u2019ul li ajlihi, to al-maf\u2019ul fihi, to al-haal and at-tamyiz together',
+        'A repeat of Unit 11\u2019s content with no new material',
+        'The mudari\u2019 verb\u2019s governors directly, skipping al-maf\u2019ulat entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s four topics were actually presented.',
+    },
+    {
+      id: 'ar12q22',
+      question: 'According to the lesson, zarf zaman and zarf makan are two divisions of:',
+      options: [
+        'Al-maf\u2019ul al-mutlaq', 'Al-maf\u2019ul fihi, also called az-zarf', 'At-tamyiz', 'Al-haal'
+      ],
+      correctIndex: 1,
+      explanation: 'These express time and place respectively.',
+    },
+    {
+      id: 'ar12q23',
+      question: 'According to the lesson, why must al-maf\u2019ul li ajlihi share the same doer as the main verb?',
+      options: [
+        'This requirement does not actually exist',
+        'To distinguish it from a masdar that might otherwise appear elsewhere without genuinely explaining the main verb\u2019s own motivation',
+        'Because it must always be plural',
+        'Because it must always be a proper noun',
+      ],
+      correctIndex: 1,
+      explanation: 'In the example given, the same person both stood and held the respect explaining that action.',
+    },
+    {
+      id: 'ar12q24',
+      question: 'According to the lesson, disambiguating a number like "twenty" is most commonly the job of:',
+      options: [
+        'Al-haal', 'At-tamyiz', 'Al-maf\u2019ul fihi', 'Al-maf\u2019ul li ajlihi'
+      ],
+      correctIndex: 1,
+      explanation: 'This is one of the most common triggers for at-tamyiz specifically.',
+    },
+    {
+      id: 'ar12q25',
+      question: 'According to the lesson, if the sahib al-haal in a sentence were itself indefinite, this would:',
+      options: [
+        'Have no bearing on whether al-haal\u2019s conditions are met',
+        'Fail one of al-haal\u2019s specific governing conditions, since sahib al-haal must be definite',
+        'Automatically make the following word at-tamyiz instead',
+        'Be entirely irrelevant to Arabic grammar',
+      ],
+      correctIndex: 1,
+      explanation: 'This is one of the specific conditions distinguishing al-haal already covered directly in this unit.',
+    },
+    {
+      id: 'ar12q26',
+      question: 'According to the lesson, all five categories covered in this unit connect back to which earlier material in this course?',
+      options: [
+        'This course\u2019s fourth unit, where al-maf\u2019ul bihi was first established as a nasb-carrying noun',
+        'This course\u2019s first unit alone',
+        'No earlier material in this course',
+        'Only this course\u2019s eighth unit on idafah',
+      ],
+      correctIndex: 0,
+      explanation: 'This unit extends that same case across several genuinely different functions.',
+    },
+    {
+      id: 'ar12q27',
+      question: 'According to the lesson, ضَرَبْتُ ضَرْبَتَيْنِ uses which grammatical number for the masdar itself?',
+      options: [
+        'Singular', 'Dual', 'Broken plural', 'Sound plural'
+      ],
+      correctIndex: 1,
+      explanation: 'This dual form directly states that the action occurred exactly twice.',
+    },
+    {
+      id: 'ar12q28',
+      question: 'According to the lesson, في المَسْجِدِ, a shibh jumlah already covered in this course\u2019s third and eighth units, is structurally distinct from al-maf\u2019ul fihi in that al-maf\u2019ul fihi:',
+      options: [
+        'Also always requires a harf jarr',
+        'Is a single noun carrying nasb directly, such as صَبَاحًا, rather than a preposition-plus-noun combination',
+        'Is identical in every respect to shibh jumlah',
+        'Never expresses location at all',
+      ],
+      correctIndex: 1,
+      explanation: 'أَمَامَ البَيْتِ does use idafah, but the zarf itself (أَمَامَ) carries nasb directly rather than following a harf jarr.',
+    },
+    {
+      id: 'ar12q29',
+      question: 'According to the lesson, this unit\u2019s treatment of five distinct nasb categories reflects:',
+      options: [
+        'A single, uniform function nasb always serves in Arabic',
+        'The genuine diversity of functions a single case can serve, each requiring its own specific recognition rather than a single blanket rule',
+        'An error in classical Nahw that modern grammarians have since corrected',
+        'A category with no real practical relevance to reading Arabic',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the unifying insight this unit\u2019s closing topic draws directly.',
+    },
+    {
+      id: 'ar12q30',
+      question: 'Taken together, this unit\u2019s overarching theme is best summarized as:',
+      options: [
+        'Nasb case always signals a direct object with no further nuance',
+        'Nasb case marks five genuinely distinct grammatical functions, emphasis or description of a verb, reason, time or place, temporary state, and disambiguation, each recognizable through its own specific structure and purpose',
+        'Only al-maf\u2019ul al-mutlaq matters for correct Arabic grammar',
+        'This unit has no connection to material already covered earlier in this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all four topics of Unit 12 into a single foundational claim, setting up the mudari\u2019 verb\u2019s own governors in Unit 13.',
+    },
+  ],
+
+  'unit-13': [
+    {
+      id: 'ar13q1',
+      question: 'According to the lesson, this course\u2019s fifth unit already established that al-fi\u2019l al-mudari\u2019:',
+      options: [
+        'Never takes i\u2019rab at all',
+        'Is the only one of the three verb forms actually taking i\u2019rab, remaining in raf\u2019 unless a specific particle intervenes',
+        'Always carries jarr case',
+        'Is identical to al-fi\u2019l al-madi in every respect',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit examines exactly which particles cause that intervention.',
+    },
+    {
+      id: 'ar13q2',
+      question: 'An ordinary mudari\u2019 verb signals raf\u2019 through:',
+      options: [
+        'Fatha', 'Damma', 'Kasra', 'Sukoon'
+      ],
+      correctIndex: 1,
+      explanation: 'يَكْتُبُ, already used in this course\u2019s fifth unit, illustrates this default state.',
+    },
+    {
+      id: 'ar13q3',
+      question: 'Al-af\u2019al al-khamsah, the five verbs, are described as mudari\u2019 forms carrying:',
+      options: [
+        'No pronoun of any kind',
+        'An attached pronoun suffix: و الجماعة, يَاء المُخَاطَبَة, or أَلِف الاثنين',
+        'Only the past-tense feminine marker',
+        'A harf jarr attached directly',
+      ],
+      correctIndex: 1,
+      explanation: 'يَفْعَلُونَ and تَفْعَلِينَ both illustrate this group directly.',
+    },
+    {
+      id: 'ar13q4',
+      question: 'According to the lesson, al-af\u2019al al-khamsah signal their own raf\u2019 through:',
+      options: [
+        'Damma, exactly like an ordinary mudari\u2019 verb',
+        'A fixed, retained نَ at the very end of the word',
+        'Fatha', 'Sukoon'
+      ],
+      correctIndex: 1,
+      explanation: 'This نَ is dropped entirely once nasb or jazm applies instead.',
+    },
+    {
+      id: 'ar13q5',
+      question: 'According to the lesson, the five verbs\u2019 noon-dropping pattern is described as genuinely parallel to:',
+      options: [
+        'The dual\u2019s own pattern',
+        'The sound masculine plural\u2019s own noon-dropping already covered in this course\u2019s sixth and eighth units',
+        'The broken plural\u2019s pattern',
+        'No earlier pattern in this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This connects directly back to idafah\u2019s effect on the sound masculine plural.',
+    },
+    {
+      id: 'ar13q6',
+      question: 'Which four particles are listed in the lesson as the core nawasib?',
+      options: [
+        'لَمْ، لَمَّا، لَا، إِنْ', 'أَنْ، لَنْ، كَيْ، إِذَنْ', 'مِنْ، إِلَى، عَنْ، عَلَى', 'هَلْ، قَدْ، سَـ، سَوْفَ'
+      ],
+      correctIndex: 1,
+      explanation: 'Each of these particles pushes a mudari\u2019 verb into nasb.',
+    },
+    {
+      id: 'ar13q7',
+      question: 'In لَنْ أَذْهَبَ (I will never go), already covered in this course\u2019s fifth unit, أَذْهَبَ carries:',
+      options: [
+        'Raf\u2019', 'Nasb, marked through fatha', 'Jarr', 'Jazm'
+      ],
+      correctIndex: 1,
+      explanation: 'لَنْ pushes the verb out of its default raf\u2019 state.',
+    },
+    {
+      id: 'ar13q8',
+      question: 'In أُرِيدُ أَنْ أَتَعَلَّمَ (I want to learn), أَنْ functions to:',
+      options: [
+        'Negate the sentence entirely',
+        'Introduce a subordinate action, pushing أَتَعَلَّمَ into nasb',
+        'Cause jazm instead of nasb',
+        'Have no grammatical effect at all',
+      ],
+      correctIndex: 1,
+      explanation: 'This works in the exact same way لَنْ does with a different verb.',
+    },
+    {
+      id: 'ar13q9',
+      question: 'According to the lesson, for al-af\u2019al al-khamsah, nasb is marked by:',
+      options: [
+        'Fatha, exactly like an ordinary mudari\u2019 verb',
+        'Dropping the same fixed نَ that otherwise signals their raf\u2019',
+        'Kasra', 'No marking at all'
+      ],
+      correctIndex: 1,
+      explanation: 'This parallels the same mechanism already described for their raf\u2019 state.',
+    },
+    {
+      id: 'ar13q10',
+      question: 'Which four particles are listed in the lesson as jawazim affecting a single verb?',
+      options: [
+        'أَنْ، لَنْ، كَيْ، إِذَنْ',
+        'لَمْ، لَمَّا، لَام الأَمْر، لَا النَّاهِيَة',
+        'مِنْ، إِلَى، عَنْ، عَلَى',
+        'هَلْ، قَدْ، سَـ، سَوْفَ',
+      ],
+      correctIndex: 1,
+      explanation: 'Each of these particles pushes a mudari\u2019 verb into jazm.',
+    },
+    {
+      id: 'ar13q11',
+      question: 'In لَمْ يَذْهَبْ (he did not go), already covered in this course\u2019s fifth unit, يَذْهَبْ carries:',
+      options: [
+        'Raf\u2019', 'Nasb', 'Jazm, marked through sukoon', 'Jarr'
+      ],
+      correctIndex: 2,
+      explanation: 'Sukoon is the complete absence of a final vowel.',
+    },
+    {
+      id: 'ar13q12',
+      question: 'لَا تَكْذِبْ (do not lie) illustrates:',
+      options: [
+        'Laa an-nafiyah lil-jins, already covered in this course\u2019s eleventh unit',
+        'Laa an-nahiyah, causing jazm through direct prohibition',
+        'A nasib particle',
+        'An ordinary harf jarr',
+      ],
+      correctIndex: 1,
+      explanation: 'This pushes تَكْذِبْ into jazm.',
+    },
+    {
+      id: 'ar13q13',
+      question: 'According to the lesson, the same three letters, لَا, serve:',
+      options: [
+        'Only one grammatical function in Arabic',
+        'Two genuinely distinct grammatical functions depending on whether a noun or a mudari\u2019 verb follows',
+        'No grammatical function at all',
+        'Only the function already covered in this course\u2019s eleventh unit',
+      ],
+      correctIndex: 1,
+      explanation: 'One causes categorical negation of a noun; the other causes jazm on a following verb through prohibition.',
+    },
+    {
+      id: 'ar13q14',
+      question: 'According to the lesson, beyond the four single-verb jazm-causers, a further category:',
+      options: [
+        'Does not exist in Arabic grammar',
+        'Affects two verbs at once, examined directly through conditional sentences',
+        'Only affects nouns',
+        'Only applies to the five verbs',
+      ],
+      correctIndex: 1,
+      explanation: 'This is examined directly in this unit\u2019s closing topic.',
+    },
+    {
+      id: 'ar13q15',
+      question: 'إِنْ, the primary conditional particle, places how many mudari\u2019 verbs into jazm within one sentence?',
+      options: ['One', 'Two', 'Three', 'Four'],
+      correctIndex: 1,
+      explanation: 'These are called al-fi\u2019l ash-shart and jawab ash-shart.',
+    },
+    {
+      id: 'ar13q16',
+      question: 'In إِنْ تَجْتَهِدْ تَنْجَحْ (if you strive, you will succeed), already covered in this course\u2019s fifth unit:',
+      options: [
+        'Only تَجْتَهِدْ carries jazm',
+        'Both تَجْتَهِدْ and تَنْجَحْ carry jazm because of the single إِنْ governing them together',
+        'Neither verb carries jazm',
+        'Both verbs carry raf\u2019',
+      ],
+      correctIndex: 1,
+      explanation: 'تَجْتَهِدْ is the condition; تَنْجَحْ is the response.',
+    },
+    {
+      id: 'ar13q17',
+      question: 'According to the lesson, beyond إِنْ itself, classical Nahw recognizes further conditional words sharing this same effect, including:',
+      options: [
+        'لَنْ and كَيْ', 'مَنْ (whoever) and مَا (whatever)', 'أَنْ and إِذَنْ', 'لَام الأَمْر and لَا النَّاهِيَة'
+      ],
+      correctIndex: 1,
+      explanation: 'This unit\u2019s own scope covers إِنْ specifically as the clearest, most fundamental case.',
+    },
+    {
+      id: 'ar13q18',
+      question: 'According to the lesson, this unit\u2019s closing topic states that this unit completes:',
+      options: [
+        'Only the treatment of nouns in this course',
+        'This course\u2019s full treatment of i\u2019rab across every word category examined since this course\u2019s fifth unit',
+        'Nothing of particular significance',
+        'Only the treatment of kaana and inna',
+      ],
+      correctIndex: 1,
+      explanation: 'This course\u2019s fourteenth and final unit turns to remaining sentence structures and connected reading.',
+    },
+    {
+      id: 'ar13q19',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'Conditional sentences directly to the mudari\u2019 verb\u2019s basic i\u2019rab, in reverse order',
+        'The mudari\u2019 verb\u2019s basic i\u2019rab and the five verbs, to nawasib, to jawazim, to conditional sentences',
+        'A repeat of Unit 12\u2019s content with no new material',
+        'This course\u2019s fourteenth unit directly, skipping the mudari\u2019 verb\u2019s governors entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s four topics were actually presented.',
+    },
+    {
+      id: 'ar13q20',
+      question: 'According to the lesson, كَيْ means:',
+      options: [
+        'Will never', 'In order to', 'Then, in that case', 'Did not'
+      ],
+      correctIndex: 1,
+      explanation: 'This is listed directly among the four core nawasib.',
+    },
+    {
+      id: 'ar13q21',
+      question: 'According to the lesson, لَمَّا means:',
+      options: [
+        'Not yet', 'In order to', 'Whoever', 'Perhaps'
+      ],
+      correctIndex: 0,
+      explanation: 'This is listed directly among the four core jawazim affecting a single verb.',
+    },
+    {
+      id: 'ar13q22',
+      question: 'According to the lesson, لَام الأَمْر is used specifically for:',
+      options: [
+        'First-person statements', 'Third-person commands', 'Categorical negation of a noun', 'Conditional sentences'
+      ],
+      correctIndex: 1,
+      explanation: 'This is distinguished directly from لَا النَّاهِيَة, used for direct second-person prohibition.',
+    },
+    {
+      id: 'ar13q23',
+      question: 'According to the lesson, recognizing which specific particle has entered a sentence, a nasib or a jazim, is important because:',
+      options: [
+        'It has no bearing on how the following verb should be marked',
+        'It determines the specific sign, fatha or sukoon (or dropped noon for the five verbs), the following mudari\u2019 verb should carry',
+        'Only nouns are affected by such particles',
+        'All particles produce identical grammatical effects',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the practical payoff of learning these two distinct particle groups.',
+    },
+    {
+      id: 'ar13q24',
+      question: 'According to the lesson, the four core nawasib and the four core single-verb jawazim together illustrate:',
+      options: [
+        'Two identical categories with no real distinction between them',
+        'Two genuinely distinct sets of particles producing two genuinely distinct i\u2019rab outcomes on the same verb form',
+        'A single category with no internal divisions',
+        'Categories that apply only to nouns, not verbs',
+      ],
+      correctIndex: 1,
+      explanation: 'This unit examines each set directly across its second and third topics.',
+    },
+    {
+      id: 'ar13q25',
+      question: 'According to the lesson, يَفْعَلُونَ and تَفْعَلِينَ are given as examples of:',
+      options: [
+        'An ordinary mudari\u2019 verb carrying damma', 'Al-af\u2019al al-khamsah', 'A fi\u2019l madi', 'A fi\u2019l amr'
+      ],
+      correctIndex: 1,
+      explanation: 'Both carry an attached pronoun suffix marking them as part of this specific group.',
+    },
+    {
+      id: 'ar13q26',
+      question: 'According to the lesson, this course\u2019s eleventh unit already covered which specific use of لَا?',
+      options: [
+        'Laa an-nahiyah, for prohibition', 'Laa an-nafiyah lil-jins, for categorical negation of a noun', 'Laa as a nasib particle', 'Laa as a harf jarr'
+      ],
+      correctIndex: 1,
+      explanation: 'This unit distinguishes that use directly from laa an-nahiyah, covered here for the first time.',
+    },
+    {
+      id: 'ar13q27',
+      question: 'According to the lesson, al-fi\u2019l ash-shart and jawab ash-shart together form:',
+      options: [
+        'Two entirely unrelated sentences',
+        'A single conditional sentence, both verbs placed in jazm by the same governing particle',
+        'A khabar jumlah structure',
+        'An idafah construct',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the structure إِنْ specifically produces.',
+    },
+    {
+      id: 'ar13q28',
+      question: 'According to the lesson, why is it worth naming further conditional words beyond إِنْ honestly, even briefly?',
+      options: [
+        'To suggest إِنْ is not actually a valid conditional particle',
+        'To avoid presenting إِنْ as though it were the only word in Arabic capable of this two-verb jazm effect',
+        'These further words actually behave completely differently from إِنْ',
+        'This detail has no practical value for a reader',
+      ],
+      correctIndex: 1,
+      explanation: 'This reflects the same honest calibration this course has applied to other genuine nuances throughout.',
+    },
+    {
+      id: 'ar13q29',
+      question: 'According to the lesson, this unit\u2019s treatment of the mudari\u2019 verb\u2019s governors is described as:',
+      options: [
+        'Entirely disconnected from material covered earlier in this course',
+        'Directly completing this course\u2019s full treatment of i\u2019rab, building on the fifth unit\u2019s own introduction of raf\u2019, nasb, and jazm',
+        'A repeat of the noun categories already covered',
+        'Unrelated to the four i\u2019rab states established earlier',
+      ],
+      correctIndex: 1,
+      explanation: 'This is stated directly in this unit\u2019s closing topic.',
+    },
+    {
+      id: 'ar13q30',
+      question: 'Taken together, this unit\u2019s overarching theme is best summarized as:',
+      options: [
+        'The mudari\u2019 verb\u2019s case is entirely unpredictable and follows no learnable pattern',
+        'A defined default raf\u2019 state, a specific exception for the five verbs, and two distinct sets of governing particles, one causing nasb and one causing jazm, together fully account for the mudari\u2019 verb\u2019s own i\u2019rab, completing this course\u2019s treatment of the subject first opened in Unit 5',
+        'Only the four nawasib matter for correct Arabic grammar',
+        'This unit has no connection to material already covered earlier in this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all four topics of Unit 13 into a single foundational claim, setting up this course\u2019s final unit.',
+    },
+  ],
+
+  'unit-14': [
+    {
+      id: 'ar14q1',
+      question: 'According to the lesson, a jumlah itself carries no i\u2019rab of its own, yet it can still:',
+      options: [
+        'Have no grammatical relevance to the surrounding sentence at all',
+        'Occupy mahalla min al-i\u2019rab, a grammatical position, exactly as though it were a single word carrying that case',
+        'Only ever function as a mubtada',
+        'Never appear within a larger sentence',
+      ],
+      correctIndex: 1,
+      explanation: 'This course\u2019s third, ninth, and twelfth units already showed sentences serving several such roles.',
+    },
+    {
+      id: 'ar14q2',
+      question: 'In زَيْدٌ يَكْتُبُ, already familiar from this course\u2019s second and third units, يَكْتُبُ is described as:',
+      options: [
+        'A single word with no grammatical position',
+        'A jumlah fi\u2019liyyah fi mahalli raf\u2019 khabar',
+        'A jumlah fi mahalli nasb haal',
+        'Al-mudaf',
+      ],
+      correctIndex: 1,
+      explanation: 'A sentence functioning as khabar occupies the position of raf\u2019.',
+    },
+    {
+      id: 'ar14q3',
+      question: 'In جَاءَ زَيْدٌ يَضْحَكُ (Zayd came laughing), يَضْحَكُ occupies:',
+      options: [
+        'The position of raf\u2019 as khabar', 'The position of nasb as haal, already covered in this course\u2019s twelfth unit', 'The position of jarr', 'No position at all'
+      ],
+      correctIndex: 1,
+      explanation: 'This is described as jumlah fi\u2019liyyah fi mahalli nasb haal.',
+    },
+    {
+      id: 'ar14q4',
+      question: 'According to the lesson, why does naming mahalla l-i\u2019rab explicitly matter, even this late in the course?',
+      options: [
+        'It has no real value once a reader already recognizes khabar jumlah or haal jumlah in practice',
+        'It gives real precision to a pattern already used in practice, showing exactly how a sentence still participates in the surrounding i\u2019rab structure',
+        'It contradicts what this course established earlier',
+        'It only applies to poetry',
+      ],
+      correctIndex: 1,
+      explanation: 'A sentence is mabni in this specific sense, yet still occupies a genuine grammatical position.',
+    },
+    {
+      id: 'ar14q5',
+      question: 'An-nida\u2019 uses a dedicated particle, most commonly:',
+      options: [
+        'هَلْ', 'يَا', 'إِنَّ', 'لَنْ'
+      ],
+      correctIndex: 1,
+      explanation: 'The noun addressed is called al-munada.',
+    },
+    {
+      id: 'ar14q6',
+      question: 'In يَا زَيْدُ (O Zayd!), زَيْدُ:',
+      options: [
+        'Carries genuine nasb',
+        'Drops its tanween and takes damma alone, technically mabni on this damma',
+        'Carries jarr',
+        'Remains entirely unchanged from زَيْدٌ',
+      ],
+      correctIndex: 1,
+      explanation: 'This applies specifically when al-munada is a single, specific name or title.',
+    },
+    {
+      id: 'ar14q7',
+      question: 'In يَا عَبْدَ اللَّهِ (O Abdullah!), عَبْدَ carries:',
+      options: [
+        'Mabni damma, exactly like يَا زَيْدُ',
+        'Genuine nasb, marked through fatha, since it is mudaf',
+        'Jarr', 'No case marking at all'
+      ],
+      correctIndex: 1,
+      explanation: 'This connects directly to idafah, already covered across this course\u2019s eighth unit.',
+    },
+    {
+      id: 'ar14q8',
+      question: 'According to the lesson, correctly identifying whether a munada is a simple name or a mudaf construction:',
+      options: [
+        'Has no bearing on which pattern applies',
+        'Determines directly which of the two governing patterns actually applies',
+        'Only matters for classical poetry',
+        'Is always obvious with no need for analysis',
+      ],
+      correctIndex: 1,
+      explanation: 'This is compared directly to identifying kaana\u2019s family versus inna\u2019s family in this course\u2019s tenth and eleventh units.',
+    },
+    {
+      id: 'ar14q9',
+      question: 'According to the lesson, أَ carries one further capacity that هَلْ does not:',
+      options: [
+        'Forming yes-or-no questions at all',
+        'Offering a direct choice between two named options',
+        'Causing jazm on a following verb',
+        'Attaching to a following noun as a harf jarr',
+      ],
+      correctIndex: 1,
+      explanation: 'أَزَيْدٌ عِنْدَكَ أَمْ عَمْرٌو illustrates this directly.',
+    },
+    {
+      id: 'ar14q10',
+      question: 'According to the lesson, كَمْ (how many) requires:',
+      options: [
+        'No further word to follow it',
+        'Its own tamyiz to follow, exactly paralleling material already covered in this course\u2019s twelfth unit',
+        'A harf jarr to follow it',
+        'A khabar jumlah to follow it',
+      ],
+      correctIndex: 1,
+      explanation: 'كَمْ كِتَابًا عِنْدَكَ uses كِتَابًا to resolve what كَمْ is actually asking about.',
+    },
+    {
+      id: 'ar14q11',
+      question: 'According to the lesson, هَلْ was first introduced in this course as an example of:',
+      options: [
+        'An ism', 'A harf, in this course\u2019s first unit', 'A fi\u2019l', 'A nasib particle'
+      ],
+      correctIndex: 1,
+      explanation: 'This unit now returns to it specifically in its role forming yes-or-no questions.',
+    },
+    {
+      id: 'ar14q12',
+      question: 'According to the lesson, mahalla l-i\u2019rab, nida\u2019, and istifham together illustrate that this unit:',
+      options: [
+        'Introduces entirely disconnected new material with no relation to earlier units',
+        'Each extend a structure or rule this course has already established elsewhere, rather than introducing disconnected material',
+        'Contradicts rules already established earlier in this course',
+        'Only concerns verbal sentences',
+      ],
+      correctIndex: 1,
+      explanation: 'These connect respectively to sentence positions, idafah, and tamyiz.',
+    },
+    {
+      id: 'ar14q13',
+      question: 'According to the lesson, this course\u2019s closing topic:',
+      options: [
+        'Introduces several new grammatical rules not covered elsewhere',
+        'Introduces no new rules of its own, instead parsing a passage using material from across the entire course',
+        'Repeats Unit 1\u2019s content verbatim',
+        'Focuses exclusively on vocabulary rather than grammar',
+      ],
+      correctIndex: 1,
+      explanation: 'This is exactly the skill every unit of this course has been building toward.',
+    },
+    {
+      id: 'ar14q14',
+      question: 'In the closing passage\u2019s first clause, إِنَّ pushes الطَّالِبَ into:',
+      options: [
+        'Raf\u2019, exactly as an ordinary mubtada', 'Nasb, as ism inna', 'Jarr', 'Jazm'
+      ],
+      correctIndex: 1,
+      explanation: 'This is the effect already established directly across this course\u2019s eleventh unit.',
+    },
+    {
+      id: 'ar14q15',
+      question: 'According to the lesson, الَّذِي in this closing passage introduces a relative clause functioning as:',
+      options: [
+        'Al-badal', 'An-na\u2019t, describing الطَّالِبَ', 'Khabar inna directly', 'Al-maf\u2019ul bihi'
+      ],
+      correctIndex: 1,
+      explanation: 'الَّذِي itself is one of the six categories of ma\u2019rifah already covered in this course\u2019s seventh unit.',
+    },
+    {
+      id: 'ar14q16',
+      question: 'According to the lesson, يَجْتَهِدُ within this relative clause is described as:',
+      options: [
+        'A fi\u2019l madi', 'An ordinary mudari\u2019 verb in its default raf\u2019', 'A verb in jazm', 'A verb in nasb'
+      ],
+      correctIndex: 1,
+      explanation: 'This state was already established across this course\u2019s fifth and thirteenth units.',
+    },
+    {
+      id: 'ar14q17',
+      question: 'According to the lesson, فِي دُرُوسِهِ within this same clause is identified as:',
+      options: [
+        'Al-maf\u2019ul bihi', 'A shibh jumlah, already covered across this course\u2019s third and eighth units', 'Ism inna', 'A munada'
+      ],
+      correctIndex: 1,
+      explanation: 'This specifies where the striving described by يَجْتَهِدُ actually occurs.',
+    },
+    {
+      id: 'ar14q18',
+      question: 'According to the lesson, سَيَنْجَحُ functions as:',
+      options: [
+        'Ism inna', 'Khabar inna, remaining in raf\u2019', 'Al-fa\u2019il', 'A munada'
+      ],
+      correctIndex: 1,
+      explanation: 'This carries the future marker already covered directly in this course\u2019s first unit.',
+    },
+    {
+      id: 'ar14q19',
+      question: 'In the passage\u2019s second clause, وَ is identified as:',
+      options: [
+        'A nasib particle', 'A harf al-\u2019atf, already covered across this course\u2019s ninth unit, joining the two clauses', 'A jazim particle', 'A vocative particle'
+      ],
+      correctIndex: 1,
+      explanation: 'This joins the second clause to the first.',
+    },
+    {
+      id: 'ar14q20',
+      question: 'According to the lesson, كَانَ in this second clause keeps أَبُوهُ in:',
+      options: [
+        'Nasb, while shifting سَعِيدًا into raf\u2019',
+        'Raf\u2019, while shifting سَعِيدًا, its khabar, into nasb',
+        'Jarr', 'Jazm'
+      ],
+      correctIndex: 1,
+      explanation: 'This is exactly the pattern already established across this course\u2019s tenth unit.',
+    },
+    {
+      id: 'ar14q21',
+      question: 'According to the lesson, بِذَلِكَ at the close of this passage is identified as:',
+      options: [
+        'A munada',
+        'A harf jarr together with its own majrur noun, forming a further shibh jumlah',
+        'Ism kaana',
+        'A relative clause',
+      ],
+      correctIndex: 1,
+      explanation: 'This is already covered directly across this course\u2019s eighth unit.',
+    },
+    {
+      id: 'ar14q22',
+      question: 'According to the lesson, this closing passage demonstrates that these rules:',
+      options: [
+        'Were memorized in isolation from one another',
+        'Became available specifically because this course built them in sequence, one genuinely depending on the last',
+        'Have no real relationship to one another despite appearing in the same course',
+        'Only apply to constructed, artificial sentences',
+      ],
+      correctIndex: 1,
+      explanation: 'Nearly every major structure this course has covered appears within these two connected clauses.',
+    },
+    {
+      id: 'ar14q23',
+      question: 'According to the lesson, this course opened, in its very first unit, with:',
+      options: [
+        'A discussion of Arabic poetry',
+        'A single misplaced vowel changing a Qur\u2019anic verse\u2019s meaning, the exact reason Nahw was systematized at all',
+        'A list of Arabic vocabulary',
+        'A history of the Arabic alphabet',
+      ],
+      correctIndex: 1,
+      explanation: 'This course\u2019s closing topic returns directly to this same founding story.',
+    },
+    {
+      id: 'ar14q24',
+      question: 'According to the lesson, this course\u2019s closing claim is that the precision this course has built is now available:',
+      options: [
+        'Only as isolated facts to recall individually',
+        'As a single, connected system capable of resolving real Arabic text with genuine confidence rather than guesswork',
+        'Only for reciting the Qur\u2019an, with no wider application',
+        'Only to advanced native speakers',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the practical payoff this entire fourteen-unit course has been building toward.',
+    },
+    {
+      id: 'ar14q25',
+      question: 'According to the lesson, يَا رَبِّ (O my Lord) is described as:',
+      options: [
+        'A rare, obscure construction with no real usage',
+        'One of the most widely recognized instances of nida\u2019 across Islamic devotional language',
+        'An example of laa an-nafiyah lil-jins',
+        'An example of a mudari\u2019 verb in jazm',
+      ],
+      correctIndex: 1,
+      explanation: 'رَبِّ here carries an attached pronoun referring to the speaker.',
+    },
+    {
+      id: 'ar14q26',
+      question: 'According to the lesson, this unit\u2019s overall progression moves from:',
+      options: [
+        'Parsing a full passage directly to mahalla l-i\u2019rab, in reverse order',
+        'Mahalla l-i\u2019rab, to nida\u2019, to istifham, to a full synthesis parsing a connected passage',
+        'A repeat of Unit 13\u2019s content with no new material',
+        'Only new, disconnected material with no relation to the rest of this course',
+      ],
+      correctIndex: 1,
+      explanation: 'This mirrors the order in which this unit\u2019s four topics were actually presented.',
+    },
+    {
+      id: 'ar14q27',
+      question: 'According to the lesson, this course\u2019s treatment of هَلْ across two different units illustrates:',
+      options: [
+        'Two entirely unrelated, contradictory uses of the same word',
+        'A single word returned to twice, first as an example of harf, later in its actual functional role forming questions',
+        'An error in this course\u2019s own consistency',
+        'That هَلْ has no real grammatical function at all',
+      ],
+      correctIndex: 1,
+      explanation: 'This is a deliberate structural choice connecting this course\u2019s first and final units.',
+    },
+    {
+      id: 'ar14q28',
+      question: 'According to the lesson, correctly parsing the closing passage required knowledge from how many of this course\u2019s earlier units, according to the specific citations given?',
+      options: [
+        'Only one earlier unit',
+        'Several, spanning this course\u2019s first, third, fifth, seventh, eighth, ninth, tenth, eleventh, and thirteenth units',
+        'None; the passage required entirely new rules',
+        'Only this course\u2019s eleventh unit',
+      ],
+      correctIndex: 1,
+      explanation: 'This is stated directly as demonstrating the cumulative, interdependent nature of everything this course has covered.',
+    },
+    {
+      id: 'ar14q29',
+      question: 'According to the lesson, mahalla l-i\u2019rab specifically resolves a tension between:',
+      options: [
+        'Nasb and jarr',
+        'A jumlah\u2019s own lack of independent i\u2019rab and its genuine participation in a surrounding sentence\u2019s grammatical structure',
+        'Raf\u2019 and jazm',
+        'Definite and indefinite nouns',
+      ],
+      correctIndex: 1,
+      explanation: 'This is the precise concept this unit\u2019s first topic introduces and names directly.',
+    },
+    {
+      id: 'ar14q30',
+      question: 'Taken together, this final unit\u2019s, and this entire course\u2019s, overarching theme is best summarized as:',
+      options: [
+        'Arabic grammar consists of disconnected rules with no real relationship to one another',
+        'A sentence\u2019s parts, its case system, and several further extending structures together form one coherent, learnable system, demonstrated concretely by successfully parsing real, connected Arabic text using material drawn from across this entire fourteen-unit course',
+        'Only the final unit\u2019s own material carries any real significance',
+        'This course\u2019s closing unit has no connection to the units that preceded it',
+      ],
+      correctIndex: 1,
+      explanation: 'This synthesizes all four topics of Unit 14, and the entire fourteen-unit course, into a single closing claim.',
+    },
+  ],
 };

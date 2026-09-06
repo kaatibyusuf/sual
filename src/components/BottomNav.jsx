@@ -169,6 +169,13 @@ const ICONS = {
       <path d="M13 7l3 3" />
     </svg>
   ),
+    fusuul: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="4" width="16" height="4" rx="1" />
+      <rect x="4" y="10" width="16" height="4" rx="1" />
+      <rect x="4" y="16" width="16" height="4" rx="1" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -196,11 +203,7 @@ const MORE_ITEMS = [
   { to: '/zakaat', icon: 'zakaat', label: 'Everything Zakaat' },
   { to: '/new-muslim', icon: 'newMuslim', label: 'New Muslim Path' },
   { to: '/arabic-dictionary', icon: 'arabicDictionary', label: 'Arabic Dictionary' },
-  { to: '/adab', icon: 'adab', label: 'Adab Class' },
-  { to: '/tawheed', icon: 'tawheed', label: 'Tawheed Class' },
-  { to: '/tajweed-class', icon: 'tajweedClass', label: 'Tajweed Class' },
-  { to: '/seerah-class', icon: 'seerahClass', label: 'Seerah Class' },
-  { to: '/arabiyyah-class', icon: 'arabiyyahClass', label: 'Arabiyyah Class' },
+  { to: '/fusuul', icon: 'fusuul', label: 'Fusuul' },
   { to: '/knowledge-graph', icon: 'graph', label: 'Knowledge Graph' },
 ]
 

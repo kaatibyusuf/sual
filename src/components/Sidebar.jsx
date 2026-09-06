@@ -180,6 +180,13 @@ const ICONS = {
       <path d="M13 7l3 3" />
     </svg>
   ),
+    fusuul: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="4" width="16" height="4" rx="1" />
+      <rect x="4" y="10" width="16" height="4" rx="1" />
+      <rect x="4" y="16" width="16" height="4" rx="1" />
+    </svg>
+  ),
 }
 
 // -- Six-pillar grouping ---------------------------------------
@@ -199,12 +206,8 @@ const NAV_GROUPS = [
     items: [
       { path: '/disciplines', label: 'Disciplines', icon: 'fiqh' },
       { path: '/stories', label: 'Stories', icon: 'stories' },
-      { path: '/tawheed', label: 'Tawheed', icon: 'tawheed' },
       { path: '/arabic-dictionary', label: 'Arabic Dictionary', icon: 'arabicDictionary' },
-      { path: '/adab', label: 'Adab Class', icon: 'adab' },
-      { path: '/tajweed-class', label: 'Tajweed Class', icon: 'tajweedClass' },
-      { path: '/seerah-class', label: 'Seerah Class', icon: 'seerahClass' },
-      { path: '/arabiyyah-class', label: 'Arabiyyah Class', icon: 'arabiyyahClass' },
+      { path: '/fusuul', label: 'Fusuul', icon: 'fusuul' },
       { path: '/knowledge-graph', label: 'Knowledge Graph', icon: 'graph' },
 
     ],
