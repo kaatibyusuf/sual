@@ -1238,43 +1238,571 @@ export const HADEETHCLASS_TOPICS = {
   },
 
   // -----------------------------------------------------------
-  // UNIT 10 - METHODS OF RECEIVING AND TRANSMITTING HADITH
-  // (placeholders)
+  // UNIT 10 - METHODS OF RECEIVING AND TRANSMITTING HADITH (full
+  // content, expanded)
+  //
+  // The eight recognized methods, their specific verbal formulas
+  // (haddathana, akhbarana, anba'ana, 'an), and the precise
+  // ranking placing munawalah above plain ijazah but below
+  // sama'/qira'ah, checked against multiple current Mustalah
+  // al-Hadith references before writing.
   // -----------------------------------------------------------
-  'tahammul-1': { id: 'tahammul-1', unit: 'unit-10', title: "As-Sama': Hearing Directly from the Teacher", summary: 'The strongest, most direct method of receiving a hadith.' },
-  'tahammul-2': { id: 'tahammul-2', unit: 'unit-10', title: "Al-Qira'ah: Reading Before the Teacher", summary: 'A student reciting back to the teacher for direct confirmation.' },
-  'tahammul-3': { id: 'tahammul-3', unit: 'unit-10', title: "Al-Ijazah: Granted Permission to Narrate", summary: 'Formal authorization to transmit a teacher\u2019s own material.' },
-  'tahammul-4': { id: 'tahammul-4', unit: 'unit-10', title: 'Other Recognized Methods', summary: 'Several further, more specific transmission methods classical scholars named.' },
+  'tahammul-1': {
+    id: 'tahammul-1',
+    unit: 'unit-10',
+    title: "As-Sama': Hearing Directly from the Teacher",
+    summary: 'The strongest, most direct method of receiving a hadith.',
+    content: [
+      {
+        heading: 'A genuinely different question from everything covered so far',
+        body: `This course's ninth unit examined which generation a narrator belonged to. This unit turns to a related but genuinely different question: the specific, named methods classical scholars recognized by which a hadith was actually received from a teacher and later passed on again, collectively called turuq at-tahammul wal-ada', the methods of reception and transmission.`,
+      },
+      {
+        heading: 'The single most direct method',
+        body: `As-sama', hearing, describes a student directly hearing the teacher recite or dictate a hadith aloud, whether individually or within a larger gathering, and receiving it in this exact moment, either through memorization or through writing it down as the teacher speaks.`,
+      },
+      {
+        heading: 'Why this ranks as the strongest method',
+        body: `The overwhelming majority of scholars regarded sama' as the single strongest, most preferred method of reception, precisely because it leaves no real ambiguity about direct, personal contact between teacher and student, the exact quality already covered directly across this course's second and ninth units as central to genuine chain connectivity.`,
+      },
+      {
+        heading: 'A specific verbal formula signaling this exact method',
+        body: `A narrator transmitting material received through sama' traditionally used specific phrasing when citing it, most commonly haddathana, he narrated to us, or sami'tu, I heard, phrasing this unit's remaining topics will show was not interchangeable with the specific formulas used for other methods.`,
+      },
+    ],
+  },
+
+  'tahammul-2': {
+    id: 'tahammul-2',
+    unit: 'unit-10',
+    title: "Al-Qira'ah: Reading Before the Teacher",
+    summary: 'A student reciting back to the teacher for direct confirmation.',
+    content: [
+      {
+        heading: "The reverse direction from sama'",
+        body: `Al-qira'ah, reading, also called al-'ard, presentation, describes the reverse process from sama', already covered directly in this unit's previous topic: the student reads a hadith aloud, whether from memory or from a written copy, directly to the teacher, who listens and confirms or corrects as needed.`,
+      },
+      {
+        heading: 'A genuine, honestly held ranking debate',
+        body: `Scholars differed over whether qira'ah ranks fully equal to sama' or slightly beneath it. The majority position placed it slightly below sama', reasoning that the teacher here merely confirms material the student already possesses, rather than actively dictating it directly, though a considerable number of scholars still regarded qira'ah as a fully strong and dependable method in its own right.`,
+      },
+      {
+        heading: 'A distinct verbal formula, though not always kept fully separate',
+        body: `Material received through qira'ah was traditionally cited using akhbarana, he informed us, or more explicitly qara'tu 'alayhi, I read to him, though some narrators used akhbarana and haddathana somewhat interchangeably rather than maintaining a fully strict separation between them.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `Sama' and qira'ah, already covered across this unit's first two topics, both involve direct, real-time contact between teacher and student. This unit's remaining topics turn to methods involving considerably less direct contact, beginning with ijazah.`,
+      },
+    ],
+  },
+
+  'tahammul-3': {
+    id: 'tahammul-3',
+    unit: 'unit-10',
+    title: "Al-Ijazah: Granted Permission to Narrate",
+    summary: 'Formal authorization to transmit a teacher\u2019s own material.',
+    content: [
+      {
+        heading: 'Permission granted without necessarily reciting the material itself',
+        body: `Al-ijazah describes a teacher formally granting a student permission to narrate specific material, whether a single named book or the teacher's own entire body of work, without necessarily having personally read or recited that exact material together with the student in that specific session.`,
+      },
+      {
+        heading: 'A more indirect method, ranking accordingly',
+        body: `Ijazah ranks below both sama' and qira'ah, already covered directly across this unit's first two topics, precisely because it does not require this same direct, real-time recitation. It remains a genuinely valid, recognized method nonetheless, particularly useful for transmitting entire written works across distance or across generations without requiring every single hadith to be individually recited aloud.`,
+      },
+      {
+        heading: 'Real variation within ijazah itself',
+        body: `Scholars recognized different specific forms of ijazah, a narrower permission covering one specifically named book, and a considerably broader, general permission covering everything a teacher narrates, with real scholarly discussion over how rigorously each specific form should actually be treated.`,
+      },
+      {
+        heading: 'A specific verbal formula for this method',
+        body: `Material received through ijazah was traditionally cited using anba'ana, he informed us, or ajazani, he granted me permission, phrasing distinguishing it from the more direct formulas already covered across this unit's first two topics.`,
+      },
+    ],
+  },
+
+  'tahammul-4': {
+    id: 'tahammul-4',
+    unit: 'unit-10',
+    title: 'Other Recognized Methods',
+    summary: 'Several further, more specific transmission methods classical scholars named.',
+    content: [
+      {
+        heading: 'Al-munawalah: handing over a written copy',
+        body: `Al-munawalah describes a teacher physically handing a student a copy of his own written material, often together with an accompanying ijazah. This specific combination ranks above plain ijazah alone, already covered directly in this unit's previous topic, while still ranking below sama' and qira'ah.`,
+      },
+      {
+        heading: 'Al-mukatabah: transmission through writing',
+        body: `Al-mukatabah describes a teacher writing out specific material and sending it to a student, whether that student is physically present or considerably distant, existing in two recognized forms: writing accompanied by an explicit ijazah, and writing without one.`,
+      },
+      {
+        heading: "Al-i'lam and al-wasiyyah: two further, more limited methods",
+        body: `Al-i'lam describes a teacher simply informing a student that specific material is something he himself narrates, without explicitly commanding or granting permission for the student to narrate it further, a method the majority of scholars still considered valid despite this missing explicit command, though a minority disagreed. Al-wasiyyah describes a teacher specifically bequeathing a book or manuscript to a particular student, typically before travelling or before death.`,
+      },
+      {
+        heading: 'Al-wijadah: the least direct method of all',
+        body: `Al-wijadah describes a student simply finding a manuscript in a scholar's own genuine handwriting without ever having received it from that scholar through any of the more direct methods already covered across this entire unit. This is generally regarded as the weakest of these eight recognized methods, precisely because it involves no direct verification or explicit permission whatsoever, though a manuscript definitively confirmed as a specific scholar's own authentic handwriting still carries some real evidentiary value.`,
+      },
+      {
+        heading: "Closing this unit and turning to the major collections themselves",
+        body: `This unit has now covered eight recognized methods of receiving and transmitting hadith, sama', qira'ah, ijazah, munawalah, mukatabah, i'lam, wasiyyah, and wijadah, ranked from the most direct to the least, each historically signaled through its own specific verbal formula. A final honest note worth naming directly: the ambiguous term 'an, from, could technically be used across any of these methods, and its own inherent vagueness about which specific method was actually intended is precisely why a narrator's own documented practice matters so directly when this exact word appears in a chain. This course's eleventh unit turns to the major hadith collections themselves, the concrete works in which these methods and the standards examined across this course's earlier units all actually converge.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 11 - THE MAJOR HADITH COLLECTIONS (placeholders)
+  // UNIT 11 - THE MAJOR HADITH COLLECTIONS (full content, expanded)
+  //
+  // Bukhari's full title and organizational method, Muslim's
+  // distinct approach of grouping variant chains together, the
+  // historical variation over the "sixth book" of the Sihah Sittah,
+  // an-Nasa'i's specific reputation for detecting hidden 'ilal, and
+  // Musnad Ahmad's narrator-based organization, checked against
+  // multiple current references before writing.
   // -----------------------------------------------------------
-  'kutub-1': { id: 'kutub-1', unit: 'unit-11', title: 'Sahih al-Bukhari', summary: 'Widely regarded as the most rigorously compiled hadith collection.' },
-  'kutub-2': { id: 'kutub-2', unit: 'unit-11', title: 'Sahih Muslim', summary: 'The second of the two collections known together as as-Sahihayn.' },
-  'kutub-3': { id: 'kutub-3', unit: 'unit-11', title: 'The Remaining Four of the Sihah Sittah', summary: 'Abu Dawud, at-Tirmidhi, an-Nasa\u2019i, and Ibn Majah.' },
-  'kutub-4': { id: 'kutub-4', unit: 'unit-11', title: 'Al-Muwatta and Musnad Ahmad', summary: 'Two further foundational collections outside the six.' },
+  'kutub-1': {
+    id: 'kutub-1',
+    unit: 'unit-11',
+    title: 'Sahih al-Bukhari',
+    summary: 'Widely regarded as the most rigorously compiled hadith collection.',
+    content: [
+      {
+        heading: 'A precise formal title behind the familiar short name',
+        body: `Compiled by Imam Muhammad ibn Isma'il al-Bukhari, this collection's full formal title, al-Jami' al-Musnad as-Sahih al-Mukhtasar min Umuri Rasulillahi Sallallahu 'alayhi wa Sallam wa Sunanihi wa Ayyamihi, is almost always shortened simply to Sahih al-Bukhari.`,
+      },
+      {
+        heading: 'A widely held position on its own standing',
+        body: `The overwhelming majority of Sunni scholars consider Sahih al-Bukhari the most authentic book after the Qur'an itself, a position already reflected in this course's own repeated references to Imam al-Bukhari's specific methodology across earlier units, particularly his own stricter standard for confirming genuine chain connectivity already covered directly in this course's second unit.`,
+      },
+      {
+        heading: "A documented, careful compilation process",
+        body: `Imam al-Bukhari is reported to have spent roughly sixteen years compiling this collection, selecting material from a considerably larger body of narrations he had personally examined, reportedly performing prayer and seeking spiritual guidance before including each specific hadith.`,
+      },
+      {
+        heading: "A specific organizational choice worth naming directly",
+        body: `Al-Bukhari frequently distributed different chains for what is essentially the same hadith across several separate chapters, placing each specific version wherever its own particular wording best illustrated a specific legal or thematic point, an organizational choice this unit's next topic will contrast directly with Sahih Muslim's own different approach.`,
+      },
+    ],
+  },
+
+  'kutub-2': {
+    id: 'kutub-2',
+    unit: 'unit-11',
+    title: 'Sahih Muslim',
+    summary: 'The second of the two collections known together as as-Sahihayn.',
+    content: [
+      {
+        heading: "A student's own collection, standing alongside his teacher's",
+        body: `Sahih Muslim, compiled by Imam Muslim ibn al-Hajjaj, a student of Imam al-Bukhari, stands together with Sahih al-Bukhari, already covered directly in this unit's previous topic, as as-Sahihayn, the two most rigorously regarded hadith collections in existence.`,
+      },
+      {
+        heading: 'A genuinely different organizational choice',
+        body: `Rather than distributing variant chains for the same hadith across separate chapters, already covered directly as Bukhari's own specific approach in this unit's previous topic, Imam Muslim instead gathered every chain he considered relevant to a given hadith together in one single place, allowing a reader to compare them directly rather than locating them separately throughout the book.`,
+      },
+      {
+        heading: 'A direct connection already familiar from this course',
+        body: `This course's second unit already showed that Imam Muslim applied a comparatively less strict standard than Imam al-Bukhari for confirming genuine connection between consecutive narrators, accepting mere contemporaneity and the realistic possibility of meeting rather than requiring documented proof of an actual meeting.`,
+      },
+      {
+        heading: 'A further, honest point already covered directly',
+        body: `This course's sixth unit already noted that Sahih Muslim contains only a single mu'allaq hadith, one Imam Muslim himself did not consider fully part of his own collection, a genuinely useful point of contrast against Sahih al-Bukhari's own comparatively more frequent use of this same structure.`,
+      },
+    ],
+  },
+
+  'kutub-3': {
+    id: 'kutub-3',
+    unit: 'unit-11',
+    title: 'The Remaining Four of the Sihah Sittah',
+    summary: 'Abu Dawud, at-Tirmidhi, an-Nasa\u2019i, and Ibn Majah.',
+    content: [
+      {
+        heading: "Sunan Abi Dawud: built specifically around legal relevance",
+        body: `Imam Abu Dawud as-Sijistani reportedly examined roughly five hundred thousand narrations before selecting approximately forty-eight hundred he judged legally relevant. Unlike Sahih al-Bukhari and Sahih Muslim, Sunan Abi Dawud deliberately includes some weaker material, already anticipated directly across this course's fourth unit, though Abu Dawud himself frequently noted explicitly which specific hadith were weak and why.`,
+      },
+      {
+        heading: "Jami' at-Tirmidhi: notable for its own grading commentary",
+        body: `Imam at-Tirmidhi distinguished his own collection by regularly supplying his own specific grading for individual hadith, playing a considerable role in popularizing the compound grading hasan sahih, already covered directly across this course's third unit, alongside noting which specific legal school actually acted upon a given ruling and mentioning relevant variant narrations.`,
+      },
+      {
+        heading: "Sunan an-Nasa'i: known for especially strict narrator criticism",
+        body: `Imam an-Nasa'i applied an especially demanding standard of narrator criticism, on certain specific matters accepting fewer hadith than even Imam al-Bukhari himself, and was particularly noted for detecting hidden defects, 'ilal, already covered in full across this course's seventh unit, that other scholars had genuinely overlooked.`,
+      },
+      {
+        heading: "Sunan Ibn Majah: a historically debated final position",
+        body: `Ibn Majah's own Sunan is generally listed as the sixth of the Sihah Sittah, though this specific inclusion was itself historically debated, with some earlier scholarly lists instead including ad-Daraqutni's own Sunan or Imam Malik's Muwatta, examined directly in this unit's closing topic, in this exact sixth position.`,
+      },
+    ],
+  },
+
+  'kutub-4': {
+    id: 'kutub-4',
+    unit: 'unit-11',
+    title: 'Al-Muwatta and Musnad Ahmad',
+    summary: 'Two further foundational collections outside the six.',
+    content: [
+      {
+        heading: 'Al-Muwatta: predating the six books by generations',
+        body: `Imam Malik ibn Anas compiled al-Muwatta considerably earlier than every collection already covered across this unit's earlier topics, organizing it topically by subject and combining hadith directly with the established practice of the people of Madinah and his own specific legal opinions, already named directly in this unit's previous topic as one historical candidate for the sixth position within the Sihah Sittah.`,
+      },
+      {
+        heading: 'Musnad Ahmad: organized by narrator rather than by topic',
+        body: `Imam Ahmad ibn Hanbal's Musnad follows an entirely different organizational principle from every collection already covered across this unit: rather than grouping material by subject, it gathers every hadith transmitted through a specific Companion together in one place, regardless of that material's own particular subject matter.`,
+      },
+      {
+        heading: 'An extremely large collection spanning the full range of grading',
+        body: `Musnad Ahmad contains tens of thousands of hadith, considerably more than any single collection already covered across this unit, spanning the complete range of gradings already established across this course's third and fourth units, sahih, hasan, and da'if alike, reflecting Imam Ahmad's own broader collecting scope rather than the narrower selectivity already covered directly regarding Sahih al-Bukhari and Sahih Muslim.`,
+      },
+      {
+        heading: "Closing this unit and turning to the matn itself",
+        body: `This unit has now covered Sahih al-Bukhari and Sahih Muslim as as-Sahihayn, the remaining four collections making up the Sihah Sittah, and al-Muwatta and Musnad Ahmad as two further foundational works organized on genuinely different principles. This course's twelfth unit turns directly back to the matn itself, examining what specific conditions a hadith's own text, beyond its sanad entirely, must actually satisfy.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 12 - STUDYING THE MATN (placeholders)
+  // UNIT 12 - STUDYING THE MATN (full content, expanded)
+  //
+  // Ibn Qutaybah's Ta'wil Mukhtalif al-Hadith, explicitly written to
+  // defend hadith against Mu'tazilite dismissal rather than to
+  // license casual rejection, the riwayah bil-lafz/bil-ma'na
+  // distinction, and an honest note on genuine scholarly
+  // disagreement over the actual scope of abrogation, checked
+  // against multiple current references before writing.
   // -----------------------------------------------------------
-  'matn-1': { id: 'matn-1', unit: 'unit-12', title: 'Conditions for a Sound Matn', summary: 'What the text of a hadith itself must satisfy, beyond its own sanad.' },
-  'matn-2': { id: 'matn-2', unit: 'unit-12', title: 'Detecting Contradiction in Text', summary: 'How scholars identify a matn conflicting with more reliable material.' },
-  'matn-3': { id: 'matn-3', unit: 'unit-12', title: 'Narration by Meaning Versus Exact Wording', summary: 'A genuine, recognized practice among early narrators, and its own conditions.' },
-  'matn-4': { id: 'matn-4', unit: 'unit-12', title: 'Abrogation Within Hadith', summary: 'When a later report supersedes an earlier one\u2019s specific ruling.' },
+  'matn-1': {
+    id: 'matn-1',
+    unit: 'unit-12',
+    title: 'Conditions for a Sound Matn',
+    summary: 'What the text of a hadith itself must satisfy, beyond its own sanad.',
+    content: [
+      {
+        heading: "Returning to the matn side of this course's own founding structure",
+        body: `This course's first unit already established sanad and matn as hadith's two structural pillars. This unit returns directly to the matn side, already touched through shudhudh and 'illah, both covered fully across this course's third and seventh units, and now examines further, specific conditions the text itself must satisfy.`,
+      },
+      {
+        heading: 'A narrow, high standard rather than a broad license',
+        body: `Beyond freedom from shudhudh and 'illah, scholars examined whether a matn's own content stood in genuine, direct contradiction with the Qur'an, with well established, reliably authenticated sunnah, or with clear scholarly consensus, ijma'. This standard is deliberately narrow: it requires an actual, definitive conflict with something itself firmly established, not merely an initial impression of tension that closer examination might resolve.`,
+      },
+      {
+        heading: 'Why this narrowness matters so directly',
+        body: `This same kind of content-based scrutiny has, at various points historically, been misused by those seeking grounds to dismiss authentic material they found personally uncomfortable, based on only superficial or hasty apparent conflict. The genuine, careful version of this practice, examined directly across this unit's next topic, exists specifically to defend authentic hadith against exactly this kind of illegitimate dismissal, not to supply one.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `This unit's next topic turns directly to how qualified scholars actually approached apparent contradiction in practice, before this unit's remaining two topics examine two further, specific matn-related questions: legitimate variation in wording, and abrogation.`,
+      },
+    ],
+  },
+
+  'matn-2': {
+    id: 'matn-2',
+    unit: 'unit-12',
+    title: 'Detecting Contradiction in Text',
+    summary: 'How scholars identify a matn conflicting with more reliable material.',
+    content: [
+      {
+        heading: 'A real, documented scholarly tradition, oriented toward defense',
+        body: `Ibn Qutaybah's Ta'wil Mukhtalif al-Hadith, composed specifically to reconcile hadith that certain rationalist critics of his own era dismissed as contradictory, represents a genuine, longstanding scholarly tradition of matn-level reconciliation, undertaken specifically to defend authentic material against exactly this kind of dismissal, rather than to provide a tool for casual rejection.`,
+      },
+      {
+        heading: 'A concrete, worked example of successful reconciliation',
+        body: `A hadith restricting simultaneous marriage to a woman and her paternal or maternal aunt initially appeared, to some critics, to add a restriction beyond what the Qur'an's own marriage verses explicitly list. Careful examination resolved this apparent tension by recognizing the hadith as legitimately detailing and specifying the Qur'an's own broader principle, rather than genuinely contradicting it.`,
+      },
+      {
+        heading: 'Reconciliation attempted first, always',
+        body: `Scholars approaching an apparent contradiction consistently attempted genuine reconciliation before concluding that any real, irreconcilable conflict actually existed, considering differing circumstances, differing timing, or one report specifying what another stated more generally, exactly as this unit's previous example illustrates directly.`,
+      },
+      {
+        heading: 'An honest note on real, internal disagreement',
+        body: `Even among scholars committed to the same overall tradition, genuine disagreement existed, and still exists, over exactly how far content-based scrutiny should extend in practice, with some scholars historically more inclined toward caution before accepting an apparent conflict as genuine, and others more readily accepting content-based grounds for rejecting a specific report. This is a real, acknowledged methodological tension within the tradition itself, not a settled, uncontested procedure.`,
+      },
+    ],
+  },
+
+  'matn-3': {
+    id: 'matn-3',
+    unit: 'unit-12',
+    title: 'Narration by Meaning Versus Exact Wording',
+    summary: 'A genuine, recognized practice among early narrators, and its own conditions.',
+    content: [
+      {
+        heading: 'Two genuinely different, both recognized, approaches',
+        body: `Riwayah bil-lafz describes narrating a hadith using its exact original wording, while riwayah bil-ma'na describes conveying the same underlying meaning using the narrator's own words instead. Some narrators, Ibn Sirin prominent among them, insisted specifically on exact wording, while a second group permitted narration by meaning under specific, real conditions.`,
+      },
+      {
+        heading: 'Specific conditions attached to this second, more flexible approach',
+        body: `Scholars permitting riwayah bil-ma'na generally required the narrator to possess genuine mastery of the Arabic language and a full, accurate understanding of the specific wording's own precise implications, since a careless or imprecise paraphrase risked inadvertently altering a specific legal or theological point the original wording had actually conveyed.`,
+      },
+      {
+        heading: 'Why this distinction genuinely matters for reading real hadith',
+        body: `This recognized practice explains some of the wording variation found across different narrations of what is presented as the same underlying report, variation reflecting legitimate paraphrase by a qualified narrator rather than the genuine defects already covered directly across this course's seventh unit, shadh, munkar, or mudtarib.`,
+      },
+      {
+        heading: "Setting up this unit's closing topic",
+        body: `This unit's closing topic turns to a further, genuinely distinct matn-related question: not variation in how the same underlying ruling was worded, but situations in which the Prophet's \ufdfa own ruling on a specific matter genuinely changed over time.`,
+      },
+    ],
+  },
+
+  'matn-4': {
+    id: 'matn-4',
+    unit: 'unit-12',
+    title: 'Abrogation Within Hadith',
+    summary: 'When a later report supersedes an earlier one\u2019s specific ruling.',
+    content: [
+      {
+        heading: 'A later ruling genuinely superseding an earlier one',
+        body: `An-naskh, abrogation, describes a later statement or practice of the Prophet \ufdfa superseding an earlier one addressing that exact same specific matter, a real, recognized category distinct from the reconciliation already covered directly in this unit's second topic, since naskh specifically concerns two reports that cannot both remain in force together.`,
+      },
+      {
+        heading: 'Reconciliation attempted first, exactly as this unit already established',
+        body: `Naskh is never invoked simply because two reports initially appear to differ. Scholars first attempted the same genuine reconciliation already covered directly in this unit's second topic, reserving naskh specifically for cases where real, irreconcilable conflict remained and clear evidence of chronological order could actually be established.`,
+      },
+      {
+        heading: 'How genuine chronological priority is actually established',
+        body: `Scholars identified genuine abrogation through the Prophet's \ufdfa own explicit statement indicating a change in ruling, a Companion's own direct testimony establishing which of two reports came later, or other clear historical and contextual evidence establishing a definite sequence between the two.`,
+      },
+      {
+        heading: 'An honest note worth stating directly',
+        body: `Scholars and exegetes have genuinely disagreed, at times considerably, over exactly how many specific hadith and Qur'anic verses actually qualify as abrogated, since identifying genuine abrogation frequently depends on scholarly inference about chronological order rather than an explicit statement settling the question beyond any dispute.`,
+      },
+      {
+        heading: "Closing this unit and turning to hadith's practical application",
+        body: `This unit has now covered the specific, narrow conditions a sound matn must satisfy beyond its own sanad, the genuine scholarly tradition of reconciling apparent contradiction, legitimate wording variation through riwayah bil-ma'na, and abrogation as a real but carefully, narrowly applied category. This course's thirteenth unit turns directly to how everything covered across this entire course actually gets applied in practice.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 13 - PRACTICAL APPLICATION (placeholders)
+  // UNIT 13 - PRACTICAL APPLICATION (full content, expanded)
+  //
+  // Shaykh al-Albani's genuine scope of work and the real,
+  // documented scholarly disagreement around some of his specific
+  // gradings, and the precise point that no individual scholar's
+  // grading is treated as absolutely final unless full consensus or
+  // mutawatir status is reached, checked against multiple current
+  // references before writing.
   // -----------------------------------------------------------
-  'amal-1': { id: 'amal-1', unit: 'unit-13', title: 'How Scholars Grade a Hadith Today', summary: 'Applying this entire science\u2019s cumulative standards in practice.' },
-  'amal-2': { id: 'amal-2', unit: 'unit-13', title: 'Following Qualified Scholarship Versus Self-Verification', summary: 'Why this specific science is not typically a do-it-yourself undertaking.' },
-  'amal-3': { id: 'amal-3', unit: 'unit-13', title: 'Common Mistakes in Citing Hadith', summary: 'Where casual, non-specialist citation most often goes wrong.' },
-  'amal-4': { id: 'amal-4', unit: 'unit-13', title: 'The Role of Hadith in Deriving Rulings', summary: 'How authenticated hadith actually functions within Islamic legal reasoning.' },
+  'amal-1': {
+    id: 'amal-1',
+    unit: 'unit-13',
+    title: 'How Scholars Grade a Hadith Today',
+    summary: 'Applying this entire science\u2019s cumulative standards in practice.',
+    content: [
+      {
+        heading: 'Contemporary practice, built on the same methodology already covered',
+        body: `Grading hadith today applies the exact same standards examined throughout this entire course, sanad evaluation, matn scrutiny, and everything in between, rather than replacing them with something genuinely new. Contemporary specialists extend this same established methodology to material earlier generations had not always explicitly graded, or systematically reassess large collections using these same criteria.`,
+      },
+      {
+        heading: 'A genuine, well documented example',
+        body: `Shaykh Muhammad Nasiruddin al-Albani (1914-1999) undertook an extensive, exhaustive program of grading hadith across a considerably wider range of material than the six major collections already covered directly across this course's eleventh unit, applying classical methodology through his own scholarly reasoning, exactly as earlier scholars had each applied their own reasoning within this same shared framework.`,
+      },
+      {
+        heading: 'An honest note on real, ongoing scholarly disagreement',
+        body: `Some of al-Albani's specific gradings have themselves been genuinely debated by other qualified scholars, including public, documented disagreement with contemporaries such as Ahmad al-Ghumari. This reflects a real, ongoing feature of this science rather than a flaw unique to any one scholar: individual scholarly grading remains open to qualified, reasoned disagreement.`,
+      },
+      {
+        heading: 'A precise point worth stating directly',
+        body: `No individual scholar's specific grading is treated as absolutely final and beyond challenge unless either the entire Muslim community reaches genuine consensus around it, or the hadith itself is mutawatir, already covered directly across this course's fifth unit. Every other individual grading remains a scholar's own considered ijtihad, respected according to that scholar's own recognized expertise, yet still genuinely open to qualified, reasoned disagreement from other specialists.`,
+      },
+    ],
+  },
+
+  'amal-2': {
+    id: 'amal-2',
+    unit: 'unit-13',
+    title: 'Following Qualified Scholarship Versus Self-Verification',
+    summary: 'Why this specific science is not typically a do-it-yourself undertaking.',
+    content: [
+      {
+        heading: 'A direct, practical consequence of everything this course has covered',
+        body: `Given the genuine depth this entire course has traced, narrator biography requiring near encyclopedic knowledge, precise graded terminology, subtle hidden defects detectable only through real specialized comparison, ordinary practice reasonably relies on trustworthy, established scholarship rather than attempting personal, from-scratch verification of every specific hadith encountered.`,
+      },
+      {
+        heading: 'A useful, everyday comparison',
+        body: `This mirrors trusting a qualified physician's own diagnosis without personally re-deriving the entire discipline of medicine first. Relying on a specific, well established grading, this hadith appears in Sahih al-Bukhari, or a named, recognized specialist has graded it sahih, reflects reasonable trust in genuine expertise, not intellectual laziness.`,
+      },
+      {
+        heading: 'A genuine, honest risk worth naming directly',
+        body: `Partial exposure to this science's own terminology, recognizing words such as da'if or isnad without the actual depth of training real specialists have spent years developing, risks producing confident-sounding but genuinely unqualified pronouncements, a real concern scholars themselves have raised regarding casual, amateur hadith criticism, particularly prevalent in informal contemporary discussion.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `This unit's next topic turns to several specific, common mistakes this exact gap between partial familiarity and genuine expertise tends to produce in practice.`,
+      },
+    ],
+  },
+
+  'amal-3': {
+    id: 'amal-3',
+    unit: 'unit-13',
+    title: 'Common Mistakes in Citing Hadith',
+    summary: 'Where casual, non-specialist citation most often goes wrong.',
+    content: [
+      {
+        heading: 'Citing without any real sourcing at all',
+        body: `A specific saying is sometimes shared as though it were a hadith without naming any collection, narrator, or grading whatsoever, leaving no actual way to verify whether it traces back to the Prophet \ufdfa at all.`,
+      },
+      {
+        heading: 'Treating unverified sayings as genuine hadith',
+        body: `A considerable number of widely circulated quotations, especially online, are presented as prophetic sayings despite having no real basis in any recognized collection at all, a well documented, genuinely contemporary version of the same fabrication problem already covered directly across this course's fourth unit.`,
+      },
+      {
+        heading: 'Removing a hadith from its own established context',
+        body: `A genuinely authentic hadith can still be misapplied when taken beyond what its own actual wording or established scholarly interpretation genuinely supports, extending a specific, narrow statement into a considerably broader claim it was never actually intended to carry.`,
+      },
+      {
+        heading: "Treating a translation's own wording as fully equivalent to the original",
+        body: `A specific translation's own particular phrasing can introduce genuine imprecision, since translation itself involves interpretive choices, meaning a careful reader benefits from treating any single translation as one reasonable rendering rather than a perfectly exact substitute for the hadith's own original Arabic wording.`,
+      },
+    ],
+  },
+
+  'amal-4': {
+    id: 'amal-4',
+    unit: 'unit-13',
+    title: 'The Role of Hadith in Deriving Rulings',
+    summary: 'How authenticated hadith actually functions within Islamic legal reasoning.',
+    content: [
+      {
+        heading: 'A brief bridge to a genuinely separate discipline',
+        body: `Usul al-fiqh, the principles of Islamic jurisprudence, is a genuinely distinct science from everything this course has examined, concerned specifically with how scholars actually derive legal rulings from textual evidence. This closing topic offers only a brief bridge toward that separate discipline, without attempting to teach its own considerable depth here.`,
+      },
+      {
+        heading: "A hadith's own grading directly shapes its evidentiary weight",
+        body: `Sahih and hasan hadith, both covered fully across this course's third unit, generally serve as genuine primary evidence within legal reasoning. Da'if hadith's own role remains considerably more limited and genuinely contested, exactly as this course's fourth unit already established, while mutawatir hadith, examined directly across this course's fifth unit, carries the very strongest evidentiary weight of all.`,
+      },
+      {
+        heading: 'The same reconciliation principle, extended into legal reasoning itself',
+        body: `This course's twelfth unit already established that apparent contradiction between reports is addressed through genuine reconciliation before assuming real conflict. This same underlying principle extends directly into legal derivation itself, where apparently conflicting rulings drawn from different hadith are similarly reconciled wherever genuinely possible, rather than treated as an immediate, unresolvable conflict.`,
+      },
+      {
+        heading: "Closing this unit and turning to this course's own conclusion",
+        body: `This unit has now covered how contemporary scholars actually grade hadith today, why relying on qualified scholarship rather than amateur self-verification reflects genuine wisdom rather than passivity, several specific, common mistakes casual citation tends to produce, and hadith's own direct, evidentiary role within Islamic legal reasoning. This course's fourteenth and final unit turns to this entire science's own preservation and lasting legacy.`,
+      },
+    ],
+  },
 
   // -----------------------------------------------------------
-  // UNIT 14 - CLOSING: PRESERVATION AND LEGACY (placeholders)
+  // UNIT 14 - CLOSING: PRESERVATION AND LEGACY (full content,
+  // expanded)
+  //
+  // Jabir ibn Abdullah's month-long journey to hear a single hadith
+  // directly from Abdullah ibn Unays (recorded by Imam Ahmad), and
+  // Khatib al-Baghdadi's own dedicated work on this exact practice,
+  // checked against multiple current references before writing.
+  // This unit's closing topic is a genuine synthesis, walking
+  // through a constructed example drawing on rules from across this
+  // entire fourteen-unit course, rather than introducing further
+  // new material.
   // -----------------------------------------------------------
-  'legacy-1': { id: 'legacy-1', unit: 'unit-14', title: 'The Isnad as a Unique Historiographical Achievement', summary: 'Why this specific system of source-tracing has few real historical parallels.' },
-  'legacy-2': { id: 'legacy-2', unit: 'unit-14', title: 'The Muhaddithun: Lives of Dedication', summary: 'The real, personal cost this science\u2019s preservation actually required.' },
-  'legacy-3': { id: 'legacy-3', unit: 'unit-14', title: 'Why This Science Still Matters Today', summary: 'The practical relevance of this entire subject beyond historical interest alone.' },
-  'legacy-4': { id: 'legacy-4', unit: 'unit-14', title: 'Closing Reflections', summary: 'From basic terminology to a genuine, working understanding.' },
+  'legacy-1': {
+    id: 'legacy-1',
+    unit: 'unit-14',
+    title: 'The Isnad as a Unique Historiographical Achievement',
+    summary: 'Why this specific system of source-tracing has few real historical parallels.',
+    content: [
+      {
+        heading: "Everything this course has covered, brought together at once",
+        body: `This course has traced, across fourteen units, a genuinely comprehensive system: al-isnad and its own specific requirements, already covered across this course's second unit, narrator biography built on graded, documented evaluation, already covered across this course's eighth unit, precise generational dating, already covered across this course's ninth unit, and named, specific methods for how knowledge was actually received and transmitted, already covered across this course's tenth unit.`,
+      },
+      {
+        heading: 'A system widely recognized as genuinely unusual',
+        body: `This combination, insisting on a documented, person-by-person chain back to an original source, and developing formal, examinable criteria for evaluating each individual link in that chain, is widely recognized, including among scholars studying comparative historical method more broadly, as a genuinely distinctive achievement, one without many close parallels among other ancient traditions of preserving important historical or religious reports.`,
+      },
+      {
+        heading: 'Why this achievement is worth naming plainly at this course\u2019s close',
+        body: `Having now traced this entire system in real depth, from its most basic terminology through its most technically demanding hidden defects, this course's own closing units can state directly what earlier units could only build toward: this is not simply a collection of technical rules, but a genuinely coherent, historically remarkable method for preserving and verifying what a specific historical figure actually said and did.`,
+      },
+      {
+        heading: "Setting up this unit's remaining topics",
+        body: `This unit's next topic turns from the system itself to the specific people who actually carried it out, often at real, genuine personal cost.`,
+      },
+    ],
+  },
+
+  'legacy-2': {
+    id: 'legacy-2',
+    unit: 'unit-14',
+    title: 'The Muhaddithun: Lives of Dedication',
+    summary: 'The real, personal cost this science\u2019s preservation actually required.',
+    content: [
+      {
+        heading: 'Al-rihlah fi talab al-hadith: journeying specifically to verify a single report',
+        body: `Muhaddithun frequently undertook considerable, genuinely difficult journeys specifically to hear one particular hadith directly from a specific individual, rather than accepting a weaker, more indirect chain reaching that same content through someone closer at hand.`,
+      },
+      {
+        heading: 'A documented, genuinely moving example',
+        body: `The Companion Jabir ibn 'Abdullah, upon learning that Abdullah ibn Unays, another Companion, had personally heard a specific hadith directly from the Prophet \ufdfa concerning reciprocal punishment, purchased a camel and traveled for a full month to reach him in Syria, heard this single hadith directly, and then made the same month-long journey back home again.`,
+        verses: [
+          {
+            type: 'hadith',
+            arabic: 'فَاشْتَرَيْتُ بَعِيرًا فَشَدَدْتُ عَلَيْهِ رَحْلِي، فَسِرْتُ إِلَيْهِ شَهْرًا حَتَّى قَدِمْتُ عَلَيْهِ الشَّامَ',
+            english: 'So I purchased a camel and set my saddle upon it, then I traveled toward him for a month until I reached him in Syria.',
+            source: "Musnad Ahmad, Jabir ibn 'Abdullah's own account of traveling to hear a single hadith from 'Abdullah ibn Unays",
+          },
+        ],
+      },
+      {
+        heading: 'A dedicated work documenting this exact practice',
+        body: `The hadith specialist al-Khatib al-Baghdadi compiled an entire work, al-Rihlah fi Talab al-Hadith, journeying in pursuit of hadith, specifically documenting numerous accounts of this same kind, real, considerable personal sacrifice, time, distance, and genuine physical risk during travel, undertaken specifically to preserve a single report with real, direct precision.`,
+      },
+      {
+        heading: 'Why this human dimension belongs in this course\u2019s own closing units',
+        body: `Every specific standard this course has examined, sanad requirements, narrator biography, generational precision, transmission methods, existed because real people were willing to undertake this level of personal cost specifically to get it right. This unit's next topic turns to why this same underlying commitment remains genuinely relevant today, not merely as history.`,
+      },
+    ],
+  },
+
+  'legacy-3': {
+    id: 'legacy-3',
+    unit: 'unit-14',
+    title: 'Why This Science Still Matters Today',
+    summary: 'The practical relevance of this entire subject beyond historical interest alone.',
+    content: [
+      {
+        heading: "Returning directly to this course's own first unit",
+        body: `This course's first unit already established that authentic hadith remains genuinely necessary for correctly understanding and applying the Qur'an itself, supplying the specific practical detail the Qur'an's own more general commands often require. Everything covered since, from sanad standards through matn criticism, ultimately serves this exact same ongoing, practical purpose.`,
+      },
+      {
+        heading: "A direct connection to this course's thirteenth unit",
+        body: `This course's thirteenth unit already showed that the same underlying challenges this science was built to address, fabrication, imprecise citation, and genuine confusion between authentic and inauthentic material, continue directly into the present, now taking new forms such as unsourced material circulating widely online.`,
+      },
+      {
+        heading: 'Not merely historical curiosity',
+        body: `Correctly understanding what the Prophet \ufdfa actually said and did remains directly relevant to how Muslims today actually practice their religion, precisely because hadith continues to function, exactly as this course's first unit established, as a genuinely necessary source of practical guidance rather than a closed historical archive.`,
+      },
+      {
+        heading: "Setting up this course's own closing topic",
+        body: `This course's closing topic now draws together everything covered across all fourteen units into a single, concrete demonstration of this science's own actual, practical use.`,
+      },
+    ],
+  },
+
+  'legacy-4': {
+    id: 'legacy-4',
+    unit: 'unit-14',
+    title: 'Closing Reflections',
+    summary: 'From basic terminology to a genuine, working understanding.',
+    content: [
+      {
+        heading: 'A closing topic, not a new lesson',
+        body: `This closing topic introduces no new rules of its own. Instead, it walks through how a single hadith would actually be evaluated in practice, drawing directly on material from across this entire course, precisely the cumulative skill every one of this course's fourteen units has been building toward.`,
+      },
+      {
+        heading: 'A worked evaluation, piece by piece',
+        body: `Presented with a specific hadith, a careful reader first examines its sanad: is each narrator upright and precise, already covered across this course's second unit, is the chain genuinely connected or does it show one of the specific breaks examined across this course's sixth unit, and does deeper comparison reveal any hidden defect, already covered across this course's seventh unit. The reader then turns to its matn: does the text itself avoid genuine contradiction with better established material, already covered across this course's twelfth unit. Only once both halves are examined does an overall grading, sahih, hasan, or da'if, already covered across this course's third and fourth units, actually follow.`,
+      },
+      {
+        heading: 'Why no single piece of this course stands on its own',
+        body: `None of these individual steps means very much in isolation. Knowing that a narrator is described as thiqah, already covered across this course's eighth unit, matters only alongside knowing what that specific term actually requires; recognizing a chain as mursal, already covered across this course's sixth unit, matters only alongside knowing precisely how scholars treated that exact category. This entire course's own real value lies specifically in how each individual unit's material combines with every other.`,
+      },
+      {
+        heading: 'Closing this course',
+        body: `This course opened, in its very first unit, by establishing why this entire science exists at all: protecting what is authentically traceable to the Prophet \ufdfa from the genuine risks of error and fabrication. Fourteen units later, having traced the sanad and the matn in full depth, the narrators themselves and the generations they belonged to, the specific ways knowledge was received and transmitted, the major collections these standards actually produced, and this science's own real, ongoing application, this same founding purpose is now visible not as an abstract principle stated once at the very beginning, but as a genuinely connected, workable system, capable of being applied directly, precisely, and with real, earned confidence.`,
+      },
+    ],
+  },
 };
