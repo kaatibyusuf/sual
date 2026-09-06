@@ -133,6 +133,22 @@
   cursor: not-allowed;
 }
 
+.cert-error {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(192, 57, 43, 0.08);
+  border: 1px solid rgba(192, 57, 43, 0.25);
+  color: #c0392b;
+  font-size: 0.82rem;
+}
+
+.cert-name-locked-note {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  color: #8a9aa8;
+}
+
 /* ---------- The certificate artwork itself ---------- */
 
 .cert-preview-wrap {
@@ -293,6 +309,13 @@
   font-size: 0.78rem;
   font-weight: 700;
   color: #4a5a68;
+}
+
+.cert-verify-note {
+  margin: 10px 0 0;
+  font-size: 0.62rem;
+  color: #a0aeb8;
+  letter-spacing: 0.02em;
 }
 
 /* ---------- Dark mode (trigger card + modal chrome only --

@@ -1,19 +1,29 @@
 // src/components/CourseCertificate.jsx
 //
-// A reusable completion certificate, works for any course by simply
-// passing different props -- no new backend function, no schema
-// changes. Completion is detected client-side by comparing the
-// course's own unit list (already imported wherever the course page
-// itself is rendered) against which units have at least one
-// passed = true row in that course's own *_quiz_attempts table,
-// using the exact same RLS policy already in place for the quiz
-// gate itself (users can already read their own attempts).
+// A reusable, genuinely verifiable completion certificate, works for
+// any course by simply passing different props. Two things happen
+// on generation, in order:
 //
-// New dependency: html2canvas (`npm install html2canvas`). Chosen
-// specifically because it needs zero backend changes -- rendering a
-// styled HTML template to a downloadable PNG entirely in the
-// browser, avoiding Deno's awkward support for image/canvas
-// rendering and Arabic font embedding server-side.
+// 1. Calls the issue-certificate edge function, which re-verifies
+//    completion SERVER-SIDE (never trusts this component's own
+//    client-side completion check for the actual issued code -- see
+//    the note below) and returns a real, logged reference code.
+// 2. Only once that real code is back and rendered does this
+//    component capture the certificate as an image, so the code
+//    printed on the certificate is always the one actually logged
+//    in the certificates table and checkable at the verification
+//    page.
+//
+// The client-side completion check below (comparing units against
+// *_quiz_attempts) still runs, but only decides whether to show the
+// "claim your certificate" trigger card at all -- it is a UI
+// convenience, not the security boundary. The issue-certificate
+// function performs its own, independent, authoritative check
+// before ever logging a code, so this component cannot be tricked
+// via browser dev tools into printing a code for a course that
+// wasn't actually completed.
+//
+// New dependency: html2canvas (`npm install html2canvas`).
 //
 // The signer's name is deliberately NOT read from any existing
 // profile table, since it isn't known whether this app stores a
@@ -35,9 +45,15 @@
 //     courseStats="14 units · 58 topics · 420 quiz questions"
 //   />
 //
-// This renders nothing at all until the course is actually complete
-// (so it's safe to always mount it on the course page without any
-// extra conditional logic at the call site).
+// This renders nothing at all until the client-side check thinks
+// the course is complete (so it's safe to always mount it on the
+// course page without any extra conditional logic at the call
+// site). Note that courseId must match one of the keys configured
+// in issue-certificate's own COURSE_CONFIG, or generation will fail
+// with a clear error even though the trigger card appears -- as of
+// this writing that's tajweedclass, seerahclass, arabiyyahclass, and
+// hadeethclass; adab and tawheed still need their real total unit
+// counts confirmed before they can be added there.
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import html2canvas from 'html2canvas';
@@ -58,7 +74,11 @@ export default function CourseCertificate({
   const [completed, setCompleted] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState(() => localStorage.getItem(NAME_STORAGE_KEY) || '');
-  const [generating, setGenerating] = useState(false);
+  const [issuing, setIssuing] = useState(false);
+  const [issueError, setIssueError] = useState(null);
+  const [serverCert, setServerCert] = useState(null); // { referenceCode, issuedAt }
+  const [pendingCapture, setPendingCapture] = useState(false);
+  const [capturing, setCapturing] = useState(false);
   const certificateRef = useRef(null);
 
   const totalUnits = units?.length ?? 0;
@@ -107,57 +127,106 @@ export default function CourseCertificate({
     setName(e.target.value);
   };
 
-  const today = new Date();
-  const dateLabel = today.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-  // Not a cryptographic signature -- just a short, stable-looking
-  // reference so the certificate doesn't feel machine-blank. Two
-  // people completing the same course on the same day will get
-  // different codes since it also factors in the current time.
-  const referenceCode = `${courseId.slice(0, 4).toUpperCase()}-${today.getTime().toString(36).toUpperCase()}`;
+  const dateLabel = (isoString) => {
+    if (!isoString) return '';
+    return new Date(isoString).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
 
-  const downloadCertificate = async () => {
+  // Step 1: ask the server to actually issue (or re-fetch, if this
+  // course was already certified for this user) a real, logged
+  // certificate. Only on success do we move to capturing an image.
+  const requestCertificate = async () => {
     if (!name.trim()) return;
     localStorage.setItem(NAME_STORAGE_KEY, name.trim());
-    setGenerating(true);
+    setIssueError(null);
+    setIssuing(true);
     try {
-      const canvas = await html2canvas(certificateRef.current, {
-        scale: 2, // real, print-worthy resolution rather than a blurry screen capture
-        backgroundColor: '#faf6ee',
-        useCORS: true,
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('You need to be signed in to generate a certificate.');
+
+      const { data, error } = await supabase.functions.invoke('issue-certificate', {
+        body: { courseId, recipientName: name.trim() },
       });
-      const dataUrl = canvas.toDataURL('image/png');
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
-      const filename = `sual-${courseId}-certificate.png`;
-
-      if (navigator.canShare && navigator.canShare({ files: [] })) {
-        try {
-          const blob = await (await fetch(dataUrl)).blob();
-          const file = new File([blob], filename, { type: 'image/png' });
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: `${courseLabel}: Certificate of Completion`,
-            });
-            setGenerating(false);
-            return;
-          }
-        } catch (shareErr) {
-          // Fall through to plain download if sharing is cancelled or unsupported.
-        }
-      }
-
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = filename;
-      link.click();
+      setServerCert({ referenceCode: data.referenceCode, issuedAt: data.issuedAt });
+      setPendingCapture(true); // triggers the capture effect below, once this has rendered
     } catch (err) {
-      console.error('Failed to generate certificate image:', err);
+      console.error('Failed to issue certificate:', err);
+      setIssueError(err.message || 'Something went wrong issuing your certificate.');
     } finally {
-      setGenerating(false);
+      setIssuing(false);
+    }
+  };
+
+  // Step 2: only runs once serverCert is actually set AND the
+  // certificate DOM has re-rendered with that real code visible --
+  // guaranteeing the image never captures a stale or placeholder
+  // code.
+  useEffect(() => {
+    if (!pendingCapture || !serverCert) return;
+
+    async function captureAndDeliver() {
+      setCapturing(true);
+      try {
+        const canvas = await html2canvas(certificateRef.current, {
+          scale: 2, // real, print-worthy resolution rather than a blurry screen capture
+          backgroundColor: '#faf6ee',
+          useCORS: true,
+        });
+        const dataUrl = canvas.toDataURL('image/png');
+        const filename = `sual-${courseId}-certificate.png`;
+
+        if (navigator.canShare && navigator.canShare({ files: [] })) {
+          try {
+            const blob = await (await fetch(dataUrl)).blob();
+            const file = new File([blob], filename, { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title: `${courseLabel}: Certificate of Completion`,
+              });
+              return;
+            }
+          } catch (shareErr) {
+            // Fall through to plain download if sharing is cancelled or unsupported.
+          }
+        }
+
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = filename;
+        link.click();
+      } catch (err) {
+        console.error('Failed to generate certificate image:', err);
+      } finally {
+        setCapturing(false);
+        setPendingCapture(false);
+      }
+    }
+
+    captureAndDeliver();
+  }, [pendingCapture, serverCert, courseId, courseLabel]);
+
+  // Once a real code has already been issued this session, further
+  // clicks just re-capture and re-download the same certificate
+  // rather than calling issue-certificate again (it would return the
+  // same code anyway, since issuance is idempotent per user/course,
+  // but there's no reason to round-trip for it twice).
+  const handleGenerateClick = () => {
+    if (serverCert) {
+      setPendingCapture(true);
+    } else {
+      requestCertificate();
     }
   };
 
   if (checking || !completed) return null;
+
+  const busy = issuing || capturing;
+  const displayCode = serverCert?.referenceCode ?? '\u2014';
+  const displayDate = serverCert ? dateLabel(serverCert.issuedAt) : dateLabel(new Date().toISOString());
 
   return (
     <div className="cert-trigger-card">
@@ -182,12 +251,22 @@ export default function CourseCertificate({
                 onChange={handleNameChange}
                 placeholder="Your full name"
                 autoFocus
+                disabled={!!serverCert}
               />
+              {serverCert && (
+                <p className="cert-name-locked-note">
+                  This certificate has already been issued with this name. To change it, contact support.
+                </p>
+              )}
             </div>
+
+            {issueError && <div className="cert-error">{issueError}</div>}
 
             {/* The actual certificate artwork. Always rendered (so
                 html2canvas has something real to capture) but only
-                visible once a name has been entered. */}
+                visible once a name has been entered. The reference
+                code only ever shows a real, server-issued value --
+                never a placeholder that could be mistaken for one. */}
             <div className={`cert-preview-wrap ${name.trim() ? '' : 'cert-preview-wrap--empty'}`}>
               <div className="cert-plate" ref={certificateRef}>
                 <div className="cert-border">
@@ -218,23 +297,27 @@ export default function CourseCertificate({
                   <div className="cert-footer">
                     <div className="cert-footer-col">
                       <span className="cert-footer-label">Date</span>
-                      <span className="cert-footer-value">{dateLabel}</span>
+                      <span className="cert-footer-value">{displayDate}</span>
                     </div>
                     <div className="cert-footer-col cert-footer-col--right">
                       <span className="cert-footer-label">Reference</span>
-                      <span className="cert-footer-value">{referenceCode}</span>
+                      <span className="cert-footer-value">{displayCode}</span>
                     </div>
                   </div>
+
+                  {serverCert && (
+                    <p className="cert-verify-note">Verify at sual.app/verify-certificate</p>
+                  )}
                 </div>
               </div>
             </div>
 
             <button
               className="cert-download-button"
-              onClick={downloadCertificate}
-              disabled={!name.trim() || generating}
+              onClick={handleGenerateClick}
+              disabled={!name.trim() || busy}
             >
-              {generating ? 'Preparing…' : 'Download Certificate'}
+              {issuing ? 'Issuing certificate…' : capturing ? 'Preparing image…' : serverCert ? 'Download Again' : 'Generate Certificate'}
             </button>
           </div>
         </div>
