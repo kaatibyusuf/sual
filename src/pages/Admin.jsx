@@ -158,6 +158,11 @@ export default function Admin({ user }) {
   const [merchPending, setMerchPending] = useState([])
   const [merchPendingLoading, setMerchPendingLoading] = useState(false)
 
+  // ── Course purchases state ────────────────────────────────────
+  const [coursePurchases, setCoursePurchases] = useState([])
+  const [coursePurchasesLoading, setCoursePurchasesLoading] = useState(false)
+  const [coursePurchasesError, setCoursePurchasesError] = useState(null)
+
   const fetchStats = async () => {
     setLoading(true)
     setError(null)
@@ -1023,6 +1028,23 @@ export default function Admin({ user }) {
     }
   }
 
+  // ── Course purchases: full-vs-per-unit buyer breakdown ────────
+  const fetchCoursePurchases = async () => {
+    setCoursePurchasesLoading(true)
+    setCoursePurchasesError(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-course-purchases')
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setCoursePurchases(data.coursePurchases || [])
+    } catch (err) {
+      console.error('Failed to load course purchase stats:', err)
+      setCoursePurchasesError(err.message)
+    } finally {
+      setCoursePurchasesLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchStats()
     fetchTafseerList()
@@ -1030,6 +1052,7 @@ export default function Admin({ user }) {
     fetchExamTopics()
     fetchWeeklyTests()
     fetchMerchPending()
+    fetchCoursePurchases()
   }, [])
 
   if (!user) return null
@@ -1124,6 +1147,52 @@ export default function Admin({ user }) {
     {postingMajlis ? 'Posting…' : 'Post to Majlis'}
   </button>
 </div>
+
+      {/* Course Purchases — full access vs per-unit buyers, per course */}
+      <div className="card" style={{ marginTop: 20, padding: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 6 }}>
+          <h3>Course Purchases</h3>
+          <button className="btn btn-ghost" onClick={fetchCoursePurchases} disabled={coursePurchasesLoading}>
+            {coursePurchasesLoading ? 'Refreshing…' : '↻ Refresh'}
+          </button>
+        </div>
+        <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
+          Distinct buyers per class, and whether they hold full access or have only ever
+          bought individual units. Someone who bought a unit and later upgraded to full
+          access is counted as a full-access buyer only, not both.
+        </p>
+
+        {coursePurchasesError && <div className="admin-error" style={{ marginBottom: 12 }}>{coursePurchasesError}</div>}
+
+        {coursePurchasesLoading ? (
+          <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>Loading…</p>
+        ) : coursePurchases.length === 0 ? (
+          <p style={{ color: '#8a9ab0', fontSize: '0.85rem' }}>No purchase data yet.</p>
+        ) : (
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Total buyers</th>
+                  <th>Full access</th>
+                  <th>Per-unit only</th>
+                </tr>
+              </thead>
+              <tbody>
+                {coursePurchases.map(c => (
+                  <tr key={c.course}>
+                    <td>{c.label}</td>
+                    <td>{c.totalBuyers}</td>
+                    <td>{c.fullAccessBuyers}</td>
+                    <td>{c.perUnitOnlyBuyers}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* Recurring subscribers */}
       {stats?.recurringSubscribers && (
