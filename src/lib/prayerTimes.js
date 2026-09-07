@@ -202,5 +202,72 @@ export async function fetchAladhanTimings(date, lat, lng, method = ALADHAN_METHO
     // for five prayers and a separately-derived local formula for
     // the sixth value.
     islamicMidnight: toMinutes(t.Midnight),
+    // The IANA timezone AlAdhan actually computed these times for
+    // (e.g. "Africa/Lagos") — critical for countdown/progress math.
+    // These HH:MM values are LOCAL wall-clock time for the requested
+    // coordinates, not UTC and not necessarily the viewing device's
+    // own system timezone. See getNowInTimezone() below for why that
+    // distinction matters.
+    timezone: json.data.meta?.timezone || null,
   }
+}
+
+// Returns the CURRENT time as { hours, minutes, seconds } in a given
+// IANA timezone — independent of whatever timezone the viewing
+// device's own system clock happens to be set to.
+//
+// This matters specifically because a prayer time is computed for a
+// GEOGRAPHIC LOCATION's timezone, not the viewer's device timezone,
+// and those two can genuinely differ — most commonly while testing
+// from a different region during development, but also for a real
+// traveler whose phone hasn't updated its system timezone yet.
+// Comparing a location's prayer time directly against the device's
+// own clock (e.g. via new Date().getHours()) without this
+// correction produces a countdown/progress calculation that's wrong
+// by exactly the hour-offset between the two zones — which is
+// exactly the bug this was written to fix: a countdown reading ~24h
+// and a progress bar reading ~100% simultaneously for a prayer that
+// should genuinely be a few hours away, because the code was asking
+// the wrong clock what time it is.
+export function getNowInTimezone(timezone) {
+  const now = new Date()
+  if (!timezone) {
+    return { hours: now.getHours(), minutes: now.getMinutes(), seconds: now.getSeconds() }
+  }
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+    }).formatToParts(now)
+    const get = (type) => Number(parts.find(p => p.type === type)?.value || 0)
+    return { hours: get('hour') % 24, minutes: get('minute'), seconds: get('second') }
+  } catch (err) {
+    console.error('getNowInTimezone: invalid timezone, falling back to device clock:', timezone, err)
+    return { hours: now.getHours(), minutes: now.getMinutes(), seconds: now.getSeconds() }
+  }
+}
+
+// Seconds remaining until targetMinutes (minutes-since-midnight, in
+// the SAME timezone as targetMinutes was computed for), using the
+// actual current time AT THAT TIMEZONE rather than the device's own
+// clock. Entirely self-contained in "seconds since midnight" space —
+// no Date-object timezone ambiguity to get wrong, unlike constructing
+// a real target Date and subtracting it from a device-clock Date.
+export function computeCountdownSeconds(targetMinutes, timezone) {
+  if (targetMinutes === null || targetMinutes === undefined) return null
+  const { hours, minutes, seconds } = getNowInTimezone(timezone)
+  const nowTotalSeconds = hours * 3600 + minutes * 60 + seconds
+  const targetTotalSeconds = targetMinutes * 60
+  let diff = targetTotalSeconds - nowTotalSeconds
+  if (diff < 0) diff += 24 * 3600
+  return diff
+}
+
+// Same timezone-correction, for the "how far through the current
+// prayer's window" progress-bar fraction — needs "now" expressed as
+// minutes-since-midnight at the SAME timezone the window's start/end
+// minutes were computed for, for the same reason as above.
+export function getNowMinutesInTimezone(timezone) {
+  const { hours, minutes } = getNowInTimezone(timezone)
+  return hours * 60 + minutes
 }

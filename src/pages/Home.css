@@ -26,6 +26,207 @@
   padding-top: 32px;
 }
 
+/* ── New top section: location/greeting row, prayer countdown card,
+   fasting tip card. Sits above the hero below. Kept strictly within
+   this page's stated navy/sky palette -- no new hues introduced,
+   including in the tip card, which does NOT use a cream/amber
+   background despite that being a common treatment for "tip" cards
+   elsewhere -- that would contradict this file's own design law. ── */
+
+.hm-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.hm-top-label {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--hm-navy);
+}
+
+.hm-location-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(9, 69, 112, 0.08);
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--hm-navy);
+}
+
+.hm-location-pill-icon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+}
+
+.hm-location-pill-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hm-greeting-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.hm-greeting-arabic {
+  font-size: 2rem;
+  color: var(--hm-navy);
+  line-height: 1.1;
+}
+
+.hm-greeting-hijri {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6a8090;
+  white-space: nowrap;
+}
+
+/* Prayer countdown card -- reuses the exact same navy gradient
+   already established for other prayer-related surfaces in this
+   app, so it fits the "every card on this page is navy" language
+   naturally rather than needing a special case. */
+.hm-prayer-card {
+  position: relative;
+  background: linear-gradient(160deg, #062f4a, var(--hm-navy));
+  border-radius: 20px;
+  padding: 22px 22px 0;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.hm-prayer-card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.hm-prayer-card-side {
+  flex-shrink: 0;
+}
+
+.hm-prayer-card-side--right {
+  text-align: right;
+}
+
+.hm-prayer-card-time {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 2px;
+}
+
+.hm-prayer-card-name {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.hm-prayer-card-progress-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+.hm-prayer-card-progress-fill {
+  height: 100%;
+  background: #ffffff;
+  border-radius: 100px;
+  transition: width 0.6s ease;
+}
+
+.hm-prayer-card-countdown {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.hm-prayer-card-illustration {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 55%;
+  max-width: 220px;
+  line-height: 0;
+  opacity: 0.9;
+}
+
+.hm-prayer-illustration-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  --hm-illus-moon: rgba(255, 255, 255, 0.9);
+  --hm-illus-star: var(--hm-sky);
+  /* FIX: raised opacity noticeably vs. the earlier mountain values
+     (0.12/0.22) -- the previous illustration was reported as not
+     clear enough, and part of that was simply low contrast against
+     the navy gradient card, not just the shape being abstract. */
+  --hm-illus-mosque: rgba(255, 255, 255, 0.4);
+  --hm-illus-door: rgba(4, 30, 48, 0.55);
+  --hm-illus-tree: rgba(133, 204, 255, 0.4);
+  --hm-illus-tree-trunk: rgba(255, 255, 255, 0.3);
+}
+
+/* Fasting tip card -- navy, matching every other card on this page,
+   not a cream/amber "tip" treatment. The lantern icon is white/sky,
+   not the amber tone a lantern might suggest, for the same reason. */
+.hm-tip-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--hm-navy);
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.hm-tip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.hm-tip-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hm-tip-text {
+  flex: 1;
+  font-size: 0.88rem;
+  color: #ffffff;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.hm-tip-source {
+  color: var(--hm-sky);
+  font-weight: 600;
+}
+
 /* ── Hero ────────────────────────────────────────────────────── */
 .hm-hero {
   padding: 26px 24px 24px;
@@ -309,6 +510,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  margin-bottom: 24px;
 }
 
 .hm-standing-card {
@@ -346,6 +548,22 @@
   color: #ffffff;
 }
 
+/* FIX: --gold and --emerald were referenced in Home.jsx with no
+   matching rule anywhere in this file -- both icon badges rendered
+   with zero visual differentiation from each other. Class names kept
+   as-is (renaming would mean touching Home.jsx's classNames too, not
+   necessary just to fix the missing styling) but defined using only
+   this page's actual navy/sky palette, per this file's own stated
+   "no gold" design law in the header comment above -- not the
+   literal colors their legacy names suggest. */
+.hm-standing-icon--gold {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.hm-standing-icon--emerald {
+  background: rgba(133, 204, 255, 0.28);
+}
+
 .hm-standing-label {
   font-size: 0.7rem;
   font-weight: 600;
@@ -369,6 +587,14 @@
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--hm-sky);
+}
+
+/* Same historical-name-vs-actual-palette reasoning as
+   --gold/--emerald above: this stays within navy/sky (a bolder
+   white here, rather than base sky) purely to differentiate the
+   Stories card's tag from the Hijri Date card's default sky tag. */
+.hm-standing-tag--emerald {
+  color: #ffffff;
 }
 
 /* ── Recent activity list ──────────────────────────────────── */
@@ -405,6 +631,18 @@
   width: 16px;
   height: 16px;
   color: #ffffff;
+}
+
+/* FIX: same missing-rule gap as the standing-icon modifiers above --
+   --pass and --low were referenced in Home.jsx with nothing defined
+   here, so every activity badge looked identical regardless of
+   whether the quiz was passed. Kept within navy/sky. */
+.hm-activity-badge--pass {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.hm-activity-badge--low {
+  background: rgba(133, 204, 255, 0.22);
 }
 
 .hm-activity-text {
@@ -531,19 +769,31 @@
 
 /* ── Section-title text adapts to page theme; every card above
    stays the same navy/dark-card fill in both themes ── */
+[data-theme="dark"] .hm-top-label,
+[data-theme="dark"] .hm-greeting-arabic,
 [data-theme="dark"] .hm-section-title,
 [data-theme="dark"] .hm-section-title .arabic,
 [data-theme="dark"] .hm-section-link {
   color: var(--hm-sky);
 }
 
+[data-theme="dark"] .hm-location-pill {
+  background: rgba(133, 204, 255, 0.12);
+  color: var(--hm-sky);
+}
+
+[data-theme="dark"] .hm-greeting-hijri {
+  color: #7d93a6;
+}
+
 /* Non-hero cards switch to the exact dark-card pair used everywhere
-   else in the app. */
+   else in the app — now including the two new cards above the hero. */
 [data-theme="dark"] .hm-tile,
 [data-theme="dark"] .hm-standing-card,
 [data-theme="dark"] .hm-activity-card,
 [data-theme="dark"] .hm-streak,
-[data-theme="dark"] .hm-referral {
+[data-theme="dark"] .hm-referral,
+[data-theme="dark"] .hm-tip-card {
   background: #0f1f2e;
   border: 1px solid #1e3448;
   --hm-referral-bg: #0f1f2e;
@@ -552,21 +802,28 @@
 [data-theme="dark"] .hm-tile-icon,
 [data-theme="dark"] .hm-standing-icon svg,
 [data-theme="dark"] .hm-activity-badge svg,
-[data-theme="dark"] .hm-referral-icon svg {
+[data-theme="dark"] .hm-referral-icon svg,
+[data-theme="dark"] .hm-tip-icon {
   color: var(--hm-sky);
 }
 
 [data-theme="dark"] .hm-tile-label,
 [data-theme="dark"] .hm-activity-name,
 [data-theme="dark"] .hm-standing-value,
-[data-theme="dark"] .hm-referral-text {
+[data-theme="dark"] .hm-referral-text,
+[data-theme="dark"] .hm-tip-text {
   color: #c8e0f5;
 }
 
 [data-theme="dark"] .hm-standing-icon,
 [data-theme="dark"] .hm-activity-badge,
-[data-theme="dark"] .hm-referral-icon {
+[data-theme="dark"] .hm-referral-icon,
+[data-theme="dark"] .hm-tip-icon {
   background: rgba(133, 204, 255, 0.12);
+}
+
+[data-theme="dark"] .hm-tip-source {
+  color: var(--hm-sky);
 }
 
 [data-theme="dark"] .hm-referral-arrow {
@@ -609,4 +866,10 @@
 @media (max-width: 480px) {
   .hm-tiles { grid-template-columns: repeat(3, 1fr); }
   .hm-hero-value { font-size: 1.7rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-prayer-card-progress-fill {
+    transition: none;
+  }
 }

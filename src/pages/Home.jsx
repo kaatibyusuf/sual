@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { toHijriString } from '../lib/hijri.js'
-import { getPrayerStatus } from '../lib/prayerTimes.js'
+import { getPrayerStatus, fetchAladhanTimings, minutesTo12h } from '../lib/prayerTimes.js'
 import { STORIES } from '../data/stories.js'
 import { DISCIPLINES } from '../data/knowledge.js'
 import SpacesCTA from '../components/SpacesCTA.jsx'
@@ -56,6 +56,78 @@ function disciplineName(id) {
   if (id === 'mixed') return 'All Disciplines (Mixed)'
   const d = DISCIPLINES.find(x => x.id === id)
   return d?.name || id
+}
+
+// Target time for a countdown is only known to the minute (prayer
+// times themselves are computed/fetched to the minute, never the
+// second) — this builds a real Date at that HH:MM:00 today, or
+// tomorrow if that time has already passed today (the midnight-wrap
+// case, e.g. counting down to a Fajr that's earlier in the clock
+// than the current moment). Ticking against a real Date this way is
+// what makes the seconds actually count down smoothly instead of
+// jumping in whatever increment the parent re-render happens to use.
+function buildTargetDate(baseDate, targetMinutes) {
+  if (targetMinutes === null || targetMinutes === undefined) return null
+  const d = new Date(baseDate)
+  d.setHours(0, 0, 0, 0)
+  d.setMinutes(targetMinutes)
+  if (d <= baseDate) d.setDate(d.getDate() + 1)
+  return d
+}
+
+function formatCountdownHMS(totalSeconds) {
+  if (totalSeconds === null || totalSeconds === undefined || totalSeconds < 0) return '--:--:--'
+  const h = Math.floor(totalSeconds / 3600)
+  const m = Math.floor((totalSeconds % 3600) / 60)
+  const s = Math.floor(totalSeconds % 60)
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+}
+
+// How far through the current prayer's window (from when it began
+// until the next prayer begins) the current moment sits, as a 0-1
+// fraction — drawn as the filled portion of the progress bar.
+// Handles the midnight wraparound (the Isha-through-next-Fajr
+// window) the same way Awqaatu Salaah's own progress math does.
+function getWindowProgress(currentMinutes, nextMinutes, nowMinutes) {
+  if (nextMinutes === null || nextMinutes === undefined) return 0
+  let start = currentMinutes ?? 0
+  let end = nextMinutes
+  if (end <= start) end += 1440
+  let now = nowMinutes
+  if (now < start) now += 1440
+  const total = end - start
+  if (total <= 0) return 0
+  return Math.min(1, Math.max(0, (now - start) / total))
+}
+
+// Genuinely computed, not a static line — checks whether TOMORROW
+// (relative to `date`) is Monday or Thursday, the two days the
+// Prophet ﷺ is reported to have especially encouraged fasting on.
+// Text here is a paraphrase of the well-known reports (Sahih Muslim,
+// for the Monday reason; Tirmidhi/Abu Dawud/Ibn Majah for the
+// Monday-and-Thursday deeds-presented reason), not a verbatim
+// hadith quote — consistent with how the rest of Sual treats hadith
+// text as content requiring the same review process, not something
+// to reproduce casually inside a UI tip card.
+function getFastingTip(date) {
+  const tomorrow = new Date(date)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const day = tomorrow.getDay() // 0 = Sunday
+  if (day === 1) {
+    return {
+      dayName: 'Monday',
+      blurb: "The Prophet ﷺ mentioned this was the day of his birth and the day revelation first came to him.",
+      source: 'Sahih Muslim',
+    }
+  }
+  if (day === 4) {
+    return {
+      dayName: 'Thursday',
+      blurb: "Deeds are reported to be presented to Allah on Mondays and Thursdays, and it's reported the Prophet ﷺ loved for his deeds to be presented while he was fasting.",
+      source: 'Tirmidhi',
+    }
+  }
+  return null
 }
 
 // Icons — paths reused verbatim from BottomNav's icon set so a tile
@@ -172,6 +244,87 @@ const ICONS = {
       <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
     </svg>
   ),
+  locationPin: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z" />
+      <circle cx="12" cy="11" r="2" />
+    </svg>
+  ),
+  lantern: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="2" x2="12" y2="4.5" />
+      <path d="M9 4.5h6l-2 3h-2z" fill="currentColor" stroke="none" />
+      <path d="M8 7.5h8v3.5c3 2 3 8.5 0 10.5H8c-3-2-3-8.5 0-10.5z" />
+      <rect x="9.5" y="9.5" width="5" height="8" rx="1" opacity="0.5" />
+      <path d="M8 18.5h8l-1.5 2h-5z" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+}
+
+// Original mosque-and-trees illustration for the prayer countdown
+// card — drawn directly as SVG, no human figures, matching the same
+// constraint and approach as WelcomeCarousel's illustrations. Twin
+// symmetric minarets and a proper onion-dome bulge (rather than a
+// plain rounded hump) read as a much more immediately recognizable
+// mosque silhouette than the single-minaret first pass, and the
+// small arched windows either side of the door give the facade some
+// texture instead of a flat block. Ground line anchors the whole
+// composition instead of the building/trees appearing to float. Uses
+// only white/sky-blue tones (via CSS custom properties, see Home.css)
+// to stay within this page's stated navy/sky-only palette.
+function NightMosqueIllustration() {
+  return (
+    <svg viewBox="0 0 200 120" className="hm-prayer-illustration-svg" aria-hidden="true">
+      <circle cx="168" cy="18" r="7" fill="var(--hm-illus-moon)" />
+      <g fill="var(--hm-illus-star)" opacity="0.85">
+        <circle cx="26" cy="14" r="1.4" />
+        <circle cx="50" cy="28" r="1" />
+        <circle cx="130" cy="10" r="1.5" />
+        <circle cx="15" cy="38" r="1" />
+        <circle cx="145" cy="30" r="1" />
+      </g>
+
+      <line x1="0" y1="119" x2="200" y2="119" stroke="var(--hm-illus-tree-trunk)" strokeWidth="1" opacity="0.4" />
+
+      {/* Left tree */}
+      <rect x="14" y="90" width="4" height="29" fill="var(--hm-illus-tree-trunk)" />
+      <circle cx="16" cy="82" r="15" fill="var(--hm-illus-tree)" />
+
+      {/* Right tree */}
+      <rect x="180" y="95" width="4" height="24" fill="var(--hm-illus-tree-trunk)" />
+      <circle cx="182" cy="88" r="12" fill="var(--hm-illus-tree)" />
+
+      {/* Left minaret */}
+      <rect x="44" y="52" width="8" height="67" fill="var(--hm-illus-mosque)" />
+      <path d="M44 52 a4 4.5 0 0 1 8 0 Z" fill="var(--hm-illus-mosque)" />
+      <line x1="48" y1="42" x2="48" y2="52" stroke="var(--hm-illus-mosque)" strokeWidth="2" />
+      <circle cx="48" cy="39" r="2.3" fill="var(--hm-illus-mosque)" />
+
+      {/* Right minaret */}
+      <rect x="148" y="52" width="8" height="67" fill="var(--hm-illus-mosque)" />
+      <path d="M148 52 a4 4.5 0 0 1 8 0 Z" fill="var(--hm-illus-mosque)" />
+      <line x1="152" y1="42" x2="152" y2="52" stroke="var(--hm-illus-mosque)" strokeWidth="2" />
+      <circle cx="152" cy="39" r="2.3" fill="var(--hm-illus-mosque)" />
+
+      {/* Main building base */}
+      <rect x="60" y="82" width="80" height="37" fill="var(--hm-illus-mosque)" />
+
+      {/* Small arched windows flanking the door, for facade texture */}
+      <path d="M68 108 V96 a5 5 0 0 1 10 0 V108 Z" fill="var(--hm-illus-door)" opacity="0.7" />
+      <path d="M122 108 V96 a5 5 0 0 1 10 0 V108 Z" fill="var(--hm-illus-door)" opacity="0.7" />
+
+      {/* Onion dome — a proper bulb silhouette, not just a rounded hump */}
+      <path
+        d="M78 80 C78 68 82 56 90 50 C94 47 97 44 100 38 C103 44 106 47 110 50 C118 56 122 68 122 80 Z"
+        fill="var(--hm-illus-mosque)"
+      />
+      <line x1="100" y1="38" x2="100" y2="28" stroke="var(--hm-illus-mosque)" strokeWidth="2" />
+      <circle cx="100" cy="25" r="3" fill="var(--hm-illus-mosque)" />
+
+      {/* Central arched doorway, a darker shade for depth against the mosque body */}
+      <path d="M92 119 V100 a8 8 0 0 1 16 0 V119 Z" fill="var(--hm-illus-door)" />
+    </svg>
+  )
 }
 
 // The tiles below the hero — same destinations as before, now
@@ -192,6 +345,20 @@ export default function Home({ user }) {
   const [lat, setLat] = useState(6.5244)
   const [lng, setLng] = useState(3.3792)
   const [tzOffset, setTzOffset] = useState(1)
+
+  // Seconds-precision clock, separate from `time` below (which only
+  // ticks every 30s — fine for the greeting/date, far too coarse for
+  // a countdown meant to visibly tick down second by second).
+  const [nowTick, setNowTick] = useState(new Date())
+
+  // Location name + live prayer times — same geolocation/reverse-
+  // geocoding pattern already used on PrayerTimes.jsx, and the same
+  // AlAdhan live-times-with-local-fallback pattern, so Home's new
+  // prayer countdown card is sourced from the same live data Awqaatu
+  // Salaah uses rather than a separately-drifting local calculation.
+  const [locationName, setLocationName] = useState('')
+  const [locationLoading, setLocationLoading] = useState(true)
+  const [apiTimes, setApiTimes] = useState(null)
 
   const [history, setHistory] = useState([])
   const [statsHistory, setStatsHistory] = useState([])
@@ -224,6 +391,15 @@ export default function Home({ user }) {
     return () => clearInterval(interval)
   }, [])
 
+  // Dedicated 1-second interval purely for the prayer countdown's
+  // seconds display — kept separate from the 30-second `time` tick
+  // above so nothing else on the page re-renders 30x more often than
+  // it needs to just to support one ticking number.
+  useEffect(() => {
+    const t = setInterval(() => setNowTick(new Date()), 1000)
+    return () => clearInterval(t)
+  }, [])
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -231,11 +407,39 @@ export default function Home({ user }) {
           setLat(pos.coords.latitude)
           setLng(pos.coords.longitude)
           setTzOffset(-new Date().getTimezoneOffset() / 60)
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`)
+            .then(r => r.json())
+            .then(data => {
+              const city = data.address.city || data.address.town || data.address.village || ''
+              const country = data.address.country || ''
+              setLocationName(city + (country ? ', ' + country : ''))
+            })
+            .catch(() => {})
+          setLocationLoading(false)
         },
-        () => {}
+        () => setLocationLoading(false)
       )
+    } else {
+      setLocationLoading(false)
     }
   }, [])
+
+  // Live prayer times from AlAdhan — refetched whenever the resolved
+  // coordinates change, not on every tick. Falls back to nothing
+  // special here if it fails: getPrayerStatus's local calculation
+  // below is already computed regardless, so apiTimes simply stays
+  // null and the countdown card uses that local figure instead —
+  // the same graceful-degradation behavior as Awqaatu Salaah.
+  useEffect(() => {
+    let cancelled = false
+    fetchAladhanTimings(new Date(), lat, lng)
+      .then(result => { if (!cancelled) setApiTimes(result) })
+      .catch(err => {
+        console.error('Home: AlAdhan fetch failed, using local calculation:', err)
+        if (!cancelled) setApiTimes(null)
+      })
+    return () => { cancelled = true }
+  }, [lat, lng])
 
   useEffect(() => {
     if (!user) { setStatsLoading(false); return }
@@ -366,9 +570,27 @@ export default function Home({ user }) {
     if (m) setMilestone(m)
   }, [streak, statsLoading])
 
-  const { nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
+  const { currentPrayer, nextPrayer, countdown } = getPrayerStatus(time, lat, lng, tzOffset)
   const primaryContinue = continueStories[0] || null
   const recentQuizzes = history
+
+  // Live-vs-local minutes, same pattern as PrayerTimes.jsx: prefer
+  // apiTimes when the fetch has succeeded, fall back to the local
+  // astronomical calculation's own currentPrayer/nextPrayer minutes
+  // otherwise — never leaves the countdown card with nothing to show.
+  const usingLiveApi = !!apiTimes
+  const currentWindowMinutes = usingLiveApi
+    ? (currentPrayer ? apiTimes[currentPrayer.key] : null)
+    : (currentPrayer?.minutes ?? null)
+  const nextWindowMinutes = usingLiveApi
+    ? apiTimes[nextPrayer.key]
+    : nextPrayer?.minutes
+
+  const countdownTarget = buildTargetDate(nowTick, nextWindowMinutes)
+  const countdownSeconds = countdownTarget ? Math.round((countdownTarget - nowTick) / 1000) : null
+  const windowProgress = getWindowProgress(currentWindowMinutes, nextWindowMinutes, nowTick.getHours() * 60 + nowTick.getMinutes())
+
+  const fastingTip = getFastingTip(time)
 
   const weekStrip = Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
@@ -380,13 +602,6 @@ export default function Home({ user }) {
       active: activeDates.has(d.toDateString()),
     }
   })
-
-  const isNight = time.getHours() >= 18 || time.getHours() < 6
-
-  const HERO_PHOTOS = {
-    day: '/images/home/hero-day.jpg',
-    night: '/images/home/hero-night.jpg',
-  }
 
   // Generates the streak card, then hands it to the OS share sheet
   // if the device/browser supports sharing files (navigator.share
@@ -435,14 +650,59 @@ export default function Home({ user }) {
 
   return (
     <div className="page-content home-page">
-      <div
-        className="hm-hero"
-        style={{
-          backgroundImage: `linear-gradient(rgba(9,69,112,0.55), rgba(9,69,112,0.45)), url(${isNight ? HERO_PHOTOS.night : HERO_PHOTOS.day})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
+      {/* ── New: location + a prominent Arabic greeting with the
+          Hijri date, and a real prayer-window countdown card. Sits
+          above the existing hero since it serves a different purpose
+          (worship timing, not learning progress) — not a replacement
+          for anything below it. ── */}
+      <div className="hm-top-row">
+        <span className="hm-top-label">Home</span>
+        <span className="hm-location-pill">
+          <span className="hm-location-pill-icon">{ICONS.locationPin}</span>
+          {locationLoading ? 'Detecting…' : (locationName || 'Location unavailable')}
+        </span>
+      </div>
+
+      <div className="hm-greeting-row">
+        <p className="hm-greeting-arabic arabic">السَّلَامُ عَلَيْكُم</p>
+        <p className="hm-greeting-hijri">{toHijriString(time)}</p>
+      </div>
+
+      {nextPrayer && (
+        <div className="hm-prayer-card">
+          <div className="hm-prayer-card-top">
+            <div className="hm-prayer-card-side">
+              <p className="hm-prayer-card-time">{currentWindowMinutes != null ? minutesTo12h(currentWindowMinutes) : '--:--'}</p>
+              <p className="hm-prayer-card-name">{currentPrayer ? currentPrayer.en : 'Isha'}</p>
+            </div>
+            <div className="hm-prayer-card-progress-track">
+              <div className="hm-prayer-card-progress-fill" style={{ width: `${windowProgress * 100}%` }} />
+            </div>
+            <div className="hm-prayer-card-side hm-prayer-card-side--right">
+              <p className="hm-prayer-card-time">{nextWindowMinutes != null ? minutesTo12h(nextWindowMinutes) : '--:--'}</p>
+              <p className="hm-prayer-card-name">{nextPrayer.en}</p>
+            </div>
+          </div>
+
+          <p className="hm-prayer-card-countdown">{formatCountdownHMS(countdownSeconds)}</p>
+
+          <div className="hm-prayer-card-illustration">
+            <NightMosqueIllustration />
+          </div>
+        </div>
+      )}
+
+      {fastingTip && (
+        <div className="hm-tip-card">
+          <span className="hm-tip-icon">{ICONS.lantern}</span>
+          <p className="hm-tip-text">
+            Consider fasting tomorrow. It's <strong>{fastingTip.dayName}</strong> — {fastingTip.blurb}
+            <span className="hm-tip-source"> ({fastingTip.source})</span>
+          </p>
+        </div>
+      )}
+
+      <div className="hm-hero">
         <p className="hm-hero-bismillah arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيم</p>
         <div className="hm-hero-top">
           <span className="hm-hero-greeting">{getGreeting()}{firstName ? `, ${firstName}` : ''}</span>
@@ -530,34 +790,29 @@ export default function Home({ user }) {
         </div>
       </div>
 
-      <div className="hm-section">
-        <div className="hm-section-head">
-          <p className="hm-section-title">Today <span className="arabic">اليَوْم</span></p>
+      <div className="hm-standing-grid">
+        <div className="hm-standing-card">
+          <span className="hm-standing-icon hm-standing-icon--gold">{ICONS.moon}</span>
+          <p className="hm-standing-label">Hijri Date</p>
+          <p className="hm-standing-value">{toHijriString(time)}</p>
+          {nextPrayer && <p className="hm-standing-tag">{nextPrayer.arabic} in {countdown}</p>}
         </div>
-        <div className="hm-standing-grid">
-          <div className="hm-standing-card">
-            <span className="hm-standing-icon hm-standing-icon--gold">{ICONS.moon}</span>
-            <p className="hm-standing-label">Hijri Date</p>
-            <p className="hm-standing-value">{toHijriString(time)}</p>
-            {nextPrayer && <p className="hm-standing-tag">{nextPrayer.arabic} in {countdown}</p>}
-          </div>
 
-          {!continueLoading && primaryContinue ? (
-            <Link to="/stories" className="hm-standing-card hm-standing-card--link">
-              <span className="hm-standing-icon hm-standing-icon--emerald">{ICONS.book}</span>
-              <p className="hm-standing-label">Stories</p>
-              <p className="hm-standing-value">Continue with the story of {primaryContinue.story.name}</p>
-              <p className="hm-standing-tag hm-standing-tag--emerald">{primaryContinue.progress_percent}% done</p>
-            </Link>
-          ) : (
-            <Link to="/stories" className="hm-standing-card hm-standing-card--link">
-              <span className="hm-standing-icon hm-standing-icon--emerald">{ICONS.book}</span>
-              <p className="hm-standing-label">Stories of the Salaf</p>
-              <p className="hm-standing-value">Start reading</p>
-              <p className="hm-standing-tag hm-standing-tag--emerald">The Prophets &amp; the Companions</p>
-            </Link>
-          )}
-        </div>
+        {!continueLoading && primaryContinue ? (
+          <Link to="/stories" className="hm-standing-card hm-standing-card--link">
+            <span className="hm-standing-icon hm-standing-icon--emerald">{ICONS.book}</span>
+            <p className="hm-standing-label">Stories</p>
+            <p className="hm-standing-value">Continue with the story of {primaryContinue.story.name}</p>
+            <p className="hm-standing-tag hm-standing-tag--emerald">{primaryContinue.progress_percent}% done</p>
+          </Link>
+        ) : (
+          <Link to="/stories" className="hm-standing-card hm-standing-card--link">
+            <span className="hm-standing-icon hm-standing-icon--emerald">{ICONS.book}</span>
+            <p className="hm-standing-label">Stories of the Salaf</p>
+            <p className="hm-standing-value">Start reading</p>
+            <p className="hm-standing-tag hm-standing-tag--emerald">The Prophets &amp; the Companions</p>
+          </Link>
+        )}
       </div>
 
       {recentQuizzes.length > 0 && (
