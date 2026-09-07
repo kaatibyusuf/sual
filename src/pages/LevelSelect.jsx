@@ -112,6 +112,25 @@ function describeFailingDisciplines(failing) {
     .join(', ')
 }
 
+// FIX: a raw network failure (no connectivity, request never reached
+// the server at all) surfaces from the browser as a bare
+// `TypeError: Failed to fetch` — a message written for a developer's
+// console, not a person tapping a level card on patchy mobile data.
+// This distinguishes "the request never reached the server" from
+// "the server responded and said no" (handled separately via
+// data.reason above) and shows a plain-language, actionable message
+// only for the former. Genuine validation messages from
+// request_level_up are left exactly as the server sent them, since
+// those are already specific and useful (e.g. which discipline still
+// needs work).
+function describeNetworkFailure(err) {
+  const isNetworkFailure =
+    err instanceof TypeError ||
+    /failed to fetch|networkerror|load failed/i.test(err?.message || '')
+  if (!isNetworkFailure) return null
+  return 'Could not reach the server. Please check your connection and try again.'
+}
+
 export default function LevelSelect({ user, onLevelSelected }) {
   const [saving, setSaving] = useState(null)
   const [error, setError] = useState(null)
@@ -140,7 +159,8 @@ export default function LevelSelect({ user, onLevelSelected }) {
 
       onLevelSelected(data.level)
     } catch (err) {
-      setError(err.message)
+      console.error('request_level_up failed:', err)
+      setError(describeNetworkFailure(err) || err.message || 'Something went wrong. Please try again.')
       setSaving(null)
     }
   }
