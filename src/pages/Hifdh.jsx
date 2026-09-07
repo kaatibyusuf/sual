@@ -28,6 +28,12 @@ const MCQ_OPTION_COUNT = 5
 const MAX_RECALL_LEAD_WORDS = 18
 const MAX_RECALL_TAIL_WORDS = 14
 
+// Cap on how far makeBackwardRecall will extend an anchor snippet
+// while searching for one that uniquely identifies a single spot in
+// the passage. Kept modest so the "anchor" stays a small pointer
+// into the text, not a growing chunk of free recall shown for free.
+const MAX_ANCHOR_WORDS = 6
+
 function words(text) {
   return (text || '').split(/\s+/).filter(Boolean)
 }
@@ -326,6 +332,29 @@ function makeCompleteRecall(item) {
   }
 }
 
+// Returns the length (1..maxLen) of the shortest word-sequence
+// starting at index `start` that occurs ONLY at `start` within `w`
+// — i.e. a snippet a person could look at and know unambiguously
+// which single spot in the passage it marks. Returns null if no
+// such unique window exists within maxLen: this position genuinely
+// can't be pinned down as a single spot in this passage (typically
+// because the passage rhymes or repeats a short phrase — very
+// common in poetry — and this position's few surrounding words
+// happen to recur elsewhere too).
+function findUniqueAnchorLength(w, start, maxLen) {
+  const cap = Math.min(maxLen, w.length - start)
+  for (let len = 1; len <= cap; len++) {
+    const candidate = w.slice(start, start + len).join(' ')
+    let occurrences = 0
+    for (let i = 0; i <= w.length - len; i++) {
+      if (w.slice(i, i + len).join(' ') === candidate) occurrences++
+      if (occurrences > 1) break
+    }
+    if (occurrences === 1) return len
+  }
+  return null
+}
+
 // Drill 5 of 9: backward recall. Shown an anchor point partway
 // through a passage, the answer required is the words that come
 // BEFORE it, typed starting with the word immediately preceding the
@@ -336,6 +365,21 @@ function makeCompleteRecall(item) {
 // order), which is why it's deliberately typed-only — see the note
 // on the mic UI further down for why voice isn't offered for this
 // drill specifically.
+//
+// FIX: the anchor snippet shown to mark "starting from this point"
+// used to be a fixed w.slice(cut, cut+4) with no check that those
+// words were unique within the passage. In rhyming or repetitive
+// text (e.g. a matn/poem like Tuhfatul Atfal, where short rhyme
+// words recur by design, sometimes with only 1 word left to show
+// once `cut` lands near the end of a short passage), the exact same
+// anchor snippet can legitimately mark TWO different spots in the
+// text — but only one specific `preceding` sequence was ever stored
+// as "the" answer. Reciting correctly from the OTHER, identical-
+// looking occurrence then got marked wrong, for a genuinely correct
+// answer. Now every candidate cut point is checked via
+// findUniqueAnchorLength, and only ones with a provably unique
+// anchor are used; ambiguous cut points are skipped entirely rather
+// than ever being asked.
 function makeBackwardRecall(item) {
   const w = words(item.arabic)
   if (w.length < 8) return null
@@ -343,22 +387,33 @@ function makeBackwardRecall(item) {
   const minCut = 3
   const maxCut = Math.min(w.length - 1, minCut + MAX_RECALL_LEAD_WORDS + 6)
   if (maxCut <= minCut) return null
-  const cut = minCut + Math.floor(Math.random() * (maxCut - minCut + 1))
 
-  const precedingCount = Math.min(cut, MAX_RECALL_TAIL_WORDS)
-  const preceding = w.slice(cut - precedingCount, cut)
-  if (preceding.length < 2) return null
+  // Try every possible cut point, in random order, and use the first
+  // one whose anchor snippet is genuinely unique in this passage.
+  const candidates = shuffle(
+    Array.from({ length: maxCut - minCut + 1 }, (_, i) => minCut + i)
+  )
 
-  const anchorContext = w.slice(cut, Math.min(cut + 4, w.length)).join(' ')
-  if (words(anchorContext).length === 0) return null
+  for (const cut of candidates) {
+    const precedingCount = Math.min(cut, MAX_RECALL_TAIL_WORDS)
+    const preceding = w.slice(cut - precedingCount, cut)
+    if (preceding.length < 2) continue
 
-  return {
-    type: 'backward',
-    itemKey: item.key,
-    prompt: 'Starting from this point, recite backward — type the word immediately before it, then the one before that, and so on.',
-    arabicPrompt: anchorContext + ' ...',
-    answer: [...preceding].reverse().join(' '),
+    const anchorLen = findUniqueAnchorLength(w, cut, MAX_ANCHOR_WORDS)
+    if (anchorLen === null) continue // ambiguous at this spot — try another cut
+
+    const anchorContext = w.slice(cut, cut + anchorLen).join(' ')
+
+    return {
+      type: 'backward',
+      itemKey: item.key,
+      prompt: 'Starting from this point, recite backward — type the word immediately before it, then the one before that, and so on.',
+      arabicPrompt: anchorContext + ' ...',
+      answer: [...preceding].reverse().join(' '),
+    }
   }
+
+  return null // no unambiguous anchor point exists anywhere in this passage
 }
 
 // Drill 8 & 9 of 9: collection sequence (forward and reverse) and
