@@ -1,491 +1,72 @@
 /* ============================================
-   Prayer Times Page — circular countdown ring, pill-shaped prayer
-   rows with individual reminder bells, date row combining Gregorian
-   and Hijri. Structure matches the reference; palette is Sual's own
-   navy/sky-blue, not the reference's gold-on-black.
+   Awqaatu Salaah — recreated page. Two flat sections (the five daily
+   prayers with full time windows, and the three classical forbidden
+   prayer windows), each a list of rounded rows with icon, name, time
+   range, and a reminder bell. Light mode by default; dark mode below
+   matches the reference's own dark-card look, since the reference
+   screenshot itself was captured in dark mode.
    ============================================ */
 
-.pt-page {
+.pt2-page {
   padding-top: 32px;
   max-width: 640px;
-}
-
-.pt-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* ── Location row ───────────────────────────────────────────── */
-.pt-location-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 22px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #4a6080;
-}
-
-.pt-location-icon {
-  display: inline-flex;
-  width: 15px;
-  height: 15px;
-  color: #094570;
-}
-
-.pt-location-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-/* ── Ring ───────────────────────────────────────────────────── */
-.pt-ring-wrap {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  margin: 0 auto 20px;
-  width: 220px;
-}
-
-.pt-ring {
-  width: 220px;
-  height: 220px;
-  transform: rotate(-90deg); /* start the arc at 12 o'clock, not 3 o'clock */
-}
-
-.pt-ring-track {
-  fill: none;
-  stroke: #eef1f4;
-}
-
-.pt-ring-progress {
-  fill: none;
-  stroke: url(#pt-ring-gradient);
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.6s ease;
-}
-
-.pt-ring-center {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0 30px;
-}
-
-.pt-ring-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #8a9ab0;
-  margin-bottom: 4px;
-}
-
-.pt-ring-prayer {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #094570;
-  margin-bottom: 2px;
-}
-
-.pt-ring-countdown {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #4a6080;
-  font-variant-numeric: tabular-nums;
-}
-
-.pt-ring-bell {
-  position: absolute;
-  top: -6px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: #f0f4f8;
-  color: #8a9ab0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(9, 69, 112, 0.12);
-}
-
-.pt-ring-bell svg {
-  width: 18px;
-  height: 18px;
-}
-
-.pt-ring-bell--on {
-  background: #85CCFF;
-  color: #094570;
-}
-
-/* ── Date row ───────────────────────────────────────────────── */
-.pt-date-row {
-  text-align: center;
-  font-size: 0.85rem;
-  color: #6a8090;
-  margin-bottom: 22px;
-}
-
-.pt-date-sep {
-  color: #c8d8e8;
-  margin: 0 4px;
-}
-
-/* ── Prayer list — pill-shaped rows, not a bordered table ──────── */
-.pt-prayer-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 40px;
-}
-
-.pt-prayer-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
-  background: #ffffff;
-  border: 1.5px solid #e0e8f0;
-  border-radius: 999px;
-}
-
-.pt-prayer-row--active {
-  background: rgba(46, 138, 99, 0.06);
-  border-color: rgba(46, 138, 99, 0.3);
-}
-
-.pt-prayer-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #f0f4f8;
-  color: #094570;
-  flex-shrink: 0;
-}
-
-.pt-prayer-icon svg {
-  width: 17px;
-  height: 17px;
-}
-
-.pt-prayer-row--active .pt-prayer-icon {
-  background: #2e8a63;
-  color: #ffffff;
-}
-
-.pt-prayer-names {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 1;
-  min-width: 0;
-}
-
-.pt-prayer-en {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #0d1b2a;
-}
-
-.pt-prayer-arabic {
-  font-size: 0.78rem;
-  color: #8a9ab0;
-}
-
-.pt-prayer-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.pt-prayer-time {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #094570;
-  font-variant-numeric: tabular-nums;
-}
-
-.pt-prayer-bell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: #c8d8e8;
-  cursor: pointer;
-}
-
-.pt-prayer-bell svg {
-  width: 16px;
-  height: 16px;
-}
-
-.pt-prayer-bell--on {
-  color: #094570;
-}
-
-/* Badges */
-.pt-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 100px;
-}
-
-.pt-badge--now {
-  background: rgba(46, 138, 99, 0.15);
-  color: #2e8a63;
-}
-
-.pt-badge--next {
-  background: #dbe9f6;
-  color: #094570;
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .pt-ring-wrap,
-  .pt-ring {
-    width: 190px;
-    height: 190px;
-  }
-
-  .pt-ring-prayer {
-    font-size: 1.25rem;
-  }
-
-  .pt-ring-countdown {
-    font-size: 1.15rem;
-  }
-}
-
-/* ============================================
-   Dark mode
-   ============================================ */
-
-[data-theme="dark"] .pt-location-row {
-  color: #a8c0d8;
-}
-
-[data-theme="dark"] .pt-location-icon {
-  color: #85CCFF;
-}
-
-[data-theme="dark"] .pt-ring-track {
-  stroke: #1e3448;
-}
-
-[data-theme="dark"] .pt-ring-label {
-  color: #7d93a6;
-}
-
-[data-theme="dark"] .pt-ring-prayer {
-  color: #c8e0f5;
-}
-
-[data-theme="dark"] .pt-ring-countdown {
-  color: #a8c0d8;
-}
-
-[data-theme="dark"] .pt-ring-bell {
-  background: #16283a;
-  color: #7d93a6;
-}
-
-[data-theme="dark"] .pt-ring-bell--on {
-  background: #85CCFF;
-  color: #062f4a;
-}
-
-[data-theme="dark"] .pt-date-row {
-  color: #7d93a6;
-}
-
-[data-theme="dark"] .pt-date-sep {
-  color: #2a4258;
-}
-
-[data-theme="dark"] .pt-prayer-row {
-  background: #0f1f2e;
-  border-color: #1e3448;
-}
-
-[data-theme="dark"] .pt-prayer-row--active {
-  background: rgba(46, 138, 99, 0.12);
-  border-color: rgba(46, 138, 99, 0.4);
-}
-
-[data-theme="dark"] .pt-prayer-icon {
-  background: #16283a;
-  color: #85CCFF;
-}
-
-[data-theme="dark"] .pt-prayer-row--active .pt-prayer-icon {
-  background: #2e8a63;
-  color: #ffffff;
-}
-
-[data-theme="dark"] .pt-prayer-en {
-  color: #c8e0f5;
-}
-
-[data-theme="dark"] .pt-prayer-arabic {
-  color: #7d93a6;
-}
-
-[data-theme="dark"] .pt-prayer-time {
-  color: #85CCFF;
-}
-
-[data-theme="dark"] .pt-prayer-bell {
-  color: #2a4258;
-}
-
-[data-theme="dark"] .pt-prayer-bell--on {
-  color: #85CCFF;
-}
-
-[data-theme="dark"] .pt-badge--now {
-  background: rgba(46, 138, 99, 0.2);
-  color: #7fc98a;
-}
-
-[data-theme="dark"] .pt-badge--next {
-  background: rgba(133, 204, 255, 0.16);
-  color: #85CCFF;
-}
-
-/* ============================================
-   Reduced motion
-   ============================================ */
-
-@media (prefers-reduced-motion: reduce) {
-  .pt-ring-progress {
-    transition: none;
-  }
-}
-
-/* ============================================
-   Sign In / Islamic Days tab switcher — same sliding-pill pattern
-   as Auth.jsx's Sign In / Create Account switcher, reused here for
-   visual consistency rather than inventing a second tab style.
-   ============================================ */
-
-.pt-tabs {
-  position: relative;
-  display: flex;
-  background: #f0f4f8;
-  border-radius: 999px;
-  padding: 4px;
-  margin-bottom: 24px;
-  max-width: 360px;
   margin-left: auto;
   margin-right: auto;
 }
 
-.pt-tabs-indicator {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: calc(50% - 4px);
-  height: calc(100% - 8px);
-  background: #094570;
-  border-radius: 999px;
-  box-shadow: 0 2px 10px rgba(9, 69, 112, 0.3);
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.pt-tabs-indicator--right {
-  transform: translateX(100%);
-}
-
-.pt-tab {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  min-width: 0; /* overrides the browser's default min-width:auto on flex
-                   items, which otherwise refuses to shrink a tab below
-                   its own text's natural width -- this is exactly why
-                   "Islamic Days" was rendering wider than "Prayer Time"
-                   despite both having flex:1, the longer-text tab was
-                   hitting that floor and claiming more than its equal
-                   share, leaving the shorter one with less than half. */
-  padding: 10px 0;
-  border: none;
-  background: transparent;
-  border-radius: 999px;
+.pt2-status {
+  font-size: 0.8rem;
   font-weight: 600;
-  font-size: 0.85rem;
+  margin: 10px 0 0;
+  padding: 8px 14px;
+  border-radius: 100px;
+  display: inline-block;
+}
+
+.pt2-status--loading {
   color: #6a8090;
-  cursor: pointer;
-  transition: color 0.2s ease;
+  background: #f0f4f8;
 }
 
-.pt-tab--active {
-  color: #ffffff;
+.pt2-status--live {
+  color: #1e6b22;
+  background: rgba(46, 125, 50, 0.1);
 }
 
-/* ── Weather in the location row ───────────────────────────── */
-.pt-location-temp {
+.pt2-status--fallback {
+  color: #a02b1f;
+  background: rgba(192, 57, 43, 0.08);
+}
+
+.pt2-section-label {
+  font-size: 0.78rem;
   font-weight: 700;
-  color: #094570;
-}
-
-.pt-location-temp::before {
-  content: '·';
-  margin-right: 6px;
-  color: #c8d8e8;
-}
-
-.pt-weather-attribution {
-  text-align: center;
-  font-size: 0.7rem;
-  color: #a8b8c8;
-  margin-top: -20px;
-  margin-bottom: 20px;
-}
-
-.pt-weather-attribution a {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: #8a9ab0;
-  text-decoration: underline;
+  margin: 24px 0 12px;
 }
 
-/* ── Islamic Days tab ───────────────────────────────────────── */
-.pt-days-list {
+.pt2-section-label:first-of-type {
+  margin-top: 4px;
+}
+
+.pt2-section-note {
+  font-size: 0.82rem;
+  color: #6a8090;
+  line-height: 1.6;
+  margin: -4px 0 14px;
+}
+
+.pt2-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 30px;
+  gap: 10px;
 }
 
-.pt-day-row {
+.pt2-row {
   display: flex;
+  align-items: center;
   gap: 14px;
   padding: 16px 18px;
   background: #ffffff;
@@ -493,133 +74,115 @@
   border-radius: 16px;
 }
 
-.pt-day-icon {
+.pt2-row-icon {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #f0f4f8;
-  color: #094570;
+  background: #fdf3dd;
+  color: #b8862f;
   flex-shrink: 0;
 }
 
-.pt-day-icon svg {
-  width: 18px;
-  height: 18px;
+.pt2-row-icon svg {
+  width: 19px;
+  height: 19px;
 }
 
-.pt-day-text {
+.pt2-row-text {
   flex: 1;
   min-width: 0;
-}
-
-.pt-day-top {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.pt-day-name {
-  font-size: 0.95rem;
+.pt2-row-name {
+  font-size: 1rem;
   font-weight: 700;
   color: #0d1b2a;
 }
 
-.pt-day-hijri {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #8a9ab0;
-  white-space: nowrap;
-}
-
-.pt-day-arabic {
-  display: block;
+.pt2-row-time {
   font-size: 0.85rem;
-  color: #4a6080;
-  margin: 2px 0 6px;
-}
-
-.pt-day-note {
-  font-size: 0.82rem;
   color: #6a8090;
-  line-height: 1.5;
-  margin: 0;
+  font-variant-numeric: tabular-nums;
 }
 
-.pt-days-footnote {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #a8b8c8;
-  margin-top: 4px;
+.pt2-row-bell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #c8d8e8;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.pt2-row-bell svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pt2-row-bell--on {
+  color: #094570;
 }
 
 /* ============================================
-   Dark mode — tab switcher, weather, Islamic Days
+   Dark mode — matches the reference's own dark-card look
    ============================================ */
 
-[data-theme="dark"] .pt-tabs {
-  background: #0a1825;
-}
-
-[data-theme="dark"] .pt-tabs-indicator {
-  background: #85CCFF;
-  box-shadow: 0 2px 10px rgba(133, 204, 255, 0.25);
-}
-
-[data-theme="dark"] .pt-tab {
-  color: #7f97ae;
-}
-
-[data-theme="dark"] .pt-tab--active {
-  color: #0a1825;
-}
-
-[data-theme="dark"] .pt-location-temp {
-  color: #85CCFF;
-}
-
-[data-theme="dark"] .pt-location-temp::before {
-  color: #2a4258;
-}
-
-[data-theme="dark"] .pt-weather-attribution {
-  color: #5c7086;
-}
-
-[data-theme="dark"] .pt-weather-attribution a {
+[data-theme="dark"] .pt2-section-label {
   color: #7d93a6;
 }
 
-[data-theme="dark"] .pt-day-row {
-  background: #0f1f2e;
-  border-color: #1e3448;
-}
-
-[data-theme="dark"] .pt-day-icon {
-  background: #16283a;
-  color: #85CCFF;
-}
-
-[data-theme="dark"] .pt-day-name {
-  color: #c8e0f5;
-}
-
-[data-theme="dark"] .pt-day-hijri {
-  color: #7d93a6;
-}
-
-[data-theme="dark"] .pt-day-arabic {
+[data-theme="dark"] .pt2-status--loading {
   color: #a8c0d8;
+  background: #16283a;
 }
 
-[data-theme="dark"] .pt-day-note {
+[data-theme="dark"] .pt2-status--live {
+  color: #7fc98a;
+  background: rgba(46, 125, 50, 0.18);
+}
+
+[data-theme="dark"] .pt2-status--fallback {
+  color: #ff8a7a;
+  background: rgba(192, 57, 43, 0.16);
+}
+
+[data-theme="dark"] .pt2-section-note {
   color: #8fa3b8;
 }
 
-[data-theme="dark"] .pt-days-footnote {
-  color: #5c7086;
+[data-theme="dark"] .pt2-row {
+  background: #16283a;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .pt2-row-icon {
+  background: rgba(224, 192, 122, 0.14);
+  color: #e0c07a;
+}
+
+[data-theme="dark"] .pt2-row-name {
+  color: #e8f0f8;
+}
+
+[data-theme="dark"] .pt2-row-time {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .pt2-row-bell {
+  color: #3a5068;
+}
+
+[data-theme="dark"] .pt2-row-bell--on {
+  color: #85CCFF;
 }

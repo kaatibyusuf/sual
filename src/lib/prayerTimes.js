@@ -65,6 +65,46 @@ export function decimalToMinutes(dec) {
   return ((mins % (24 * 60)) + 24 * 60) % (24 * 60)
 }
 
+// Formats a total-minutes-since-midnight value as 12-hour clock time
+// with AM/PM, e.g. 315 -> "05:15 AM". Distinct from decimalToTime
+// above (which stays 24-hour, used by getPrayerStatus's own internal
+// countdown math) since Awqaatu Salaah's list display specifically
+// wants 12-hour formatting to match how prayer times are
+// conventionally shown.
+export function minutesTo12h(totalMinutes) {
+  if (totalMinutes === null || totalMinutes === undefined) return '--:--'
+  const wrapped = ((Math.round(totalMinutes) % 1440) + 1440) % 1440
+  let h = Math.floor(wrapped / 60)
+  const m = wrapped % 60
+  const period = h >= 12 ? 'PM' : 'AM'
+  h = h % 12
+  if (h === 0) h = 12
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} ${period}`
+}
+
+// Islamic midnight (nisf al-layl) — the midpoint between today's
+// Maghrib and the FOLLOWING day's Fajr. Used as Isha's conventional
+// "on time" window end in common fiqh practice: Isha remains valid
+// later than this for some scholars, but praying it this late is
+// generally discouraged, and this midpoint is the widely-used
+// practical convention for where to draw that line. This is NOT a
+// fixed clock time — it shifts slightly day to day and season to
+// season along with the other five prayer times themselves, which
+// is why it's computed here rather than hardcoded as a flat "00:00".
+export function calcIslamicMidnightMinutes(date, lat, lng, tzOffset, todayMaghribMinutes) {
+  if (todayMaghribMinutes === null || todayMaghribMinutes === undefined) return null
+  const nextDay = new Date(date)
+  nextDay.setDate(nextDay.getDate() + 1)
+  const nextDayTimes = calcPrayerTimes(nextDay, lat, lng, tzOffset)
+  const nextFajrMinutes = decimalToMinutes(nextDayTimes.fajr)
+  if (nextFajrMinutes === null) return null
+  // nextFajrMinutes is on the FOLLOWING calendar day, so add a full
+  // day's minutes before averaging, then wrap back into 0-1439 for
+  // display.
+  const midpoint = (todayMaghribMinutes + (nextFajrMinutes + 1440)) / 2
+  return midpoint >= 1440 ? midpoint - 1440 : midpoint
+}
+
 // Returns { currentPrayer, nextPrayer, countdown } for a given moment.
 // Used by both PrayerTimes.jsx (full page) and Home.jsx (summary strip).
 export function getPrayerStatus(date, lat, lng, tzOffset) {
@@ -102,4 +142,65 @@ export function getPrayerStatus(date, lat, lng, tzOffset) {
   }
 
   return { prayerMins, currentPrayer, nextPrayer, countdown }
+}
+
+// ============================================================
+// Live prayer times via the AlAdhan API (aladhan.com) — free,
+// keyless, widely used, and computed using named, recognized
+// calculation conventions rather than a single hand-rolled formula
+// like calcPrayerTimes() above. Used as the PRIMARY source in
+// PrayerTimes.jsx; calcPrayerTimes() remains as a fallback if this
+// request fails for any reason (offline, the API being down, a CORS
+// issue) — the page should degrade to "less authoritative but still
+// working," never to fully broken.
+//
+// METHOD DEFAULT: 5 (Egyptian General Authority of Survey) — a
+// commonly used convention across Africa and the Middle East. This
+// is a genuine, consequential fiqh decision, not just a technical
+// default: different calculation methods can shift Fajr/Isha by
+// several minutes. Confirm this is the right choice for Sual's
+// audience before treating it as final; a user-facing method picker
+// is a reasonable next step if one fixed default isn't the right
+// long-term answer for every user's location/community convention.
+// ============================================================
+
+export const ALADHAN_METHOD = 5
+
+export async function fetchAladhanTimings(date, lat, lng, method = ALADHAN_METHOD) {
+  const dd = String(date.getDate()).padStart(2, '0')
+  const mm = String(date.getMonth() + 1).padStart(2, '0')
+  const yyyy = date.getFullYear()
+  const dateStr = `${dd}-${mm}-${yyyy}`
+
+  const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}`
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`AlAdhan API returned ${res.status}`)
+  const json = await res.json()
+  if (json.code !== 200 || !json.data?.timings) throw new Error('Unexpected AlAdhan response shape')
+
+  const t = json.data.timings
+  // AlAdhan sometimes appends a timezone abbreviation, e.g.
+  // "05:23 (WAT)" — strip anything after the HH:MM before parsing.
+  const toMinutes = (raw) => {
+    const clean = (raw || '').slice(0, 5)
+    const [h, m] = clean.split(':').map(Number)
+    if (Number.isNaN(h) || Number.isNaN(m)) return null
+    return h * 60 + m
+  }
+
+  return {
+    fajr: toMinutes(t.Fajr),
+    sunrise: toMinutes(t.Sunrise),
+    dhuhr: toMinutes(t.Dhuhr),
+    asr: toMinutes(t.Asr),
+    maghrib: toMinutes(t.Maghrib),
+    isha: toMinutes(t.Isha),
+    // AlAdhan computes this directly (its own halfway-point
+    // convention) — used in place of calcIslamicMidnightMinutes()
+    // above when live data is available, so the whole page is
+    // sourced from one consistent calculation, not a mix of the API
+    // for five prayers and a separately-derived local formula for
+    // the sixth value.
+    islamicMidnight: toMinutes(t.Midnight),
+  }
 }
