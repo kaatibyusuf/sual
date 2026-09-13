@@ -918,3 +918,223 @@
 
 [data-theme="dark"] .wf-delete-trigger { color: #e57373; }
 [data-theme="dark"] .wf-delete-trigger:hover { color: #ef9a9a; }
+
+/* ── Insights (cycle prediction + trend summary) ── */
+.wf-insights {
+  padding: 20px 22px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.wf-insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 4px;
+}
+
+.wf-insight-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wf-insight-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6a8090;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.wf-insight-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #094570;
+}
+
+.wf-insights-caveat {
+  font-size: 0.78rem;
+  color: #6a8090;
+  line-height: 1.6;
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px dashed #dde8f2;
+}
+
+.wf-insights-caveat--emphasis {
+  color: #4a6080;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .wf-insights {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .wf-insight-label { color: #7f97ae; }
+[data-theme="dark"] .wf-insight-value { color: #85CCFF; }
+[data-theme="dark"] .wf-insights-caveat {
+  color: #7f97ae;
+  border-top-color: #1e3448;
+}
+[data-theme="dark"] .wf-insights-caveat--emphasis { color: #a8c0d8; }
+
+/* ── Colour and clot logging (descriptive only, see the code
+   comment above COLORS in WomensFiqh.jsx for why this never feeds
+   into the automatic hayd/nifas/istihadah classification) ── */
+.wf-optional-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a6080;
+  margin: 10px 0 6px;
+}
+
+.wf-color-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.wf-color-btn {
+  padding: 7px 12px;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 100px;
+  background: #f5f8fb;
+  color: #4a6080;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wf-color-btn:hover { border-color: #85CCFF; }
+
+.wf-color-btn--active {
+  border-color: #094570;
+  background: #094570;
+  color: #ffffff;
+}
+
+.wf-clots-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #3a4a5a;
+  margin-bottom: 12px;
+}
+
+[data-theme="dark"] .wf-optional-label { color: #a8c0d8; }
+
+[data-theme="dark"] .wf-color-btn {
+  background: #0a1825;
+  border-color: #1e3448;
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .wf-color-btn:hover { border-color: #85CCFF; }
+
+[data-theme="dark"] .wf-color-btn--active {
+  border-color: #85CCFF;
+  background: #85CCFF;
+  color: #062338;
+}
+
+[data-theme="dark"] .wf-clots-check { color: #a8c0d8; }
+
+/* ── Fertility / pregnancy opt-in mode ── */
+.wf-fertility-optin {
+  padding: 22px;
+  background: #ffffff !important;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.wf-fertility-cta {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 10px;
+  background: #094570;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: all 0.15s ease;
+}
+
+.wf-fertility-cta:hover:not(:disabled) { background: #073a5e; }
+.wf-fertility-cta:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.wf-bbt-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.wf-bbt-input {
+  width: 100px;
+  padding: 9px 12px;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 10px;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: #0d1b2a;
+  background: #ffffff;
+  outline: none;
+}
+
+.wf-bbt-input:focus {
+  border-color: #094570;
+  box-shadow: 0 0 0 3px rgba(9,69,112,0.1);
+}
+
+.wf-bbt-unit {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #4a6080;
+}
+
+.wf-bbt-unit-toggle {
+  margin-left: auto;
+  padding: 6px 12px;
+  border: 1.5px solid #c8d8e8;
+  border-radius: 100px;
+  background: #f5f8fb;
+  color: #4a6080;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.wf-bbt-unit-toggle:hover { border-color: #85CCFF; }
+
+.wf-bbt-history { margin-top: 8px; }
+
+[data-theme="dark"] .wf-fertility-optin {
+  background: #0f1f2e !important;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .wf-fertility-cta { background: #85CCFF; color: #062338; }
+[data-theme="dark"] .wf-fertility-cta:hover:not(:disabled) { background: #9dd6ff; }
+
+[data-theme="dark"] .wf-bbt-input {
+  background: #0a1825;
+  border-color: #1e3448;
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .wf-bbt-unit { color: #a8c0d8; }
+
+[data-theme="dark"] .wf-bbt-unit-toggle {
+  background: #0a1825;
+  border-color: #1e3448;
+  color: #a8c0d8;
+}

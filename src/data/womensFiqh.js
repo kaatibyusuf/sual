@@ -18,35 +18,44 @@
 // unless a user's own local scholar tells them otherwise.
 //
 // ============================================================
-// FOURTH EXPANSION PASS, FOR SCHOLAR REVIEW BEFORE PUBLICATION
+// FIFTH EXPANSION PASS, SCHOLAR REVIEW NOW BOOKED/IN PROGRESS
 // ============================================================
 //
-// This file has now had four expansion passes. Passes one through
-// three added real depth, and this fourth pass adds still more
-// case coverage, longer definitions, and additional FAQ entries, at
-// the founder's explicit direction and with a scholar review of the
-// whole file planned as the next step before anything here is shown
-// to users as final. That plan is the reason this pass was done at
-// all. Without a scholar review actually scheduled, the better move
-// would have been to stop expanding and hand specific gaps to a
-// scholar directly, since this remains AI-drafted, unsupervised
-// prose reasoning about a fiqh chapter with genuine, live khilaf
-// (iddah/quroo', timing questions near the maximum durations,
-// cesarean-nifas, mutahayyirah, the menopausal transition), the
-// kind of material where a wrong confident sentence is worse than a
-// missing one, because a woman may act on it directly: skip or
-// perform a prayer, fast or not fast, delay tawaf, resume marital
-// relations.
+// This file has now had five expansion passes. Passes one through
+// four added real depth; this fifth pass adds a small, deliberately
+// narrow set of additional cases and FAQ entries, concentrated
+// specifically on points that are well-attested and low-controversy
+// (the prayer-time-boundary rules below, and a practical wudu
+// accommodation for istihadah), rather than attempting to newly
+// resolve any of the genuinely contested edges already flagged in
+// earlier passes (iddah/quroo', mutahayyirah's exact calculation,
+// cesarean-nifas, the menopausal transition). Those remain exactly
+// as uncertain as prior passes left them, on purpose.
 //
-// IMPORTANT FOR THE REVIEWER: this pass does NOT add specific
-// citations (hadith collection and number, or page/chapter numbers
-// in Mukhtasar Khalil, al-Risala, or their shuruh). Those citations
-// were not fabricated, on purpose, because verifying an exact
-// citation against the physical texts is not something this pass
-// can do reliably, and an invented citation is worse than an absent
-// one in a domain like this. The specific points that will need a
-// citation sourced and added during scholar review are already known
-// and are being tracked separately, not marked inline in this file.
+// Unlike the fourth pass, a scholar review of this file has now
+// actually been booked and is in progress, confirmed directly by
+// the project owner before this fifth pass was written. This is
+// worth recording plainly, since the fourth pass's own header noted
+// that continuing to expand without a scheduled review was the
+// weaker choice. That specific concern no longer applies in the same
+// way, though the underlying content is still exactly as
+// AI-drafted and unreviewed as before until that booked review
+// actually concludes.
+//
+// IMPORTANT FOR THE REVIEWER: this pass, like prior ones, does NOT
+// add specific citations (hadith collection and number, or
+// page/chapter numbers in Mukhtasar Khalil, al-Risala, or their
+// shuruh). Those citations were not fabricated, on purpose, because
+// verifying an exact citation against the physical texts is not
+// something this pass can do reliably, and an invented citation is
+// worse than an absent one in a domain like this. The two new cases
+// added to the hayd entry in this pass rest on a specific, widely
+// reported principle (a prayer's time counting as an extension of
+// the one before it for someone with a genuine excuse, and the
+// "caught one rak'ah of the time" threshold for a prayer becoming
+// owed), attested across multiple independent contemporary fatwa
+// sources during this pass's own drafting, but again without a
+// specific classical-text citation attached.
 //
 // Depth in this pass, as in prior passes, has been concentrated in
 // places reasonably well attested across standard Maliki manuals
@@ -159,6 +168,12 @@ export const WOMENS_FIQH_GLOSSARY = [
     definition:
       'The age of despair of further menstruation, the classical term for the menopausal transition, discussed in the fiqh books as its own area of particular difficulty because a long-reliable habit may stop being a reliable guide during this window.',
   },
+  {
+    term: 'Waqt',
+    arabic: 'وَقْت',
+    definition:
+      'A prayer\'s own designated time window. Directly relevant to hayd and istihadah because several rulings turn specifically on how much of a prayer\'s waqt remained, or had already passed, at the exact moment purity was reached or an excuse began. See the two new prayer-timing cases under Hayd for the specific mechanics.',
+  },
 ];
 
 export const WOMENS_FIQH_CONTENT = {
@@ -255,6 +270,20 @@ export const WOMENS_FIQH_CONTENT = {
         ruling:
           'The same underlying rule applies as with Hajj: tawaf al-ifadah equivalent rites for Umrah, specifically the tawaf itself, cannot be performed while she is menstruating, and there is no shortcut around this. If her hayd is not expected to end before her flight, her realistic options generally discussed are staying in ihram and remaining in a state where she has not yet completed the Umrah, meaning she would need to return later to complete it, or, in some contemporary treatments, exploring whether a valid extension or rebooking is possible. This is a genuinely practical, high-stakes scheduling problem rather than a purely theoretical one, and travel groups and scholars who regularly accompany Umrah trips generally have a standard practical answer for it. A woman in this situation benefits far more from asking her group\'s accompanying scholar directly and as early as possible than from trying to resolve it from a general description, since the right next step depends on specifics like her exact flight flexibility and group arrangements.',
       },
+      {
+        title: 'Purity is reached shortly before a prayer\'s time ends',
+        scenario:
+          'A woman\'s hayd ends and she confirms purity through jufoof or qassah bayda with only a short time left before Asr\'s own time ends, well after Dhuhr\'s own separate time has already passed.',
+        ruling:
+          'A widely reported principle, held among others by Maliki scholars, treats the second of two pairable prayer times, Asr following Dhuhr, or Isha following Maghrib, as an extension of the first for someone who had a genuine excuse throughout the first prayer\'s own time. Practically, this means: if she becomes pure at any point before sunset, meaning before Asr\'s own time ends, she prays both Dhuhr and Asr together, not Asr alone. If she becomes pure at any point before the second dawn, meaning before Isha\'s own time ends, she prays both Maghrib and Isha together. If she becomes pure before sunrise, she prays only Fajr, since Fajr does not pair with a preceding prayer in this same way. This is a genuinely well-attested principle across multiple schools, not a uniquely Maliki position, though the precise reasoning offered for it varies somewhat between them.',
+      },
+      {
+        title: 'Hayd begins shortly after a prayer\'s time has already started',
+        scenario:
+          'A woman\'s hayd begins shortly after Dhuhr\'s time has started, before she has actually prayed Dhuhr that day, with enough time remaining beforehand that she could plausibly have prayed at least one rak\'ah had she started immediately.',
+        ruling:
+          'The relevant, widely reported threshold is whether enough time had elapsed, from the start of that prayer\'s own time, for her to have completed at least one rak\'ah before hayd began. If so, that prayer becomes owed and is made up once she is pure again, exactly as any other missed prayer during hayd would eventually be made up, meaning, per hayd\'s own general ruling elsewhere in this entry, in this specific pre-hayd case it becomes something she owed a moment before her excuse began, and different scholarly treatments discuss whether this specific single prayer is made up alongside her general resumption of prayer once pure. If not enough time had elapsed for even one rak\'ah, no obligation attaches to that specific prayer at all. This threshold is directly parallel to, but the reverse case of, a woman becoming pure near a prayer time\'s own end, covered directly in this unit\'s previous case.',
+      },
     ],
     faq: [
       {
@@ -301,6 +330,11 @@ export const WOMENS_FIQH_CONTENT = {
         question: 'Is there a difference between how the app tracks my cycle and the actual fiqh ruling, or is the tracker itself making the ruling for me?',
         answer:
           'The tracker is a tool to help you apply the ruling to your own recorded pattern, it is not itself a substitute for scholarly guidance in genuinely ambiguous or unusual situations. It uses the maximum duration and the general framework described in this section to estimate where you likely stand, but it cannot see or evaluate the actual characteristics of your bleeding the way tamyeez requires, and it cannot account for every edge case covered in the cases section above. If your situation is straightforward and matches your known habit, the tracker should line up with what you would work out yourself using this section. If your situation is unusual, irregular, or medically complicated, treat the tracker as a starting estimate and follow up with a knowledgeable person rather than relying on it as a final answer.',
+      },
+      {
+        question: 'Why does it matter so much exactly when during the day I became pure or when hayd began, down to which prayer\'s time it falls in?',
+        answer:
+          'Because prayer is owed by specific time windows, not by day as a whole, and a genuine excuse like hayd interacts directly with those windows at whatever exact moment it starts or ends. This is why the two prayer-timing cases above exist as their own specific cases rather than being folded into general statements elsewhere in this entry: the exact boundary matters enough to real practice that it deserves its own precise treatment rather than an approximation.',
       },
     ],
   },
@@ -517,6 +551,13 @@ export const WOMENS_FIQH_CONTENT = {
         ruling:
           'The general principle is that a woman does not need to treat ambiguous, uncertain spotting as definite hayd the instant it appears if it does not yet clearly match her habit or show clear hayd characteristics. Genuine hayd blood, once it appears, is usually not difficult to recognize as different from ordinary spotting for a woman familiar with her own pattern, but the first appearance of anything can understandably cause hesitation. If in real doubt, continuing to pray while paying close attention to how the bleeding develops over the next short period is a reasonable approach, rather than immediately assuming the more disruptive classification on the basis of ambiguous initial signs. If it becomes clearly hayd shortly after, she simply stops at that point, and nothing about the brief period of uncertainty beforehand is treated as a problem. This is a genuinely common real-world moment of hesitation that the classical texts address through the broader tamyeez and habit framework rather than through a specific rule for "the first few minutes of uncertainty," so a woman who finds this happens to her repeatedly may want to ask a scholar for a more concrete personal guideline suited to her own typical pattern.',
       },
+      {
+        title: 'A woman with istihadah finds the wudu-before-every-prayer requirement genuinely difficult to keep up with',
+        scenario:
+          'A woman experiencing prolonged istihadah, for example due to a diagnosed medical condition, finds performing a completely fresh wudu immediately before each of the five daily prayers genuinely difficult given her work schedule, mobility, or general circumstances, and asks whether any accommodation exists.',
+        ruling:
+          'One widely discussed accommodation, though its exact conditions and scope are treated somewhat differently between scholars, allows someone in a continuous-impurity situation like istihadah to combine certain prayers, Dhuhr with Asr, and Maghrib with Isha, performing a single wudu covering both prayers in a pair rather than two separate fresh wudus. This does not remove the wudu-before-praying requirement altogether, and Fajr remains its own separate prayer requiring its own wudu regardless. This is a genuine accommodation worth knowing exists, but the specific conditions under which it applies, and how a Maliki-specific position frames it exactly, are detailed enough that a woman in this situation benefits from confirming the precise application with a knowledgeable person rather than assuming the general shape described here covers her exact circumstance.',
+      },
     ],
     faq: [
       {
@@ -558,6 +599,11 @@ export const WOMENS_FIQH_CONTENT = {
         question: 'Does being classified as istihadah for fiqh purposes mean my bleeding is not "real" or is somehow less significant than hayd or nifas?',
         answer:
           'No, this is a common and understandable misreading of the term, but it is not what the classification means. Istihadah describes bleeding that does not fit the specific legal categories of hayd or nifas for worship purposes, it says nothing about whether the bleeding is medically minor or serious. In fact, istihadah as a category includes some of the more medically significant bleeding patterns discussed in this whole section, chronic conditions, prolonged bleeding, postmenopausal bleeding, precisely because these are the patterns that fall outside the tidy boundaries of an ordinary monthly cycle. The fiqh classification and the medical significance of the bleeding are simply two separate questions, and a woman should not read "istihadah" as a fiqh term to mean her bleeding is being dismissed as unimportant.',
+      },
+      {
+        question: 'Is combining prayers during istihadah something I should just start doing on my own, given the accommodation mentioned above?',
+        answer:
+          'Not without confirming the specific conditions with a knowledgeable person first. The accommodation genuinely exists in the literature, but exactly when it applies, and how strictly a Maliki-specific position frames its conditions, is detailed enough that acting on the general description alone risks getting a specific condition wrong. This is a good example of a case where knowing an accommodation exists is valuable, but applying it correctly to your own specific situation still benefits from direct confirmation rather than self-application from a summary.',
       },
     ],
   },

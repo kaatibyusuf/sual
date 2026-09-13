@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { WOMENS_FIQH_CONTENT } from '../data/womensFiqh.js'
+import { WOMENS_HEALTH_AWARENESS_CONTENT } from '../data/womensHealthAwareness.js'
 import './WomensFiqh.css'
 
 const ICONS = {
@@ -86,16 +87,34 @@ const ICONS = {
       <line x1="10" y1="12" x2="14" y2="12" />
     </svg>
   ),
+  trend: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 17 9 11 13 15 21 6" />
+      <polyline points="15 6 21 6 21 12" />
+    </svg>
+  ),
 }
 
 const Icon = ({ name }) => <span className="wf-icon" aria-hidden="true">{ICONS[name]}</span>
 
 const TOPICS = [
-  { key: 'hayd', label: 'Hayd', arabic: 'الحَيْض', icon: 'droplet' },
-  { key: 'nifas', label: 'Nifas', arabic: 'النِّفَاس', icon: 'droplets' },
-  { key: 'istihadah', label: 'Istihadah', arabic: 'الاسْتِحَاضَة', icon: 'question' },
-  { key: 'be_prepared', label: 'Be Prepared', arabic: 'كُونِي مُسْتَعِدَّة', icon: 'archive' },
+  { key: 'hayd', label: 'Hayd', arabic: 'الحَيْض', icon: 'droplet', source: 'fiqh' },
+  { key: 'nifas', label: 'Nifas', arabic: 'النِّفَاس', icon: 'droplets', source: 'fiqh' },
+  { key: 'istihadah', label: 'Istihadah', arabic: 'الاسْتِحَاضَة', icon: 'question', source: 'fiqh' },
+  { key: 'be_prepared', label: 'Be Prepared', arabic: 'كُونِي مُسْتَعِدَّة', icon: 'archive', source: 'fiqh' },
+  // ── Health awareness topics, deliberately a different content
+  // source (womensHealthAwareness.js, not womensFiqh.js) since
+  // these aren't fiqh questions and need clinical review, not
+  // scholarly review. See that file's own header for why.
+  { key: 'pmos', label: 'PMOS (PCOS)', arabic: 'تكيّس المبايض', icon: 'book', source: 'health' },
+  { key: 'endometriosis', label: 'Endometriosis', arabic: 'الانتباذ البِطاني', icon: 'droplet', source: 'health' },
+  { key: 'fibroids', label: 'Fibroids', arabic: 'الأورام الليفية', icon: 'cases', source: 'health' },
+  { key: 'ovarian_cysts', label: 'Ovarian Cysts', arabic: 'أكياس المبيض', icon: 'droplets', source: 'health' },
+  { key: 'anemia_from_bleeding', label: 'Anemia From Heavy Periods', arabic: 'فقر الدم', icon: 'question', source: 'health' },
+  { key: 'cervical_screening', label: 'Cervical Screening', arabic: 'فحص عنق الرحم', icon: 'calendar', source: 'health' },
 ]
+
+const CONTENT_SOURCES = { fiqh: WOMENS_FIQH_CONTENT, health: WOMENS_HEALTH_AWARENESS_CONTENT }
 
 const SECTION_ICONS = { definition: 'book', duration: 'calendar', signs: 'droplet', rulings: 'scroll' }
 
@@ -110,8 +129,55 @@ const INTENSITIES = [
 
 const INTENSITY_LABEL = Object.fromEntries(INTENSITIES.map(i => [i.key, i.label]))
 
+// ── Colour, purely descriptive, never used to compute the
+// hayd/nifas/istihadah status. Colour and clot presence are
+// genuinely discussed in classical fiqh (see the note shown directly
+// in the logging UI), but correctly applying that discussion depends
+// on timing relative to purity and on real madhab-level detail this
+// app does not attempt to adjudicate automatically. These fields
+// exist so a woman can note what she observed for her own record and
+// to describe it precisely if she has a specific question for a
+// knowledgeable teacher, not so the app can rule on it for her.
+const COLORS = [
+  { key: 'red', label: 'Red' },
+  { key: 'dark', label: 'Dark red / black' },
+  { key: 'brown', label: 'Brown' },
+  { key: 'yellowish', label: 'Yellowish' },
+  { key: 'cloudy', label: 'Cloudy / turbid' },
+]
+
+const COLOR_LABEL = Object.fromEntries(COLORS.map(c => [c.key, c.label]))
+
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const WEEKDAY_LABELS = ['S','M','T','W','T','F','S']
+
+// Minimum number of start-to-start gaps needed before showing any
+// prediction at all. Below this, there just isn't enough of a
+// pattern to say anything meaningful.
+const MIN_GAPS_FOR_PREDICTION = 1
+// Below this many gaps, a prediction is still shown but marked as
+// based on limited history rather than given with full confidence.
+const GAPS_FOR_CONFIDENT_PREDICTION = 3
+// How many of the most recent gaps/durations to average over, so a
+// prediction reflects recent pattern rather than years-old data.
+const RECENT_CYCLES_WINDOW = 6
+// A descriptive-only threshold (not a diagnosis) for calling out that
+// cycle length has varied a fair amount recently.
+const IRREGULARITY_SPREAD_DAYS = 8
+
+// ── Fertility / BBT / pregnancy: opt-in, separate mode ───────────
+// Fertile-window estimate: a widely used clinical approximation, not
+// a guarantee and not a method of birth control. Ovulation is
+// estimated as occurring a typical luteal-phase length before the
+// predicted next period; the fertile window itself spans several
+// days before that estimate (sperm can survive several days) through
+// one day after (the egg's own short viability window).
+const LUTEAL_PHASE_DAYS = 14
+const FERTILE_WINDOW_BEFORE = 5
+const FERTILE_WINDOW_AFTER = 1
+// Standard 40-week-from-last-period convention used by most clinical
+// due-date calculators.
+const PREGNANCY_DURATION_DAYS = 280
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10)
@@ -123,12 +189,124 @@ function dayCount(startDate, throughDate) {
   return Math.floor((through - start) / (1000 * 60 * 60 * 24)) + 1
 }
 
+// Plain difference in days between two dates (not inclusive-count,
+// unlike dayCount above) -- used for start-to-start cycle length.
+function daysBetween(dateA, dateB) {
+  const a = new Date(dateA)
+  const b = new Date(dateB)
+  return Math.round((b - a) / (1000 * 60 * 60 * 24))
+}
+
 function formatDate(d) {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+function formatDateShort(d) {
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+}
+
 function dateKey(y, m, d) {
   return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+}
+
+function average(nums) {
+  if (!nums.length) return null
+  return nums.reduce((a, b) => a + b, 0) / nums.length
+}
+
+// Builds a soft, descriptive prediction from a user's own logged
+// history -- never presented as a guarantee, and explicitly never
+// used to pre-emptively classify a day before bleeding is actually
+// observed. Actual, observed bleeding is always what governs the
+// real-time ruling; this is a planning aid only.
+function computeCycleInsights(allCyclesDesc, activeCycle) {
+  // allCyclesDesc: all cycles (active + past), newest start_date first.
+  const withStart = allCyclesDesc.filter(c => c.start_date)
+  const sortedAsc = [...withStart].sort((a, b) => a.start_date.localeCompare(b.start_date))
+
+  const recentAsc = sortedAsc.slice(-1 * (RECENT_CYCLES_WINDOW + 1))
+  const gaps = []
+  for (let i = 1; i < recentAsc.length; i++) {
+    gaps.push(daysBetween(recentAsc[i - 1].start_date, recentAsc[i].start_date))
+  }
+
+  const completedDurations = recentAsc
+    .filter(c => c.end_date)
+    .map(c => dayCount(c.start_date, c.end_date))
+
+  const avgCycleLength = gaps.length >= MIN_GAPS_FOR_PREDICTION ? average(gaps) : null
+  const avgBleedDuration = completedDurations.length ? average(completedDurations) : null
+
+  let predictedNextStart = null
+  let predictedEndEstimate = null
+
+  const mostRecentStart = sortedAsc.length ? sortedAsc[sortedAsc.length - 1].start_date : null
+
+  if (!activeCycle && avgCycleLength !== null && mostRecentStart) {
+    const predicted = new Date(mostRecentStart)
+    predicted.setDate(predicted.getDate() + Math.round(avgCycleLength))
+    predictedNextStart = predicted.toISOString().slice(0, 10)
+  }
+
+  if (activeCycle && avgBleedDuration !== null) {
+    const predicted = new Date(activeCycle.start_date)
+    predicted.setDate(predicted.getDate() + Math.round(avgBleedDuration) - 1)
+    predictedEndEstimate = predicted.toISOString().slice(0, 10)
+  }
+
+  let irregularityNote = null
+  if (gaps.length >= 2) {
+    const spread = Math.max(...gaps) - Math.min(...gaps)
+    if (spread > IRREGULARITY_SPREAD_DAYS) {
+      irregularityNote = `Your cycle length has varied by about ${spread} days across your last ${gaps.length + 1} logged cycles.`
+    }
+  }
+
+  return {
+    hasData: gaps.length >= MIN_GAPS_FOR_PREDICTION || avgBleedDuration !== null,
+    isLimited: gaps.length > 0 && gaps.length < GAPS_FOR_CONFIDENT_PREDICTION,
+    avgCycleLength,
+    avgBleedDuration,
+    predictedNextStart,
+    predictedEndEstimate,
+    irregularityNote,
+    sampleSize: gaps.length,
+  }
+}
+
+function celsiusToFahrenheit(c) {
+  return (c * 9) / 5 + 32
+}
+
+function fahrenheitToCelsius(f) {
+  return ((f - 32) * 5) / 9
+}
+
+function formatTemp(celsius, unit) {
+  if (celsius === null || celsius === undefined) return ''
+  return unit === 'fahrenheit' ? celsiusToFahrenheit(celsius).toFixed(1) : Number(celsius).toFixed(2)
+}
+
+// Only meaningful when not currently in an active bleeding cycle,
+// mirroring predictedNextStart's own same condition above.
+function computeFertileWindow(cycleInsights, activeCycle) {
+  if (activeCycle || !cycleInsights.predictedNextStart) return null
+  const ovulation = new Date(cycleInsights.predictedNextStart)
+  ovulation.setDate(ovulation.getDate() - LUTEAL_PHASE_DAYS)
+  const start = new Date(ovulation)
+  start.setDate(start.getDate() - FERTILE_WINDOW_BEFORE)
+  const end = new Date(ovulation)
+  end.setDate(end.getDate() + FERTILE_WINDOW_AFTER)
+  return {
+    ovulationEstimate: ovulation.toISOString().slice(0, 10),
+    fertileStart: start.toISOString().slice(0, 10),
+    fertileEnd: end.toISOString().slice(0, 10),
+  }
+}
+
+function currentPregnancyWeek(lmpDate) {
+  const days = daysBetween(lmpDate, todayStr())
+  return Math.max(0, Math.floor(days / 7))
 }
 
 export default function WomensFiqh({ user }) {
@@ -144,16 +322,11 @@ export default function WomensFiqh({ user }) {
   const [logging, setLogging] = useState(false)
   const [stopping, setStopping] = useState(false)
   const [noteInput, setNoteInput] = useState('')
+  const [selectedColor, setSelectedColor] = useState(null)
+  const [hasClots, setHasClots] = useState(false)
   const [deletingCycleId, setDeletingCycleId] = useState(null)
 
   // ── "Mark bleeding stopped" date picker ─────────────────────
-  // FIX: this used to be a single button that unconditionally
-  // stamped end_date as TODAY, with no way to record the actual day
-  // bleeding stopped if the user didn't open the app that exact day.
-  // Now it reveals a date input (defaulting to today, so the common
-  // "stopping today" case is still effectively one extra tap) that
-  // can be backdated to any day between the cycle's start date and
-  // today — but never before the start, and never into the future.
   const [showStopPicker, setShowStopPicker] = useState(false)
   const [stopDate, setStopDate] = useState('')
 
@@ -171,6 +344,25 @@ export default function WomensFiqh({ user }) {
   const [selectedDay, setSelectedDay] = useState(null) // 'YYYY-MM-DD' | null
   const [dayLogging, setDayLogging] = useState(false)
   const [dayNoteInput, setDayNoteInput] = useState('')
+  const [dayColor, setDayColor] = useState(null)
+  const [dayHasClots, setDayHasClots] = useState(false)
+
+  // ── Fertility / BBT / pregnancy state (opt-in, separate mode) ──
+  const [settings, setSettings] = useState({ ttc_enabled: false, bbt_unit: 'celsius' })
+  const [settingsLoading, setSettingsLoading] = useState(false)
+  const [savingSettings, setSavingSettings] = useState(false)
+  const [fertilityError, setFertilityError] = useState(null)
+
+  const [bbtLogs, setBbtLogs] = useState([])
+  const [bbtInput, setBbtInput] = useState('')
+  const [bbtNoteInput, setBbtNoteInput] = useState('')
+  const [savingBbt, setSavingBbt] = useState(false)
+
+  const [pregnancy, setPregnancy] = useState(null)
+  const [showStartPregnancy, setShowStartPregnancy] = useState(false)
+  const [pregnancyLmpDate, setPregnancyLmpDate] = useState('')
+  const [startingPregnancy, setStartingPregnancy] = useState(false)
+  const [endingPregnancy, setEndingPregnancy] = useState(false)
 
   const fetchCycles = useCallback(async () => {
     if (!user) return
@@ -198,6 +390,64 @@ export default function WomensFiqh({ user }) {
     if (tab === 'tracker') fetchCycles()
   }, [tab, fetchCycles])
 
+  const fetchSettings = useCallback(async () => {
+    if (!user) return
+    setSettingsLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('womens_fiqh_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      if (error) throw error
+      if (data) setSettings({ ttc_enabled: !!data.ttc_enabled, bbt_unit: data.bbt_unit || 'celsius' })
+    } catch (err) {
+      console.error('Failed to load fertility settings:', err)
+    } finally {
+      setSettingsLoading(false)
+    }
+  }, [user])
+
+  const fetchBbtLogs = useCallback(async () => {
+    if (!user) return
+    try {
+      const { data, error } = await supabase
+        .from('womens_fiqh_bbt_logs')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date', { ascending: false })
+        .limit(30)
+      if (error) throw error
+      setBbtLogs(data || [])
+    } catch (err) {
+      console.error('Failed to load BBT logs:', err)
+    }
+  }, [user])
+
+  const fetchPregnancy = useCallback(async () => {
+    if (!user) return
+    try {
+      const { data, error } = await supabase
+        .from('womens_fiqh_pregnancy')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .maybeSingle()
+      if (error) throw error
+      setPregnancy(data || null)
+    } catch (err) {
+      console.error('Failed to load pregnancy tracking:', err)
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (tab === 'fertility') {
+      fetchSettings()
+      fetchBbtLogs()
+      fetchPregnancy()
+    }
+  }, [tab, fetchSettings, fetchBbtLogs, fetchPregnancy])
+
   const allCycles = activeCycle ? [activeCycle, ...pastCycles] : pastCycles
 
   const maxDaysFor = (isPostpartum) => {
@@ -214,6 +464,8 @@ export default function WomensFiqh({ user }) {
         map[d.date] = {
           intensity: d.intensity,
           notes: d.notes || '',
+          color: d.color || null,
+          hasClots: !!d.has_clots,
           status: n > maxDays ? 'istihadah' : (cycle.is_postpartum ? 'nifas' : 'hayd'),
           cycleId: cycle.id,
         }
@@ -236,6 +488,129 @@ export default function WomensFiqh({ user }) {
     }
   })()
 
+  const cycleInsights = computeCycleInsights(allCycles, activeCycle)
+  const fertileWindow = computeFertileWindow(cycleInsights, activeCycle)
+
+  const toggleTtc = async () => {
+    if (!user) return
+    setSavingSettings(true)
+    setFertilityError(null)
+    try {
+      const newValue = !settings.ttc_enabled
+      const { error } = await supabase
+        .from('womens_fiqh_settings')
+        .upsert({ user_id: user.id, ttc_enabled: newValue, bbt_unit: settings.bbt_unit, updated_at: new Date().toISOString() })
+      if (error) throw error
+      setSettings(s => ({ ...s, ttc_enabled: newValue }))
+    } catch (err) {
+      setFertilityError(err.message)
+    } finally {
+      setSavingSettings(false)
+    }
+  }
+
+  const toggleBbtUnit = async () => {
+    if (!user) return
+    const newUnit = settings.bbt_unit === 'celsius' ? 'fahrenheit' : 'celsius'
+    try {
+      const { error } = await supabase
+        .from('womens_fiqh_settings')
+        .upsert({ user_id: user.id, ttc_enabled: settings.ttc_enabled, bbt_unit: newUnit, updated_at: new Date().toISOString() })
+      if (error) throw error
+      setSettings(s => ({ ...s, bbt_unit: newUnit }))
+    } catch (err) {
+      setFertilityError(err.message)
+    }
+  }
+
+  const saveBbtReading = async () => {
+    if (!user || !bbtInput.trim()) return
+    const raw = parseFloat(bbtInput)
+    if (Number.isNaN(raw)) {
+      setFertilityError('Enter a valid temperature.')
+      return
+    }
+    const celsius = settings.bbt_unit === 'fahrenheit' ? fahrenheitToCelsius(raw) : raw
+    setSavingBbt(true)
+    setFertilityError(null)
+    try {
+      const { error } = await supabase
+        .from('womens_fiqh_bbt_logs')
+        .upsert(
+          { user_id: user.id, date: todayStr(), temperature_celsius: celsius, notes: bbtNoteInput.trim() || null },
+          { onConflict: 'user_id,date' }
+        )
+      if (error) throw error
+      setBbtInput('')
+      setBbtNoteInput('')
+      fetchBbtLogs()
+    } catch (err) {
+      setFertilityError(err.message)
+    } finally {
+      setSavingBbt(false)
+    }
+  }
+
+  const openStartPregnancy = () => {
+    setPregnancyLmpDate(todayStr())
+    setShowStartPregnancy(true)
+    setFertilityError(null)
+  }
+
+  const cancelStartPregnancy = () => {
+    setShowStartPregnancy(false)
+    setPregnancyLmpDate('')
+  }
+
+  const confirmStartPregnancy = async () => {
+    if (!user || !pregnancyLmpDate) return
+    if (pregnancyLmpDate > todayStr()) {
+      setFertilityError("The last period date can't be in the future.")
+      return
+    }
+    setStartingPregnancy(true)
+    setFertilityError(null)
+    try {
+      const lmp = new Date(pregnancyLmpDate)
+      const due = new Date(lmp)
+      due.setDate(due.getDate() + PREGNANCY_DURATION_DAYS)
+      const { error } = await supabase.from('womens_fiqh_pregnancy').insert({
+        user_id: user.id,
+        lmp_date: pregnancyLmpDate,
+        due_date: due.toISOString().slice(0, 10),
+        is_active: true,
+      })
+      if (error) throw error
+      setShowStartPregnancy(false)
+      setPregnancyLmpDate('')
+      fetchPregnancy()
+    } catch (err) {
+      setFertilityError(err.message)
+    } finally {
+      setStartingPregnancy(false)
+    }
+  }
+
+  const endPregnancyTracking = async () => {
+    if (!pregnancy) return
+    const confirmed = window.confirm('Stop tracking this pregnancy? This keeps the record but marks it as no longer active.')
+    if (!confirmed) return
+    setEndingPregnancy(true)
+    setFertilityError(null)
+    try {
+      const { error } = await supabase
+        .from('womens_fiqh_pregnancy')
+        .update({ is_active: false, ended_at: new Date().toISOString() })
+        .eq('id', pregnancy.id)
+      if (error) throw error
+      fetchPregnancy()
+    } catch (err) {
+      setFertilityError(err.message)
+    } finally {
+      setEndingPregnancy(false)
+    }
+  }
+
   const startOrLogToday = async (intensity) => {
     if (!user) return
     setLogging(true)
@@ -243,11 +618,12 @@ export default function WomensFiqh({ user }) {
     try {
       const today = todayStr()
       const note = noteInput.trim()
+      const entry = { date: today, intensity, notes: note, color: selectedColor, has_clots: hasClots }
       if (activeCycle) {
         const alreadyLogged = (activeCycle.days || []).some(d => d.date === today)
         const newDays = alreadyLogged
-          ? (activeCycle.days || []).map(d => d.date === today ? { ...d, intensity, notes: note } : d)
-          : [...(activeCycle.days || []), { date: today, intensity, notes: note }]
+          ? (activeCycle.days || []).map(d => d.date === today ? entry : d)
+          : [...(activeCycle.days || []), entry]
         const { error } = await supabase
           .from('womens_fiqh_cycles')
           .update({ days: newDays, updated_at: new Date().toISOString() })
@@ -258,11 +634,13 @@ export default function WomensFiqh({ user }) {
           user_id: user.id,
           start_date: today,
           is_postpartum: startingPostpartum,
-          days: [{ date: today, intensity, notes: note }],
+          days: [entry],
         })
         if (error) throw error
       }
       setNoteInput('')
+      setSelectedColor(null)
+      setHasClots(false)
       fetchCycles()
     } catch (err) {
       setTrackerError(err.message)
@@ -318,16 +696,19 @@ export default function WomensFiqh({ user }) {
     setTrackerError(null)
     try {
       const note = dayNoteInput.trim()
+      const entry = { date: dateStr, intensity, notes: note, color: dayColor, has_clots: dayHasClots }
       const alreadyLogged = (activeCycle.days || []).some(d => d.date === dateStr)
       const newDays = alreadyLogged
-        ? (activeCycle.days || []).map(d => d.date === dateStr ? { ...d, intensity, notes: note } : d)
-        : [...(activeCycle.days || []), { date: dateStr, intensity, notes: note }]
+        ? (activeCycle.days || []).map(d => d.date === dateStr ? entry : d)
+        : [...(activeCycle.days || []), entry]
       const { error } = await supabase
         .from('womens_fiqh_cycles')
         .update({ days: newDays, updated_at: new Date().toISOString() })
         .eq('id', activeCycle.id)
       if (error) throw error
       setDayNoteInput('')
+      setDayColor(null)
+      setDayHasClots(false)
       await fetchCycles()
     } catch (err) {
       setTrackerError(err.message)
@@ -339,11 +720,15 @@ export default function WomensFiqh({ user }) {
   const openDay = (key) => {
     setSelectedDay(key)
     setDayNoteInput(dayLookup[key]?.notes || '')
+    setDayColor(dayLookup[key]?.color || null)
+    setDayHasClots(dayLookup[key]?.hasClots || false)
   }
 
   const closeDaySheet = () => {
     setSelectedDay(null)
     setDayNoteInput('')
+    setDayColor(null)
+    setDayHasClots(false)
   }
 
   const startEditingCycle = (cycle) => {
@@ -417,7 +802,7 @@ export default function WomensFiqh({ user }) {
   const renderLearn = () => {
     if (activeTopic) {
       const meta = TOPICS.find(t => t.key === activeTopic)
-      const entry = WOMENS_FIQH_CONTENT[activeTopic]
+      const entry = CONTENT_SOURCES[meta.source][activeTopic]
       return (
         <>
           <button className="wf-back" onClick={closeTopic}>← Back to Women's Fiqh</button>
@@ -495,7 +880,7 @@ export default function WomensFiqh({ user }) {
     return (
       <div className="wf-cards">
         {TOPICS.map(t => {
-          const entry = WOMENS_FIQH_CONTENT[t.key]
+          const entry = CONTENT_SOURCES[t.source][t.key]
           return (
             <button
               key={t.key}
@@ -605,6 +990,8 @@ export default function WomensFiqh({ user }) {
               <p className="wf-day-sheet-status">
                 Logged as <strong>{statusLabel(logged.status)}</strong>
                 {logged.intensity ? ` · ${INTENSITY_LABEL[logged.intensity] || logged.intensity}` : ''}
+                {logged.color ? ` · ${COLOR_LABEL[logged.color] || logged.color}` : ''}
+                {logged.hasClots ? ' · clots noted' : ''}
               </p>
               {logged.notes && <p className="wf-day-sheet-note-text">"{logged.notes}"</p>}
             </>
@@ -622,6 +1009,23 @@ export default function WomensFiqh({ user }) {
                 onChange={e => setDayNoteInput(e.target.value)}
                 rows={2}
               />
+              <p className="wf-optional-label">Colour (optional)</p>
+              <div className="wf-color-row">
+                {COLORS.map(c => (
+                  <button
+                    key={c.key}
+                    type="button"
+                    className={`wf-color-btn ${dayColor === c.key ? 'wf-color-btn--active' : ''}`}
+                    onClick={() => setDayColor(dayColor === c.key ? null : c.key)}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+              <label className="wf-clots-check">
+                <input type="checkbox" checked={dayHasClots} onChange={e => setDayHasClots(e.target.checked)} />
+                Clots noticed
+              </label>
               <div className="wf-intensity-row">
                 {INTENSITIES.map(i => (
                   <button
@@ -644,6 +1048,219 @@ export default function WomensFiqh({ user }) {
           )}
         </div>
       </div>
+    )
+  }
+
+  const renderInsights = () => {
+    if (!cycleInsights.hasData) return null
+    return (
+      <div className="wf-insights card" data-a11y-label="Your cycle insights, based on your own logged history.">
+        <h3 className="wf-section-title"><Icon name="trend" /> Your Pattern</h3>
+
+        <div className="wf-insights-grid">
+          {activeCycle ? (
+            cycleInsights.predictedEndEstimate && (
+              <div className="wf-insight-item">
+                <span className="wf-insight-label">Estimated to end around</span>
+                <span className="wf-insight-value">{formatDateShort(cycleInsights.predictedEndEstimate)}</span>
+              </div>
+            )
+          ) : (
+            cycleInsights.predictedNextStart && (
+              <div className="wf-insight-item">
+                <span className="wf-insight-label">Next expected around</span>
+                <span className="wf-insight-value">{formatDateShort(cycleInsights.predictedNextStart)}</span>
+              </div>
+            )
+          )}
+
+          {cycleInsights.avgCycleLength !== null && (
+            <div className="wf-insight-item">
+              <span className="wf-insight-label">Average cycle length</span>
+              <span className="wf-insight-value">{Math.round(cycleInsights.avgCycleLength)} days</span>
+            </div>
+          )}
+
+          {cycleInsights.avgBleedDuration !== null && (
+            <div className="wf-insight-item">
+              <span className="wf-insight-label">Average bleeding length</span>
+              <span className="wf-insight-value">{Math.round(cycleInsights.avgBleedDuration)} days</span>
+            </div>
+          )}
+        </div>
+
+        {cycleInsights.isLimited && (
+          <p className="wf-insights-caveat">Based on limited history so far ({cycleInsights.sampleSize + 1} logged cycle{cycleInsights.sampleSize === 0 ? '' : 's'}), this will get more accurate the longer you track.</p>
+        )}
+
+        {cycleInsights.irregularityNote && (
+          <p className="wf-insights-caveat">
+            {cycleInsights.irregularityNote} If this is a change for you or a concern, it's worth mentioning to a healthcare provider.
+          </p>
+        )}
+
+        <p className="wf-insights-caveat wf-insights-caveat--emphasis">
+          This is an estimate from your own history, not a guarantee. What you actually observe on a given day is always what governs the ruling, not a prediction.
+        </p>
+      </div>
+    )
+  }
+
+  const renderFertility = () => {
+    if (settingsLoading) {
+      return <div className="wf-loading"><div className="wf-spinner" /></div>
+    }
+
+    if (!settings.ttc_enabled) {
+      return (
+        <div className="wf-fertility-optin card">
+          <h3 className="wf-section-title"><Icon name="droplets" /> Fertility &amp; Pregnancy Tracking</h3>
+          <p className="wf-section-body" style={{ marginBottom: 16 }}>
+            A separate, opt-in mode for tracking ovulation, basal body temperature, and
+            pregnancy, useful if you're trying to conceive or are currently pregnant. It's off
+            by default since it isn't relevant to everyone using this tracker.
+          </p>
+          {fertilityError && <div className="wf-error">{fertilityError}</div>}
+          <button className="wf-fertility-cta" onClick={toggleTtc} disabled={savingSettings}>
+            {savingSettings ? 'Enabling…' : 'Enable Fertility Tracking'}
+          </button>
+        </div>
+      )
+    }
+
+    if (pregnancy) {
+      const week = currentPregnancyWeek(pregnancy.lmp_date)
+      return (
+        <>
+          {fertilityError && <div className="wf-error card">{fertilityError}</div>}
+          <div className="wf-status-card card">
+            <p className="wf-status-label">Week {week}</p>
+            <p className="wf-status-value">Pregnancy</p>
+            <p className="wf-status-note">
+              Estimated due date {formatDate(pregnancy.due_date)}, based on a last period date of{' '}
+              {formatDate(pregnancy.lmp_date)}. This is a standard 40-week estimate; actual timing
+              varies, and your own healthcare provider's own dating (for example, from an
+              ultrasound) should always take priority over this if the two differ.
+            </p>
+            <div className="wf-status-actions">
+              <button className="wf-delete-trigger" onClick={endPregnancyTracking} disabled={endingPregnancy}>
+                {endingPregnancy ? 'Ending…' : 'End tracking'}
+              </button>
+            </div>
+          </div>
+        </>
+      )
+    }
+
+    return (
+      <>
+        <div className="wf-section-intro card">
+          <p className="wf-section-intro-text">
+            Fertility tracking is on. The estimates below come from your own logged cycle
+            history and are approximate: not a guarantee, not a method of birth control, and not
+            a substitute for a fertility specialist if you need one.
+          </p>
+        </div>
+
+        {fertilityError && <div className="wf-error card">{fertilityError}</div>}
+
+        {fertileWindow ? (
+          <div className="wf-insights card">
+            <h3 className="wf-section-title"><Icon name="trend" /> Estimated Fertile Window</h3>
+            <div className="wf-insights-grid">
+              <div className="wf-insight-item">
+                <span className="wf-insight-label">Fertile window</span>
+                <span className="wf-insight-value">{formatDateShort(fertileWindow.fertileStart)} – {formatDateShort(fertileWindow.fertileEnd)}</span>
+              </div>
+              <div className="wf-insight-item">
+                <span className="wf-insight-label">Estimated ovulation</span>
+                <span className="wf-insight-value">{formatDateShort(fertileWindow.ovulationEstimate)}</span>
+              </div>
+            </div>
+            <p className="wf-insights-caveat wf-insights-caveat--emphasis">
+              Estimated from your average cycle length using a typical 14-day luteal phase.
+              Individual cycles vary; this is a planning aid, not a precise prediction.
+            </p>
+          </div>
+        ) : (
+          <div className="wf-insights card">
+            <p className="wf-insights-caveat">Log at least two past cycles in the Tracker tab to get a fertile-window estimate here.</p>
+          </div>
+        )}
+
+        <div className="wf-log-card card">
+          <p className="wf-log-label">Basal body temperature</p>
+          <div className="wf-bbt-input-row">
+            <input
+              type="number"
+              step="0.01"
+              className="wf-bbt-input"
+              placeholder={settings.bbt_unit === 'fahrenheit' ? '98.60' : '36.50'}
+              value={bbtInput}
+              onChange={e => setBbtInput(e.target.value)}
+            />
+            <span className="wf-bbt-unit">°{settings.bbt_unit === 'fahrenheit' ? 'F' : 'C'}</span>
+            <button className="wf-bbt-unit-toggle" type="button" onClick={toggleBbtUnit}>
+              Use °{settings.bbt_unit === 'fahrenheit' ? 'C' : 'F'}
+            </button>
+          </div>
+          <textarea
+            className="wf-note-input"
+            placeholder="Notes (optional)"
+            value={bbtNoteInput}
+            onChange={e => setBbtNoteInput(e.target.value)}
+            rows={2}
+            style={{ marginTop: 8 }}
+          />
+          <button className="wf-fertility-cta" onClick={saveBbtReading} disabled={savingBbt || !bbtInput.trim()}>
+            {savingBbt ? 'Saving…' : "Log today's reading"}
+          </button>
+
+          {bbtLogs.length > 0 && (
+            <div className="wf-bbt-history">
+              <p className="wf-history-label" style={{ marginTop: 16 }}>Recent readings</p>
+              {bbtLogs.slice(0, 10).map(log => (
+                <div key={log.id} className="wf-history-item">
+                  <span>{formatDate(log.date)}</span>
+                  <span className="wf-history-badge">
+                    {formatTemp(log.temperature_celsius, settings.bbt_unit)}°{settings.bbt_unit === 'fahrenheit' ? 'F' : 'C'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="wf-log-card card">
+          <p className="wf-log-label">Tracking a pregnancy?</p>
+          {showStartPregnancy ? (
+            <div className="wf-edit-date-form">
+              <label className="wf-edit-date-label">
+                First day of your last period
+                <input
+                  type="date"
+                  className="wf-edit-date-input"
+                  value={pregnancyLmpDate}
+                  max={todayStr()}
+                  onChange={e => setPregnancyLmpDate(e.target.value)}
+                />
+              </label>
+              <div className="wf-edit-date-actions">
+                <button className="btn btn-ghost" onClick={cancelStartPregnancy} disabled={startingPregnancy}>Cancel</button>
+                <button className="wf-intensity-btn" onClick={confirmStartPregnancy} disabled={startingPregnancy || !pregnancyLmpDate}>
+                  {startingPregnancy ? 'Saving…' : 'Start Tracking'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button className="btn btn-ghost" onClick={openStartPregnancy}>Start tracking a pregnancy</button>
+          )}
+        </div>
+
+        <button className="wf-back" onClick={toggleTtc} disabled={savingSettings} style={{ marginTop: 8 }}>
+          Turn off fertility tracking
+        </button>
+      </>
     )
   }
 
@@ -726,6 +1343,23 @@ export default function WomensFiqh({ user }) {
                   onChange={e => setNoteInput(e.target.value)}
                   rows={2}
                 />
+                <p className="wf-optional-label">Colour (optional)</p>
+                <div className="wf-color-row">
+                  {COLORS.map(c => (
+                    <button
+                      key={c.key}
+                      type="button"
+                      className={`wf-color-btn ${selectedColor === c.key ? 'wf-color-btn--active' : ''}`}
+                      onClick={() => setSelectedColor(selectedColor === c.key ? null : c.key)}
+                    >
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
+                <label className="wf-clots-check">
+                  <input type="checkbox" checked={hasClots} onChange={e => setHasClots(e.target.checked)} />
+                  Clots noticed
+                </label>
                 <div className="wf-intensity-row">
                   {INTENSITIES.map(i => (
                     <button key={i.key} className="wf-intensity-btn" disabled={logging} onClick={() => startOrLogToday(i.key)}>
@@ -762,30 +1396,53 @@ export default function WomensFiqh({ user }) {
               </button>
             )}
           </div>
+
+          {renderInsights()}
         </>
       ) : (
-        <div className="wf-log-card card">
-          <p className="wf-log-label">Start tracking</p>
-          <label className="wf-postpartum-check">
-            <input type="checkbox" checked={startingPostpartum} onChange={e => setStartingPostpartum(e.target.checked)} />
-            This bleeding follows childbirth (nifas)
-          </label>
-          <textarea
-            className="wf-note-input"
-            placeholder="Notes for today (optional) — anything you noticed..."
-            value={noteInput}
-            onChange={e => setNoteInput(e.target.value)}
-            rows={2}
-            style={{ marginTop: 12 }}
-          />
-          <div className="wf-intensity-row">
-            {INTENSITIES.map(i => (
-              <button key={i.key} className="wf-intensity-btn" disabled={logging} onClick={() => startOrLogToday(i.key)}>
-                {i.label}
-              </button>
-            ))}
+        <>
+          <div className="wf-log-card card">
+            <p className="wf-log-label">Start tracking</p>
+            <label className="wf-postpartum-check">
+              <input type="checkbox" checked={startingPostpartum} onChange={e => setStartingPostpartum(e.target.checked)} />
+              This bleeding follows childbirth (nifas)
+            </label>
+            <textarea
+              className="wf-note-input"
+              placeholder="Notes for today (optional) — anything you noticed..."
+              value={noteInput}
+              onChange={e => setNoteInput(e.target.value)}
+              rows={2}
+              style={{ marginTop: 12 }}
+            />
+            <p className="wf-optional-label">Colour (optional)</p>
+            <div className="wf-color-row">
+              {COLORS.map(c => (
+                <button
+                  key={c.key}
+                  type="button"
+                  className={`wf-color-btn ${selectedColor === c.key ? 'wf-color-btn--active' : ''}`}
+                  onClick={() => setSelectedColor(selectedColor === c.key ? null : c.key)}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
+            <label className="wf-clots-check">
+              <input type="checkbox" checked={hasClots} onChange={e => setHasClots(e.target.checked)} />
+              Clots noticed
+            </label>
+            <div className="wf-intensity-row">
+              {INTENSITIES.map(i => (
+                <button key={i.key} className="wf-intensity-btn" disabled={logging} onClick={() => startOrLogToday(i.key)}>
+                  {i.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+
+          {renderInsights()}
+        </>
       )}
 
       {renderCalendar()}
@@ -874,9 +1531,12 @@ export default function WomensFiqh({ user }) {
         <button className={`wf-tab ${tab === 'tracker' ? 'wf-tab--active' : ''}`} onClick={() => setTab('tracker')}>
           Tracker
         </button>
+        <button className={`wf-tab ${tab === 'fertility' ? 'wf-tab--active' : ''}`} onClick={() => setTab('fertility')}>
+          Fertility
+        </button>
       </div>
 
-      {tab === 'learn' ? renderLearn() : renderTracker()}
+      {tab === 'learn' ? renderLearn() : tab === 'tracker' ? renderTracker() : renderFertility()}
     </div>
   )
 }
