@@ -12,6 +12,8 @@ import {
   INTERMEDIATE_USUL_QUIZ,
   INTERMEDIATE_SARF_QUIZ,
   INTERMEDIATE_NAHW_QUIZ,
+  INTERMEDIATE_TAFSEER_QUIZ,
+  INTERMEDIATE_TAJWEED_QUIZ,
 } from '../data/knowledge_intermediate.js'
 
 import {
@@ -88,12 +90,20 @@ const ICONS = {
 const IconInline = ({ name }) => <span className="icon-inline">{ICONS[name]}</span>
 
 const INTERMEDIATE_QUIZ_ALL = {
-  fiqh:      INTERMEDIATE_QUIZ || [],
+  // NOTE: INTERMEDIATE_QUIZ is exported as `{ fiqh: [...] }`, not a flat
+  // array like every other intermediate discipline export. Using it
+  // directly here made INTERMEDIATE_QUIZ_ALL.fiqh resolve to that whole
+  // object instead of an array, so buildQuizPool's pool.sort() crashed
+  // for Fiqh + Intermediate specifically. Unwrap .fiqh to match the flat
+  // shape everything else uses.
+  fiqh:      INTERMEDIATE_QUIZ.fiqh || [],
   seerah:    INTERMEDIATE_SEERAH_QUIZ || [],
   arabiyyah: INTERMEDIATE_ARABIYYAH_QUIZ || [],
   usul:      INTERMEDIATE_USUL_QUIZ || [],
   sarf:      INTERMEDIATE_SARF_QUIZ || [],
   nahw:      INTERMEDIATE_NAHW_QUIZ || [],
+  tafseer:   INTERMEDIATE_TAFSEER_QUIZ || [],
+  tajweed:   INTERMEDIATE_TAJWEED_QUIZ || [],
 }
 
 const ADVANCED_QUIZ_ALL = {
@@ -195,7 +205,18 @@ function buildQuizPool(disciplineId, level = 'beginner') {
         ? Object.values(intermediate).flat()
         : Object.values(beginner).flat()
 
-  return pool.sort(() => Math.random() - 0.5)
+  // FIX: some discipline/level combinations resolve to a truthy but
+  // non-array value (a data-shape mismatch in one of the imported
+  // quiz files, not something this function can control) — calling
+  // .sort() on that threw "pool.sort is not a function" and crashed
+  // the whole component with no error boundary, leaving a blank page
+  // that only a full reload could recover from. Every caller
+  // (beginQuizWith AND nextQuizSuggestions' filter check) goes
+  // through this one function, so guarding here protects both call
+  // sites at once. A bad shape now degrades to the existing "no
+  // questions available" handling instead of crashing.
+  const safePool = Array.isArray(pool) ? pool : []
+  return safePool.sort(() => Math.random() - 0.5)
 }
 
 export default function Quiz({ user, userLevel = 'beginner' }) {
@@ -214,26 +235,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   const [answers,            setAnswers]            = useState([])
   const [unlockMsg,          setUnlockMsg]          = useState(null)
 
-  // Coins earned THIS quiz specifically, and whether a merch code was
-  // just unlocked by it — both computed in saveScore() by diffing the
-  // coin balance before/after the quiz_history insert that triggers
-  // award_quiz_coins(), rather than assumed as questions.length. The
-  // daily coin cap can mean fewer coins actually landed than the
-  // question count would suggest, so showing the real diff avoids
-  // overstating the reward.
   const [coinsEarned, setCoinsEarned] = useState(0)
   const [merchCodeUnlocked, setMerchCodeUnlocked] = useState(null)
 
-  // FIX: previously, a failed quiz_history insert was completely
-  // invisible — the .insert() call resolves normally on a DB-level
-  // rejection (RLS denial, trigger exception, etc.), it does not
-  // throw, and the old code never checked the returned `error` at
-  // all. That meant a quiz could finish, show a normal results
-  // screen, and simply never be recorded — no log, no user-facing
-  // sign anything went wrong. This is very likely why some users
-  // saw their quiz count not update and their streak reset despite
-  // having genuinely taken a quiz that day. saveError now surfaces
-  // that failure directly, with a retry path, instead of hiding it.
   const [saveError, setSaveError] = useState(null)
   const [retryingSave, setRetryingSave] = useState(false)
 
@@ -252,15 +256,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     saveProgress(quizKey, { questionIndex: currentIdx, answers, questions, score, chosen, revealed })
   }, [phase, currentIdx, answers, score, chosen, revealed, questions, selectedDiscipline, selectedLevel])
 
-  // The actual "load a pool and go" primitive, taking discipline/level
-  // as explicit arguments rather than reading them off state — this
-  // is what lets the Next Quiz suggestion cards on the result screen
-  // jump straight into a different discipline without a stale-state
-  // problem (setSelectedDiscipline + immediately relying on
-  // selectedDiscipline in the same tick wouldn't see the update yet,
-  // since React state updates aren't synchronous). startQuiz() below
-  // is now just this function called with whatever's currently
-  // selected on the picker screen.
   const beginQuizWith = useCallback((disciplineId, level) => {
     const pool = buildQuizPool(disciplineId, level)
     if (pool.length === 0) {
@@ -313,19 +308,11 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     setSavedProgress(null)
   }, [selectedDiscipline, selectedLevel])
 
-  // Returns true on a confirmed successful insert, false otherwise —
-  // callers use this to decide whether to proceed with the
-  // coin/level-unlock follow-up calls, which only make sense if the
-  // attempt actually got recorded.
   const saveScore = async (finalScore, total) => {
     if (!user) return false
     const percentage = Math.round((finalScore / total) * 100)
     setSaveError(null)
 
-    // Snapshot balance/code BEFORE this attempt is recorded, so the
-    // amount actually awarded can be shown accurately once it lands
-    // (the insert below fires award_quiz_coins() as a DB trigger —
-    // this file never computes the coin amount itself).
     let beforeBalance = 0
     let hadCodeBefore = false
     try {
@@ -337,14 +324,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
       console.error('Failed to snapshot coin balance:', err)
     }
 
-    // FIX: .insert() resolves normally even when the database
-    // rejects the row (RLS, a constraint, an exception raised inside
-    // a trigger like award_quiz_coins) — it does not throw for that.
-    // The old code destructured nothing and never looked at `error`,
-    // so a rejected insert was silently treated as a success. Now
-    // both the network-failure path (catch) and the DB-rejection
-    // path (error) are handled, and either one surfaces a real
-    // message to the user instead of vanishing.
     const { error: insertError } = await supabase.from('quiz_history').insert({
       user_id:    user.id,
       discipline: selectedDiscipline,
@@ -413,10 +392,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     return true
   }
 
-  // Lets someone retry saving a completed quiz without retaking it —
-  // score/questions.length are still in state at the result screen,
-  // so this replays saveScore with the same values rather than
-  // asking the user to redo the whole quiz over a transient failure.
   const retrySave = async () => {
     if (retryingSave) return
     setRetryingSave(true)
@@ -466,15 +441,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
     return d ? { icon: DISCIPLINE_ICONS[d.icon], name: d.name } : { icon: null, name: id }
   }
 
-  // Suggestions for the "Next Quiz" section on the result screen —
-  // deliberately kept at the SAME level just completed, never a
-  // higher one, so this can never surface a level the user hasn't
-  // actually unlocked. Every candidate is checked to have real
-  // questions at that level before being offered, so a tap here can
-  // never land on an empty pool. Recomputed fresh each time the
-  // result screen is reached (dependency on phase), so retaking a
-  // quiz and finishing again gets a fresh random set of suggestions
-  // rather than the same three every time.
   const nextQuizSuggestions = useMemo(() => {
     if (phase !== 'result') return []
     const candidates = ['mixed', ...DISCIPLINES.map(d => d.id)].filter(id => id !== selectedDiscipline)
@@ -740,9 +706,6 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
           })}
         </div>
 
-        {/* Next Quiz — a few other disciplines at the same level,
-            each guaranteed to actually have questions, so the user
-            gets a real next step beyond "do this exact quiz again". */}
         {nextQuizSuggestions.length > 0 && (
           <div className="quiz-review" style={{ marginTop: 4 }}>
             <h3 className="quiz-review-title">Next Quiz</h3>
