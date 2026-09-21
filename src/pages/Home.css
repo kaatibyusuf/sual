@@ -873,3 +873,25 @@
     transition: none;
   }
 }
+
+/* ── Streak history link ───────────────────────────────────── */
+.hm-streak-history-link {
+  display: block;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #eef1f4;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--hm-navy);
+  text-decoration: none;
+  text-align: center;
+}
+
+.hm-streak-history-link:hover {
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .hm-streak-history-link {
+  color: var(--hm-sky);
+  border-top-color: #1e3448;
+}

@@ -1,0 +1,180 @@
+/* ============================================
+   Sual Marketplace — course player
+   ============================================ */
+
+.marketplace-learn-page {
+  padding: 0;
+}
+
+.marketplace-completion-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: linear-gradient(135deg, #094570, #0d5a8f);
+  color: #ffffff;
+  padding: 16px 24px;
+  font-size: 0.95rem;
+}
+
+.marketplace-completion-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.marketplace-learn-layout {
+  display: flex;
+  gap: 0;
+  align-items: flex-start;
+}
+
+.marketplace-learn-main {
+  flex: 1;
+  padding: 20px 24px;
+  min-width: 0;
+}
+
+.marketplace-learn-back {
+  display: inline-block;
+  color: #6a8090;
+  font-size: 0.85rem;
+  text-decoration: none;
+  margin-bottom: 14px;
+}
+
+.marketplace-learn-video {
+  width: 100%;
+  border-radius: 12px;
+  background: #000;
+  max-height: 480px;
+}
+
+.marketplace-learn-video-placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #0f1f2e;
+  color: #7d93a6;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marketplace-learn-lesson-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.marketplace-learn-lesson-info h2 {
+  font-size: 1.1rem;
+  color: #094570;
+  margin: 0;
+}
+
+.marketplace-learn-cert-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  margin-top: 20px;
+  font-size: 0.88rem;
+  color: #3a4a5a;
+}
+
+.marketplace-learn-sidebar {
+  flex: 0 0 300px;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  border-left: 1px solid #e0e8f0;
+  padding: 16px;
+}
+
+.marketplace-learn-section {
+  margin-bottom: 16px;
+}
+
+.marketplace-learn-section-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6a8090;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0 0 8px;
+}
+
+.marketplace-learn-lesson-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #3a4a5a;
+  margin-bottom: 2px;
+}
+
+.marketplace-learn-lesson-btn--active {
+  background: rgba(9,69,112,0.08);
+}
+
+.marketplace-learn-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid #c8d8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: #8a9ab0;
+}
+
+.marketplace-learn-check--done {
+  background: #2e7d32;
+  border-color: #2e7d32;
+  color: #fff;
+}
+
+.marketplace-learn-lesson-btn-title {
+  flex: 1;
+}
+
+.marketplace-learn-lesson-btn-duration {
+  font-size: 0.72rem;
+  color: #8a9ab0;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────── */
+[data-theme="dark"] .marketplace-learn-back { color: #7d93a6; }
+[data-theme="dark"] .marketplace-learn-lesson-info h2 { color: #c8e0f5; }
+[data-theme="dark"] .marketplace-learn-cert-note { background: #0f1f2e; color: #a8c0d8; }
+[data-theme="dark"] .marketplace-learn-sidebar { border-color: #1e3448; }
+[data-theme="dark"] .marketplace-learn-section-title { color: #7d93a6; }
+[data-theme="dark"] .marketplace-learn-lesson-btn { color: #a8c0d8; }
+[data-theme="dark"] .marketplace-learn-lesson-btn--active { background: rgba(133,204,255,0.1); }
+[data-theme="dark"] .marketplace-learn-check { border-color: #2a3f52; color: #7d93a6; }
+
+@media (max-width: 900px) {
+  .marketplace-learn-layout {
+    flex-direction: column;
+  }
+  .marketplace-learn-sidebar {
+    flex: none;
+    width: 100%;
+    max-height: none;
+    border-left: none;
+    border-top: 1px solid #e0e8f0;
+  }
+}

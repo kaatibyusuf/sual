@@ -1,0 +1,59 @@
+/* ============================================
+   Sual Marketplace — checkout complete page
+   ============================================ */
+
+.marketplace-checkout-complete-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+}
+
+.marketplace-checkout-complete-card {
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  padding: 40px 28px;
+}
+
+.marketplace-checkout-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e0e8f0;
+  border-top-color: #094570;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: marketplace-spin 0.8s linear infinite;
+}
+
+@keyframes marketplace-spin {
+  to { transform: rotate(360deg); }
+}
+
+.marketplace-checkout-complete-icon {
+  font-size: 2.4rem;
+  color: #2e7d32;
+  margin: 0 0 12px;
+}
+
+.marketplace-checkout-complete-icon--error {
+  color: #c0392b;
+}
+
+.marketplace-checkout-complete-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #094570;
+  margin: 0 0 8px;
+}
+
+.marketplace-checkout-complete-sub {
+  font-size: 0.9rem;
+  color: #6a8090;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────── */
+[data-theme="dark"] .marketplace-checkout-complete-title { color: #c8e0f5; }
+[data-theme="dark"] .marketplace-checkout-complete-sub { color: #a8c0d8; }
+[data-theme="dark"] .marketplace-checkout-spinner { border-color: #1e3448; border-top-color: #85CCFF; }

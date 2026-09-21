@@ -1,0 +1,146 @@
+/* ============================================
+   Sual Feedback — public board
+   ============================================ */
+
+.feedback-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.feedback-filter-btn {
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1.5px solid #c8d8e8;
+  background: #ffffff;
+  color: #6a8090;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.feedback-filter-btn--active {
+  border-color: #094570;
+  background: #094570;
+  color: #ffffff;
+}
+
+.feedback-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #6a8090;
+}
+
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feedback-item {
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1.5px solid #e0e8f0;
+  border-radius: 14px;
+}
+
+.feedback-item-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.feedback-ticket {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #8a9ab0;
+  letter-spacing: 0.02em;
+}
+
+.feedback-type-badge,
+.feedback-status-badge {
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.feedback-type-badge--bug {
+  background: rgba(192, 57, 43, 0.1);
+  color: #c0392b;
+}
+
+.feedback-type-badge--feature {
+  background: rgba(9, 69, 112, 0.08);
+  color: #094570;
+}
+
+.feedback-status-badge--new,
+.feedback-status-badge--triaged {
+  background: #eef1f4;
+  color: #6a8090;
+}
+
+.feedback-status-badge--in_progress {
+  background: rgba(230, 81, 0, 0.1);
+  color: #e65100;
+}
+
+.feedback-status-badge--fixed {
+  background: rgba(46, 125, 50, 0.1);
+  color: #2e7d32;
+}
+
+.feedback-status-badge--wont_fix,
+.feedback-status-badge--duplicate {
+  background: #eef1f4;
+  color: #8a9ab0;
+}
+
+.feedback-item-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #094570;
+  margin: 0 0 6px;
+}
+
+.feedback-item-desc {
+  font-size: 0.88rem;
+  color: #4a6080;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────── */
+[data-theme="dark"] .feedback-filter-btn {
+  background: #0f1f2e;
+  border-color: #1e3448;
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .feedback-filter-btn--active {
+  background: #85CCFF;
+  border-color: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .feedback-item {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .feedback-item-title {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .feedback-item-desc {
+  color: #a8c0d8;
+}
+
+[data-theme="dark"] .feedback-empty {
+  color: #7d93a6;
+}

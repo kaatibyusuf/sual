@@ -1,0 +1,87 @@
+/* ============================================
+   Certificate verification — public page
+   ============================================ */
+
+.cert-verify-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #062f4a, #094570);
+  padding: 20px;
+}
+
+.cert-verify-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.cert-verify-logo {
+  font-family: 'Amiri', serif;
+  font-size: 2rem;
+  color: #094570;
+}
+
+.cert-verify-brand {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #85CCFF;
+  background: #094570;
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 100px;
+  margin: 6px 0 24px;
+}
+
+.cert-verify-status {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #6a8090;
+}
+
+.cert-verify-status--valid { color: #2e7d32; }
+.cert-verify-status--error { color: #c0392b; }
+
+.cert-verify-sub {
+  font-size: 0.85rem;
+  color: #8a9ab0;
+}
+
+.cert-verify-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #094570;
+  margin: 12px 0 2px;
+}
+
+.cert-verify-detail {
+  font-size: 0.85rem;
+  color: #8a9ab0;
+  margin: 0;
+}
+
+.cert-verify-course {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: #094570;
+  margin: 6px 0 16px;
+}
+
+.cert-verify-date {
+  font-size: 0.82rem;
+  color: #6a8090;
+  margin: 0 0 4px;
+}
+
+.cert-verify-code {
+  font-size: 0.75rem;
+  color: #b0bcc8;
+  margin: 0;
+}

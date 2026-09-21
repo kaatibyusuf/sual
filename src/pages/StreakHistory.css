@@ -1,0 +1,214 @@
+/* ============================================
+   Streak History page
+   ============================================ */
+
+.sh-page {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.sh-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.sh-back-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f8fb;
+  color: #094570;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sh-back-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sh-title {
+  font-weight: 700;
+  color: #094570;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.sh-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.sh-headline-icon {
+  width: 40px;
+  height: 40px;
+  color: #85CCFF;
+  margin-bottom: 12px;
+}
+
+.sh-headline-text {
+  margin: 0;
+  line-height: 1.15;
+}
+
+.sh-headline-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #094570;
+}
+
+.sh-headline-word {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #094570;
+  background: linear-gradient(135deg, #094570, #2196f3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sh-year-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.sh-year-nav {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f8fb;
+  color: #094570;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sh-year-nav svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sh-year-nav:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.sh-year-label {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #094570;
+  margin: 0;
+  min-width: 60px;
+  text-align: center;
+}
+
+.sh-month-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  row-gap: 28px;
+  column-gap: 8px;
+  margin-bottom: 28px;
+}
+
+.sh-month-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sh-month-dot {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #f0f3f7;
+  border: 1.5px solid #e0e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b0bcc8;
+}
+
+.sh-month-dot svg {
+  width: 22px;
+  height: 22px;
+}
+
+.sh-month-dot--active {
+  background: rgba(133, 204, 255, 0.18);
+  border-color: #85CCFF;
+  color: #094570;
+}
+
+.sh-month-dot--future {
+  opacity: 0.5;
+}
+
+.sh-month-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3a4a5a;
+}
+
+.sh-tip {
+  font-size: 0.85rem;
+  color: #6a8090;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0 0 24px;
+  padding: 0 20px;
+}
+
+.sh-share-error {
+  font-size: 0.8rem;
+  color: #c0392b;
+  text-align: center;
+  margin: 0 0 12px;
+}
+
+.sh-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1.5px solid #094570;
+  background: #ffffff;
+  color: #094570;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.sh-share-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────── */
+[data-theme="dark"] .sh-back-btn { background: #0f1f2e; color: #85CCFF; }
+[data-theme="dark"] .sh-title { color: #c8e0f5; }
+[data-theme="dark"] .sh-headline-number { color: #c8e0f5; }
+[data-theme="dark"] .sh-headline-word { background: linear-gradient(135deg, #85CCFF, #5da8e0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+[data-theme="dark"] .sh-year-nav { background: #0f1f2e; color: #85CCFF; }
+[data-theme="dark"] .sh-year-label { color: #c8e0f5; }
+[data-theme="dark"] .sh-month-dot { background: #16283a; border-color: #1e3448; color: #4a5a6a; }
+[data-theme="dark"] .sh-month-dot--active { background: rgba(133, 204, 255, 0.12); border-color: #85CCFF; color: #85CCFF; }
+[data-theme="dark"] .sh-month-label { color: #a8c0d8; }
+[data-theme="dark"] .sh-tip { color: #7d93a6; }
+[data-theme="dark"] .sh-share-btn { border-color: #85CCFF; color: #85CCFF; background: transparent; }

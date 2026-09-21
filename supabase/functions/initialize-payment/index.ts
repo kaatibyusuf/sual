@@ -2,8 +2,9 @@
 //
 // Initializes a Paystack transaction for Spaces (monthly, annual, or
 // lifetime), Book Quiz, the Tajweed Course, Adab Class, Tawheed
-// Class, or Tajweed Class. The reference format carries the plan so
-// the webhook can branch on it without a second lookup:
+// Class, Tajweed Class, Seerah Class, Arabiyyah Class, Hadeeth
+// Class, or Sual Marketplace. The reference format carries the plan
+// so the webhook can branch on it without a second lookup:
 //   sual_<plan>_<uuid>_<epoch>          (Spaces)
 //   bookquiz_<plan>_<uuid>_<epoch>      (Book Quiz)
 //   tajweed_<plan>_<uuid>_<epoch>       (Tajweed Course)
@@ -46,6 +47,27 @@
 //                                        standalone product not
 //                                        tied to any existing
 //                                        hadith-related feature)
+//   mkt_cart_<uuid>_<epoch>              (Sual Marketplace — "cart"
+//                                        stands in for a plan name
+//                                        since a checkout can cover
+//                                        several courses at once;
+//                                        see the 'marketplace' branch
+//                                        below for why this one
+//                                        needs real DB writes before
+//                                        calling Paystack, unlike
+//                                        every other branch here)
+//
+// Every other product above is stateless until the webhook fires —
+// the reference alone tells paystack-webhook everything it needs
+// (which plan, whose user id), so this function never touches the
+// database beyond authenticating the caller. Marketplace can't work
+// that way: a cart can hold several courses at unpredictable prices,
+// so the actual items and amounts have to be frozen into a real
+// marketplace_orders/marketplace_order_items row *before* Paystack is
+// called — otherwise someone editing their cart between checkout and
+// payment could pay one amount for what was priced as another. That
+// freeze step is the one thing that needs a service-role client here
+// where every other branch gets by with just the caller's own JWT.
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -53,6 +75,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const PAYSTACK_SECRET_KEY = Deno.env.get('PAYSTACK_SECRET_KEY')!
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!
+const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -115,6 +138,7 @@ const CALLBACK_PATHS = {
   seerahclass: '/seerah-class',
   arabiyyahclass: '/arabiyyah-class',
   hadeethclass: '/hadeeth-class',
+  marketplace: '/marketplace/checkout-complete',
 }
 
 serve(async (req) => {
@@ -132,6 +156,7 @@ serve(async (req) => {
   const { product, plan } = body
 
   let amount, reference
+  let extraResponseFields = {}
 
   if (product === 'spaces') {
     const spacesPlan = ['monthly', 'annual', 'lifetime'].includes(plan) ? plan : 'monthly'
@@ -212,6 +237,84 @@ serve(async (req) => {
     } else {
       return new Response(JSON.stringify({ error: 'Invalid Hadeeth Class plan' }), { status: 400, headers: corsHeaders })
     }
+  } else if (product === 'marketplace') {
+    // ── Sual Marketplace: reads the caller's own server-side cart,
+    // drops anything unpublished or already owned, freezes the rest
+    // into a pending order + order_items, THEN calls Paystack. This
+    // is the one branch in this file that writes to the database
+    // before Paystack is ever involved — see the header comment for
+    // why every other product doesn't need to.
+    const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
+
+    const { data: cartItems, error: cartError } = await admin
+      .from('marketplace_cart_items')
+      .select('id, course_id, marketplace_courses(id, title, price_kobo, currency, status)')
+      .eq('user_id', user.id)
+    if (cartError) {
+      console.error('Failed to read marketplace cart:', cartError)
+      return new Response(JSON.stringify({ error: 'Could not read your cart' }), { status: 500, headers: corsHeaders })
+    }
+    if (!cartItems || cartItems.length === 0) {
+      return new Response(JSON.stringify({ error: 'Your cart is empty.' }), { status: 400, headers: corsHeaders })
+    }
+
+    const { data: existingEnrollments } = await admin
+      .from('marketplace_enrollments')
+      .select('course_id')
+      .eq('user_id', user.id)
+    const ownedCourseIds = new Set((existingEnrollments || []).map(e => e.course_id))
+
+    const droppedTitles = []
+    const validItems = cartItems.filter(item => {
+      const course = item.marketplace_courses
+      if (!course || course.status !== 'published') {
+        droppedTitles.push(course?.title || 'a removed course')
+        return false
+      }
+      if (ownedCourseIds.has(course.id)) {
+        droppedTitles.push(`${course.title} (already purchased)`)
+        return false
+      }
+      return true
+    })
+
+    const droppedCartItemIds = cartItems.filter(i => !validItems.includes(i)).map(i => i.id)
+    if (droppedCartItemIds.length > 0) {
+      await admin.from('marketplace_cart_items').delete().in('id', droppedCartItemIds)
+    }
+
+    if (validItems.length === 0) {
+      return new Response(JSON.stringify({ error: 'Nothing left to check out.', dropped: droppedTitles }), { status: 400, headers: corsHeaders })
+    }
+
+    const currency = validItems[0].marketplace_courses.currency
+    const totalKobo = validItems.reduce((sum, item) => sum + item.marketplace_courses.price_kobo, 0)
+
+    reference = `mkt_cart_${user.id}_${Date.now()}`
+    amount = totalKobo
+
+    const { data: order, error: orderError } = await admin
+      .from('marketplace_orders')
+      .insert({ user_id: user.id, paystack_reference: reference, total_kobo: totalKobo, currency, status: 'pending' })
+      .select()
+      .single()
+    if (orderError) {
+      console.error('Failed to create marketplace order:', orderError)
+      return new Response(JSON.stringify({ error: 'Could not start checkout' }), { status: 500, headers: corsHeaders })
+    }
+
+    const orderItemRows = validItems.map(item => ({
+      order_id: order.id,
+      course_id: item.marketplace_courses.id,
+      price_kobo: item.marketplace_courses.price_kobo,
+    }))
+    const { error: orderItemsError } = await admin.from('marketplace_order_items').insert(orderItemRows)
+    if (orderItemsError) {
+      console.error('Failed to create marketplace order items:', orderItemsError)
+      return new Response(JSON.stringify({ error: 'Could not start checkout' }), { status: 500, headers: corsHeaders })
+    }
+
+    if (droppedTitles.length > 0) extraResponseFields = { dropped: droppedTitles }
   } else {
     return new Response(JSON.stringify({ error: 'Unknown product' }), { status: 400, headers: corsHeaders })
   }
@@ -238,7 +341,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: data.message || 'Could not start payment' }), { status: 500, headers: corsHeaders })
   }
 
-  return new Response(JSON.stringify({ authorization_url: data.data.authorization_url }), {
+  return new Response(JSON.stringify({ authorization_url: data.data.authorization_url, ...extraResponseFields }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
 })

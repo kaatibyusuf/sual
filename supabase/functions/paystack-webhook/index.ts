@@ -12,7 +12,7 @@
 // every renewal so the subscription-renewal-reminder function can
 // send a fresh reminder ahead of the new expiry date).
 //
-// Nine products share this one webhook, since Paystack only supports
+// Ten products share this one webhook, since Paystack only supports
 // one registered webhook URL per account:
 //   - Spaces subscriptions: reference sual_<plan>_<uuid>_<epoch ms>
 //     where <plan> is "monthly", "annual", or "lifetime"
@@ -47,6 +47,16 @@
 //     using the exact same plan format as the other five classes.
 //     This is a standalone product with no existing feature of its
 //     own to collide with.
+//   - Sual Marketplace orders: reference mkt_cart_<uuid>_<epoch ms>.
+//     "cart" stands in for a plan name since a marketplace checkout
+//     has no monthly/annual/unit concept — it can cover several
+//     courses in one order. The actual items and prices purchased
+//     live in marketplace_orders/marketplace_order_items (created by
+//     the marketplace-checkout function before Paystack is ever
+//     called), looked up here by the exact reference string, not
+//     decoded from it. One-off per order, same as Adab/Tawheed/etc,
+//     so subscription.disable below needs no marketplace-specific
+//     logic either.
 //
 // Spaces / Book Quiz / Tajweed each write to their own table
 // (subscriptions / book_quiz_subscriptions / tajweed_subscriptions)
@@ -68,7 +78,8 @@
 // subscription.disable handler below needs no Adab-, Tawheed-,
 // Tajweed Class-, Seerah Class-, Arabiyyah Class-, or Hadeeth
 // Class-specific logic; that event simply never fires for these
-// purchases.
+// purchases. Sual Marketplace orders follow this same one-off
+// pattern, keyed on marketplace_orders.paystack_reference instead.
 //
 // Lifetime Spaces members get expires_at = null (never expires) and
 // plan = 'spaces_lifetime'. The frontend's isPaid check treats
@@ -109,7 +120,7 @@ async function verifySignature(rawBody: string, signature: string | null): Promi
 }
 
 // ── Reference parsing ────────────────────────────────────────
-// Returns { product: 'spaces' | 'bookquiz' | 'tajweed' | 'adab' | 'tawheed' | 'tajweedclass' | 'seerahclass' | 'arabiyyahclass' | 'hadeethclass', userId, plan }
+// Returns { product: 'spaces' | 'bookquiz' | 'tajweed' | 'adab' | 'tawheed' | 'tajweedclass' | 'seerahclass' | 'arabiyyahclass' | 'hadeethclass' | 'marketplace', userId, plan }
 // or null if the reference doesn't match any known pattern.
 function parseReference(reference: string | null) {
   if (!reference) return null
@@ -145,6 +156,14 @@ function parseReference(reference: string | null) {
 
   const hadeethClassMatch = reference.match(/^hadeethclass_(full|unit\d{1,2})_([0-9a-fA-F-]{36})_/)
   if (hadeethClassMatch) return { product: 'hadeethclass' as const, plan: hadeethClassMatch[1], userId: hadeethClassMatch[2] }
+
+  // Sual Marketplace: mkt_cart_<uuid>_<epoch ms>. "cart" is a fixed
+  // literal, not a real plan — matched here the same way as every
+  // other product's plan segment so this fits the established
+  // reference shape, but the marketplace handler below ignores it
+  // and looks the order up by the full reference string instead.
+  const marketplaceMatch = reference.match(/^mkt_(cart)_([0-9a-fA-F-]{36})_/)
+  if (marketplaceMatch) return { product: 'marketplace' as const, plan: marketplaceMatch[1], userId: marketplaceMatch[2] }
 
   return null
 }
@@ -460,6 +479,52 @@ async function sendWelcomeEmail(email: string, product: 'spaces' | 'bookquiz' | 
     return { ok: true, resendId: body.id ?? null, error: null }
   } catch (err) {
     console.error('Welcome email request error:', err)
+    return { ok: false, resendId: null, error: String(err) }
+  }
+}
+
+// Marketplace gets its own small email helper rather than being
+// folded into welcomeEmailHtml/sendWelcomeEmail above — those two
+// take a single (product, plan) pair, which doesn't fit an order
+// that can cover several course titles at once. Keeping it separate
+// avoids reshaping a signature every other product already relies on.
+function marketplaceReceiptEmailHtml(courseTitles: string[]): string {
+  const itemsHtml = courseTitles.map(t => `<li style="margin-bottom:6px;">${t}</li>`).join('')
+  return `
+    <h1>Assalamu alaykum, your Sual Marketplace purchase is confirmed</h1>
+    <p>You're now enrolled in:</p>
+    <ul>${itemsHtml}</ul>
+    <p>You can start watching right away from "My Courses" in the app.</p>
+    <p>If anything about your access looks wrong, just reply to this email — this message
+    is our record that your payment was confirmed and access was granted.</p>
+    <p>بارك الله فيك</p>
+    <p>— The Sual team</p>
+  `
+}
+
+async function sendMarketplaceReceiptEmail(email: string, courseTitles: string[]): Promise<{ ok: boolean; resendId: string | null; error: string | null }> {
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: FROM_ADDRESS,
+        to: email,
+        subject: 'Your Sual Marketplace purchase is confirmed',
+        html: marketplaceReceiptEmailHtml(courseTitles),
+      }),
+    })
+    const body = await res.json()
+    if (!res.ok) {
+      console.error('Marketplace receipt email send failed:', body)
+      return { ok: false, resendId: null, error: JSON.stringify(body) }
+    }
+    return { ok: true, resendId: body.id ?? null, error: null }
+  } catch (err) {
+    console.error('Marketplace receipt email request error:', err)
     return { ok: false, resendId: null, error: String(err) }
   }
 }
@@ -971,12 +1036,92 @@ serve(async (req) => {
         headers: { 'Content-Type': 'application/json' },
       })
     }
+
+    if (parsed.product === 'marketplace') {
+      // The actual items and prices live in marketplace_orders /
+      // marketplace_order_items, created by marketplace-checkout
+      // before Paystack was ever called — this just looks that order
+      // up by the exact reference string, rather than decoding
+      // anything from it.
+      const { data: order, error: orderFetchError } = await supabaseAdmin
+        .from('marketplace_orders')
+        .select('id, user_id, status')
+        .eq('paystack_reference', reference)
+        .maybeSingle()
+
+      if (orderFetchError || !order) {
+        console.error('Marketplace order not found for reference:', reference, orderFetchError)
+        return new Response(JSON.stringify({ warning: 'marketplace order not found' }), { status: 200 })
+      }
+
+      // Idempotent against webhook retries — Paystack may deliver
+      // the same charge.success more than once.
+      if (order.status === 'paid') {
+        return new Response(JSON.stringify({ ok: true, product: 'marketplace', alreadyProcessed: true }), {
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+
+      const { error: orderUpdateError } = await supabaseAdmin
+        .from('marketplace_orders')
+        .update({ status: 'paid', paid_at: new Date().toISOString() })
+        .eq('id', order.id)
+      if (orderUpdateError) {
+        console.error('Failed to mark marketplace order paid:', orderUpdateError)
+        return new Response(JSON.stringify({ error: orderUpdateError.message }), { status: 500 })
+      }
+
+      const { data: orderItems, error: itemsError } = await supabaseAdmin
+        .from('marketplace_order_items')
+        .select('id, course_id, marketplace_courses(title)')
+        .eq('order_id', order.id)
+      if (itemsError) {
+        console.error('Failed to load marketplace order items:', itemsError)
+        return new Response(JSON.stringify({ error: itemsError.message }), { status: 500 })
+      }
+
+      // One enrollment per course purchased. ignoreDuplicates guards
+      // against a webhook retry double-enrolling or hitting the
+      // (user_id, course_id) unique constraint as an error.
+      const enrollmentRows = orderItems.map(item => ({
+        user_id: order.user_id,
+        course_id: item.course_id,
+        order_item_id: item.id,
+      }))
+      const { error: enrollError } = await supabaseAdmin
+        .from('marketplace_enrollments')
+        .upsert(enrollmentRows, { onConflict: 'user_id,course_id', ignoreDuplicates: true })
+      if (enrollError) {
+        console.error('Failed to create marketplace enrollments:', enrollError)
+        return new Response(JSON.stringify({ error: enrollError.message }), { status: 500 })
+      }
+
+      // Purchased courses no longer belong in the cart.
+      const purchasedCourseIds = orderItems.map(i => i.course_id)
+      if (purchasedCourseIds.length > 0) {
+        await supabaseAdmin
+          .from('marketplace_cart_items')
+          .delete()
+          .eq('user_id', order.user_id)
+          .in('course_id', purchasedCourseIds)
+      }
+
+      if (email) {
+        const courseTitles = orderItems.map(i => i.marketplace_courses?.title).filter(Boolean) as string[]
+        const result = await sendMarketplaceReceiptEmail(email, courseTitles)
+        await logEmail(order.user_id, email, 'Your Sual Marketplace purchase is confirmed', result, 'marketplace_purchase')
+      }
+
+      return new Response(JSON.stringify({ ok: true, product: 'marketplace', enrolledCourses: purchasedCourseIds.length }), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
   }
 
   if (eventType === 'subscription.disable') {
     // Lifetime and one-off charges (including all Adab Class,
     // Tawheed Class, Tajweed Class, Seerah Class, Arabiyyah Class,
-    // and Hadeeth Class purchases)
+    // Hadeeth Class, and Sual Marketplace purchases)
     // never create a Paystack recurring subscription object, so
     // this event simply never fires for those rows — nothing extra
     // needed here to protect them from being deactivated by this

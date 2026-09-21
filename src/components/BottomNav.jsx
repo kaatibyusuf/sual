@@ -176,6 +176,26 @@ const ICONS = {
       <rect x="4" y="16" width="16" height="4" rx="1" />
     </svg>
   ),
+  feedback: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12a8 8 0 1 1-3.4-6.5" />
+      <path d="M21 4v5h-5" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <circle cx="12" cy="16" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  flame: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2.5c3.5 5 7 9 7 13a7 7 0 0 1-14 0c0-4 3.5-8 7-13z" />
+    </svg>
+  ),
+  marketplace: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 8l1.5-4h13L20 8" />
+      <path d="M4 8h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8z" />
+      <path d="M9 12a3 3 0 0 0 6 0" />
+    </svg>
+  ),
 }
 
 // The four always-visible tabs.
@@ -205,6 +225,10 @@ const MORE_ITEMS = [
   { to: '/arabic-dictionary', icon: 'arabicDictionary', label: 'Arabic Dictionary' },
   { to: '/fusuul', icon: 'fusuul', label: 'Fusuul' },
   { to: '/knowledge-graph', icon: 'graph', label: 'Knowledge Graph' },
+  { to: '/feedback', icon: 'feedback', label: 'Feedback' },
+  { to: '/marketplace', icon: 'marketplace', label: 'Marketplace' },
+  { to: '/marketplace/my-courses', icon: 'marketplace', label: 'My Courses' },
+  { to: '/streak-history', icon: 'flame', label: 'Streak History' },
 ]
 
 export default function BottomNav() {

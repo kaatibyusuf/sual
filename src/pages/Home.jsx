@@ -9,6 +9,7 @@ import { STORIES } from '../data/stories.js'
 import { DISCIPLINES } from '../data/knowledge.js'
 import SpacesCTA from '../components/SpacesCTA.jsx'
 import { generateStreakCard } from '../lib/shareCard.js'
+import { useStreakActivityDates, computeStreakFromDates } from '../lib/streakActivity.js'
 import './Home.css'
 
 function getGreeting() {
@@ -18,38 +19,6 @@ function getGreeting() {
   if (hour < 17) return 'Good afternoon'
   if (hour < 21) return 'Good evening'
   return 'Good night'
-}
-
-// Counts consecutive days (ending today or yesterday) with at least
-// one real engagement event — a quiz taken OR a story touched. Two
-// separate date sources get merged into one set of "active day"
-// strings before the streak math runs, so a day counts once whether
-// someone quizzed, read, or did both. Fed by the UNCAPPED statsHistory
-// array (see the loader below) — this previously ran on a 50-row-
-// capped quiz_history query, which meant taking more quizzes today
-// could push older days' quizzes out of the window entirely and
-// shrink the streak as a side effect of using the app more.
-function computeActivityStreak(quizHistory, storyRows) {
-  const dateStrings = new Set([
-    ...quizHistory.map(r => new Date(r.taken_at).toDateString()),
-    ...storyRows.map(r => new Date(r.updated_at).toDateString()),
-  ])
-  if (dateStrings.size === 0) return { streak: 0, activeDates: dateStrings }
-
-  const days = [...dateStrings].map(d => new Date(d)).sort((a, b) => b - a)
-
-  const today = new Date(); today.setHours(0, 0, 0, 0)
-  const mostRecent = days[0]
-  const dayDiff = Math.round((today - mostRecent) / 86400000)
-  if (dayDiff > 1) return { streak: 0, activeDates: dateStrings } // broken — nothing today or yesterday
-
-  let streak = 1
-  for (let i = 1; i < days.length; i++) {
-    const diff = Math.round((days[i - 1] - days[i]) / 86400000)
-    if (diff === 1) streak++
-    else break
-  }
-  return { streak, activeDates: dateStrings }
 }
 
 function disciplineName(id) {
@@ -370,8 +339,6 @@ export default function Home({ user }) {
   const [continueStories, setContinueStories] = useState([])
   const [continueLoading, setContinueLoading] = useState(true)
 
-  const [storyActivityRows, setStoryActivityRows] = useState([])
-
   // ── Daily reminder + milestone celebration ──────────────────
   const { visible: reminderVisible, dismiss: dismissReminder } = useDailyReminderVisible()
   const [milestone, setMilestone] = useState(null)
@@ -533,30 +500,22 @@ export default function Home({ user }) {
     loadContinue()
   }, [user])
 
-  useEffect(() => {
-    if (!user) return
-    const loadStoryActivity = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('story_reading_progress')
-          .select('updated_at')
-          .eq('user_id', user.id)
-        if (error) throw error
-        setStoryActivityRows(data || [])
-      } catch (err) {
-        console.error('Failed to load story activity for streak:', err)
-        setStoryActivityRows([])
-      }
-    }
-    loadStoryActivity()
-  }, [user])
+  // Story-reading, Hifdh, and Exam Prep activity (plus quiz activity
+  // below) now come from the shared useStreakActivityDates hook —
+  // see the merge below, right where the streak itself is computed.
 
   const totalQuizzes = totalQuizCount
   const avgScore = statsHistory.length > 0
     ? Math.round(statsHistory.reduce((s, r) => s + r.percentage, 0) / statsHistory.length)
     : 0
   const currentLevel = levelData?.current_level || 'beginner'
-  const { streak, activeDates } = computeActivityStreak(statsHistory, storyActivityRows)
+
+  // Every activity source is fetched and merged by the shared hook
+  // (lib/streakActivity.js) — Home and the Streak History page both
+  // read from this one implementation, so they can never disagree
+  // about which days counted.
+  const { activeDateStrings } = useStreakActivityDates(user)
+  const { streak, activeDates } = computeStreakFromDates(activeDateStrings)
   const firstName = fullName ? fullName.trim().split(/\s+/)[0] : null
 
   // Fires the milestone celebration overlay whenever the computed
@@ -774,6 +733,7 @@ export default function Home({ user }) {
             </div>
           ))}
         </div>
+        <Link to="/streak-history" className="hm-streak-history-link">View Streak History →</Link>
       </div>
 
       <div className="hm-section">

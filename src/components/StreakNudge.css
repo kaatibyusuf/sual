@@ -1,0 +1,47 @@
+/* ============================================
+   Streak-preservation nudge banner
+   ============================================ */
+
+.sn-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #094570, #0d5a8f);
+  color: #ffffff;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.sn-banner-flame {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.sn-banner-text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.sn-banner-cta {
+  flex-shrink: 0;
+  background: #ffffff;
+  color: #094570;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .sn-banner {
+    flex-wrap: wrap;
+  }
+  .sn-banner-text {
+    flex: 1 1 100%;
+  }
+}

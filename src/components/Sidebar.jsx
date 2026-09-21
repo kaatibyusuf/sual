@@ -187,6 +187,26 @@ const ICONS = {
       <rect x="4" y="16" width="16" height="4" rx="1" />
     </svg>
   ),
+  feedback: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12a8 8 0 1 1-3.4-6.5" />
+      <path d="M21 4v5h-5" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <circle cx="12" cy="16" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  flame: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2.5c3.5 5 7 9 7 13a7 7 0 0 1-14 0c0-4 3.5-8 7-13z" />
+    </svg>
+  ),
+  marketplace: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 8l1.5-4h13L20 8" />
+      <path d="M4 8h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8z" />
+      <path d="M9 12a3 3 0 0 0 6 0" />
+    </svg>
+  ),
 }
 
 // -- Six-pillar grouping ---------------------------------------
@@ -198,6 +218,11 @@ const ICONS = {
 // Disciplines (Fiqh, Tawheed, etc. from DISCIPLINES data) are
 // appended to the Learn group below, right after Stories, so all
 // "things to read and study" live in one place.
+//
+// Marketplace is its own group rather than folded into Learn or
+// Community — it's a distinct paid-course product line, not free
+// study content or a community feature, so it earns its own
+// section heading like Memorise/Journey do.
 const HOME_ITEM = { path: '/', label: 'Home', icon: 'home' }
 
 const NAV_GROUPS = [
@@ -243,12 +268,21 @@ const NAV_GROUPS = [
     label: 'Community',
     items: [
       { path: '/spaces', label: 'Spaces', icon: 'spaces' },
+      { path: '/feedback', label: 'Feedback', icon: 'feedback' },
+    ],
+  },
+  {
+    label: 'Marketplace',
+    items: [
+      { path: '/marketplace', label: 'Browse Courses', icon: 'marketplace' },
+      { path: '/marketplace/my-courses', label: 'My Courses', icon: 'marketplace' },
     ],
   },
   {
     label: 'Journey',
     items: [
       { path: '/dashboard', label: 'Journey', icon: 'dashboard' },
+      { path: '/streak-history', label: 'Streak History', icon: 'flame' },
     ],
   },
   {

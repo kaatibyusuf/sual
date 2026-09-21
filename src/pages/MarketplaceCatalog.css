@@ -1,0 +1,192 @@
+/* ============================================
+   Sual Marketplace — catalog page
+   ============================================ */
+
+.marketplace-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.marketplace-cart-link {
+  position: relative;
+  white-space: nowrap;
+}
+
+.marketplace-cart-badge {
+  display: inline-block;
+  margin-left: 6px;
+  background: #ffffff;
+  color: #094570;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 1px 7px;
+  border-radius: 100px;
+}
+
+.marketplace-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.marketplace-filter-btn {
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1.5px solid #c8d8e8;
+  background: #ffffff;
+  color: #6a8090;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.marketplace-filter-btn--active {
+  border-color: #094570;
+  background: #094570;
+  color: #ffffff;
+}
+
+.marketplace-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #6a8090;
+}
+
+.marketplace-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.marketplace-card {
+  background: #ffffff;
+  border: 1.5px solid #e0e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.marketplace-card-thumb-link {
+  display: block;
+}
+
+.marketplace-card-thumb {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+  background: #f5f8fb;
+}
+
+.marketplace-card-thumb--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+}
+
+.marketplace-card-body {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.marketplace-level-badge {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 9px;
+  border-radius: 100px;
+  background: #eef1f4;
+  color: #6a8090;
+}
+
+.marketplace-level-badge--beginner { background: rgba(46,125,50,0.1); color: #2e7d32; }
+.marketplace-level-badge--intermediate { background: rgba(230,81,0,0.1); color: #e65100; }
+.marketplace-level-badge--advanced { background: rgba(106,27,154,0.1); color: #6a1b9a; }
+
+.marketplace-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #094570;
+  text-decoration: none;
+  line-height: 1.35;
+}
+
+.marketplace-card-creator {
+  font-size: 0.8rem;
+  color: #6a8090;
+  margin: 0;
+}
+
+.marketplace-card-meta {
+  font-size: 0.78rem;
+  color: #8a9ab0;
+  margin: 0;
+}
+
+.marketplace-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  gap: 10px;
+}
+
+.marketplace-card-price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #094570;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────── */
+[data-theme="dark"] .marketplace-filter-btn {
+  background: #0f1f2e;
+  border-color: #1e3448;
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .marketplace-filter-btn--active {
+  background: #85CCFF;
+  border-color: #85CCFF;
+  color: #0a1825;
+}
+
+[data-theme="dark"] .marketplace-card {
+  background: #0f1f2e;
+  border-color: #1e3448;
+}
+
+[data-theme="dark"] .marketplace-card-thumb {
+  background: #16283a;
+}
+
+[data-theme="dark"] .marketplace-card-title {
+  color: #c8e0f5;
+}
+
+[data-theme="dark"] .marketplace-card-creator,
+[data-theme="dark"] .marketplace-card-meta {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .marketplace-card-price {
+  color: #85CCFF;
+}
+
+[data-theme="dark"] .marketplace-empty {
+  color: #7d93a6;
+}
+
+[data-theme="dark"] .marketplace-cart-badge {
+  color: #094570;
+}

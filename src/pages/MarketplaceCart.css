@@ -1,0 +1,104 @@
+/* ============================================
+   Sual Marketplace — cart page
+   ============================================ */
+
+.marketplace-cart-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #6a8090;
+}
+
+.marketplace-cart-layout {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.marketplace-cart-items {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.marketplace-cart-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1.5px solid #e0e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.marketplace-cart-item-thumb {
+  width: 90px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.marketplace-cart-item-body {
+  flex: 1;
+}
+
+.marketplace-cart-item-title {
+  font-weight: 700;
+  color: #094570;
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+}
+
+.marketplace-cart-item-price {
+  font-size: 0.9rem;
+  color: #3a4a5a;
+  margin: 0;
+}
+
+.marketplace-cart-item-warning {
+  font-size: 0.78rem;
+  color: #c0392b;
+  margin: 0;
+}
+
+.marketplace-cart-summary {
+  flex: 0 0 300px;
+  padding: 20px;
+}
+
+.marketplace-cart-summary-title {
+  font-weight: 700;
+  color: #094570;
+  margin: 0 0 14px;
+}
+
+.marketplace-cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e8f0f8;
+  font-size: 0.95rem;
+}
+
+.marketplace-cart-summary-total {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #094570;
+}
+
+.marketplace-cart-checkout-btn {
+  width: 100%;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────── */
+[data-theme="dark"] .marketplace-cart-empty { color: #7d93a6; }
+[data-theme="dark"] .marketplace-cart-item { background: #0f1f2e; border-color: #1e3448; }
+[data-theme="dark"] .marketplace-cart-item-title { color: #c8e0f5; }
+[data-theme="dark"] .marketplace-cart-item-price { color: #a8c0d8; }
+[data-theme="dark"] .marketplace-cart-summary-title { color: #85CCFF; }
+[data-theme="dark"] .marketplace-cart-summary-row { border-color: #1e3448; }
+[data-theme="dark"] .marketplace-cart-summary-total { color: #85CCFF; }

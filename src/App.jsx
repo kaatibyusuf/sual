@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { captureReferralFromUrl, redeemStoredReferral } from './lib/referral.js'
 import { supabase } from './lib/supabase.js'
 import Sidebar from './components/Sidebar.jsx'
@@ -7,6 +7,7 @@ import Toolbar from './components/Toolbar.jsx'
 import BottomNav from './components/BottomNav.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 import NotificationBell from './components/NotificationBell.jsx'
+import StreakNudge from './components/StreakNudge.jsx'
 import AppLockScreen from './components/AppLockScreen.jsx'
 import { shouldShowLockScreen, trackVisibilityForRelock } from './lib/biometricLock.js'
 import { AccessibilityProvider } from './accessibility/AccessibilityContext.jsx'
@@ -54,6 +55,19 @@ const SeerahClass = lazy(() => import('./pages/SeerahClass.jsx'))
 const ArabiyyahClass = React.lazy(() => import('./pages/ArabiyyahClass'));
 const Fusuul = React.lazy(() => import('./pages/Fusuul'));
 const HadeethClass = React.lazy(() => import('./pages/HadeethClass'));
+const FeedbackBoard        = lazy(() => import('./pages/FeedbackBoard.jsx'))
+// Sual Marketplace
+const MarketplaceCatalog          = lazy(() => import('./pages/MarketplaceCatalog.jsx'))
+const MarketplaceCourseDetail     = lazy(() => import('./pages/MarketplaceCourseDetail.jsx'))
+const MarketplaceCart             = lazy(() => import('./pages/MarketplaceCart.jsx'))
+const MarketplaceCheckoutComplete = lazy(() => import('./pages/MarketplaceCheckoutComplete.jsx'))
+const MarketplaceLearn            = lazy(() => import('./pages/MarketplaceLearn.jsx'))
+const MarketplaceMyCourses        = lazy(() => import('./pages/MarketplaceMyCourses.jsx'))
+// Public, unauthenticated — see the isPublicRoute check in AppInner
+// below. Someone verifying a certificate (an employer, a family
+// member) will not have a Sual account.
+const CertificateVerify           = lazy(() => import('./pages/CertificateVerify.jsx'))
+const StreakHistory                = lazy(() => import('./pages/StreakHistory.jsx'))
 
 function RouteFallback() {
   return (
@@ -76,6 +90,7 @@ const WELCOME_SEEN_KEY = 'sual-welcome-seen'
 // renders INSIDE the accessibility provider mounted by the default
 // export below, instead of being the default export itself.
 function AppInner() {
+  const location = useLocation()
   const [showSplash, setShowSplash] = useState(true)
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
@@ -252,6 +267,23 @@ function AppInner() {
     setWelcomeSeen(true)
   }
 
+  // ── Public routes, checked before EVERYTHING else ──────────────
+  // Certificate verification has to work for someone with no Sual
+  // account at all (an employer, a family member checking a link
+  // from a certificate PDF) — so this bypasses splash, auth,
+  // kid-check, lock screen, and level-select entirely rather than
+  // sitting behind any of them. Add future no-auth-required routes
+  // here, not inside the authenticated <Routes> block further down.
+  if (location.pathname.startsWith('/verify-certificate/')) {
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/verify-certificate/:code" element={<CertificateVerify />} />
+        </Routes>
+      </Suspense>
+    )
+  }
+
   if (showSplash) {
     return <SplashScreen onDone={() => setShowSplash(false)} />
   }
@@ -383,6 +415,7 @@ function AppInner() {
       <Sidebar onSignOut={handleSignOut} user={user} />
       <NotificationBell user={user} />
       <div className="main-wrapper">
+        <StreakNudge user={user} />
         <Toolbar
           darkMode={darkMode}
           setDarkMode={setDarkMode}
@@ -426,6 +459,14 @@ function AppInner() {
               <Route path="/arabiyyah-class" element={<ArabiyyahClass user={user} />} />
               <Route path="/fusuul" element={<Fusuul />} />
               <Route path="/hadeeth-class" element={<HadeethClass user={user} />} />
+              <Route path="/feedback" element={<FeedbackBoard />} />
+              <Route path="/marketplace" element={<MarketplaceCatalog user={user} />} />
+              <Route path="/marketplace/course/:slug" element={<MarketplaceCourseDetail user={user} />} />
+              <Route path="/marketplace/cart" element={<MarketplaceCart user={user} />} />
+              <Route path="/marketplace/checkout-complete" element={<MarketplaceCheckoutComplete />} />
+              <Route path="/marketplace/learn/:slug" element={<MarketplaceLearn user={user} />} />
+              <Route path="/marketplace/my-courses" element={<MarketplaceMyCourses user={user} />} />
+              <Route path="/streak-history" element={<StreakHistory user={user} />} />
             </Routes>
           </Suspense>
         </main>

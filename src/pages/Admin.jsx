@@ -6,6 +6,7 @@ import {
 import * as pdfjsLib from 'pdfjs-dist'
 import pdfWorkerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { supabase } from '../lib/supabase.js'
+import AdminFeedback from './AdminFeedback.jsx'
 import './Admin.css'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerSrc
@@ -1124,6 +1125,10 @@ export default function Admin({ user }) {
           </div>
         </div>
       ) : null}
+      {/* Sual Feedback — triaged bug/feature reports from the feedback inbox */}
+      <AdminFeedback />
+      {/* Sual Marketplace — creators, courses, curriculum, video uploads */}
+      <AdminMarketplace />
       <div className="card" style={{ marginTop: 20, padding: 20 }}>
   <h3 style={{ marginBottom: 6 }}>Majlis — Post an Announcement</h3>
   <p style={{ fontSize: '0.85rem', color: '#6a8090', marginBottom: 16 }}>
