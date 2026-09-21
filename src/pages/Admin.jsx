@@ -6,6 +6,7 @@ import {
 import * as pdfjsLib from 'pdfjs-dist'
 import pdfWorkerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { supabase } from '../lib/supabase.js'
+import AdminMarketplace from './AdminMarketplace.jsx'
 import AdminFeedback from './AdminFeedback.jsx'
 import './Admin.css'
 
