@@ -1,10 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { DISCIPLINES, KNOWLEDGE_BASE } from '../data/knowledge.js'
+import { DISCIPLINES, KNOWLEDGE_BASE, BEGINNER_DISCIPLINE_IDS } from '../data/knowledge.js'
 import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
 import './Disciplines.css'
 
-export default function Disciplines() {
+export default function Disciplines({ userLevel = 'beginner' }) {
+  const visibleDisciplines = userLevel === 'beginner'
+    ? DISCIPLINES.filter(d => BEGINNER_DISCIPLINE_IDS.includes(d.id))
+    : DISCIPLINES
+
   return (
     <div className="page-content disciplines-page">
 
@@ -17,7 +21,7 @@ export default function Disciplines() {
       </div>
 
       <div className="disciplines-grid">
-        {DISCIPLINES.map(d => {
+        {visibleDisciplines.map(d => {
           const qaCount = (KNOWLEDGE_BASE[d.id] || []).length
           return (
             <Link key={d.id} to={`/discipline/${d.id}`} className="disciplines-card">

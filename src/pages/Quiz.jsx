@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import { DISCIPLINES, QUIZ_QUESTIONS, BEGINNER_DISCIPLINE_IDS } from '../data/knowledge.js'
 import { useSearchParams, Link } from 'react-router-dom'
-import { DISCIPLINES, QUIZ_QUESTIONS } from '../data/knowledge.js'
 import { DISCIPLINE_ICONS } from '../components/disciplineIcons.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useAccessibility } from '../accessibility/AccessibilityContext.jsx'
@@ -442,12 +442,15 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
   }
 
   const nextQuizSuggestions = useMemo(() => {
-    if (phase !== 'result') return []
-    const candidates = ['mixed', ...DISCIPLINES.map(d => d.id)].filter(id => id !== selectedDiscipline)
-    const withQuestions = candidates.filter(id => buildQuizPool(id, selectedLevel).length > 0)
-    return shuffle(withQuestions).slice(0, 3)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, selectedDiscipline, selectedLevel])
+  if (phase !== 'result') return []
+  const pool = userLevel === 'beginner'
+    ? DISCIPLINES.filter(d => BEGINNER_DISCIPLINE_IDS.includes(d.id))
+    : DISCIPLINES
+  const candidates = ['mixed', ...pool.map(d => d.id)].filter(id => id !== selectedDiscipline)
+  const withQuestions = candidates.filter(id => buildQuizPool(id, selectedLevel).length > 0)
+  return shuffle(withQuestions).slice(0, 3)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [phase, selectedDiscipline, selectedLevel, userLevel])
 
   const scorePercent = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0
   const scoreMsg = () => {
@@ -459,6 +462,9 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
 
   if (phase === 'select') {
     const selectedInfo = discInfo(selectedDiscipline)
+    const visibleDisciplines = userLevel === 'beginner'
+      ? DISCIPLINES.filter(d => BEGINNER_DISCIPLINE_IDS.includes(d.id))
+      : DISCIPLINES
     return (
       <div className="page-content quiz-page">
         <h1 className="page-title">Quiz</h1>
@@ -476,7 +482,7 @@ export default function Quiz({ user, userLevel = 'beginner' }) {
               <span className="quiz-disc-name">Mixed</span>
               <span className="quiz-disc-arabic arabic">كُلّ العُلُوم</span>
             </button>
-            {DISCIPLINES.map(d => (
+            {visibleDisciplines.map(d => (
               <button
                 key={d.id}
                 className={`quiz-disc-btn ${selectedDiscipline === d.id ? 'quiz-disc-btn--active' : ''}`}

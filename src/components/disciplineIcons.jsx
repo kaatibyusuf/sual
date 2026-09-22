@@ -1,5 +1,5 @@
 // src/components/disciplineIcons.jsx
-// Shared icon set for the seven disciplines, keyed the same way as
+// Shared icon set for the disciplines, keyed the same way as
 // DISCIPLINES[].icon in src/data/knowledge.js. Import DISCIPLINE_ICONS
 // wherever a discipline's icon needs to render, e.g.:
 //
@@ -56,6 +56,18 @@ export const DISCIPLINE_ICONS = {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z" />
       <line x1="12" y1="6" x2="12" y2="19" />
+    </svg>
+  ),
+  tawheed: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  hadeeth: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 14a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07l-1.5 1.5" />
+      <path d="M14 10a5 5 0 0 0-7.07 0L4.1 12.83a5 5 0 0 0 7.07 7.07l1.5-1.5" />
     </svg>
   ),
 }
