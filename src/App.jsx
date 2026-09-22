@@ -29,7 +29,7 @@ const Flashcards          = lazy(() => import('./pages/Flashcards.jsx'))
 const Stories             = lazy(() => import('./pages/Stories.jsx'))
 const Duas                = lazy(() => import('./pages/Duas.jsx'))
 const Calendar            = lazy(() => import('./pages/Calendar.jsx'))
-const Fiqh                = lazy(() => import('./pages/fiqh.jsx'))
+const Fiqh                = lazy(() => import("./pages/Fiqh.jsx"));
 const Tawheed              = lazy(() => import('./pages/Tawheed.jsx'))
 const Profile              = lazy(() => import('./pages/Profile.jsx'))
 const Journey              = lazy(() => import('./pages/Journey.jsx'))
