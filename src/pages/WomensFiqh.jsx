@@ -179,8 +179,20 @@ const FERTILE_WINDOW_AFTER = 1
 // due-date calculators.
 const PREGNANCY_DURATION_DAYS = 280
 
+// How far back "When did this actually start?" can be set. Generous
+// enough to cover even a full nifas period logged very late, but
+// still catches an accidental wrong-month/wrong-year typo rather
+// than silently accepting it and corrupting cycle-length history.
+const MAX_BACKDATE_DAYS = 60
+
 function todayStr() {
   return new Date().toISOString().slice(0, 10)
+}
+
+function minBackdateStr() {
+  const d = new Date()
+  d.setDate(d.getDate() - MAX_BACKDATE_DAYS)
+  return d.toISOString().slice(0, 10)
 }
 
 function dayCount(startDate, throughDate) {
@@ -325,6 +337,11 @@ export default function WomensFiqh({ user }) {
   const [selectedColor, setSelectedColor] = useState(null)
   const [hasClots, setHasClots] = useState(false)
   const [deletingCycleId, setDeletingCycleId] = useState(null)
+
+  // ── "When did this actually start?" date, used only when there is
+  // no active cycle yet — lets a late first login for this cycle
+  // still record the real start date instead of defaulting to today.
+  const [newCycleDate, setNewCycleDate] = useState(todayStr())
 
   // ── "Mark bleeding stopped" date picker ─────────────────────
   const [showStopPicker, setShowStopPicker] = useState(false)
@@ -618,8 +635,8 @@ export default function WomensFiqh({ user }) {
     try {
       const today = todayStr()
       const note = noteInput.trim()
-      const entry = { date: today, intensity, notes: note, color: selectedColor, has_clots: hasClots }
       if (activeCycle) {
+        const entry = { date: today, intensity, notes: note, color: selectedColor, has_clots: hasClots }
         const alreadyLogged = (activeCycle.days || []).some(d => d.date === today)
         const newDays = alreadyLogged
           ? (activeCycle.days || []).map(d => d.date === today ? entry : d)
@@ -630,9 +647,20 @@ export default function WomensFiqh({ user }) {
           .eq('id', activeCycle.id)
         if (error) throw error
       } else {
+        if (newCycleDate > today) {
+          setTrackerError("Start date can't be in the future.")
+          setLogging(false)
+          return
+        }
+        if (newCycleDate < minBackdateStr()) {
+          setTrackerError(`Start date can't be more than ${MAX_BACKDATE_DAYS} days ago. If this is correct, please contact support.`)
+          setLogging(false)
+          return
+        }
+        const entry = { date: newCycleDate, intensity, notes: note, color: selectedColor, has_clots: hasClots }
         const { error } = await supabase.from('womens_fiqh_cycles').insert({
           user_id: user.id,
-          start_date: today,
+          start_date: newCycleDate,
           is_postpartum: startingPostpartum,
           days: [entry],
         })
@@ -641,6 +669,7 @@ export default function WomensFiqh({ user }) {
       setNoteInput('')
       setSelectedColor(null)
       setHasClots(false)
+      setNewCycleDate(today)
       fetchCycles()
     } catch (err) {
       setTrackerError(err.message)
@@ -1403,6 +1432,23 @@ export default function WomensFiqh({ user }) {
         <>
           <div className="wf-log-card card">
             <p className="wf-log-label">Start tracking</p>
+
+            <label className="wf-edit-date-label" style={{ marginBottom: 14 }}>
+              When did this actually start?
+              <input
+                type="date"
+                className="wf-edit-date-input"
+                value={newCycleDate}
+                min={minBackdateStr()}
+                max={todayStr()}
+                onChange={e => setNewCycleDate(e.target.value)}
+              />
+            </label>
+            <p className="wf-optional-label" style={{ marginTop: -8, marginBottom: 12 }}>
+              Didn't get to log on the first day? Pick the actual date it started — you can do
+              this whenever you're able to log in, and it'll be counted correctly from that day.
+            </p>
+
             <label className="wf-postpartum-check">
               <input type="checkbox" checked={startingPostpartum} onChange={e => setStartingPostpartum(e.target.checked)} />
               This bleeding follows childbirth (nifas)
