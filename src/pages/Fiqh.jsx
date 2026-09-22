@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FIQH_SECTIONS, FIQH_SCHOLARS } from '../data/fiqh.js'
-import './fiqh.css'
+import './Fiqh.css'
 
 const LEVEL_COLORS = {
   foundation: { bg: '#e8f4ff', color: '#094570', border: '#c0ddf5', label: 'Foundation' },
